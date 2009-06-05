@@ -40,9 +40,9 @@ import wx.lib.scrolledpanel
 import wx.lib.statbmp
 
 ## Will be used to stop deprecation errors from wx 2.6 to 2.8
-import wxversion
-wx28 = wxversion.checkInstalled('2.8')
-del wxversion
+#import wxversion
+#wx28 = wxversion.checkInstalled('2.8')
+#del wxversion
 
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
@@ -508,9 +508,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			self.width = 1024 # I cannot get a sensible value for 1st run.
 		else:
 			## Prevent deprecation warning:
-			if wx28:
+			#if wx28:
+			try:
 				self.width = self.DoGetSize()[0] - sbwidth  # 2.8 onwards, I hope.
-			else:
+			#else:
+			except:
 				self.width = self.base_DoGetSize()[0] - sbwidth # old 2.6 version of that.
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
