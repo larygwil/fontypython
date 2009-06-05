@@ -1,0 +1,13 @@
+To make a source tarball: 
+python setup.py sdist
+
+The tarball will be in the dist/ directory.
+
+To test the tarball:
+cd dist
+tar xf fonty...
+cd fonty...
+sudo python setup.py install
+fontypython
+(Look for command-line errors as well as wxPython error dialogs.)
+
