@@ -1,0 +1,167 @@
+<html>
+<body>
+<table cellpadding="5">
+<TR><TD valign="middle">
+<img src="../common/logo_dec_2007.png"><BR>
+<font color="#768b94"><h1>Fonty Python Help</h1>Updated May 2009</font>
+</TD></TR>
+<tr><TD>
+		<p><i>FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.</i></p>
+
+		<h1>Ye olde Basic Idea</h1>
+		<p>You visually gather fonts into <b>"Pogs"</b>. You then install a "Pog" and all the fonts within it are active on the system. You finish your work and then uninstall the "Pog".</p>
+		<p>I just tumbled onto the	word "Pog", it comes from "ty<strong>POG</strong>raphy". It's supposed to mean "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" - you get the picture. (Now that that's explained, we'll no longer scare pogs with quotes.)</p>
+		<p>Your fonts never move from where they live, neither are copies made; <i>only links to the original files are used</i> to install the fonts into your home <i>.fonts</i> directory.</p>
+		<p>For example, you might have a Pog called "logoZoo" into which you place all the ttfs you need to design a logo for a Zoo. After that, when you need to work with them, you simply install the "logoZoo" Pog and start your design app. All those fonts will now appear in Inkscape or The Gimp, and other apps. Do your work as normal, and forget about fonts.</p>
+		<p>When you are done designing, you uninstall "logoZoo" and all those fonts go away. The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.</p>
+		<p>Fonty is also great for just looking at fonts wherever they are on your computer, without having to install them first. She also has a command-line, allowing very quick use. You can install/remove pogs without having to start the entire gui, which is neat.</p>
+		<h1>Home dot fonts</h1>
+		<p>In your home directory there is a hidden directory named ".fonts". The dot makes it hidden. In there you will find font files of various kinds. Whatever is listed in that directory is a font that your system can use. It's not as simple as this because on GNU/Linux there are other places where fonts are also installed, but it's a handy place to work. You should never need to go into this directory so there's no reason to worry about it.</p>
+		<h1>News</h1>
+		<ol>
+			<li>(May 2009) There is a "Select All fonts" button now. You can select every font in a folder (or another Pog) in one go.</li>
+			<li>Fonty now supports TTF, OTF, TTC (Truetype Collections) and Type1 fonts (PFA and PFB)</li>
+			<li>Fonty is also localized! As long as your LANG variable is set properly! <strong>Please see the LOCAliZATION TIPS</strong> at the end of this help.</li>
+		</ol>
+</TD></tr>
+
+</table>
+
+<hr>
+<h1>Layout</h1>
+<table cellspacing="10">
+<TR><TD>
+		<IMG src="fp_1to8.png" align="left" border="0">
+</TD></TR>
+<TR><TD>
+		<p><h4>The interface works from left to right. You select a Source on the far left (1), then you  select fonts from the middle section (3) and finally you choose a Target "Pog" (4) where you want to store them.</h4></p>
+</TD></TR>
+</table>
+<table cellspacing="10">
+<tr><td valign="top">
+	<IMG src="../common/fp1.png.cr.png" align="left" border="0">
+</td><td><br>
+This section lets you choose the fonts you want to look at. You can choose a folder <i>or</i> another Pog as the Source, simply choose the appropriate tab.<br>It's quite nice to get fonts out of another Pog sometimes; it's quicker than trying to find them on a drive somewhere, this is why Pogs can be Sources too - don't let this confuse you!<br>Keep your eyes on the label at 2 to see what the current selected Source is.
+</td></tr>
+<tr><TD valign="top">
+<IMG src="../common/fp2.png.cr.png" align="left" border="0"></TD><td><br>
+This section informs you about what is selected in the Source and Target portions of the interface. Along with the status bar, it keeps you informed about what you can and cannot do at any time.
+</td></tr>
+<tr>
+<TD valign="top">
+<IMG src="../common/fp3.png.cr.png" align="left" border="0"></TD><td><br>
+The fonts in the folder or Pog you chose on the left will show here.
+<br><br>
+<strong>Please note:</strong> An error marker may appear instead of the expected font glyphs. These fonts either cannot be opened (for whatever reason) or they cannot be 'rendered' (I can't draw them). You can still select these 'bad' fonts and place them into Pogs and then install them.<br> The reason for this is that Fonty Python is not <em>all</em> that good at drawing fonts (it's a long story) but other apps like Inkscape and The Gimp work just fine. So, if you know you need a font and Fonty says it's bad, just ignore the error message and select it like any other font.
+<br><br>
+<strong>New: </strong>You can now change the size of the fonts with Ctrl and the mouse wheel. It's a little slow, but handy.
+<br><br>
+This section has various behaviours, depending on what you have selected:<br>
+<ol>
+<li><strong>You have selected a Source (Pog or Folder) and a Target Pog</strong><br>This will let you tick fonts and then store them in the target Pog.<br>
+&nbsp;&nbsp;<IMG src="../common/fp_ticking.png" border="0"><br></li>
+<li><strong>You have selected a Source Folder (or a Pog) <em>only</em></strong><br> This will not let you tick anything, you can only look.<br><br></li>
+<li><strong>You have selected a Source Pog <em>only</em></strong><br> This will let you cross-out fonts that you want to remove from the Pog you are looking at.<br>
+&nbsp;&nbsp;<IMG src="../common/fp_removing_a_font.png" border="0"><br></li>
+<li><strong>Inactive fonts</strong><br>This greyed-out font indicates that it's already in the Target Pog, so you can't select it.<br>
+&nbsp;&nbsp;<IMG src="../common/fp_already_in_x.png" border="0"><br><br>
+</li></ol>
+</td>
+</tr>
+<tr>
+<TD valign="top">
+<IMG src="../common/fp4.png.cr.png" align="left" border="0"></TD><td><br>
+This section is where you deal with the actual Pogs.<br>These icons indicate which are currently installed and which are not. You cannot use an installed Pog as a target! The last icon represents the current Target Pog; when you select a Target Pog (4) it will show this in both lists.<br>
+You choose a target Pog by clicking one. The "Clear Selection" button is a quick way to clear your selection, the same thing as clicking a selected item a second time.<br>
+<IMG src="fp_pog_icons.cr.png" border="0"><br><br>
+</td></tr>
+<tr><TD valign="top">
+<IMG src="../common/fp5.png.cr.png" align="left" border="0"></TD><td><br>
+This is the "filter". You can type partial words here and the list of fonts will change to reflect the search. For example, if you only want the italic fonts, then type 
+<pre>italic</pre>
+(And press ENTER)<br>
+When you want all the fonts again, clear the box and press ENTER.<br>
+<strong>Tip:</strong>If you want to search for bold <em>or</em> italic (i.e fonts with either term) then type in 
+<pre>bold|italic</pre>
+That line (|) is the key near ENTER, above the backslash (\) character on a US-English keyboard. It means "OR" so: "bold OR italic" is what you are saying to the filter.<br><br>
+<strong>NOTE:</strong>There's a bug I can't find--If you are not seeing any fonts, be sure to clear your filter and press <strong><em>enter</em></strong>; you may have to do it twice. 
+</td></tr>
+<tr><TD valign="top">
+<IMG src="../common/fp6.png.cr.png" align="left" border="0"></TD><td><br>
+This is the main <i>action</i> button. It will change it's functionality as you select various combinations. The text of the button ought to give a clear indication of what it will do. Read it in conjunction with the heading (2) and the status bar.
+</td></tr>
+<tr><TD valign="top">
+<IMG src="../common/fp7.png.cr.png" align="left" border="0"></TD><td><br>
+These controls (and the Back button on the left) allow you to navigate between "pages" of fonts. You can choose any page from the pull-down, or you can step forward/back one at a time. Please go to File->Settings (or hit Ctrl+S -- for English locales) where you can change the number of fonts in a page.<br>
+<i>I use the paged approach to reduce the memory demands of the app.</i>
+</td></tr>
+<tr><TD valign="top">
+<IMG src="../common/fp8.png.cr.png" align="left" border="0"></td><td><br>
+The buttons in this section all act upon the currently selected <strong>target</strong> Pog. You can variously delete, install, uninstall and purge the selected Pog. You can also create new Pogs from here.
+</td></tr>
+</table>
+
+<hr>
+<h1>Handy tips</h1>
+<ol>
+	<li>Use the new "Select ALL fonts" button to quickly select <b>everything</b> in a Folder (or a Pog).</li>
+	<li>Try to use Fonty from the command-line (from a console). It's easy, simply type: <pre>fontypython --help</pre></li>
+	<li>Pog files are merely text files. They are very, very simple and this was intentional. Here are some things you can do with them:
+	<ul>
+		<li>Open and edit them in any text editor.</li>
+		<li>Append fonts to the end of them, just include the entire path and the font name.<strong>Note for Type1 fonts:</strong>Only include the PFA/B file types, not the various metric files that follow them.</li>
+		<li>If your paths change (say you renamed your folders, or re-installed your O/S) then you can use search/replace to update all the paths to all the fonts in your pogs. You could do this from the command-line using Gnu tools, but any text editor will help you here too.</li>
+		<li>You can backup your pogs by simply copying them to another folder.</li>
+		<li>One last trick, for those proficient with the Gnu tools, you can do things like this:<pre>find /home/you/somepath/TTFS/F -iname "Fu*" >> Futura.Pog</pre></li>
+	</ul>
+</li>
+</ol>
+
+<h1>Localization tips</h1>
+<ol>
+	<li>If localization is not working it could be that there is no translation for your language yet, it can also be a problem with missing packages in your distro.<br>
+	This is what I installed on my system (Kubuntu 7.10 as of December 2007) while I was developing:<br>
+	<ul>
+	<li>language-support-fr</li>
+	<li>language-support-en</li>
+	<li>language-pack-gnome-fr <strong>This one is very important, it has many stock translations for GTK.</strong></li>
+	</ul>
+	(Replace the last two letters with your own language code.)</li>
+
+	<li><strong>ENCODING TIP:</strong><br/>Check your LANG variable. Open a console and type: <pre>echo $LANG</pre><br/>
+If it reports "C" or "POSIX" or it's blank then you will be running under ANSI (ASCII) encoding only. This means that unusually named fonts and pogs will likely be invisible to you, function badly, or cause errors. I am putting out fires as fast as I can, but these bugs are hard to find.<br/>
+To see what other encodings you could be using, type:<pre>locale -a</pre><br/>
+You should see a list of locales. If you see one ending in utf8 that looks like it fits your language, then change your system to use it. You should do this via your system-settings gui, but you can do it temporarily like this:
+<pre>LANG=xx_YY.encoding</pre> Where xx_YY and encoding are replaced by you. After that, start Fonty again.
+	</li>
+	<li>If you want to help translate, please contact us via the fontypython list: fontypython@googlegroups.com</li>
+</ol>
+
+<h1>Fonty bugs</h1>
+<ol>
+   <li><strong>Fatal crashes and Dangerous Fonts:</strong> Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window should appear and tell you which font is to blame. You should <em>move</em> that font <em>entirely</em> away from where it is. Start Fonty again to resume. If you are stuck, go into your .fontypython folder and open the file named 'lastFontBeforeSegfault', that will be the culprit!</li>
+   <li><strong>Check Fonts:</strong> I've added a new tool to the File menu that will let you choose a folder (and it will go through all the sub-folders too) of fonts for checking. Any fonts that are likely to kill Fonty will be recorded in your ~/.fontypython folder in a file named 'segfonts'. After you do this, you can visit those folders in Fonty and it will display those fonts in yellow. <strong>If you find that Fonty is crashing too often</strong>, then use this tool!<br>There is also a command-line to the same tool:<pre>fontypython -c /some/folder</pre>Please check the command-line help.</li>
+   <li>If you get errors, email them to the list (fontypython@googlegroups.com). This is easier to do when you run Fonty from the command line because you can copy what's displayed.</li>
+   <li>When Fonty starts-up it checks your Pog files (in your home folder under .fontypython). If there are any pogs that cannot be read for whatever reason, then they are renamed to .badpog. You should go in there and do some sleuthing.</li>
+   <li>As Fonty reads font files here and there, it keeps a list of the fonts it could not open. It's in the .fontypython folder. Open "badfiles" in a text editor if you want to see them.</li>
+</ul>
+</li>
+ </ol>
+<hr>
+<p>Fonty Python is Copyright (C) 2006, 2007, 2008 Donn.C.Ingle.</p>
+<p>This file is part of Fonty Python.<br>
+Fonty Python is free software: you can redistribute it and/or modify<br>
+it under the terms of the GNU General Public License as published by<br>
+the Free Software Foundation, either version 3 of the License, or<br>
+(at your option) any later version.<br>
+<br>
+Fonty Python is distributed in the hope that it will be useful,<br>
+but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
+MERCHANTABIliTY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>
+GNU General Public License for more details.<br>
+<br>
+You should have received a copy of the GNU General Public License<br>
+along with Fonty Python.  If not, see http://www.gnu.org/licenses/
+</p>
+</body>
+</html>

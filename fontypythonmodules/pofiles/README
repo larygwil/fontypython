@@ -1,0 +1,48 @@
+Fonty Python
+Copyright (C) 2006, 2007, 2008 Donn.C.Ingle
+donn.ingle@gmail.com
+
+Fonty Python comes with ABSOLUTELY NO WARRANTY; for details
+see the COPYING file.  This is free software, and you are welcome
+to redistribute it under certain conditions; see the COPYING file 
+for details.
+
+TRANSLATION README
+==================
+Very rough guide.
+
+1. Assume that the source is more recent than any po/pot file.
+2. Use xgettext to make a fresh original: (go into the app root folder, two up from here.)
+
+xgettext -o fp_all.pot -L Python fp -L Python fontypython fontypythonmodules/*.py
+
+3. Copy fp_all.pot into fontypythonmodules/pofiles (you can erase the old one.)
+4. Merge it with the other po files, one by one. For example, if you are handling French then merge fp_all.pot with fr_all_merged.po and output the new file as fp_all_merged.pot:
+
+msgmerge fr_all_merged.po fp_all.pot -o fr_all_merged.pot
+
+5. Make sure it worked (open it and check) and then delete *_all_merged.po (the old files)
+While you are looking, fix the file header (compare to old file), make sure the charset variable is correct. Example:
+"Content-Type: text/plain; charset=UTF-8\n"
+
+6. Rename your new files to .po (Why this step is needed totally defeats me.)
+7. Open (I like poedit) and edit the file.
+8. Generate a .mo file - from poedit or:
+msgfmt somepofile.po -o somemofile.mo
+
+9. Move the .mo file into ../locales/fr/LC_MESSAGES/all.mo (erasing the old .mo file)
+10. Send me your po and mo files !
+
+Using the makefile
+==================
+May 2009
+I wrote a makefile to help with translation. It lives in the root of the app.
+1. make : Will build the fp_all.pot file. Look for errors.
+2. make renamepot : Will make the .po files (in fontypythonmodules/pofiles. Go edit them.
+3. make mos : Will make the .mo files and put them into the fontypythonmodules/locale/XX/LC_MESSAGSE/all.mo
+   If you make a .mo with poedit (or some other app) then that's fine too. Don't run make mos.
+
+To test:
+========
+LANG=langcode_LANGCODE.utf8
+./fontypython
