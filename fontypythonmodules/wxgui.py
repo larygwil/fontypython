@@ -370,7 +370,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		memDc.SetBrush ( wx.TRANSPARENT_BRUSH ) 
 		sr,sg,sb = col
 		#print "TO:", col
-		for q in range(0, 25):
+		for q in xrange(0, 25):
 			r = min(255,int(1.5*q+sr))
 			g = min(255,int(1.5*q+sg))
 			b = min(255,int(1.5*q+sb))
@@ -584,10 +584,13 @@ class FontViewPanel(wx.Panel):
 		self.clearButton = wx.BitmapButton(self, -1, bmp, style = wx.NO_BORDER)
 		self.clearButton.SetToolTipString( _("Clear filter") )
 		self.clearButton.Bind( wx.EVT_BUTTON, self.OnClearClick )
-
+		
+		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
 		self.inputFilter = wx.TextCtrl(self, -1, "")
 		self.inputFilter.Bind(wx.EVT_CHAR, self.__evtChar) #catch the enter char
+
+		## The pager pulldown
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
 		self.choicePage.Bind(wx.EVT_CHOICE, self.__onPagechoiceClick) #Bind choice event
 		
@@ -765,7 +768,7 @@ class FontViewPanel(wx.Panel):
 			## Empty the choice control.
 			self.choicePage.Clear() 
 			## Now refill it
-			[self.choicePage.Append(str(n)) for n in range(1, self.total_number_of_pages +1)] 
+			[self.choicePage.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)] 
 			self.choicePage.SetSelection(self.pageindex-1)
 		## The viewobject is empty anyway.
 		else: 
@@ -1145,7 +1148,7 @@ class TargetPogChooser(wx.Panel):
 		## Install
 		if e.GetId() == self.idinstall:
 			wx.BeginBusyCursor()
-			for p in [ tl.GetItemText(i) for i in range(tl.GetItemCount()) if tl.IsSelected(i)]:
+			for p in [ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]:
 				fpsys.instantiateTargetPog(p) # sets up global vars in fpsys
 				ps.pub(install_pog)           # that are used in here.
 			wx.EndBusyCursor()
@@ -1153,7 +1156,7 @@ class TargetPogChooser(wx.Panel):
 		## Uninstall
 		if e.GetId() == self.iduninstall:
 			wx.BeginBusyCursor()
-			for p in [ tl.GetItemText(i) for i in range(tl.GetItemCount()) if tl.IsSelected(i)]:
+			for p in [ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]:
 				fpsys.instantiateTargetPog(p)
 				ps.pub(uninstall_pog)
 			wx.EndBusyCursor()	
@@ -1345,7 +1348,7 @@ class PogChooser(wx.ListCtrl) :
 		iAmTargetList = isinstance( self.parent, TargetPogChooser )
 		## If there is an active selection?
 		if sel > -1:
-			for x in range(0, c):
+			for x in xrange(0, c):
 				i = self.GetItem(x, 0)
 				## Must make a tmp Pog before I can test installed status.
 				tmpPog = fontcontrol.Pog(i.GetText())
@@ -1365,7 +1368,7 @@ class PogChooser(wx.ListCtrl) :
 						else:
 							self.SetItemImage(x, 0)
 		## Tell the VIEW to imitate this picture.
-			for x in range(0,c):
+			for x in xrange(0,c):
 				ti = self.__TARGET.pogTargetlist.GetItem(x, 0) # the 0 is 'column'. Ignore.
 				CLONE = ti.GetImage()# gets the image index, not an image bitmap.
 				self.__VIEW.SetItemImage(x, CLONE)
