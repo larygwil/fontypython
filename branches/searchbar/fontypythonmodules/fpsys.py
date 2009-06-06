@@ -317,6 +317,9 @@ def instantiateViewFolder( foldername ):
 	ifolder = fontcontrol.Folder(foldername) #raises : fontybugs.FolderHasNoFonts : BENIGN ERROR.
 	## Only continues if there is no problem.
 	state.viewobject = ifolder
+	## Because we have a new view object, we must reset the last filteredViewObject
+	state.filteredViewObject = None
+
 	config.lastview = foldername
 	state.viewpattern = "F"
 	markInactive()
@@ -358,6 +361,9 @@ def instantiateViewPog( newpog_name ):
 
 	## Continue if all ok.
 	state.viewobject = ipog
+	## Because we have a new view object, we must reset the last filteredViewObject
+	state.filteredViewObject = None
+
 	config.lastview = newpog_name
 	if len(state.viewobject) == 0:
 		empty = True

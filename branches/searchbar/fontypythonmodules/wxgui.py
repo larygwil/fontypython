@@ -33,6 +33,7 @@ import fpsys # Global objects
 import fontybugs
 import fontcontrol
 import fpversion
+import fontyfilter
 
 ## Now, bring in all those big modules
 import wx
@@ -589,7 +590,9 @@ class FontViewPanel(wx.Panel):
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
 		self.inputFilter = wx.TextCtrl(self, -1, "")
 		self.inputFilter.Bind(wx.EVT_CHAR, self.__evtChar) #catch the enter char
-
+		
+		self.last_filter_string = ""
+		
 		## The pager pulldown
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
 		self.choicePage.Bind(wx.EVT_CHOICE, self.__onPagechoiceClick) #Bind choice event
@@ -694,10 +697,13 @@ class FontViewPanel(wx.Panel):
 		if e.GetKeyCode() == 13:
 			## Time to filter and redraw my list
 			self.filter = self.inputFilter.GetValue()
-			## Now command a change of the view.
+
 			## First, return user to page 1:
 			self.pageindex = 1
+
+			## Now command a change of the view.
 			self.__filterAndPageThenCallCreateFitmaps()
+
 			self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 		if e.GetKeyCode() == 27:
 			self.buttMain.SetFocus()
@@ -708,43 +714,27 @@ class FontViewPanel(wx.Panel):
 		Figure out what list of fonts to draw, divide them into pages,
 		then go make Fitmaps out of them.
 		"""
-##		print "filter"
-##		print "len viewobject:", len(fpsys.state.viewobject)
-##		print "self.pageindex:", self.pageindex
 		
 		self.total_number_of_pages = 1 # A default
-		
+
 		## Is there anything there to view?
 		if len(fpsys.state.viewobject) > 0:
-			## STEP 1 : Handle the Filter:
-			filteredList = fpsys.state.viewobject
-			
-			#print "FILTER SAYS:",self.filter
-			
-			if self.filter is not "":
-				## Okay, we have some kind of filter.
-				## This idea was suggested by user Chris Mohler.
-				filteredList = []
-				import re
-				test = re.compile(self.filter, re.IGNORECASE)
-				for fi in fpsys.state.viewobject:
-					## Make sure we don't try fetch info from a bad font.
-					if not fi.badfont:
-						if test.search( fi.name + fi.family[0] + fi.style[0] ):
-							filteredList.append( fi )
-					else:
-						if test.search( fi.name ):
-							filteredList.append( fi )
-			
-			## Dump a ref into the fpsys global
-			## For use in __selectAllFonts.
-			## May 2009
-			fpsys.state.filteredViewObject = filteredList
+
+## JUNE 2009 : Changes made
+
+			## If the filter string changed from last time, signal so.
+			filter_changed = False
+			if self.filter != self.last_filter_string: filter_changed = True
+			self.last_filter_string = self.filter
+
+			## If the filter did change OR we have a blank filteredViewObject, then make a new one.
+			if not fpsys.state.filteredViewObject or filter_changed:
+				fpsys.state.filteredViewObject = fontyfilter.doFilter( self.filter ) # Uses the external module to filter.
 
 			## STEP 2 : Figure out how many pages we have to display
 			current_page = self.pageindex - 1
 			num_in_one_page = fpsys.config.numinpage
-			total_num_fonts = len(filteredList)
+			total_num_fonts = len(fpsys.state.filteredViewObject)
 			#print "total_num_fonts=", total_num_fonts
 			gross = total_num_fonts / float(num_in_one_page)
 			
@@ -760,10 +750,10 @@ class FontViewPanel(wx.Panel):
 
 			start = current_page * num_in_one_page #leaf thru the pages to the one we are on now.
 			fin = start + num_in_one_page
-			if fin > len(filteredList): fin = len(filteredList) #Make sure we don't overshoot.
+			if fin > len(fpsys.state.filteredViewObject): fin = len(fpsys.state.filteredViewObject) #Make sure we don't overshoot.
 			
 			## Extract a single page of fonts to display
-			sublist = filteredList[start:fin] 
+			sublist = fpsys.state.filteredViewObject[start:fin] 
 			
 			## Empty the choice control.
 			self.choicePage.Clear() 
@@ -781,7 +771,11 @@ class FontViewPanel(wx.Panel):
 			
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
 		self.__buttonState()
-		
+
+
+
+
+
 	## Main BUTTON click -- the main "do something" button.
 	def __onMainClick(self, e):
 		xPos, yPos = self.scrolledFontView.GetViewStart() #Saved by Robin Dunn, once again ! ! !
