@@ -1,0 +1,5 @@
+include fontypython fp README COPYING fontypython.png fontypython.desktop MANIFEST.in
+recursive-include fontypythonmodules/pofiles *
+recursive-include fontypythonmodules/things *
+recursive-include fontypythonmodules/locale *
+recursive-include fontypythonmodules/help *

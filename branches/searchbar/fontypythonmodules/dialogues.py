@@ -1,0 +1,358 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
+import os, locale
+import fpsys
+#import fontsearch
+import strings
+import wx
+import wx.html as html
+
+
+## Setup wxPython to access translations : enables the stock buttons.
+langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
+mylocale = wx.Locale( langid )
+
+## langcode = locale.getlocale()[0] # I must not use getlocale...
+## This is suggested by Martin:
+loc = locale.setlocale(locale.LC_CTYPE) # use *one* of the categories (not LC_ALL)
+## returns something like 'en_ZA.UTF-8'
+if loc is None or len(loc) < 2:
+	langcode = 'en'
+else:
+	langcode = loc[:2].lower()# This is going to cause grief in the future...
+ 
+class DialogHelp(wx.Dialog):
+	def __init__(self, *args, **kwds):
+		kwds["style"] = wx.DEFAULT_DIALOG_STYLE
+		wx.Dialog.__init__(self, *args, **kwds)
+		dbox = wx.BoxSizer(wx.VERTICAL)
+		btn = wx.Button(self, wx.ID_OK)
+		btn.SetDefault()
+		win = TestHtmlPanel(self, size = kwds["size"]) 
+		dbox.Add(win, 1, wx.EXPAND)
+		dbox.Add(btn, 0, wx.CENTER | wx.TOP | wx.BOTTOM,border = 4)
+		self.SetSizer(dbox)
+		#self.SetAutoLayout(True) #sizes it properly...
+		dbox.SetSizeHints(self) #made it variable size, stops at 'size' as a min.
+		#dbox.Fit(self)
+		#self.Layout()
+		win.SetFocus()# magically enables ESC key too! Go figure :)
+class TestHtmlPanel(wx.Panel):
+	def __init__(self, parent, size):
+		wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
+		self.html = MyHtmlWindow(self, -1, size)
+		self.box = wx.BoxSizer(wx.HORIZONTAL)
+		self.box.Add(self.html, 1, wx.GROW)
+		self.SetSizer(self.box)
+		self.SetAutoLayout(True)
+		
+		## Find localized help, or default to English.
+		packpath = fpsys.fontyroot
+		helppaf = os.path.join(packpath, "help", langcode, "help.html")
+		if not os.path.exists( helppaf ):
+			helppaf = os.path.join(packpath, "help", "en", "help.html")
+		self.html.LoadPage( helppaf )
+
+		self.box.Fit(self)
+
+
+class MyHtmlWindow(html.HtmlWindow):
+	def __init__(self, parent, id, size):
+		html.HtmlWindow.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE, size = size)
+		if "gtk2" in wx.PlatformInfo:
+			self.SetStandardFonts()
+
+
+class DialogAbout(wx.Dialog):
+	def __init__(self, *args, **kwds):
+		# begin wxGlade: MyDialog.__init__
+		kwds["style"] = wx.DEFAULT_DIALOG_STYLE
+		wx.Dialog.__init__(self, *args, **kwds)
+		self.nb = wx.Notebook(self, -1, style=0)
+		
+		self.notebook_1_pane_2 = wx.Panel(self.nb, -1)
+		self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
+		self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
+		
+		self.bLOGO = wx.StaticBitmap\
+		(self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
+		
+		self.AboutText = wx.StaticText\
+		(self.notebook_1_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
+
+		self.emaillink = wx.TextCtrl\
+		(self.notebook_1_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)		
+		
+		self.GPL_TEXT = wx.TextCtrl\
+		(self.notebook_1_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
+ 
+		self.THANKS = wx.TextCtrl\
+		(self.notebook_1_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
+ 
+		ID_ESC = 1001
+		self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
+		self.SetAcceleratorTable(self.accel)
+		self.Bind(wx.EVT_MENU, self.EscapeAbout, id=ID_ESC)
+		
+		self.__set_properties()
+		self.__do_layout()
+		self.notebook_1_pane_1.SetFocus() 
+		# end wxGlade
+
+	def __set_properties(self):
+		self.SetTitle(_("About FontyPython"))
+		_icon = wx.EmptyIcon()
+		_icon.CopyFromBitmap(wx.Bitmap(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_ANY))
+		self.SetIcon(_icon)
+
+	def EscapeAbout(self, event):
+		self.Close()
+		
+	def __do_layout(self):
+		# begin wxGlade: MyDialog.__do_layout
+		sizer_1 = wx.BoxSizer(wx.VERTICAL)
+		sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
+		sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
+		
+		sizerPane1 = wx.BoxSizer(wx.HORIZONTAL)
+		sizerPane1.Add(self.bLOGO, 0, 0, 0)
+		
+		textsizer = wx.BoxSizer(wx.VERTICAL)
+		textsizer.Add(self.AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
+		textsizer.Add(self.emaillink, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
+		#textsizer.Add((10, 10), 0, wx.ALIGN_LEFT, 0)
+
+		sizerPane1.Add(textsizer, 1, wx.ALIGN_BOTTOM, 0)
+		
+		self.notebook_1_pane_1.SetSizer(sizerPane1)
+		sizerPane1.Fit(self.notebook_1_pane_1)
+		sizerPane1.SetSizeHints(self.notebook_1_pane_1)
+		
+		sizer_3.Add(self.GPL_TEXT,1, wx.EXPAND, 0)
+
+		self.notebook_1_pane_2.SetSizer(sizer_3)
+		sizer_3.Fit(self.notebook_1_pane_2)
+		sizer_3.SetSizeHints(self.notebook_1_pane_2)
+		
+		## THANKS
+		sizer_thanks.Add( self.THANKS,1, wx.EXPAND,0 )
+		self.notebook_1_pane_3.SetSizer( sizer_thanks )
+		sizer_thanks.Fit( self.notebook_1_pane_3 )
+		sizer_thanks.SetSizeHints( self.notebook_1_pane_3 )
+		
+		
+		self.nb.AddPage(self.notebook_1_pane_1, _("About"))
+		self.nb.AddPage(self.notebook_1_pane_3, _("Thanks"))
+		self.nb.AddPage(self.notebook_1_pane_2, _("Licence"))
+		
+		sizer_1.Add(self.nb, 1, wx.EXPAND, 0)
+
+		self.SetSizer(sizer_1)
+		sizer_1.Fit(self)
+		sizer_1.SetSizeHints(self)
+		self.Layout()
+		self.Centre()
+		# end wxGlade
+		
+
+class DialogSettings(wx.Dialog):
+	def __init__(self, parent):
+		#-1 , "Settings", size = wx.DefaultSize, , 
+		#	 style = wx.DEFAULT_DIALOG_STYLE):
+		wx.Dialog.__init__(self, parent, -1, _("Settings"), pos = wx.DefaultPosition)#, size =(450,-1))
+		
+		## The layout begins:
+		font = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.labelHeading = wx.StaticText(self, -1, _("Settings"))
+		self.labelHeading.SetFont(font)
+
+		self.label_1 = wx.StaticText(self, -1, _("Sample text:"))
+		self.inputSampleString = wx.TextCtrl(self, -1, fpsys.config.text, size = (200, -1)) 
+		self.inputSampleString.SetFocus()
+		
+		self.label_2 = wx.StaticText(self, -1, _("Point size:"))
+		self.inputPointSize = wx.SpinCtrl(self, -1, "")
+		self.inputPointSize.SetRange(1, 500)
+		self.inputPointSize.SetValue(fpsys.config.points)
+		
+		self.label_3 = wx.StaticText(self, -1, _("Page length:"))
+		self.inputPageLen = wx.SpinCtrl(self, -1, "")
+		self.inputPageLen.SetRange(1, 5000) # It's your funeral!
+		self.inputPageLen.SetValue(fpsys.config.numinpage) 
+
+		box = wx.BoxSizer(wx.HORIZONTAL)
+		verticalSizer = wx.BoxSizer(wx.VERTICAL)
+		box.Add(verticalSizer, 1, flag = wx.ALL, border = 10)
+		
+		gridSizer = wx.FlexGridSizer( rows=3, cols=2, hgap=5, vgap=8 )
+		
+		verticalSizer.Add(self.labelHeading, 0, wx.ALIGN_LEFT )
+		verticalSizer.Add( (0,5), 0 )
+		
+		gridSizer.Add(self.label_1, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+		gridSizer.Add(self.inputSampleString, 1, wx.EXPAND )
+		gridSizer.Add(self.label_2, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+		gridSizer.Add(self.inputPointSize, 0 )
+		gridSizer.Add(self.label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+		gridSizer.Add(self.inputPageLen, 0 )
+		
+		verticalSizer.Add(gridSizer, 1, wx.EXPAND )
+		verticalSizer.Add((0,10),0) #space between bottom of grid and buttons
+		btnsizer = wx.StdDialogButtonSizer()
+		
+		btn = wx.Button(self, wx.ID_OK)
+		btn.SetDefault()
+		btnsizer.AddButton(btn)
+
+		btn = wx.Button(self, wx.ID_CANCEL)
+		btnsizer.AddButton(btn)
+		btnsizer.Realize()
+		
+		verticalSizer.Add(btnsizer, 0, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL, border = 5)
+		
+		self.SetSizer(box)
+		box.Fit(self) # This triggers the sizers to do their thing.
+		self.Layout()
+
+
+class SegfaultDialog(wx.Dialog):
+	"""
+	Dec 2007
+	Runs from the wrapper script (which runs fp) so that we
+	can tell the user that there was a segfault and why.
+	"""
+	def __init__(self, parent, culprit):
+		wx.Dialog.__init__(self, parent, -1, _("Oh boy..."), pos = wx.DefaultPosition )
+		
+		## The layout begins:
+		font = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.labelHeading = wx.StaticText(self, -1, _("Fonty Python, um ... crashed."))
+		self.labelHeading.SetFont(font)
+		
+		font = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.ohDear = wx.StaticText( self, -1, _("Oh dear,"))
+		self.ohDear.SetFont( font )
+		
+
+		self.sadStory = wx.StaticText( self, -1, _("There's some problem with the font named below. Please use the Check Fonts tool in Fonty\n(from the command-line or the File menu) to go through this directory and mark all the dangerous fonts.\n(You could simply move this font elsewhere, but others may remain to cause trouble.)\n" ))
+
+		font = wx.Font(11, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.culprit = wx.StaticText( self, -1, culprit ) 
+		self.culprit.SetFont( font )
+		
+		box = wx.BoxSizer(wx.HORIZONTAL)
+		verticalSizer = wx.BoxSizer(wx.VERTICAL)
+		box.Add(verticalSizer, 1, flag = wx.ALL, border = 10)
+		verticalSizer.Add(self.labelHeading, 0, 0, 0)
+		verticalSizer.Add(self.ohDear, 0, 0, 0)
+		verticalSizer.Add(self.sadStory, 1, wx.EXPAND, 0)
+		verticalSizer.Add(self.culprit, 1, wx.EXPAND, 0)
+		
+		btnsizer = wx.StdDialogButtonSizer()
+		btn = wx.Button(self, wx.ID_OK)
+		btn.SetDefault()
+		btnsizer.AddButton(btn)
+		btnsizer.Realize()
+				
+		verticalSizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT, border = 15)
+		
+		self.SetSizer(box)
+		box.Fit(self)
+		self.Layout()
+		
+
+class DialogCheckFonts( wx.Dialog ):
+	"""
+	18 Jan 2008
+	Open a dircontrol to locate a folder, a text box of some kind to
+	show the progress, and build the segfonts file/list
+	"""
+	def __init__( self, parent, startdir ):
+		wx.Dialog.__init__(self, parent, -1, _("Check for dangerous fonts."), \
+		size=(800,400),pos = wx.DefaultPosition, style=wx.DEFAULT_FRAME_STYLE )
+		
+		## LEFT
+		leftsz = wx.BoxSizer(wx.VERTICAL)
+		title = wx.StaticText( self,-1,  _("Choose a directory and double click it to start"))
+		leftsz.Add(title,0,wx.EXPAND | wx.ALL, border=4 )
+		self.treedir = wx.GenericDirCtrl( self, -1, dir=startdir, style=wx.DIRCTRL_DIR_ONLY )
+		leftsz.Add( self.treedir, 1, wx.EXPAND|wx.ALL)
+
+		## RIGHT
+		rightsz = wx.BoxSizer(wx.VERTICAL)
+		self.output = wx.TextCtrl( self, -1, "...", \
+		size=(200,-1), style = wx.TE_MULTILINE | wx.TE_READONLY )
+		rightsz.Add(self.output,1,wx.EXPAND | wx.ALL)
+
+		btnsizer = wx.StdDialogButtonSizer()
+		btn = wx.Button(self, wx.ID_OK)
+		btn.SetDefault()
+		btnsizer.AddButton(btn)
+		btnsizer.Realize()
+		
+		rightsz.Add(btn,0,wx.EXPAND)
+		
+		sz = wx.BoxSizer(wx.HORIZONTAL)
+		
+		sz.Add(leftsz, 1, wx.EXPAND)
+		sz.Add(rightsz, 1, wx.EXPAND )# this wx.EXPAND got the text control to fit the height.
+
+		self.SetSizer(sz)
+
+		self.tree = self.treedir.GetTreeCtrl()
+
+		self.tree.Bind(wx.EVT_LEFT_DCLICK, self.__goFigure)
+
+	def printer( self, txt=None ):
+		if txt is None: txt = "\n"
+		self.output.WriteText(txt + "\n")
+		wx.SafeYield()
+		
+	def __goFigure( self, e ):
+		self.output.Clear()
+		wx.BeginBusyCursor()
+		dirtocheck = self.treedir.GetPath()
+		fpsys.checkFonts( dirtocheck, self.printer )
+		wx.EndBusyCursor()
+		
+"""
+May 2009 - Busy
+class PopupInfo(wx.Frame):
+	def __init__(self, parent, id, title, fmap):
+		wx.Frame.__init__(self, parent, id, title)
+		self.box = wx.BoxSizer(wx.VERTICAL)
+		self.list = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_WORDWRAP)
+		self.box.Add(self.list, proportion=1, flag=wx.EXPAND)
+		font = fmap.fitem
+		info = fontsearch.getInfo(font)
+		try:
+			self.SetTitle(info['Name Records']['Full Name'])
+		except KeyError:
+			self.SetTitle(font.name)
+		except:
+			self.SetTitle("Font Information")
+		text = str(info)
+		self.list.AppendText(text)
+		self.butClose = wx.Button(self, id = wx.ID_OK)
+		self.butClose.Bind(wx.EVT_BUTTON, lambda event : self.Close())
+		self.Bind(wx.EVT_COMMAND_KILL_FOCUS, lambda event : self.Close())
+		self.box.Add(self.butClose, flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER)
+		self.box.Layout()
+		self.SetSizer(self.box)		
+
+"""

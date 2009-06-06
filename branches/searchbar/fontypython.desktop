@@ -1,0 +1,17 @@
+[Desktop Entry]
+Name=Fonty Python
+Comment=Manage and view all kinds of fonts.
+Comment[fr]=Fonty Python est aussi approprié pour visionner vos fichiers TTF où qu'ils soient sur votre ordinateur.
+Comment[it]=
+
+Version=1.0
+
+Type=Application
+Categories=Graphics;
+
+Exec=fontypython
+TryExec=fontypython
+Terminal=false
+StartupNotify=true
+
+Icon=fontypython.png
