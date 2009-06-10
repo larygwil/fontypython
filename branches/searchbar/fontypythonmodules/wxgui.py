@@ -595,7 +595,8 @@ class FontViewPanel(wx.Panel):
 		self.buttSelectAllToggle = False # keep a toggle var -- False means button is "up", True means "pressed down"
 		self.buttSelectAll = wx.Button(self, label = _('Select ALL ') )
 		self.buttSelectAll.Enable(False)
-		self.buttSelectAll.Bind(wx.EVT_LEFT_UP,self.__selectAllFonts)		
+		#self.buttSelectAll.Bind(wx.EVT_LEFT_UP,self.__selectAllFonts)		
+		self.buttSelectAll.Bind(wx.EVT_BUTTON,self.__selectAllFonts)		
 
 		## put them into the sizer
 		sizerOtherControls.Add(self.textFilter, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
@@ -636,10 +637,11 @@ class FontViewPanel(wx.Panel):
 		self.sizerFontView.Add(buttonsSizer,0,wx.EXPAND)	
 		
 		self.SetSizer(self.sizerFontView)
-		
-		self.buttPrev.Bind(wx.EVT_LEFT_UP,self.__navClick) 
-		self.buttNext.Bind(wx.EVT_LEFT_UP,self.__navClick) 
-		self.buttMain.Bind(wx.EVT_LEFT_UP,self.__onMainClick) 
+	
+		e = wx.EVT_BUTTON #was wx.EVT_LEFT_UP
+		self.buttPrev.Bind(e,self.__navClick) 
+		self.buttNext.Bind(e,self.__navClick) 
+		self.buttMain.Bind(e,self.__onMainClick) 
 	
 		ps.sub(toggle_main_button, self.ToggleMainButton) 
 
@@ -1016,12 +1018,13 @@ class TargetPogChooser(wx.Panel):
 		self.SetSizer(self.sizer)
 		
 		## Bind the events:
-		self.buttNoPog.Bind(wx.EVT_LEFT_UP, self.__multiClick)
-		self.buttNew.Bind(wx.EVT_LEFT_UP, self.__multiClick)
-		self.buttInstall.Bind(wx.EVT_LEFT_UP, self.__multiClick)
-		self.buttUninstall.Bind(wx.EVT_LEFT_UP, self.__multiClick)
-		self.buttDelete.Bind(wx.EVT_LEFT_UP, self.__multiClick)
-		self.buttPurge.Bind(wx.EVT_LEFT_UP, self.__multiClick)
+		e=wx.EVT_BUTTON # was wx.EVT_LEFT_UP
+		self.buttNoPog.Bind(e, self.__multiClick)
+		self.buttNew.Bind(e, self.__multiClick)
+		self.buttInstall.Bind(e, self.__multiClick)
+		self.buttUninstall.Bind(e, self.__multiClick)
+		self.buttDelete.Bind(e, self.__multiClick)
+		self.buttPurge.Bind(e, self.__multiClick)
 		
 		self.__toggleButtons()
 		

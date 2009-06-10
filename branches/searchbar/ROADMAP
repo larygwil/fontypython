@@ -16,6 +16,9 @@ Aim : Release 0.3.9
 character position. This has been asked for, but may not make it into 
 Fonty soon.
 
+5. Splash screen : Fonty takes too long to start sometimes. A cut-out (clipped
+to the shape of the logo perhaps) splash dialogue could be nice.
+
 
 NOTE 1
 In order to move ahead we need to stick to a single conceptual framework and 
