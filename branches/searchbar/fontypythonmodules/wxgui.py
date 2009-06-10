@@ -27,7 +27,6 @@ Ramen.
 """
 
 import sys, os, locale
-##import pathcontrol
 import strings
 import fpsys # Global objects
 import fontybugs
@@ -39,11 +38,6 @@ import fontyfilter
 import wx
 import wx.lib.scrolledpanel
 import wx.lib.statbmp
-
-## Will be used to stop deprecation errors from wx 2.6 to 2.8
-#import wxversion
-#wx28 = wxversion.checkInstalled('2.8')
-#del wxversion
 
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
@@ -1144,7 +1138,7 @@ class TargetPogChooser(wx.Panel):
 			wx.BeginBusyCursor()
 			for p in [ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]:
 				fpsys.instantiateTargetPog(p) # sets up global vars in fpsys
-				ps.pub(install_pog)           # that are used in here.
+				ps.pub(install_pog)		   # that are used in here.
 			wx.EndBusyCursor()
 
 		## Uninstall
@@ -1529,14 +1523,18 @@ class NoteBook(wx.Notebook):
 		ps.sub(select_no_view_pog, self.SelectNoView)
 		
 		self.tree = self.dircontrol.GetTreeCtrl()
-		#self.tree.Bind(wx.EVT_LEFT_DCLICK, self.__onDirCtrlDClick) #Old system - double click.
-		#self.tree.Bind(wx.EVT_LIST_ITEM_SELECTED, self.__onDirCtrlDClick) #Did not fire.
 		
-		## The trouble with this event is that a click on the little
-		## arrow (to open a branch) ALSO fires this, so we get a redraw
-		## of fonts everytime - which sucks big.
-		self.tree.Bind(wx.EVT_LEFT_UP, self.__onDirCtrlClick)
+		## Dud tree events, causing bad behaviour:
+		## EVT_LIST_ITEM_SELECTED
+		## EVT_LEFT_UP
 		
+		## Bind to another event solve the problem of EVT_LEFT_UP firing when the little
+		## open-branch/tree arrow was pressed.
+		## 5.3.2009 Michael Hoeft
+		self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick) 	
+
+		self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+
 		box2 = wx.BoxSizer(wx.HORIZONTAL) 
 		box2.Add(self.listctrl,1,wx.EXPAND) 
 		pan2.SetSizer(box2) 
@@ -1563,8 +1561,40 @@ class NoteBook(wx.Notebook):
 		self.listctrl.ClearLastIndex()
 		e.Skip()
 
+## ------- JUNE 2009 ------ BEGINS
 
+	def OnContextMenu(self, event):
+		# only do this part the first time so the events are only bound once
+		if not hasattr(self, "popupID1"):
+			self.popupID1 = wx.NewId()
+			self.popupID2 = wx.NewId()
 
+			self.Bind(wx.EVT_MENU, self.OnPopupOne, id=self.popupID1)
+			self.Bind(wx.EVT_MENU, self.OnPopupTwo, id=self.popupID2)
+
+		# make a menu
+		menu = wx.Menu()
+		# Show how to put an icon in the menu
+		#item = wx.MenuItem(menu, self.popupID1,"One")
+		#bmp = images.getSmilesBitmap()
+		#item.SetBitmap(bmp)
+		#menu.AppendItem(item)
+		# add some other items
+		menu.Append(self.popupID1, _("Add fonts in this folder to a Pog.") )
+		menu.Append(self.popupID2, _("Add fonts in this folder and sub-folders to a Pog.") )
+
+		# Popup the menu.  If an item is selected then its handler
+		# will be called before PopupMenu returns.
+		self.PopupMenu(menu)
+		menu.Destroy()
+
+	def OnPopupOne(self, event):
+		print "\n"
+
+	def OnPopupTwo(self, event):
+		print "Popup one\n"
+
+## -------------- JUNE 2009 ----- ENDS
 
 	def __onDirCtrlClick(self, e):
 		wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!

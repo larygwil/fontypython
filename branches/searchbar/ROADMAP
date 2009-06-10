@@ -1,0 +1,142 @@
+ROADMAP
+=======
+Aim : Release 0.3.9
+1. Recursive switch: Folder vs Folder(recursive). 
+ Not sure where to put this. I picture it as a global control toggling the 
+ recursive behaviour on any selected Folder. Perhaps a tick-box above the
+ dir control.
+ 1.1 Also have a -R flag for the CLI.
+
+2. A middle click in the FontView opens the settings dialog.
+
+3. Search improvements: incorporate the field + PANOSE data in a simple
+"google" search interface.
+
+4. A font inspector - open a dialogue showing all the glyphs at each
+character position. This has been asked for, but may not make it into 
+Fonty soon.
+
+
+NOTE 1
+In order to move ahead we need to stick to a single conceptual framework and 
+I think the one to use is:
+  "Make and show font items and fitmaps *only* in pages of X items."
+This is a conservative approach. It assumes few resources are available to
+run Fonty. It tries to prioritize speed of start-up and lightness of footprint.
+
+
+wxgui Bugs
+==========
+Bug 1
+> #2 If you want change to the "Pog"-page in the left source notebook after
+> a folder was selected in the "Folder"-dircontrol, two clicks are
+> needed. The first only takes the focus from the dircontrol, the second
+> selects the "Pog"-page.
+> Replace the standard wx.Notebook with wx.aui.AuiNotebook helps.
+>> Yes, AuiNotebook really fix this bug. But, I see, this is problematic,
+>> AUI has an other look, that doesn't fits to the rest. I think there is
+>> a way to fix this bug with the old notebook, deep in the code there
+>> must lack an event.Skip(). One function has to be overwritten, but
+>> don't ask me which and where.
+Best fix : Keep old notebook control and have it function properly. 
+Next best: Replace with aui notebook.
+
+Bug 2
+> #4 Changing the page in the notebook ("Folder" <> "Pog") updates the
+> fontview directly (not in two steps: > click the page > click the
+> pog/folder).
+> We Bound the "Folder" dircontrol to EVT_TREE_SEL_CHANGED instead of
+> EVT_LEFT_UP.
+> This Bug and EVT_TREE_SEL_CHANGED are connected in a subtle way.
+> EVT_TREE_SEL_CHANGED is fine, but imagine following scenario. 
+> The user selects a folder "A", than he
+> opens the pog panel and choose a pog "B". He wants to go back to the
+> folder "A" he selected first. So he opens the folder panel again and
+> click on folder "A", and NOTHING happens. Why that? The selection is
+> not changed, no EVT_TREE_SEL_CHANGED is emitted. That's the reason why
+> I made the change #4 to avoid this. The only way for the user is to
+> select an other folder "C" and than folder "A" a third time. Everybody
+> must say this is crazy! The bindings must be very clever to reach the
+> behavior we wish (no update on every click, but update on selecting a
+> selected folder).
+Best fix : Proper behaviour *without* changing the font-source (and redrawing
+the fonts) when Folder <--> Pog tabs are clicked. One click on a folder
+(even one that was selected last time) should change source view.
+Next best : Force the font source to flip with the notebook tabs. 
+** Please see Note 1 for related info.
+
+wxgui Tasks
+===========
+A) Search
+We need a panel that appears above the controls and below (or over, like a 
+div on a web page) the font list (in the middle column). It should (ideally)
+slide (animate) up and down. 
+However it appears, the idea is that it will be extra room for help with searching.
+It may also house the PANOSE wizard. (see later in this doc.)
+
+Within the panel - draw the search fields (see Search Module) in some way. 
+If any one is clicked on then it should appear (at the cursor) in the search bar.
+
+We need a search bar that:
+ * Keeps history.
+ * Offers a way to move fwd/back in history (i.e. can access history)
+ * Is clearable.
+ * Has a "Search" button.
+ * Has an "Assist" button. (Opens the panel above)
+
+B) Pager
+If possible, replace the combo-box for paging with a more web-like 
+pager control: << < 1 | 2 | 3 | 4 > >> 
+
+Keep the Next and Previous buttons and bind keystrokes to them.
+
+Search Module
+=============
+A) Parser
+1. Ensure that we have a search "language" and that it parses the search string
+into the proper tokens. Decide on the names of the fields for searching. Example Copyright:
+and PANOSE:
+* I would suggest we make the field names case insensitive!
+
+2. Ensure that this works with i18n/unicode. This is going to be difficult. At the minimum we 
+need to test on English/German but French and Italian would be good too.
+
+3. Ensure that if we cannot do 2, that the search does not crash or block the use of
+Fonty. We should still be able to "search" on simple fields like "bold" and "Italic" and, 
+most importantly, a blank search should mean "All".
+
+B) Search
+1. Given a list fields:values and a list of fontitems, go through each and supply those that 
+match the search criteria.
+The search should be "loose" i.e. not too strict. Rather include than exclude.
+The search terms are automatically "AND". I vote there is no "OR" and no "NOT".
+
+2. Make sure this works with i18n and unicode... At minimum there should be no crashes, no
+decode errors. The app should ignore and continue on any problems.
+
+Mad Ideas
+=========
+PANOSE WIZARD
+My understanding of Panose is very basic. I could not find proper info online. I read
+what I could. 
+
+Given that Panose is some kind of encoding of a Font's attributes and that
+some of those are its appearance -- it should be possible to construct a Panose number
+from a series of visuals. For example:
+(picture of a serif letter)[radio button]
+(picture of a sans letter)[radio button]
+Next>>
+(picture of a western letter)[radio button]
+(picture of a non-western letter)[radio button]
+Next>>
+{Latin fork in road}
+(picture of a curved serif)[radio button]
+(picture of a block serif)[radio button]
+Next>>
+And so on... until the entire set of Panose choices has been run and we can present
+a Panose number for them.
+
+Could this be done? If so, it should happen in the panel above the search bar.
+It should also have a history and a means to enter the wizard at arbitrary points of the 
+chain. It should be obvious, easy and quick.
+
