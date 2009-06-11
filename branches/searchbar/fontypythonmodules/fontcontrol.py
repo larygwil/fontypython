@@ -462,14 +462,14 @@ class EmptyView(BasicFontList):
 class Folder(BasicFontList):
 	"""
 	Represents an entire Folder (from a path given by user clicking on the
-	GenericDirCtrl or from a commanline string.)
+	GenericDirCtrl or from a command line string.)
 	
 	This is called from fpsys.instantiateViewFolder
 	
 	Contains a list of various FontItem Objects.
-	Supply the path
+	Supply the start path and an optional recurse T/F param.
 	"""
-	def __init__(self, path):
+	def __init__(self, path, recurse=False):
 		BasicFontList.__init__(self)
 		#print "path:",[path]
 		
@@ -500,49 +500,60 @@ class Folder(BasicFontList):
 		## 'UTF-8'
 		## This one returns the ENCODING (byte string to unicode) needed to
 		## convert filenames from the O/S *to* unicode.
-		
-		listOfFilenamesOnly = []
+			
 		## If self.path is unicode, return will be list of unicode objects (with some slip-ups...)
 		## self.path comes from the GenericDirCtrl, which is part of a Unicode wxPython build
 		## therefore it always emits Unicode objects. (Or it comes from cli, which also converted)
-		
-		## Note: If self.path DOES NOT EXIST then this raises and OSError
-		##	   This can happen when we use the --all cli argument (see cli.py)
-		listOfFilenamesOnly = os.listdir (  self.path  ) # Get the unicode list
-		
-		## I could use this:
-		## sourceList = [ os.path.join( self.path, f ) for f in listOfFilenamesOnly ]
-		## But I won't know (when there's an error) which element of the listOfFilenamesOnly was
-		## the culprit, so I'm gonna loop this one.
-		sourceList = []
-		for f in listOfFilenamesOnly:
-			try:
-				paf = os.path.join( self.path, f )
-				sourceList.append( paf )
-			except:
-				## Okay, 'f' was not able to join to self.path
-				## This is because 'f' is a byte string, not a unicode
-				## That means that os.listdir couldn't figure it out...
-				## I will revert to byte strings and try again:
-				#print "Could not join to path name:"
-				#print [self.path], " + ", [f]
+
+
+		## Added June 2009
+		def safeJoin(apath,filelist):
+			## I could use this:
+			## sourceList = [ os.path.join( apath, f ) for f in listOfFilenamesOnly ]
+			## But I won't know (when there's an error) which element of the listOfFilenamesOnly was
+			## the culprit, so I'm gonna loop this one.
+			returnList = []
+			for f in filelist:
 				try:
-					paf = os.path.join( self.path.encode( locale.getpreferredencoding()), f )
-					sourceList.append( paf )
+					paf = os.path.join( apath, f )
+					if os.path.isfile(paf):
+						returnList.append( paf )
 				except:
-					## No, could not get a hold of that file.
-					## In theory, this should never happen.
-					print "CORNER CASE in Folder.__init__:", [self.path], " + ", [f]
-					fpsys.logBadStrings(f) # I'm keeping a list of bad names.
+					## Okay, 'f' was not able to join to apath
+					## This is because 'f' is a byte string, not a unicode
+					## That means that os.listdir couldn't figure it out...
+					## I will revert to byte strings and try again:
+					try:
+						paf = os.path.join( apath.encode( locale.getpreferredencoding()), f )
+						if os.path.isfile( paf ):
+							returnList.append( paf )
+					except:
+						## No, could not get a hold of that file.
+						## In theory, this should never happen.
+						print "CORNER CASE in Folder.__init__:", [apath], " + ", [f]
+						fpsys.logBadStrings(f) # I'm keeping a list of bad names.
+			return returnList
+
+		## All recursive changes June 2009
+		if not recurse:
+			## Note: If self.path DOES NOT EXIST then this raises and OSError
+			##	   This can happen when we use the --all cli argument (see cli.py)
+			listOfFilenamesOnly = os.listdir (  self.path  ) # Get the unicode list
+		
+			sourceList = safeJoin(self.path, listOfFilenamesOnly )
+		else:
+			# Recursive code
+			sourceList=[]
+			for root, dirs, files in os.walk( self.path ):
+				sourceList.extend( safeJoin( root, files ) )
 
 		## Now employ the generator magic:
 		## Makes FontItem objects for each paf in the list.
 		for fi in itemGenerator( self, sourceList ):
-			#print "fi:",[fi]
 			self.append(fi)
 		
 		if len(self) == 0:
-			print "EMPTY FOLDER"
+			#print "EMPTY FOLDER"
 			raise fontybugs.FolderHasNoFonts(self.path)
 
 	def __str__(self):

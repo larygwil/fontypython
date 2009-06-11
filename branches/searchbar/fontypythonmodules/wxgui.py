@@ -350,8 +350,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 
-##	def __drawBadFont( self, block, fadecol, fcol, bcol ):
-##		"""Factored out on 22 Jan 2008 because badfonts suddenly happen in more than one place. """
 
 
 	def __fadeEffect( self, memDc, liney, width, col ):
@@ -444,17 +442,17 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		## Redraw event
 		self.Bind(wx.EVT_PAINT,  self.__onPaint) 
 		
-##		## Tried to get double or right click, or anything to fire.
-##		## No go.
-##		## EVT_RIGHT_UP (nope)
-##		evt = wx.EVT_COMMAND_LEFT_DCLICK
-##		self.Bind( evt, self.__onDoubleClick )
-##	def __onDoubleClick( self, evt ):
-##		"""
-##		Not working. I wanted to show the settings dialog.
-##		"""
-##		print "huh???"
-##		ps.pub( menu_settings )
+		## Tried to get double or right click, or anything to fire.
+		## No go.
+		## EVT_RIGHT_UP (nope)
+		#evt = wx.EVT_COMMAND_LEFT_DCLICK
+		#self.Bind( evt, self.__onDoubleClick )
+		#def __onDoubleClick( self, evt ):
+		#"""
+		#Not working. I wanted to show the settings dialog.
+		#"""
+		#print "huh???"
+		#ps.pub( menu_settings )
 
 	def __onPaint(self, event):
 		"""
@@ -716,7 +714,7 @@ class FontViewPanel(wx.Panel):
 		## Is there anything there to view?
 		if len(fpsys.state.viewobject) > 0:
 
-## JUNE 2009 : Changes made
+		## JUNE 2009 : Changes made
 
 			## If the filter string changed from last time, signal so.
 			filter_changed = False
@@ -841,8 +839,6 @@ class FontViewPanel(wx.Panel):
 	
 		Patt = Vpatt + Tpatt # Patt = Pattern
 		
-##		print "Vpatt", Vpatt
-##		print "Tpatt", Tpatt
 
 		lab = ""
 		status = ""
@@ -1179,10 +1175,6 @@ class TargetPogChooser(wx.Panel):
 		except fontybugs.PogInvalid, e:
 			ps.pub(show_error_and_abort, unicode( e ))
 			return
-##		## I removed this Dec 2007 :: Not sure why it was there ...
-##		if fpsys.state.samepogs: #forbid same pogs selection
-##			ps.pub(print_to_status_bar, "Pog already selected in the View")
-##			ps.pub(select_no_view_pog)
 
 		ps.pub(update_font_view)
 		self.__toggleButtons()
@@ -1287,7 +1279,7 @@ class PogChooser(wx.ListCtrl) :
 		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.__onSelect) 
 		
 		## This one is a double click event
-##		self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.__onActivate )
+		## self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.__onActivate )
 		
 		#self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
 		
@@ -1364,8 +1356,6 @@ class PogChooser(wx.ListCtrl) :
 				CLONE = ti.GetImage()# gets the image index, not an image bitmap.
 				self.__VIEW.SetItemImage(x, CLONE)
 				
-##	def __onActivate( self,e ):
-##		print "I have been activated", self.GetItemText(e.m_itemIndex)
 		
 	def __del__(self) :
 		del self.items
@@ -1481,7 +1471,7 @@ class DirControl(wx.GenericDirCtrl) :
 			else:
 				startdir = os.environ['HOME']
 		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY)
-##		self.ShowHidden( True )
+		#self.ShowHidden( True )
 		
 		## Weird step:
 		self.tree = self.GetTreeCtrl() 
@@ -1501,12 +1491,16 @@ class NoteBook(wx.Notebook):
 		self.imlist = wx.ImageList(16, 16)
 		
 		pan1 = wx.Panel(self)
+
+		## THE DIR CONTROL
 		self.dircontrol = DirControl(pan1) 
-		
+		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))#, (65, 40), (150, 20), wx.NO_BORDER)
+		self.recurseFolders.SetValue( fpsys.config.recurseFolders )
+		self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
 
-
-		box = wx.BoxSizer(wx.HORIZONTAL) 
-		box.Add(self.dircontrol,1, wx.EXPAND) 
+		box = wx.BoxSizer(wx.VERTICAL) 
+		box.Add( self.recurseFolders,0,wx.EXPAND )
+		box.Add( self.dircontrol,1, wx.EXPAND ) 
 		pan1.SetSizer(box) 
 		box.Layout() 
 
@@ -1560,11 +1554,18 @@ class NoteBook(wx.Notebook):
 	
 		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.__onPageChanged) # Bind page changed event
 		
+
 	def __onPageChanged(self, e):
 		self.listctrl.ClearLastIndex()
-		e.Skip()
+		if self.GetSelection() == 0: # The dircontrol
+			## I want to force the dir control to clear the selection.
+			## Reason: When you return to this control (from Pog page), the selection
+			## from last visit is still there. Clicking on it again does NOT UPDATE
+			## the font view. This is wierd. So, clearing the selection makes this moot.
+			self.tree.UnselectAll() # Found this method in the wxpython book.
+		#e.Skip()
 
-## ------- JUNE 2009 ------ BEGINS
+	## ------- JUNE 2009 ------ BEGINS
 
 	def OnContextMenu(self, event):
 		# only do this part the first time so the events are only bound once
@@ -1597,13 +1598,18 @@ class NoteBook(wx.Notebook):
 	def OnPopupTwo(self, event):
 		print "Popup one\n"
 
-## -------------- JUNE 2009 ----- ENDS
+	## -------------- JUNE 2009 ----- ENDS
+
+	#def __recurseCheck(self,e):
+		## The check box for recursion was clicked.
+		## I want to refresh the current folder view.
+	#	self.__onDirCtrlClick(None) ## Works! Sorted my son. 
 
 	def __onDirCtrlClick(self, e):
 		wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
 		p = self.dircontrol.GetPath()
 		try:
-			fpsys.instantiateViewFolder(p)
+			fpsys.instantiateViewFolder(p,self.recurseFolders.GetValue() )
 			fpsys.config.lastdir = p
 		except fontybugs.FolderHasNoFonts, e:
 			pass # update_font_view handles this with a std message.
@@ -1612,7 +1618,8 @@ class NoteBook(wx.Notebook):
 		ps.pub(update_font_view)
 		
 		wx.EndBusyCursor()
-		
+		wx.CallAfter( self.SetFocus )
+
 	def OnViewPogClick(self, args):
 		"""
 		args is like this : (u'pogname', -223, False)
@@ -1981,10 +1988,12 @@ class MainFrame(wx.Frame):
 		See the end of start.py where it's actually saved.
 		"""
 		fpsys.config.pos = self.GetPositionTuple() 
-		## Dec 2007 - I was using the wring func and the
+		## Dec 2007 - I was using the wrong func and the
 		## main window kept getting smaller!
 		fpsys.config.size = self.GetSizeTuple()
 		fpsys.config.leftSash, fpsys.config.rightSash = self.GetSashesPos()
+		##June 2009 - fetch and record the value of the recurse folders checkbox.
+		fpsys.config.recurseFolders = app.GetTopWindow().nb.recurseFolders.GetValue()
 		self.Destroy() 
    
 	def __menuSettings(self, e):

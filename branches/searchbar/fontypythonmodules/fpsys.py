@@ -229,7 +229,9 @@ class Configure:
 		## Added Dec 2007
 		self.leftSash = 128
 		self.rightSash = 128
-		
+		## Added June 2009
+		self.recurseFolders = False 
+
 		self.__setData()
 		
 		if os.path.exists(iPC.appConf()):
@@ -258,6 +260,7 @@ class Configure:
 			self.lastdir = self.__data['lastdir']
 			self.leftSash = self.__data['leftSash']
 			self.rightSash = self.__data['rightSash']
+			self.recurseFolders = self.__data['recurseFolders']
 			
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
@@ -281,7 +284,8 @@ class Configure:
 								"max" : self.max,
 								"lastdir" : self.lastdir,
 								"leftSash" : self.leftSash,
-								"rightSash" : self.rightSash
+								"rightSash" : self.rightSash,
+								"recurseFolders": self.recurseFolders
 								}
 	def __write(self) :
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
@@ -303,7 +307,7 @@ class Configure:
 config = Configure()
 
 
-def instantiateViewFolder( foldername ):
+def instantiateViewFolder( foldername, recurse=False ):
 	"""
 	Creates a Folder object and fills it with FontItem objects
 	according to what's in the folder's path.
@@ -314,7 +318,7 @@ def instantiateViewFolder( foldername ):
 	## Default assumptions in case of raised error.
 	state.viewobject = fontcontrol.EmptyView()
 	state.viewpattern = "E" 
-	ifolder = fontcontrol.Folder(foldername) #raises : fontybugs.FolderHasNoFonts : BENIGN ERROR.
+	ifolder = fontcontrol.Folder(foldername, recurse) #raises : fontybugs.FolderHasNoFonts : BENIGN ERROR.
 	## Only continues if there is no problem.
 	state.viewobject = ifolder
 	## Because we have a new view object, we must reset the last filteredViewObject

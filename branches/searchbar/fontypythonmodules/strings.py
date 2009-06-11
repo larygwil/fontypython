@@ -78,7 +78,12 @@ options=_("""Options:
 				Puts all fonts in this folder into the pog.
 				If the pog already exists, it will add
 				only *new* fonts, this means fonts are not
-				doubled.
+				repeated in that pog.
+  -A folder pog
+  --all-recurse folder pog
+				Puts all fonts in this folder and *all*
+				sub-folders into the pog. Rest same as -a.
+
 				""")
 
 use = _("""%(c)s [OPTIONS] [VIEW] [TARGET]
