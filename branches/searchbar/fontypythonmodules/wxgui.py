@@ -1424,7 +1424,9 @@ class PogChooser(wx.ListCtrl) :
 		del( PogChooser.__poglistCopy[id] ) # cull from our private store too.
 
 	def ClearSelection(self):
-		self.Select(self.indexselected, False)
+		# removes all selections, even for multi-selections
+		for x in range(self.GetSelectedItemCount()):
+			self.Select(self.GetFirstSelected(), False)
 		self.lastindexselected = -1
 		
 	def ChangeIcon(self, args):
