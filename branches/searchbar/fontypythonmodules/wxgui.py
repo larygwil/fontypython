@@ -84,6 +84,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				
 		## Very cool event, gives us life!
 		self.Bind(wx.EVT_LEFT_UP,self.__onClick) 
+		self.Bind(wx.EVT_MIDDLE_UP, self.__onMiddleClick)	
 		
 		## Redraw event
 		self.Bind(wx.EVT_PAINT,  self.__onPaint) 
@@ -100,6 +101,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			elif fpsys.state.action == "APPEND":
 				if not self.fitem.inactive:
 					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+
+	def __onMiddleClick(self, event):
+		ps.pub( menu_settings )
 		
 	def prepareBitmap( self ):
 		"""
@@ -545,6 +549,74 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		self.SetAutoLayout(True) 
 		self.SetupScrolling(rate_x=5, rate_y=4) 
 
+
+class SearchAssistant(wx.CollapsiblePane):
+	def __init__(self, parent):
+		self.label1=_("Click for Search Assistant")
+		self.label2=_("Close Search Assistant")
+		wx.CollapsiblePane.__init__(self,parent, label=self.label1,style=wx.CP_DEFAULT_STYLE)#|wx.CP_NO_TLW_RESIZE)
+		self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged)
+		self.MakePaneContent(self.GetPane())
+		
+	def OnToggle(self, evt):
+		self.Collapse(self.IsExpanded())
+		self.OnPaneChanged()
+		
+	def OnPaneChanged(self, evt=None):
+		#if evt:
+		   # self.log.write('wx.EVT_COLLAPSIBLEPANE_CHANGED: %s' % evt.Collapsed)
+
+		# redo the layout
+		self.GetParent().Layout()
+
+		# and also change the labels
+		if self.IsExpanded():
+			self.SetLabel(self.label2)
+		else:
+			self.SetLabel(self.label1)
+		
+
+	def MakePaneContent(self, pane):
+		'''Just make a few controls to put on the collapsible pane'''
+		nameLbl = wx.StaticText(pane, -1, "Name:")
+		name = wx.TextCtrl(pane, -1, "");
+
+		addrLbl = wx.StaticText(pane, -1, "Address:")
+		addr1 = wx.TextCtrl(pane, -1, "");
+		addr2 = wx.TextCtrl(pane, -1, "");
+
+		cstLbl = wx.StaticText(pane, -1, "City, State, Zip:")
+		city  = wx.TextCtrl(pane, -1, "", size=(150,-1));
+		state = wx.TextCtrl(pane, -1, "", size=(50,-1));
+		zip   = wx.TextCtrl(pane, -1, "", size=(70,-1));
+		
+		addrSizer = wx.FlexGridSizer(cols=2, hgap=5, vgap=5)
+		addrSizer.AddGrowableCol(1)
+		addrSizer.Add(nameLbl, 0, 
+				wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
+		addrSizer.Add(name, 0, wx.EXPAND)
+		addrSizer.Add(addrLbl, 0,
+				wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
+		addrSizer.Add(addr1, 0, wx.EXPAND)
+		addrSizer.Add((5,5)) 
+		addrSizer.Add(addr2, 0, wx.EXPAND)
+
+		addrSizer.Add(cstLbl, 0,
+				wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
+
+		cstSizer = wx.BoxSizer(wx.HORIZONTAL)
+		cstSizer.Add(city, 1)
+		cstSizer.Add(state, 0, wx.LEFT|wx.RIGHT, 5)
+		cstSizer.Add(zip)
+		addrSizer.Add(cstSizer, 0, wx.EXPAND)
+
+		border = wx.BoxSizer()
+		border.Add(addrSizer, 1, wx.EXPAND|wx.ALL, 5)
+		pane.SetSizer(border)
+
+
+
+
 class FontViewPanel(wx.Panel):
 	"""
 	Standalone visual control to select TTF fonts.
@@ -596,6 +668,9 @@ class FontViewPanel(wx.Panel):
 		#self.buttSelectAll.Bind(wx.EVT_LEFT_UP,self.__selectAllFonts)		
 		self.buttSelectAll.Bind(wx.EVT_BUTTON,self.__selectAllFonts)		
 
+
+		self.SA=SearchAssistant(self)
+
 		## put them into the sizer
 		sizerOtherControls.Add(self.textFilter, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT| wx.ALIGN_CENTER_VERTICAL ) # Clear button
@@ -629,6 +704,10 @@ class FontViewPanel(wx.Panel):
 		self.sizerFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 5 )
 		## The font view
 		self.sizerFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
+
+		## The Search Assistant
+		self.sizerFontView.Add( self.SA, 0, wx.EXPAND)
+
 		## Choice and Filter
 		self.sizerFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
 		## The buttons   
@@ -1602,11 +1681,6 @@ class NoteBook(wx.Notebook):
 
 	## -------------- JUNE 2009 ----- ENDS
 
-	#def __recurseCheck(self,e):
-		## The check box for recursion was clicked.
-		## I want to refresh the current folder view.
-	#	self.__onDirCtrlClick(None) ## Works! Sorted my son. 
-
 	def __onDirCtrlClick(self, e):
 		wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
 		p = self.dircontrol.GetPath()
@@ -1650,6 +1724,7 @@ class NoteBook(wx.Notebook):
 	
 	def AddItem(self, pogname):
 		self.listctrl.AddItem(pogname)
+
 	def RemoveItem(self, pogname):
 		self.listctrl.RemoveItem(pogname)
 		
@@ -1660,7 +1735,9 @@ class NoteBook(wx.Notebook):
 		self.listctrl.ClearSelection()
 		fpsys.SetViewPogToEmpty()
 		wx.EndBusyCursor()
-		
+
+
+
 class StatusBar(wx.StatusBar):
 	"""
 	The status bar

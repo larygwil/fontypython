@@ -6,8 +6,10 @@ Aim : Release 0.3.9
  recursive behaviour on any selected Folder. Perhaps a tick-box above the
  dir control.
  1.1 Also have a -R flag for the CLI.
+[DONE: June 2009]
 
 2. A middle click in the FontView opens the settings dialog.
+[DONE: June 2009]
 
 3. Search improvements: incorporate the field + PANOSE data in a simple
 "google" search interface.
