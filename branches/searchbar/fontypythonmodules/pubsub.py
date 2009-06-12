@@ -28,10 +28,11 @@ install_pog = 90
 uninstall_pog = 100
 main_button_click = 110
 toggle_main_button = 120
-pog_selected = 130
+target_pog_has_been_selected = 130
+source_pog_has_been_selected = 135
 change_pog_icon = 140
-toggle_buttons = 150
-select_no_target_pog = 160
+toggle_targetpog_buttons = 150
+clear_targetpog_selection = 160
 select_no_view_pog = 170
 
 get_font_view_width = 180
@@ -67,7 +68,7 @@ class CPubsub:
 		self.__key += 1
 		
 	## Go thru all the topics, find any that match and call their functions, passing any args too.
-	## This means that one topic can have many handlers. e.g. "pog_selected" goes to two handlers.
+	## This means that one topic can have many handlers. e.g. "target_pog_has_been_selected" goes to two handlers.
 	def pub(self, topic, *args): #PUBLISH (was shout)
 		global globRetVal
 		#m = CMessage(topic, messagelist)
