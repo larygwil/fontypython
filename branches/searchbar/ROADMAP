@@ -70,6 +70,11 @@ the fonts) when Folder <--> Pog tabs are clicked. One click on a folder
 Next best : Force the font source to flip with the notebook tabs. 
 ** Please see Note 1 for related info.
 
+Bug 3
+Font view display/draw:
+* leaves gaps
+* leaves a 'ghost' infofontitem.
+
 wxgui Tasks
 ===========
 A) Search
@@ -94,6 +99,17 @@ If possible, replace the combo-box for paging with a more web-like
 pager control: << < 1 | 2 | 3 | 4 > >> 
 
 Keep the Next and Previous buttons and bind keystrokes to them.
+
+C) Selection menu
+Select All, Clear all selected
+
+D) Font view selection
+Ctrl+a for select-all (visible in page)
+shift+click for range selection
+
+E) Remove the Select All button
+
+D) Improve the errorText() messages. Use Michael's code.
 
 Search Module
 =============
