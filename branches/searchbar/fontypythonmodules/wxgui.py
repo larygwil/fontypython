@@ -770,18 +770,30 @@ class FontViewPanel(wx.Panel):
 			current_page = self.pageindex - 1
 			num_in_one_page = fpsys.config.numinpage
 			total_num_fonts = len(fpsys.state.filteredViewObject)
+
+			# I miss the right words to explain this step, therefore an example:
+			# 	23 / 10 = 2
+			# 	23 % 10 = 3 > modulo > bool(3) = True = 1
+			# 	-----------------------------------------
+			# 	2 + 1 = 3 >  3 pages
+			#
+			#	40 / 10 = 4
+			# 	40 % 10 = 0 > modulo > bool(0) = False = 0
+			#	------------------------------------------
+			# 	4 + 0 = 4 >	4 pages
+			self.total_number_of_pages = (total_num_fonts / num_in_one_page) + bool(total_num_fonts % num_in_one_page)
 			#print "total_num_fonts=", total_num_fonts
-			gross = total_num_fonts / float(num_in_one_page)
-			
-			if gross <= 1:
-				## There are less than num_in_one_page fonts to be viewed at all.
-				self.total_number_of_pages = 1
-			else:
-				## Okay, we have at least 1 page, perhaps more.
-				whole_number_of_pages = int(gross)
-				remainder = whole_number_of_pages % num_in_one_page
-				if remainder > 0: whole_number_of_pages += 1
-				self.total_number_of_pages = whole_number_of_pages
+####		gross = total_num_fonts / float(num_in_one_page)
+####		
+####		if gross <= 1:
+####			## There are less than num_in_one_page fonts to be viewed at all.
+####			self.total_number_of_pages = 1
+####		else:
+####			## Okay, we have at least 1 page, perhaps more.
+####			whole_number_of_pages = int(gross)
+####			remainder = whole_number_of_pages % num_in_one_page
+####			if remainder > 0: whole_number_of_pages += 1
+####			self.total_number_of_pages = whole_number_of_pages
 
 			start = current_page * num_in_one_page #leaf thru the pages to the one we are on now.
 			fin = start + num_in_one_page
