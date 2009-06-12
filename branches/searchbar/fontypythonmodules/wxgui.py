@@ -660,13 +660,6 @@ class FontViewPanel(wx.Panel):
 		## The pager pulldown
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
 		self.choicePage.Bind(wx.EVT_CHOICE, self.__onPagechoiceClick) #Bind choice event
-		
-		## The Select All button
-		self.buttSelectAllToggle = False # keep a toggle var -- False means button is "up", True means "pressed down"
-		self.buttSelectAll = wx.Button(self, label = _('Select ALL ') )
-		self.buttSelectAll.Enable(False)
-		#self.buttSelectAll.Bind(wx.EVT_LEFT_UP,self.__selectAllFonts)		
-		self.buttSelectAll.Bind(wx.EVT_BUTTON,self.__selectAllFonts)		
 
 
 		self.SA=SearchAssistant(self)
@@ -676,7 +669,6 @@ class FontViewPanel(wx.Panel):
 		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT| wx.ALIGN_CENTER_VERTICAL ) # Clear button
 		sizerOtherControls.Add(self.inputFilter, 1, wx.ALIGN_LEFT | wx.EXPAND)
 		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
-		sizerOtherControls.Add(self.buttSelectAll, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
 		sizerOtherControls.Add(self.choicePage, 0 ,wx.EXPAND | wx.ALIGN_RIGHT)  #Added it to the sizer
 		
@@ -723,37 +715,7 @@ class FontViewPanel(wx.Panel):
 		ps.sub(toggle_main_button, self.ToggleMainButton) 
 
 
-	def __selectAllFonts(self,e):
-		"""
-		May 2009
-		Based on code by another contributer (sorry, all names lost in recent email crash).
-		I decided to go with a more natural "Select All" button than the previous code
-		which took an "Add all fonts in this folder" approach. 
-		My version means it works for Pogs as well as Folders.
-		"""
-		self.buttSelectAllToggle = not(self.buttSelectAllToggle)
 
-		if self.buttSelectAllToggle: 
-		## True is pressed down - i.e. select all please
-			fpsys.state.numticks=0
-			vo=fpsys.state.filteredViewObject # We want to select what is FILTERED
-			## See __filterAndPageThenCallCreateFitmaps
-			for fi in vo:
-				if not fi.inactive:
-					fi.ticked=True
-					fpsys.state.numticks += 1
-
-			self.buttSelectAll.SetLabel( _("Select NONE") )
-		else:
-		## It was down and must go back UP - select None please
-			fpsys.state.numticks=0
-			vo=fpsys.state.viewobject # We *REALLY* mean select NONE. So ignore filter.
-			for fi in vo:
-				if not fi.inactive:
-					fi.ticked=False
-			self.buttSelectAll.SetLabel( _("Select ALL ") )
-		## Now update the view
-		ps.pub( update_font_view )
 
 
 	def OnClearClick( self, event ):
@@ -922,6 +884,8 @@ class FontViewPanel(wx.Panel):
 		lab = ""
 		status = ""
 		
+		## June 2009: A default value for this:
+		self.TICKMAP = self.TICK
 
 		## E == Empty View - no fonts in chosen Source.
 		## N == Empty Target - no fonts.
@@ -1013,12 +977,6 @@ class FontViewPanel(wx.Panel):
 		if status is not "":
 			ps.pub(print_to_status_bar, status)
 		self.ToggleMainButton()
-
-		## Toggle the select all button
-		if fpsys.state.cantick:
-			self.buttSelectAll.Enable( True )
-		else:
-			self.buttSelectAll.Enable( False )
 
 		fpsys.markInactive()
 		self.__filterAndPageThenCallCreateFitmaps()
@@ -1555,7 +1513,7 @@ class DirControl(wx.GenericDirCtrl) :
 		#self.ShowHidden( True )
 		
 		## Weird step:
-		self.tree = self.GetTreeCtrl() 
+		#self.tree = self.GetTreeCtrl() 
 		## NOTE: The click event is bound in the Notebook.
 		
 		#self.tree.SetCursor(wx.StockCursor(wx.CURSOR_HAND)) #dec 2007 : removed cos it sucked.
@@ -1776,7 +1734,7 @@ class MainFrame(wx.Frame):
 		## Prepare the menu bar
 		self.menuBar = wx.MenuBar()
 
-		## 1st menu from left
+		## FILE MENU
 		menu1 = wx.Menu()
 		menu1.Append(101, _("&Settings\tCtrl+S"), _("Change settings"))
 		menu1.AppendSeparator()
@@ -1787,7 +1745,16 @@ class MainFrame(wx.Frame):
 		## Add menu to the menu bar
 		self.menuBar.Append(menu1, _("&File"))
 
-		## 2nd menu from left
+
+		## SELECT MENU: June 2009
+		menu1 = wx.Menu()
+		menu1.Append( 301, _("&Select ALL the fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
+		menu1.Append( 302, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
+		## Add menu to the menu bar
+		self.menuBar.Append(menu1, _("&Selection"))
+
+
+		## HELP MENU
 		menu2 = wx.Menu() 
 		menu2.Append(201, _("H&elp\tF1"))
 		menu2.Append(202, _("&About"))
@@ -1803,13 +1770,17 @@ class MainFrame(wx.Frame):
 		
 		## The X close window button.
 		self.Bind( wx.EVT_CLOSE, self.__onHandleESC )
-		
+	
+		## Bind events for the menu items
 		self.Bind(wx.EVT_MENU, self.__onHandleESC, self.exit)
 		self.Bind(wx.EVT_MENU, self.__menuSettings, id = 101)
 		self.Bind(wx.EVT_MENU, self.__menuCheckFonts, id = 102 )
 		self.Bind(wx.EVT_MENU, self.__menuAbout, id = 202)
 		self.Bind(wx.EVT_MENU, self.__menuHelp, id = 201)
-
+		# June 2009
+		self.Bind(wx.EVT_MENU, self.__menuSelectionALL, id=301)
+		self.Bind(wx.EVT_MENU, self.__menuSelectionNONE, id=302)
+		
 		## Create a splitter 
 		self.splitter = Splitter(self) 
 	
@@ -2118,7 +2089,29 @@ class MainFrame(wx.Frame):
 		dlg = dialogues.DialogCheckFonts( self, startdir )
 		val = dlg.ShowModal()
 		dlg.Destroy()
-		
+
+	def __menuSelectionALL(self,e):
+		fpsys.state.numticks=0
+		vo=fpsys.state.filteredViewObject # We want to select what is FILTERED
+		for fi in vo:
+			if not fi.inactive:
+				fi.ticked=True
+				fpsys.state.numticks += 1
+		## Now update the view
+		ps.pub( update_font_view )	
+
+	def __menuSelectionNONE(self,e):
+		fpsys.state.numticks=0
+		vo=fpsys.state.viewobject # We *REALLY* mean select NONE. So ignore filter.
+		for fi in vo:
+			if not fi.inactive:
+				fi.ticked=False
+		## Now update the view
+		ps.pub( update_font_view )	
+
+
+
+
 ## Start the main frame and then show it.
 class App(wx.App) :
 	def OnInit(self) :
