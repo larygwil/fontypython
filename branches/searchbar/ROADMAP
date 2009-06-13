@@ -46,7 +46,7 @@ Bug 1
 Best fix : Keep old notebook control and have it function properly. 
 Next best: Replace with aui notebook.
 
-Bug 2
+Bug 2: FIXED but it's a little hacky.
 > #4 Changing the page in the notebook ("Folder" <> "Pog") updates the
 > fontview directly (not in two steps: > click the page > click the
 > pog/folder).
@@ -74,6 +74,8 @@ Bug 3
 Font view display/draw:
 * leaves gaps
 * leaves a 'ghost' infofontitem.
+* There are mystery problems. Items not drawing correctly or at all. I can't
+  nail this down.
 
 wxgui Tasks
 ===========
