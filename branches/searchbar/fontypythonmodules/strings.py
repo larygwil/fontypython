@@ -329,7 +329,6 @@ And all those I have neglected to include.
 
 ## June 2009 : Get the GPL from the COPYING file rather than a copy of it all here again.
 try:
-	foo
 	root = __file__                              
 	if os.path.islink(root):                     
 		root = os.path.realpath(root)            

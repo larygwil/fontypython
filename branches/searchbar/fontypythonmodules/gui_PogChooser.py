@@ -1,11 +1,16 @@
-import wx
-import fontybugs
+import wx, locale
 
-import fpsys # Global objects
+## Setup wxPython to access translations : enables the stock buttons.
+langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
+mylocale = wx.Locale( langid )
+
 from pubsub import *
 from wxgui import ps
-import locale
+
+import fpsys # Global objects
 import fontcontrol
+import fontybugs
+
 
 class PogChooser(wx.ListCtrl) :
 	"""
@@ -220,7 +225,7 @@ class PogChooser(wx.ListCtrl) :
 			self.Select(self.GetFirstSelected(), False)
 		self.lastindexselected = -1
 		
-	def ChangeIcon(self, args):
+	def ChangeIcon(self):
 		"""
 		Change a single Pog's icon to installed/uninstalled.
 		ONLY called from InstallPog and UninstallPog.

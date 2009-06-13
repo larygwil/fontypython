@@ -1,11 +1,19 @@
 import wx, os
-import fontybugs
 
-import fpsys # Global objects
+## Setup wxPython to access translations : enables the stock buttons.
+langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
+mylocale = wx.Locale( langid )
+
+
 from pubsub import *
 from wxgui import ps
 
 from gui_PogChooser import *
+
+import fpsys # Global objects
+import fontyfilter
+import fontybugs
+
 
 class DirControl(wx.GenericDirCtrl) :
 	"""
@@ -23,14 +31,8 @@ class DirControl(wx.GenericDirCtrl) :
 			else:
 				startdir = os.environ['HOME']
 		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY)
-		#self.ShowHidden( True )
-		
-		## Weird step:
-		#self.tree = self.GetTreeCtrl() 
-		## NOTE: The click event is bound in the Notebook.
-		
-		#self.tree.SetCursor(wx.StockCursor(wx.CURSOR_HAND)) #dec 2007 : removed cos it sucked.
 
+		## NOTE: The click event is bound in the Notebook.
 
 class NoteBook(wx.Notebook):
 	"""
@@ -46,7 +48,7 @@ class NoteBook(wx.Notebook):
 
 		## THE DIR CONTROL
 		self.dircontrol = DirControl(pan1) 
-		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))#, (65, 40), (150, 20), wx.NO_BORDER)
+		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
 		self.recurseFolders.SetValue( fpsys.config.recurseFolders )
 		self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
 
@@ -70,7 +72,9 @@ class NoteBook(wx.Notebook):
 		
 		ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
 		ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
-		
+		ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
+		ps.sub( remove_pog_item_from_source, self.RemoveItem ) #DND: class NoteBook
+
 		self.tree = self.dircontrol.GetTreeCtrl()
 		
 		## Dud tree events, causing bad behaviour:
@@ -115,7 +119,6 @@ class NoteBook(wx.Notebook):
 			## from last visit is still there. Clicking on it again does NOT UPDATE
 			## the font view. This is wierd. So, clearing the selection makes this moot.
 			self.tree.UnselectAll() # Found this method in the wxpython book.
-		#e.Skip()
 
 	## ------- JUNE 2009 ------ BEGINS
 
@@ -190,12 +193,12 @@ class NoteBook(wx.Notebook):
 		ps.pub(update_font_view)
 	
 	def AddItem(self, pogname):
-		self.ctrlPogSource.AddItem(pogname)
+		self.ctrlPogSource.AddItem(pogname[0]) #[0] bit is because pogname is a tuple from pubsub.
 
 	def RemoveItem(self, pogname):
-		self.ctrlPogSource.RemoveItem(pogname)
+		self.ctrlPogSource.RemoveItem(pogname[0])
 		
-	def SelectNoView(self, args):
+	def SelectNoView(self):
 		## Purpose: To select no viewobject and clear view pog list selections
 		## Called when a TARGET item is clicked AND samepogs it True
 		wx.BeginBusyCursor()

@@ -1,6 +1,12 @@
 import wx
 import wx.lib.scrolledpanel
+
+## Setup wxPython to access translations : enables the stock buttons.
+langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
+mylocale = wx.Locale( langid )
+
 import fpsys # Global objects
+
 from gui_Fitmap import *
 
 ## Crappy flag to handle startup sizing issues.

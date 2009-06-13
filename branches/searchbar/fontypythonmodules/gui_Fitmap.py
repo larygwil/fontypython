@@ -55,7 +55,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
 
 	def __onMiddleClick(self, event):
-		ps.pub( menu_settings )
+		ps.pub( menu_settings, None )
 		
 	def prepareBitmap( self ):
 		"""

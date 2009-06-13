@@ -199,20 +199,11 @@ class MainFrame(wx.Frame):
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 		
 		## Now to subscribe to have my various def called from other places:
-		ps.sub(update_font_view, self.UpdateFontViewPanel) ##DND: class MainFrame
 		ps.sub(show_error, self.ErrorBox) ##DND: class MainFrame
 		ps.sub(show_error_and_abort, self.ErrorAbort) ##DND: class MainFrame
 		ps.sub(show_message, self.MessageBox) ##DND: class MainFrame
-		ps.sub(reset_to_page_one, self.ResetToPageOne) ##DND: class MainFrame
-		ps.sub(add_item_to_notebook, self.NotebookAddItem) ##DND: class MainFrame
-		ps.sub(remove_item_from_notebook, self.NotebookRemoveItem) ##DND: class MainFrame
 		ps.sub(print_to_status_bar, self.StatusbarPrint) ##DND: class MainFrame
-		ps.sub(install_pog, self.InstallPog) ##DND: class MainFrame
-		ps.sub(uninstall_pog, self.UninstallPog) ##DND: class MainFrame
-		ps.sub(main_button_click, self.OnMainClick) ##DND: class MainFrame
-		
-		
-		## Dec 2007 - Actually this one does not function.
+		## Dec 2007 - Used on middle click in gui_Fitmap.py
 		ps.sub(menu_settings, self.__menuSettings) ##DND: class MainFrame
 		
 		## When splitter is changed (after the drag), we want to redraw
@@ -222,8 +213,8 @@ class MainFrame(wx.Frame):
 		self.Layout()
 
 		## call the big one - the big chief, the big cheese:
-		self.UpdateFontViewPanel() #Go and fill in the font view and surrounding controls
-		
+		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
+
 		## A nasty looking line to call the SortOutTheDamnImages function
 		## This is to draw the right icons dep on the params from cli.
 		self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
@@ -241,16 +232,7 @@ class MainFrame(wx.Frame):
 		
 	def StatusbarPrint(self, args):
 		self.sb.Report(args[0])
-	def NotebookAddItem(self,args):
-		self.nb.AddItem(args[0])
-	def NotebookRemoveItem(self, args):
-		self.nb.RemoveItem(args[0])
-	def ResetToPageOne(self, args):
-		"""
-		Calls ResetToPageOne in the FontViewPanel
-		"""
-		self.panelFontView.ResetToPageOne()
-		
+
 	def MessageBox(self, args):
 		dlg = wx.MessageDialog(self, args[0] , _("Warning"), wx.OK | wx.ICON_INFORMATION)
 		dlg.ShowModal()
@@ -262,124 +244,6 @@ class MainFrame(wx.Frame):
 	def ErrorAbort(self, args):
 		self.ErrorBox(args) #Pass it along to be displayed
 		self.__endApp()
-		
-	def UpdateFontViewPanel(self, args = None):
-		self.panelFontView.MainFontViewUpdate()
-		self.Refresh()
-	
-	def InstallPog(self, args):
-		"""
-		pog.install() Raises:
-				PogEmpty
-				PogAllFontsFailedToInstall
-				PogSomeFontsDidNotInstall
-		"""
-		try:
-			fpsys.state.targetobject.install()
-		except (fontybugs.PogSomeFontsDidNotInstall), e:
-			## Show a warning, but continue.
-			self.ErrorBox([unicode( e ),]) #send it as a list
-		except (fontybugs.PogEmpty, fontybugs.PogAllFontsFailedToInstall), e:
-			## Either Pog is empty, or
-			## not a single font in this pog actually installed.
-			## It has already been flagged as NOT INSTALLED
-			self.ErrorBox([unicode( e ),])
-			return # Make no changes to the display or icon - yet... badpog icon ?
-		## Update GUI
-		self.sb.Report(_("%s has been installed.") % fpsys.state.targetobject.name)
-		ps.pub(change_pog_icon)
-		ps.pub(toggle_targetpog_buttons) # Update the greying of the buttons
-		self.UpdateFontViewPanel()
-
-	def UninstallPog(self, args):
-		"""
-		pog.uninstall() Raises:
-				PogEmpty
-				PogLinksRemain
-				PogNotInstalled		
-		"""
-		try:
-			fpsys.state.targetobject.uninstall()
-		except (fontybugs.PogEmpty, 
-						fontybugs.PogNotInstalled, 
-						fontybugs.PogLinksRemain
-					 ), e:
-			## PogNotInstalled is prevented by buttons greying out in the gui.
-			self.ErrorBox([unicode( e ),])
-			return
-		## Update GUI
-		self.sb.Report(_("%s has been uninstalled.") % fpsys.state.targetobject.name)
-		ps.pub(change_pog_icon)
-		ps.pub(toggle_targetpog_buttons) #Update the greying of the buttons
-		self.UpdateFontViewPanel()
-
-			
-	def OnMainClick(self, args) :
-		"""
-		Removes fonts, or Appends fonts. Depends on situation in fpsys.state
-		
-		It's odd to have these routines in mainframe. I am using dialogues that
-		parent to the wx.Frame but I suppose I could shift this to panelFontView.
-		"""
-		## Let's determine what kind of thing to do:
-		if fpsys.state.action == "REMOVE":
-			## We have a pog in viewobject and we must remove the selected fonts from it.
-			vo = fpsys.state.viewobject
-			victims = []
-			dowrite = False
-			for fi in vo:
-				if fi.ticked:
-					victims.append(fi) #Put it into another list
-					dowrite = True
-			for fi in victims:
-				vo.remove(fi) #Now remove it from the vo
-			del victims
-			
-			if dowrite:
-				fpsys.flushTicks()
-				bug = False
-				try:
-					vo.write()	  
-				except(fontybugs.PogWriteError), e:
-					bug = True
-					self.errorBox([unicode( e ),])
-				## Now, let's redraw the vo
-				self.UpdateFontViewPanel()
-				if not bug:
-					self.sb.Report(_("Selected fonts have been removed."))
-				else:
-					self.sb.Report(_("There was an error writing the pog to disk. Nothing has been done"))
-		
-		## APPEND - Copy ttf to a pog.
-		if fpsys.state.action == "APPEND":
-			## We must append the fonts to the Pog
-			vo = fpsys.state.viewobject
-			to = fpsys.state.targetobject
-			print _("Copying fonts from %(source)s to %(target)s") % {"source":vo.label(), "target":to.label()}
-			dowrite = False
-			for fi in vo:
-				if fi.ticked:
-					to.append(fi) 
-					dowrite = True
-			if dowrite: 
-				fpsys.flushTicks() #Ensure we have no more ticks after a succ xfer.
-				bug = False
-				try:
-					to.write()	  
-				except(fontybugs.PogWriteError), e:
-					bug = True
-					self.ErrorBox( [repr( e )] )
-				self.UpdateFontViewPanel()
-				if not bug:
-					self.sb.Report(_("Selected fonts are now in %s.") % to.label())
-				else:
-					self.sb.Report(_("There was an error writing the pog to disk. Nothing has been done"))
-		
-		## After pressing the button, the focus goes ... away ...
-		## I don't know where and I'm trying to get it to go someplace
-		## so that the ESC key continues working.
-		## Forget it. I can't fix this. Onwards... other stuff to do!
-		## self.menuBar.SetFocus()
 		
 	def __onHandleESC(self, e) :
 		print strings.done
@@ -413,7 +277,7 @@ class MainFrame(wx.Frame):
 				fpsys.config.points = int(points)
 				if len(txt) > 0: fpsys.config.text =  txt
 			## Now to refresh things:
-			self.UpdateFontViewPanel()
+			ps.pub( update_font_view )
 		dlg.Destroy()
 
 	def __menuAbout(self, e):

@@ -1,11 +1,19 @@
 import wx
-import fpsys # Global objects
+
+## Setup wxPython to access translations : enables the stock buttons.
+langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
+mylocale = wx.Locale( langid )
+
+
 from pubsub import *
 from wxgui import ps
 
+from gui_ScrolledFontView import *
+
+import fpsys # Global objects
 import fontyfilter
 
-from gui_ScrolledFontView import *
+
 class SearchAssistant(wx.CollapsiblePane):
 	def __init__(self, parent):
 		self.label1=_("Click for Search Assistant")
@@ -73,8 +81,8 @@ class SearchAssistant(wx.CollapsiblePane):
 class FontViewPanel(wx.Panel):
 	"""
 	Standalone visual control to select TTF fonts.
-	The Panel that holds the ScrolledFontView control.
-	It holds the controls above it and the buttons below it.
+	The Panel that holds the ScrolledFontView control
+	as well as the buttons etc. below and the text above.
 	"""
 	def __init__(self, parent):
 		wx.Panel.__init__(self, parent, id = -1)
@@ -166,10 +174,8 @@ class FontViewPanel(wx.Panel):
 		self.buttMain.Bind(e,self.__onMainClick) 
 	
 		ps.sub(toggle_main_button, self.ToggleMainButton) ##DND: class FontViewPanel
-
-
-
-
+		ps.sub(update_font_view, self.MainFontViewUpdate) ##DND: class FontViewPanel
+		ps.sub(reset_to_page_one, self.ResetToPageOne) ##DND: class FontViewPanel 
 
 	def OnClearClick( self, event ):
 		self.inputFilter.Clear()
@@ -273,17 +279,76 @@ class FontViewPanel(wx.Panel):
 		self.__buttonState()
 
 
-
-
-
-	## Main BUTTON click -- the main "do something" button.
-	def __onMainClick(self, e):
+	def __onMainClick(self, e) :
+		"""
+		Removes fonts, or Appends fonts. Depends on situation in fpsys.state
+		"""
 		xPos, yPos = self.scrolledFontView.GetViewStart() #Saved by Robin Dunn, once again ! ! !
 		wx.BeginBusyCursor()
-		ps.pub(main_button_click)
+		
+		## Let's determine what kind of thing to do:
+		if fpsys.state.action == "REMOVE":
+			## We have a pog in viewobject and we must remove the selected fonts from it.
+			vo = fpsys.state.viewobject
+			victims = []
+			dowrite = False
+			for fi in vo:
+				if fi.ticked:
+					victims.append(fi) #Put it into another list
+					dowrite = True
+			for fi in victims:
+				vo.remove(fi) #Now remove it from the vo
+			del victims
+			
+			if dowrite:
+				fpsys.flushTicks()
+				bug = False
+				try:
+					vo.write()	  
+				except(fontybugs.PogWriteError), e:
+					bug = True
+					self.errorBox([unicode( e ),])
+				## Now, let's redraw the vo
+				ps.pub( update_font_view )
+				if not bug:
+					ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
+				else:
+					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done"))
+		
+		## APPEND - Copy ttf to a pog.
+		if fpsys.state.action == "APPEND":
+			## We must append the fonts to the Pog
+			vo = fpsys.state.viewobject
+			to = fpsys.state.targetobject
+			print _("Copying fonts from %(source)s to %(target)s") % {"source":vo.label(), "target":to.label()}
+			dowrite = False
+			for fi in vo:
+				if fi.ticked:
+					to.append(fi) 
+					dowrite = True
+			if dowrite: 
+				fpsys.flushTicks() #Ensure we have no more ticks after a succ xfer.
+				bug = False
+				try:
+					to.write()	  
+				except(fontybugs.PogWriteError), e:
+					bug = True
+					self.ErrorBox( [repr( e )] )
+				ps.pub( update_font_view )
+				if not bug:
+					ps.pub(print_to_status_bar,_("Selected fonts are now in %s.") % to.label())
+				else:
+					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done"))
+		
+		## After pressing the button, the focus goes ... away ...
+		## I don't know where and I'm trying to get it to go someplace
+		## so that the ESC key continues working.
+		## Forget it. I can't fix this. Onwards... other stuff to do!
+		## self.menuBar.SetFocus()
+
 		wx.EndBusyCursor()
 		self.scrolledFontView.Scroll(xPos, yPos)
-		#e.Skip()# It sure doesn't help restore ESC key...
+
 		
 	def __onPagechoiceClick(self,event) :
 		wx.BeginBusyCursor()
@@ -320,7 +385,7 @@ class FontViewPanel(wx.Panel):
 		self.buttNext.Enable(n)		 
 		self.buttPrev.Enable(p) 
 		
-	def ToggleMainButton(self, args = None):
+	def ToggleMainButton(self):
 		if fpsys.state.action == "NOTHING_TO_DO":
 			self.buttMain.Enable( False )
 			return
