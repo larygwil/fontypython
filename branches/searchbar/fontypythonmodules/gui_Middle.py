@@ -42,40 +42,12 @@ class SearchAssistant(wx.CollapsiblePane):
 
 	def MakePaneContent(self, pane):
 		'''Just make a few controls to put on the collapsible pane'''
-		nameLbl = wx.StaticText(pane, -1, "Name:")
-		name = wx.TextCtrl(pane, -1, "");
-
-		addrLbl = wx.StaticText(pane, -1, "Address:")
-		addr1 = wx.TextCtrl(pane, -1, "");
-		addr2 = wx.TextCtrl(pane, -1, "");
-
-		cstLbl = wx.StaticText(pane, -1, "City, State, Zip:")
-		city  = wx.TextCtrl(pane, -1, "", size=(150,-1));
-		state = wx.TextCtrl(pane, -1, "", size=(50,-1));
-		zip   = wx.TextCtrl(pane, -1, "", size=(70,-1));
-		
-		addrSizer = wx.FlexGridSizer(cols=2, hgap=5, vgap=5)
-		addrSizer.AddGrowableCol(1)
-		addrSizer.Add(nameLbl, 0, 
-				wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
-		addrSizer.Add(name, 0, wx.EXPAND)
-		addrSizer.Add(addrLbl, 0,
-				wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
-		addrSizer.Add(addr1, 0, wx.EXPAND)
-		addrSizer.Add((5,5)) 
-		addrSizer.Add(addr2, 0, wx.EXPAND)
-
-		addrSizer.Add(cstLbl, 0,
-				wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL)
-
-		cstSizer = wx.BoxSizer(wx.HORIZONTAL)
-		cstSizer.Add(city, 1)
-		cstSizer.Add(state, 0, wx.LEFT|wx.RIGHT, 5)
-		cstSizer.Add(zip)
-		addrSizer.Add(cstSizer, 0, wx.EXPAND)
+		nameLbl = wx.StaticText(pane, -1, _("Search Assistance.") )
+		#name = wx.TextCtrl(pane, -1, "");
+	#	city  = wx.TextCtrl(pane, -1, "", size=(150,-1));
 
 		border = wx.BoxSizer()
-		border.Add(addrSizer, 1, wx.EXPAND|wx.ALL, 5)
+		border.Add(nameLbl, 1, wx.EXPAND|wx.ALL, 5)
 		pane.SetSizer(border)
 
 class FontViewPanel(wx.Panel):
@@ -113,9 +85,22 @@ class FontViewPanel(wx.Panel):
 		
 		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
-		self.inputFilter = wx.TextCtrl(self, -1, "")
-		self.inputFilter.Bind(wx.EVT_CHAR, self.__evtChar) #catch the enter char
-		
+		#self.inputFilter = wx.TextCtrl(self, -1, "")
+		#self.inputFilter.Bind(wx.EVT_CHAR, self.__evtChar) #catch the enter char
+
+		self.inputFilter = wx.ComboBox(self, 500, "", (90, 50), 
+						 (160, -1), [],
+						 wx.CB_DROPDOWN
+						 #| wx.TE_PROCESS_ENTER
+						 #| wx.CB_SORT
+						 )
+
+		self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
+		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
+		#self.inputFilter.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus) # Huh? Comes from the demo...
+		#self.inputFilter.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
+
+
 		self.last_filter_string = ""
 		
 		## The pager pulldown
@@ -178,13 +163,29 @@ class FontViewPanel(wx.Panel):
 		ps.sub(reset_to_page_one, self.ResetToPageOne) ##DND: class FontViewPanel 
 
 	def OnClearClick( self, event ):
-		self.inputFilter.Clear()
+		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
 		self.filter = ""
 		## Now command a change of the view.
 		## First, return user to page 1:
 		self.pageindex = 1
 		self.__filterAndPageThenCallCreateFitmaps()
 		self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
+
+	# Capture events when the user types something into the control then
+	# hits ENTER.
+	def EvtTextEnter(self, evt):
+		o=evt.GetEventObject()
+		termsstring = evt.GetString()
+		o.Append( termsstring )
+		print "SEARCH FOR:", termsstring
+		evt.Skip()
+
+	# When the user selects something, we go here.
+	def EvtComboBox(self, evt):
+		cb = evt.GetEventObject()
+		termsstring = evt.GetString()
+		print termsstring
+
 			
 	## Catch the ENTER key in the filter text input control
 	def __evtChar(self, e):
