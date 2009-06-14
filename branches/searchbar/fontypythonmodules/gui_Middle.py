@@ -85,9 +85,6 @@ class FontViewPanel(wx.Panel):
 		
 		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
-		#self.inputFilter = wx.TextCtrl(self, -1, "")
-		#self.inputFilter.Bind(wx.EVT_CHAR, self.__evtChar) #catch the enter char
-
 		self.inputFilter = wx.ComboBox(self, 500, "", (90, 50), 
 						 (160, -1), [],
 						 wx.CB_DROPDOWN
@@ -97,16 +94,12 @@ class FontViewPanel(wx.Panel):
 
 		self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
 		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
-		#self.inputFilter.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus) # Huh? Comes from the demo...
-		#self.inputFilter.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
-
 
 		self.last_filter_string = ""
 		
 		## The pager pulldown
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
 		self.choicePage.Bind(wx.EVT_CHOICE, self.__onPagechoiceClick) #Bind choice event
-
 
 		self.SA=SearchAssistant(self)
 
@@ -176,8 +169,13 @@ class FontViewPanel(wx.Panel):
 	def EvtTextEnter(self, evt):
 		o=evt.GetEventObject()
 		termsstring = evt.GetString()
-		o.Append( termsstring )
-		print "SEARCH FOR:", termsstring
+		history=o.GetItems()
+		if termsstring not in history:
+			o.Insert( termsstring,0 ) #record this search in the top of the 'history'
+		
+		self.startSearch(termsstring)
+		
+		self.buttMain.SetFocus()
 		evt.Skip()
 
 	# When the user selects something, we go here.
@@ -185,24 +183,18 @@ class FontViewPanel(wx.Panel):
 		cb = evt.GetEventObject()
 		termsstring = evt.GetString()
 		print termsstring
+		self.startSearch(termsstring)
+		
+		self.buttMain.SetFocus()
 
-			
-	## Catch the ENTER key in the filter text input control
-	def __evtChar(self, e):
-		if e.GetKeyCode() == 13:
-			## Time to filter and redraw my list
-			self.filter = self.inputFilter.GetValue()
+	def startSearch(self, terms):
+		self.filter = terms
+		## First, return user to page 1:
+		self.pageindex = 1
 
-			## First, return user to page 1:
-			self.pageindex = 1
+		## Now command a change of the view.
+		self.__filterAndPageThenCallCreateFitmaps()
 
-			## Now command a change of the view.
-			self.__filterAndPageThenCallCreateFitmaps()
-
-			self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
-		if e.GetKeyCode() == 27:
-			self.buttMain.SetFocus()
-		e.Skip() #vital to keep the control alive!
 		
 	def __filterAndPageThenCallCreateFitmaps(self):
 		"""
