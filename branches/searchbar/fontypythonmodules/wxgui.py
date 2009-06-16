@@ -65,6 +65,9 @@ class StatusBar(wx.StatusBar):
 		self.SetStatusText(msg, 0)
 
 class MainFrame(wx.Frame):
+	"""
+	The main frame for the app. Has some functionality for menu items.
+	"""
 	def __init__(self,parent,title) :
 		## Draw the frame
 		title = title + "   -   " + locale.getpreferredencoding()
@@ -328,11 +331,13 @@ class MainFrame(wx.Frame):
 		ps.pub( update_font_view )	
 
 
-
-
+##http://wiki.wxpython.org/Widget%20Inspection%20Tool
+## Use ctrl+alt+i to open it.
+import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App) :
-	def OnInit(self) :
+class App(wx.App, wx.lib.mixins.inspection.InspectionMixin) :
+	def OnInit(self):
+		self.Init()  # initialize the inspection tool
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:
 			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )

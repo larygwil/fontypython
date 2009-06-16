@@ -85,13 +85,8 @@ class FontViewPanel(wx.Panel):
 		
 		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
-		self.inputFilter = wx.ComboBox(self, 500, "", (90, 50), 
-						 (160, -1), [],
-						 wx.CB_DROPDOWN
-						 #| wx.TE_PROCESS_ENTER
-						 #| wx.CB_SORT
-						 )
-
+		#self.inputFilter = wx.ComboBox(self, 500, "", (90, 50),  (160, -1), [], wx.CB_DROPDOWN	 )
+		self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN )
 		self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
 		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
 

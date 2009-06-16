@@ -44,7 +44,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Very cool,sets the icon for font items.
 		self.SetCursor( wx.StockCursor( wx.CURSOR_ARROW ) )
 		
-		## If this is not a FILE_NOT_FOUND then allow the cursor to change
+		## If this is *not* a FILE_NOT_FOUND then allow the cursor to change
 		## FILE_NOT_FOUND means we have a glyphpaf but no match on the drive.
 		## This means the Pog should be purged.
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
@@ -54,9 +54,32 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				if not self.fitem.inactive:
 					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
 
+	def __onPaint(self, event):
+		"""
+		Dump the bitmap to the screen.
+		"""
+		if self.bitmap:
+			## Create a buffered paint DC.  It will create the real
+			## wx.PaintDC and then blit the bitmap to it when dc is
+			## deleted.  Since we don't need to draw anything else
+			## here that's all there is to it.
+			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
+
 	def __onMiddleClick(self, event):
 		ps.pub( menu_settings, None )
-		
+
+	def __onClick(self, event) :
+		if fpsys.state.cantick and not self.fitem.inactive:
+			self.fitem.ticked = not(self.fitem.ticked)
+			self.prepareBitmap() # This only redraws a single font item.
+			self.Refresh()  #forces a redraw.
+			 
+			## Inc or dec a counter depending on the tickedness of this item
+			if self.fitem.ticked: fpsys.state.numticks += 1
+			if not self.fitem.ticked: fpsys.state.numticks -= 1
+			ps.pub(toggle_main_button)
+		event.Skip()	
+
 	def prepareBitmap( self ):
 		"""
 		This is where all the drawing code goes. It gets the font rendered
@@ -352,29 +375,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		dc.DrawText(txt, x, y)
 
 		
-	def __onPaint(self, event):
-		"""
-		Dump the bitmap to the screen.
-		"""
-		if self.bitmap:
-			## Create a buffered paint DC.  It will create the real
-			## wx.PaintDC and then blit the bitmap to it when dc is
-			## deleted.  Since we don't need to draw anything else
-			## here that's all there is to it.
-			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
 
-	def __onClick(self, event) :
-		if fpsys.state.cantick and not self.fitem.inactive:
-			self.fitem.ticked = not(self.fitem.ticked)
-			self.prepareBitmap() # This only redraws a single font item.
-			self.Refresh()  #forces a redraw.
-			 
-			## Inc or dec a counter depending on the tickedness of this item
-			if self.fitem.ticked: fpsys.state.numticks += 1
-			if not self.fitem.ticked: fpsys.state.numticks -= 1
-			ps.pub(toggle_main_button)
-		event.Skip()
+
+
 
 		
 
