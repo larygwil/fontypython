@@ -103,11 +103,11 @@ class MainFrame(wx.Frame):
 
 
 		## SELECT MENU: June 2009
-		menu1 = wx.Menu()
-		menu1.Append( 301, _("&Select ALL the fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
-		menu1.Append( 302, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
+		menu3 = wx.Menu()
+		menu3.Append( 301, _("&Select ALL the source fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
+		menu3.Append( 302, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
 		## Add menu to the menu bar
-		self.menuBar.Append(menu1, _("&Selection"))
+		self.menuBar.Append(menu3, _("&Selection"))
 
 
 		## HELP MENU
@@ -207,8 +207,9 @@ class MainFrame(wx.Frame):
 		ps.sub(show_message, self.MessageBox) ##DND: class MainFrame
 		ps.sub(print_to_status_bar, self.StatusbarPrint) ##DND: class MainFrame
 		## Dec 2007 - Used on middle click in gui_Fitmap.py
-		ps.sub(menu_settings, self.__menuSettings) ##DND: class MainFrame
-		
+		ps.sub( menu_settings, self.__menuSettings ) ##DND: class MainFrame
+		ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem ) ##DND: class MainFrame
+
 		## When splitter is changed (after the drag), we want to redraw
 		## the fonts to the new width.
 		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.__onSize)
@@ -221,7 +222,10 @@ class MainFrame(wx.Frame):
 		## A nasty looking line to call the SortOutTheDamnImages function
 		## This is to draw the right icons dep on the params from cli.
 		self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
-		
+	
+	def toggleSelectionMenuItem(self, onoff):
+		self.menuBar.EnableTop(1,onoff[0])
+
 	def __onSize( self, evt ):
 		"""
 		The splitter has been moved. Don't ask me why splitter and not splitter2

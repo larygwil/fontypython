@@ -59,9 +59,10 @@ class NoteBook(wx.Notebook):
 		box.Layout() 
 
 		self.pogindexselected = 0
-		
+	
+
+		## The SOURCE POG control
 		pan2 = wx.Panel(self) 
-		
 		page = 0
 		s = None
 		if fpsys.state.viewpattern  == "P": 
@@ -69,6 +70,7 @@ class NoteBook(wx.Notebook):
 			if s == "EMPTY": s= None #Very first run, the view will be an EMPTY object.
 			page = 1
 		self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
+
 		
 		ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
 		ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
@@ -86,7 +88,7 @@ class NoteBook(wx.Notebook):
 		## 5.3.2009 Michael Hoeft
 		self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick) 	
 
-		self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+		#self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
 		box2 = wx.BoxSizer(wx.HORIZONTAL) 
 		box2.Add(self.ctrlPogSource,1,wx.EXPAND) 
@@ -109,6 +111,12 @@ class NoteBook(wx.Notebook):
 		self.SetSelection(page)
 	
 		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.__onPageChanged) # Bind page changed event
+
+		## If the app is started with a Folder as the Source, then
+		## check if we must recurse. If so, fake a click to kick that off.
+		if fpsys.state.viewpattern  == "F":
+			if self.recurseFolders.GetValue():
+				self.__onDirCtrlClick(None) # Fake an event
 		
 
 	def __onPageChanged(self, e):
@@ -122,6 +130,7 @@ class NoteBook(wx.Notebook):
 
 	## ------- JUNE 2009 ------ BEGINS
 
+	"""
 	def OnContextMenu(self, event):
 		# only do this part the first time so the events are only bound once
 		if not hasattr(self, "popupID1"):
@@ -152,7 +161,7 @@ class NoteBook(wx.Notebook):
 
 	def OnPopupTwo(self, event):
 		print "Popup one\n"
-
+	"""
 	## -------------- JUNE 2009 ----- ENDS
 
 	def __onDirCtrlClick(self, e):

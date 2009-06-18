@@ -38,6 +38,7 @@ select_no_view_pog = 170
 get_font_view_width = 180
 menu_settings = 190
 
+toggle_selection_menu_item = 200
 
 ## A hack to allow values to return from published topics
 globRetVal = {}

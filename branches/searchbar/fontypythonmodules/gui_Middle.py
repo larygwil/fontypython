@@ -374,11 +374,15 @@ class FontViewPanel(wx.Panel):
 		self.buttPrev.Enable(p) 
 		
 	def ToggleMainButton(self):
+		ps.pub( toggle_selection_menu_item, True )
 		if fpsys.state.action == "NOTHING_TO_DO":
 			self.buttMain.Enable( False )
+			ps.pub( toggle_selection_menu_item, False )
 			return
-		if fpsys.state.numticks > 0: self.buttMain.Enable(True)
-		else: self.buttMain.Enable(False)
+		if fpsys.state.numticks > 0: 
+			self.buttMain.Enable(True)
+		else: 
+			self.buttMain.Enable(False)
 			
 	def MainFontViewUpdate(self):
 		"""

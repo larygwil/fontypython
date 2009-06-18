@@ -245,7 +245,7 @@ class Configure:
 				
 		if not os.path.exists(iPC.appConf()):		
 			print _("No config file found, creating it with defaults.")
-			self.__write() 
+			self.Save() 
 			
 		## Now get them into the instance vars:
 		try:
@@ -270,7 +270,7 @@ class Configure:
 			except:
 				print _("The fontypython config file is damaged.\nPlease remove it and start again")
 				raise SystemExit
-			self.__write()
+			self.Save()
 	def dontSaveNumInPage(self, flag):
 		self.__dontSaveNumInPage = flag
 	def __setData(self):
@@ -287,7 +287,7 @@ class Configure:
 								"rightSash" : self.rightSash,
 								"recurseFolders": self.recurseFolders
 								}
-	def __write(self) :
+	def Save(self) :
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
 		if self.__dontSaveNumInPage:
 			self.numinpage = self.__data["numinpage"]
@@ -298,8 +298,6 @@ class Configure:
 			pf.close() 
 		except IOError:
 			print _("Could not write to the config file.")
-	def Save(self) :
-		self.__write()  #Go write the file
 
 
 ## Our config instance - it will have one instance across
@@ -436,7 +434,7 @@ def markInactive():
 		for iA in state.viewobject:
 			#print [iA.glyphpaf_unicode]
 			if iA.glyphpaf_unicode in pafBlist:
-				iA.msg = _("This font is in %s") % state.targetobject.name
+				iA.activeInactiveMsg = _("This font is in %s") % state.targetobject.name
 				iA.inactive = True
 		del pafBlist
 

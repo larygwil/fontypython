@@ -94,8 +94,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 		## If our viewobject has NO FONTS inside it (i.e. it's an EmptyView object)
 		## then setup a fake FontItem so we can have a dud Fitmap to show.
-		f len(viewobject) == 0:
-			empty_fitem = fontcontrol.InfoFontItem("EMPTY")
+		if len(viewobject) == 0:
+			empty_fitem = fontcontrol.InfoFontItem()
 			fm = Fitmap( self, (0, 0), empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
 			self.mySizer.Add( fm, 0, wx.GROW )

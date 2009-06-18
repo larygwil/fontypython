@@ -36,8 +36,10 @@ class PogChooser(wx.ListCtrl) :
 		## We keep refs to the two parents of this class.
 		if whoami == "SOURCEPOG" :#isinstance( self.parent, wx.Panel ):
 			PogChooser.__VIEW = self
+			style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING | wx.LC_SINGLE_SEL
 		else:
 			PogChooser.__TARGET = self.parent
+			style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING
 
 		il = wx.ImageList(16,16,True) 
 		png = wx.Bitmap(fpsys.mythingsdir + "/pog16x16.png",wx.BITMAP_TYPE_PNG) 
@@ -48,8 +50,7 @@ class PogChooser(wx.ListCtrl) :
 		png = wx.Bitmap( fpsys.mythingsdir + "/pog16x16.target.png", wx.BITMAP_TYPE_PNG )
 		il.Add( png )
 		
-		wx.ListCtrl.__init__\
-		(self,parent,-1, style=wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING) 
+		wx.ListCtrl.__init__( self,parent,-1, style=style ) 
 		
 		self.AssignImageList(il, wx.IMAGE_LIST_SMALL) 
 

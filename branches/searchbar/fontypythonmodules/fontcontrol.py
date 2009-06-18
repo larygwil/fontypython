@@ -51,7 +51,7 @@ class FontItem( object ):
 			
 		self.ticked = False # State of the tick/cross symbol.
 		self.inactive = False # Set in fpsys.markInactive()
-		self.msg = "" #Say something unique when I draw this item.  
+		self.activeInactiveMsg = "" #Say something unique when I draw this item.  
 		
 		## These are lists to cater for sub-faces
 		self.family, self.style =  [], []
@@ -105,7 +105,7 @@ class FontItem( object ):
 				if not fileDoesExist:
 					fpsys.logBadStrings( self.glyphpaf )
 					self.badfont = True
-					self.badfontmsg = _("Font cannot be found, you should purge it.")
+					self.badfontmsg = _("Font cannot be found, you should purge this Pog.")
 					self.badstyle = "FILE_NOT_FOUND"
 					## If the multi face font is damaged after the
 					## first face, then this won't catch it...
@@ -138,7 +138,7 @@ class FontItem( object ):
 				## In the meantime, this will have to be flagged as a bad font.
 				fpsys.logBadStrings( self.glyphpaf )
 				self.badfont = True
-				self.badfontmsg = _("Font may be bad and it cannot be drawn.")
+				self.badfontmsg = _("Unicode problem. Font may be bad and it cannot be drawn.")
 				self.badstyle = "PIL_UNICODE_ERROR"
 				break
 
@@ -236,7 +236,7 @@ class FontItem( object ):
 				## "A" or even chr(0) to chr(255) all in a string...
 				## So, it's virtually impossible to know at this point what will
 				## cause the MemoryError in the rendering step.
-				self.badfontmsg = _("Font cannot be drawn.")
+				self.badfontmsg = _("Font causes a memory error, it can't be drawn.")
 				self.badstyle = "PIL_CANNOT_RENDER"
 				fpsys.logBadStrings( self.glyphpaf )
 				self.badfont = True
@@ -252,7 +252,14 @@ class FontItem( object ):
 				
 	def __str__( self ):
 		return self.glyphpaf
-		
+	
+	def InfoOrErrorText(self):
+		if self.badfont:
+			l1 = self.badfontmsg
+			l2 = self.glyphpaf_unicode 
+		return ( l1, l2 )
+
+
 ## Create some subclasses to represent the fonts that we support:		
 class InfoFontItem( FontItem ):
 	"""
@@ -263,20 +270,15 @@ class InfoFontItem( FontItem ):
 	It's the only Font Item in the target or source view list
 	at that time.
 	"""
-	def __init__( self, TYPE, glyphpaf="" ):
-		## TYPE is: EMPTY (no fonts to display)
+	def __init__( self, glyphpaf="" ):
 		FontItem.__init__( self, glyphpaf )
-		self.TYPE = TYPE
 	def __queryFontFamilyStyleFlagBad( self ):
-		"""
-		Overridden so that it does not happen for this class.
-		"""
+		"""Overridden so that it does not happen for this class."""
 		pass
-	def errorText ( self ):
-		if self.TYPE == "EMPTY":
-			l1 = _("There are no fonts to see here, move along.")
-			l2 = _("(Check your filter!)")
-			return ( l1, l2 )
+	def InfoOrErrorText( self ):
+		l1 = _("There are no fonts to see here, move along.")
+		l2 = _("(Check your filter!)")
+		return ( l1, l2 )
 
 class TruetypeItem( FontItem ):
 	def __init__( self, glyphpaf ):
