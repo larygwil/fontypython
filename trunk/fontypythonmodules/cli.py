@@ -42,6 +42,7 @@ class options(object):
 	uninstall = None
 	check = False
 	all = None
+	allrecurse = None
 	
 ## If non-ascii chars get entered on the cli, say a Japanese word for
 ## a pog's name, we may have a problem. 
@@ -63,9 +64,9 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:t:p:a:",\
+	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:t:p:a:A:",\
 	["help", "version", "list", "check=","examples","install=",\
-	"uninstall=","size=","number=","text=","purge=","all="])
+	"uninstall=","size=","number=","text=","purge=","all=","all-recurse="])
 except getopt.GetoptError, err:
 	print str(err) # will print something like "option -a not recognized"
 	raise SystemExit
@@ -131,27 +132,18 @@ for o, a in opts:
 		options.text = a
 		fpsys.config.text = a
 
-	elif o in ("-a", "--all"):
-		## a is what comes after the -a part.
-		try:
-			f = fontcontrol.Folder(a)
-			options.all = a
-		except fontybugs.FolderHasNoFonts, e:
-			print unicode( e )
-			raise SystemExit
-		except OSError, e: # Catches error in Folder.__init__ about line 511 of fontcontrol.py
-			print e.strerror
-			raise SystemExit
+	elif o in ("-a", "--all", "-A","--all-recurse"):
+		## var a is whatever comes after the -a flag.
+		options.all = a # save to flag a test later (line 310)
+		if o in ("-a","--all"):
+			options.allrecurse = False
+		else:
+			options.allrecurse = True
 
 		if len(args) != 1:
 			print _("%s takes two arguments: SOURCE(folder) TARGET(pog)") % o
 			print _("""NB: If you wanted to use spaces in a pogname or folder then please put "quotes around them."  """)
 			raise SystemExit
-
-		## args[0] is the POGNAME
-		## options.all is the Folder Source
-
-
 	else:
 		## We should not reach here at all.
 		print "Your arguments amuse me :) Please read the help."
@@ -320,6 +312,14 @@ if options.all:
 	existingPog = False
 	POGNAME = args[0]
 	FOLDERNAME = options.all
+	try:
+		folder = fontcontrol.Folder(FOLDERNAME, recurse=options.allrecurse)
+	except fontybugs.FolderHasNoFonts, e:
+		print unicode( e )
+		raise SystemExit
+	except OSError, e: # Catches other errors in Folder
+		print e.strerror
+		raise SystemExit
 
 	ipog = fontcontrol.Pog( POGNAME ) # whether it exists or not.
 
@@ -333,9 +333,6 @@ if options.all:
 	
 	## Fill it with fontitems.
 	ipog.genList()
-
-	## Get a folder
-	folder = fontcontrol.Folder( FOLDERNAME )
 
 	## get a list of what (in the folder) is NOT already in the ipog (assuming it's non-empty)
 	fl = [fi for fi in folder if str(fi) not in [str(fi2) for fi2 in ipog]] #str(fontItem) returns glyphpaf which has been decoded already.

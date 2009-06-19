@@ -229,7 +229,9 @@ class Configure:
 		## Added Dec 2007
 		self.leftSash = 128
 		self.rightSash = 128
-		
+		## Added June 2009
+		self.recurseFolders = False 
+
 		self.__setData()
 		
 		if os.path.exists(iPC.appConf()):
@@ -243,7 +245,7 @@ class Configure:
 				
 		if not os.path.exists(iPC.appConf()):		
 			print _("No config file found, creating it with defaults.")
-			self.__write() 
+			self.Save() 
 			
 		## Now get them into the instance vars:
 		try:
@@ -258,6 +260,7 @@ class Configure:
 			self.lastdir = self.__data['lastdir']
 			self.leftSash = self.__data['leftSash']
 			self.rightSash = self.__data['rightSash']
+			self.recurseFolders = self.__data['recurseFolders']
 			
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
@@ -267,7 +270,7 @@ class Configure:
 			except:
 				print _("The fontypython config file is damaged.\nPlease remove it and start again")
 				raise SystemExit
-			self.__write()
+			self.Save()
 	def dontSaveNumInPage(self, flag):
 		self.__dontSaveNumInPage = flag
 	def __setData(self):
@@ -281,9 +284,10 @@ class Configure:
 								"max" : self.max,
 								"lastdir" : self.lastdir,
 								"leftSash" : self.leftSash,
-								"rightSash" : self.rightSash
+								"rightSash" : self.rightSash,
+								"recurseFolders": self.recurseFolders
 								}
-	def __write(self) :
+	def Save(self) :
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
 		if self.__dontSaveNumInPage:
 			self.numinpage = self.__data["numinpage"]
@@ -294,8 +298,6 @@ class Configure:
 			pf.close() 
 		except IOError:
 			print _("Could not write to the config file.")
-	def Save(self) :
-		self.__write()  #Go write the file
 
 
 ## Our config instance - it will have one instance across
@@ -303,7 +305,7 @@ class Configure:
 config = Configure()
 
 
-def instantiateViewFolder( foldername ):
+def instantiateViewFolder( foldername, recurse=False ):
 	"""
 	Creates a Folder object and fills it with FontItem objects
 	according to what's in the folder's path.
@@ -314,9 +316,12 @@ def instantiateViewFolder( foldername ):
 	## Default assumptions in case of raised error.
 	state.viewobject = fontcontrol.EmptyView()
 	state.viewpattern = "E" 
-	ifolder = fontcontrol.Folder(foldername) #raises : fontybugs.FolderHasNoFonts : BENIGN ERROR.
+	ifolder = fontcontrol.Folder(foldername, recurse) #raises : fontybugs.FolderHasNoFonts : BENIGN ERROR.
 	## Only continues if there is no problem.
 	state.viewobject = ifolder
+	## Because we have a new view object, we must reset the last filteredViewObject
+	state.filteredViewObject = None
+
 	config.lastview = foldername
 	state.viewpattern = "F"
 	markInactive()
@@ -358,6 +363,9 @@ def instantiateViewPog( newpog_name ):
 
 	## Continue if all ok.
 	state.viewobject = ipog
+	## Because we have a new view object, we must reset the last filteredViewObject
+	state.filteredViewObject = None
+
 	config.lastview = newpog_name
 	if len(state.viewobject) == 0:
 		empty = True
@@ -426,7 +434,7 @@ def markInactive():
 		for iA in state.viewobject:
 			#print [iA.glyphpaf_unicode]
 			if iA.glyphpaf_unicode in pafBlist:
-				iA.msg = _("This font is in %s") % state.targetobject.name
+				iA.activeInactiveMsg = _("This font is in %s") % state.targetobject.name
 				iA.inactive = True
 		del pafBlist
 

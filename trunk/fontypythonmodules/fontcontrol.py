@@ -51,7 +51,7 @@ class FontItem( object ):
 			
 		self.ticked = False # State of the tick/cross symbol.
 		self.inactive = False # Set in fpsys.markInactive()
-		self.msg = "" #Say something unique when I draw this item.  
+		self.activeInactiveMsg = "" #Say something unique when I draw this item.  
 		
 		## These are lists to cater for sub-faces
 		self.family, self.style =  [], []
@@ -105,7 +105,7 @@ class FontItem( object ):
 				if not fileDoesExist:
 					fpsys.logBadStrings( self.glyphpaf )
 					self.badfont = True
-					self.badfontmsg = _("Font cannot be found, you should purge it.")
+					self.badfontmsg = _("Font cannot be found, you should purge this Pog.")
 					self.badstyle = "FILE_NOT_FOUND"
 					## If the multi face font is damaged after the
 					## first face, then this won't catch it...
@@ -138,7 +138,7 @@ class FontItem( object ):
 				## In the meantime, this will have to be flagged as a bad font.
 				fpsys.logBadStrings( self.glyphpaf )
 				self.badfont = True
-				self.badfontmsg = _("Font may be bad and it cannot be drawn.")
+				self.badfontmsg = _("Unicode problem. Font may be bad and it cannot be drawn.")
 				self.badstyle = "PIL_UNICODE_ERROR"
 				break
 
@@ -236,7 +236,7 @@ class FontItem( object ):
 				## "A" or even chr(0) to chr(255) all in a string...
 				## So, it's virtually impossible to know at this point what will
 				## cause the MemoryError in the rendering step.
-				self.badfontmsg = _("Font cannot be drawn.")
+				self.badfontmsg = _("Font causes a memory error, it can't be drawn.")
 				self.badstyle = "PIL_CANNOT_RENDER"
 				fpsys.logBadStrings( self.glyphpaf )
 				self.badfont = True
@@ -252,7 +252,14 @@ class FontItem( object ):
 				
 	def __str__( self ):
 		return self.glyphpaf
-		
+	
+	def InfoOrErrorText(self):
+		if self.badfont:
+			l1 = self.badfontmsg
+			l2 = self.glyphpaf_unicode 
+		return ( l1, l2 )
+
+
 ## Create some subclasses to represent the fonts that we support:		
 class InfoFontItem( FontItem ):
 	"""
@@ -263,20 +270,15 @@ class InfoFontItem( FontItem ):
 	It's the only Font Item in the target or source view list
 	at that time.
 	"""
-	def __init__( self, TYPE, glyphpaf="" ):
-		## TYPE is: EMPTY (no fonts to display)
+	def __init__( self, glyphpaf="" ):
 		FontItem.__init__( self, glyphpaf )
-		self.TYPE = TYPE
 	def __queryFontFamilyStyleFlagBad( self ):
-		"""
-		Overridden so that it does not happen for this class.
-		"""
+		"""Overridden so that it does not happen for this class."""
 		pass
-	def errorText ( self ):
-		if self.TYPE == "EMPTY":
-			l1 = _("There are no fonts to see here, move along.")
-			l2 = _("(Check your filter!)")
-			return ( l1, l2 )
+	def InfoOrErrorText( self ):
+		l1 = _("There are no fonts to see here, move along.")
+		l2 = _("(Check your filter!)")
+		return ( l1, l2 )
 
 class TruetypeItem( FontItem ):
 	def __init__( self, glyphpaf ):
@@ -462,14 +464,14 @@ class EmptyView(BasicFontList):
 class Folder(BasicFontList):
 	"""
 	Represents an entire Folder (from a path given by user clicking on the
-	GenericDirCtrl or from a commanline string.)
+	GenericDirCtrl or from a command line string.)
 	
 	This is called from fpsys.instantiateViewFolder
 	
 	Contains a list of various FontItem Objects.
-	Supply the path
+	Supply the start path and an optional recurse T/F param.
 	"""
-	def __init__(self, path):
+	def __init__(self, path, recurse=False):
 		BasicFontList.__init__(self)
 		#print "path:",[path]
 		
@@ -500,49 +502,60 @@ class Folder(BasicFontList):
 		## 'UTF-8'
 		## This one returns the ENCODING (byte string to unicode) needed to
 		## convert filenames from the O/S *to* unicode.
-		
-		listOfFilenamesOnly = []
+			
 		## If self.path is unicode, return will be list of unicode objects (with some slip-ups...)
 		## self.path comes from the GenericDirCtrl, which is part of a Unicode wxPython build
 		## therefore it always emits Unicode objects. (Or it comes from cli, which also converted)
-		
-		## Note: If self.path DOES NOT EXIST then this raises and OSError
-		##	   This can happen when we use the --all cli argument (see cli.py)
-		listOfFilenamesOnly = os.listdir (  self.path  ) # Get the unicode list
-		
-		## I could use this:
-		## sourceList = [ os.path.join( self.path, f ) for f in listOfFilenamesOnly ]
-		## But I won't know (when there's an error) which element of the listOfFilenamesOnly was
-		## the culprit, so I'm gonna loop this one.
-		sourceList = []
-		for f in listOfFilenamesOnly:
-			try:
-				paf = os.path.join( self.path, f )
-				sourceList.append( paf )
-			except:
-				## Okay, 'f' was not able to join to self.path
-				## This is because 'f' is a byte string, not a unicode
-				## That means that os.listdir couldn't figure it out...
-				## I will revert to byte strings and try again:
-				#print "Could not join to path name:"
-				#print [self.path], " + ", [f]
+
+
+		## Added June 2009
+		def safeJoin(apath,filelist):
+			## I could use this:
+			## sourceList = [ os.path.join( apath, f ) for f in listOfFilenamesOnly ]
+			## But I won't know (when there's an error) which element of the listOfFilenamesOnly was
+			## the culprit, so I'm gonna loop this one.
+			returnList = []
+			for f in filelist:
 				try:
-					paf = os.path.join( self.path.encode( locale.getpreferredencoding()), f )
-					sourceList.append( paf )
+					paf = os.path.join( apath, f )
+					if os.path.isfile(paf):
+						returnList.append( paf )
 				except:
-					## No, could not get a hold of that file.
-					## In theory, this should never happen.
-					print "CORNER CASE in Folder.__init__:", [self.path], " + ", [f]
-					fpsys.logBadStrings(f) # I'm keeping a list of bad names.
+					## Okay, 'f' was not able to join to apath
+					## This is because 'f' is a byte string, not a unicode
+					## That means that os.listdir couldn't figure it out...
+					## I will revert to byte strings and try again:
+					try:
+						paf = os.path.join( apath.encode( locale.getpreferredencoding()), f )
+						if os.path.isfile( paf ):
+							returnList.append( paf )
+					except:
+						## No, could not get a hold of that file.
+						## In theory, this should never happen.
+						print "CORNER CASE in Folder.__init__:", [apath], " + ", [f]
+						fpsys.logBadStrings(f) # I'm keeping a list of bad names.
+			return returnList
+
+		## All recursive changes June 2009
+		if not recurse:
+			## Note: If self.path DOES NOT EXIST then this raises and OSError
+			##	   This can happen when we use the --all cli argument (see cli.py)
+			listOfFilenamesOnly = os.listdir (  self.path  ) # Get the unicode list
+		
+			sourceList = safeJoin(self.path, listOfFilenamesOnly )
+		else:
+			# Recursive code
+			sourceList=[]
+			for root, dirs, files in os.walk( self.path ):
+				sourceList.extend( safeJoin( root, files ) )
 
 		## Now employ the generator magic:
 		## Makes FontItem objects for each paf in the list.
 		for fi in itemGenerator( self, sourceList ):
-			#print "fi:",[fi]
 			self.append(fi)
 		
 		if len(self) == 0:
-			print "EMPTY FOLDER"
+			#print "EMPTY FOLDER"
 			raise fontybugs.FolderHasNoFonts(self.path)
 
 	def __str__(self):
