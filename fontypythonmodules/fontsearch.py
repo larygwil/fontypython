@@ -60,7 +60,7 @@ appShapeDict = {0:_('quite simple'), 1:_('serif/rounded'), 2:_('decorated'), 3:_
 class FontRecords(dict):
 	"""Holds all informations extracted from the font in a dict."""
 	def __init__(self, font):
-
+		print str(font)
 		for c in categorys:
 			self[c] = {}
 
@@ -150,6 +150,7 @@ class FontRecords(dict):
 		try:
 			object_of_study = t1Lib.T1Font(str(font))
 		except:
+			print "ERROR"
 			return
 		object_of_study.parse()
 		self['Name Records'][nameIDs[translateIDs['FontName']]] = object_of_study.font['FontName']
@@ -171,14 +172,14 @@ def getInfo(font):
 
 if __name__=="__main__":
 	print 'TTF'
-	font = TruetypeItem("/usr/local/share/my_fonts/truetype/verschiedenes/ADVEMI__.TTF")
+	font = TruetypeItem("/home/donn/06.FontStore/TTFS/numbered/18th Century.ttf")
 	print getInfo(font)
 	print
-#   print 'TYPE1'
-#   font = Type1Item("/usr/share/fonts/type1/gsfonts/c059013l.pfb")
-#   print getInfo(font)
+	print 'TYPE1'
+	font = Type1Item("/home/donn/Projects/pythoning/fontyPython/goodandbadfonts/a010013l.pfb")
+	print getInfo(font)
 	print
 	print 'OTF'
-	font = OpentypeItem("/usr/local/share/my_fonts/opentype/otf-thai-tlwg/Garuda.otf")
+	font = OpentypeItem("/usr/share/texmf-texlive/fonts/opentype/public/iwona/Iwona-Bold.otf")
 	print getInfo(font)
 	

@@ -21,22 +21,26 @@ show_error = 20
 show_error_and_abort = 30
 show_message = 40
 reset_to_page_one = 50
-add_item_to_notebook = 60
-remove_item_from_notebook = 70
+add_pog_item_to_source = 60
+remove_pog_item_from_source = 70
 print_to_status_bar = 80
 install_pog = 90
 uninstall_pog = 100
 main_button_click = 110
 toggle_main_button = 120
-pog_selected = 130
+target_pog_has_been_selected = 130
+source_pog_has_been_selected = 135
 change_pog_icon = 140
-toggle_buttons = 150
-select_no_target_pog = 160
+toggle_targetpog_buttons = 150
+clear_targetpog_selection = 160
 select_no_view_pog = 170
 
 get_font_view_width = 180
 menu_settings = 190
 
+toggle_selection_menu_item = 200
+
+left_or_right_key_pressed = 1000
 
 ## A hack to allow values to return from published topics
 globRetVal = {}
@@ -67,22 +71,16 @@ class CPubsub:
 		self.__key += 1
 		
 	## Go thru all the topics, find any that match and call their functions, passing any args too.
-	## This means that one topic can have many handlers. e.g. "pog_selected" goes to two handlers.
 	def pub(self, topic, *args): #PUBLISH (was shout)
-		global globRetVal
+		#global globRetVal
 		#m = CMessage(topic, messagelist)
 		for key, top in self.__ears.iteritems():
 			if top.topic == topic:
 				function = top.function
-				## Edited this Dec 2007 to allow returns.
-				## I had added: return result,
-				## but that aborted this loop and screwed the pooch.
-				## I then tried yield result, but that turns this all
-				## into a generator and confuses me.
-				## So, if there is a return value it goes into a global dict.
-				## and you fetch it via the topic key.
-				## Live with it -- or fix it and let me know!
-				globRetVal[topic] = function(args) #Pass the args only.
+				if args:
+					function(args) #Pass the args only.
+				else:
+					function() 
 
 ## Sample of the use of this stuff:
 if __name__ == "__main__":
