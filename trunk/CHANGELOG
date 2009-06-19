@@ -1,0 +1,42 @@
+Changelist
+==========
+11 June 2009
+1. Changed many button events to wx.EVT_BUTTON for better behaviour )
+2. Fixed Bug 2 (wxgui) -- The Tab->Folder->Last Directory->Show Fonts bug.
+3. Changed cli, fontcontrol, strings and wxgui to allow recursive folders. 
+
+12 June 2009
+1. Adding a Search Assistant panel. It's full of junk from the wxDemo at the moment.
+2. Added/Edited ROADMAP after reading email from Michael.
+3. Removed Select All button. RIP bad idea :)
+4. Added Selection menu and it's sub-items. Wired-them up to the remains of the Select Button code.
+5. Fixed the PogChooser issue betwixt source and target. 
+6. Split-off most of wxgui.py classes into their own gui_xxx.py modules. 
+   Trying to make it simpler. We now have gui_Left, gui_Middle and gui_Right for the main sections.
+
+13 June 2009
+1. Continued the refactoring. Moved functions to where they made more sense. Cut down on chains of calls.
+2. Got rid of shadow functions. At last!
+3. Put refs to locale stuff into the new modules, BUT HAVE NOT TESTED i18n yet. HELP!
+4. Improved the pubsub a tiny little bit. Also removed the return value -- it was not being used.
+5. Fixed strings GPL message. It loads it from the COPYING file.
+6. Hacking a search bar together from a combo box and some spare bits :)
+
+14 June
+1. Got the search combo box working a little. History is added etc.
+
+16 June
+1. Fixed the bug where the first fitmap in the fontview would draw at an odd y value.
+2. Fixed the persistent InfoFontItem issue. Now it goes away when it should.
+
+18 June
+1. Many visual fixes. Re-factored the drawing code in Fitmap.
+2. Many little fixes like toggle selection menu and multi-selection on/off in the lists.
+
+19 June
+1. Gave up on the fancy search dream. FontTools and Panose confuse me horribly. 
+   Michael can't help dev at the moment, so it's all back to square one.
+   I remarked-out the assistant panel.
+2. I got the left and right arrow keys to step through the list - like the buttons do.
+3. I (think I) fixed the ESC key to work from anywhere.
+
