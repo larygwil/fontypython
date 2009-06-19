@@ -121,9 +121,20 @@ class MainFrame(wx.Frame):
 		self.SetMenuBar(self.menuBar)
 
 		## Setup the ESC key trap
-		accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId())])
-		self.SetAcceleratorTable(accel)
+		#accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId())])
+		#self.SetAcceleratorTable(accel)
 		
+		accel = wx.AcceleratorTable([
+			(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId()),
+			(wx.ACCEL_NORMAL, wx.WXK_RIGHT, wx.ID_FORWARD),
+			(wx.ACCEL_NORMAL, wx.WXK_LEFT, wx.ID_BACKWARD)
+			])
+		self.SetAcceleratorTable(accel)
+
+		## Bind the Left and Right key shortcuts.	
+		self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_FORWARD )
+		self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_BACKWARD )
+
 		## The X close window button.
 		self.Bind( wx.EVT_CLOSE, self.__onHandleESC )
 	
@@ -222,7 +233,11 @@ class MainFrame(wx.Frame):
 		## A nasty looking line to call the SortOutTheDamnImages function
 		## This is to draw the right icons dep on the params from cli.
 		self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
-	
+
+	def OnAccelKey(self,evt):
+		ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_Middle.py
+
+
 	def toggleSelectionMenuItem(self, onoff):
 		self.menuBar.EnableTop(1,onoff[0])
 

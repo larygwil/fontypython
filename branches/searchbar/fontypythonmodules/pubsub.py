@@ -40,6 +40,8 @@ menu_settings = 190
 
 toggle_selection_menu_item = 200
 
+left_or_right_key_pressed = 1000
+
 ## A hack to allow values to return from published topics
 globRetVal = {}
 

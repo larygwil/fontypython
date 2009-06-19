@@ -13,42 +13,41 @@ from gui_ScrolledFontView import *
 import fpsys # Global objects
 import fontyfilter
 
-
-class SearchAssistant(wx.CollapsiblePane):
-	def __init__(self, parent):
-		self.label1=_("Click for Search Assistant")
-		self.label2=_("Close Search Assistant")
-		wx.CollapsiblePane.__init__(self,parent, label=self.label1,style=wx.CP_DEFAULT_STYLE)#|wx.CP_NO_TLW_RESIZE)
-		self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged)
-		self.MakePaneContent(self.GetPane())
-		
-	def OnToggle(self, evt):
-		self.Collapse(self.IsExpanded())
-		self.OnPaneChanged()
-		
-	def OnPaneChanged(self, evt=None):
-		#if evt:
-		   # self.log.write('wx.EVT_COLLAPSIBLEPANE_CHANGED: %s' % evt.Collapsed)
-
-		# redo the layout
-		self.GetParent().Layout()
-
-		# and also change the labels
-		if self.IsExpanded():
-			self.SetLabel(self.label2)
-		else:
-			self.SetLabel(self.label1)
-		
-
-	def MakePaneContent(self, pane):
-		'''Just make a few controls to put on the collapsible pane'''
-		nameLbl = wx.StaticText(pane, -1, _("Search Assistance.") )
-		#name = wx.TextCtrl(pane, -1, "");
-	#	city  = wx.TextCtrl(pane, -1, "", size=(150,-1));
-
-		border = wx.BoxSizer()
-		border.Add(nameLbl, 1, wx.EXPAND|wx.ALL, 5)
-		pane.SetSizer(border)
+##The SearchAssistant idea was to have a panel that opens to give tips and interactive
+##help for searching. We were going to have field and PANOSE access via fontTools but
+##this dev. has paused -- until someone else with a clue can help....
+##So, this code will just remain as a remark:
+#class SearchAssistant(wx.CollapsiblePane):
+#	def __init__(self, parent):
+#		self.label1=_("Click for Search Assistant")
+#		self.label2=_("Close Search Assistant")
+#		wx.CollapsiblePane.__init__(self,parent, label=self.label1,style=wx.CP_DEFAULT_STYLE)#|wx.CP_NO_TLW_RESIZE)
+#		self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged)
+#		self.MakePaneContent(self.GetPane())
+#		
+#	def OnToggle(self, evt):
+#		self.Collapse(self.IsExpanded())
+#		self.OnPaneChanged()
+#		
+#	def OnPaneChanged(self, evt=None):
+#		#if evt:
+#		   # self.log.write('wx.EVT_COLLAPSIBLEPANE_CHANGED: %s' % evt.Collapsed)
+#
+#		# redo the layout
+#		self.GetParent().Layout()
+#
+#		# and also change the labels
+#		if self.IsExpanded():
+#			self.SetLabel(self.label2)
+#		else:
+#			self.SetLabel(self.label1)
+#		
+#
+#	def MakePaneContent(self, pane):
+#		nameLbl = wx.StaticText(pane, -1, _("Search Assistance.") )
+#		border = wx.BoxSizer()
+#		border.Add(nameLbl, 1, wx.EXPAND|wx.ALL, 5)
+#		pane.SetSizer(border)
 
 class FontViewPanel(wx.Panel):
 	"""
@@ -96,7 +95,7 @@ class FontViewPanel(wx.Panel):
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
 		self.choicePage.Bind(wx.EVT_CHOICE, self.__onPagechoiceClick) #Bind choice event
 
-		self.SA=SearchAssistant(self)
+		#self.SA=SearchAssistant(self)
 
 		## put them into the sizer
 		sizerOtherControls.Add(self.textFilter, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
@@ -132,7 +131,7 @@ class FontViewPanel(wx.Panel):
 		self.sizerFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
 
 		## The Search Assistant
-		self.sizerFontView.Add( self.SA, 0, wx.EXPAND)
+		#self.sizerFontView.Add( self.SA, 0, wx.EXPAND)
 
 		## Choice and Filter
 		self.sizerFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
@@ -145,7 +144,8 @@ class FontViewPanel(wx.Panel):
 		self.buttPrev.Bind(e,self.__navClick) 
 		self.buttNext.Bind(e,self.__navClick) 
 		self.buttMain.Bind(e,self.__onMainClick) 
-	
+
+		ps.sub( left_or_right_key_pressed, self.OnLeftOrRightKey ) ##DND: class FontViewPanel
 		ps.sub(toggle_main_button, self.ToggleMainButton) ##DND: class FontViewPanel
 		ps.sub(update_font_view, self.MainFontViewUpdate) ##DND: class FontViewPanel
 		ps.sub(reset_to_page_one, self.ResetToPageOne) ##DND: class FontViewPanel 
@@ -172,12 +172,11 @@ class FontViewPanel(wx.Panel):
 		
 		self.buttMain.SetFocus()
 		evt.Skip()
-
-	# When the user selects something, we go here.
+	# When the user selects something in the combo pull-down area, we go here.
 	def EvtComboBox(self, evt):
 		cb = evt.GetEventObject()
 		termsstring = evt.GetString()
-		print termsstring
+
 		self.startSearch(termsstring)
 		
 		self.buttMain.SetFocus()
@@ -359,7 +358,22 @@ class FontViewPanel(wx.Panel):
 		self.buttMain.SetFocus()  #a GTK bug demands this move.
 		self.__filterAndPageThenCallCreateFitmaps() 
 		wx.EndBusyCursor()
-		
+
+	def OnLeftOrRightKey(self, evt):
+		## This comes along from MainFrame via the AcceleratorTable events.
+		evt=evt[0] # just get around pubsub tuple.
+		id=evt.GetId()
+		## We can't just pass on to __navClick yet because we don't know if
+		## the button (left/right) is enabled or not. So determine that and then
+		## pass on to the other handler.
+		if id==wx.ID_FORWARD: #right arrow was pressed
+			if self.buttNext.IsEnabled():
+				self.__navClick( evt )
+		else:
+			if self.buttPrev.IsEnabled():
+				self.__navClick( evt )
+
+
 	def __buttonState(self) :
 		"""
 		Enabled state of PREV/NEXT buttons

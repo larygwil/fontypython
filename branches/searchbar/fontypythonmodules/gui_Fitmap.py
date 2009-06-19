@@ -198,13 +198,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				fcol = Fitmap.styles['ACTIVE']['fcol']
 				bcol = Fitmap.styles['ACTIVE']['bcol']		
 
-			y = 0
-			i = 0
+			y = i = 0
 			for pilimage, glyphHeight, pilwidth in pilList:
 				wxfaceimage = wx.EmptyImage( pilwidth, glyphHeight )
 				try:
 					## Get the data from PIL into wx
-					if i==1: foo()
 					wxfaceimage.SetData( pilimage.convert('RGB').tostring() ) 
 					faceBitmap = wxfaceimage.ConvertToBitmap() 
 				except:
@@ -212,9 +210,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## It may also be a bad sub-face from a ttc font.
 					## Draw error message into the memDc
 					memDc.SetTextForeground( fcol )
-					txt=_("This text cannot be drawn, not sure why.")
-					memDc.SetFont( wx.Font( 24, family=wx.SWISS, style=wx.ITALIC, weight=wx.NORMAL))
-					memDc.DrawText( txt, 10, y)
+					txt=_("This text cannot be drawn. Hey, it happens...")
+					memDc.SetFont( wx.Font( fpsys.config.points, family=wx.SWISS, style=wx.ITALIC, weight=wx.NORMAL))
+					memDc.DrawText( txt, 10, y-2)
 				else: #no error happened, we carry on.
 					## Place it into the main image, down a tad so it looks better.
 					facex = 5
@@ -228,24 +226,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				if i == self.fitem.numFaces-1:
 					self.bottomFadeEffect( memDc, totheight, maxwidth, (255,255,255) )
 				
-				## Now draw the text showing the font name/family/style.
-				## -- suggested by Chris Mohler.
-				## Prep the text to show "font family name (font file name)"
-				## Added Style info 3 Dec 2006:
-
-
 				## Postion 
 				texty = y + glyphHeight + (spacer/8)
 
+				## Now draw the text showing the font name/family/style.
+				## -- suggested by Chris Mohler.
+				## Prep the text to show "font family name (font file name)"
+				## Added Style info 3 Dec 2006:			
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
-
 				memDc.SetTextForeground( fcol )
 				memDc.SetFont( wx.Font( 8, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
 				memDc.DrawText( txt, 16, texty)
-
-				## Special message
-				#if self.fitem.inactive:
-				#	self.fatFont( memDc, 16, texty + 14, fcol, bcol, 8, wx.NORMAL, self.fitem.activeInactiveMsg )
 						
 				## Move TOP down to next BOTTOM (for next sub-face)
 				y = y + glyphHeight +  spacer
@@ -279,8 +270,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.bitmap = bitmap #record this for the init
 		return memDc
 
-
-
 	def bottomFadeEffect( self, memDc, liney, width, col ):
 		"""
 		Baptiste's idea! New implementation : June 2009
@@ -296,7 +285,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		sb = col[2]/255.0
 		## A wee generator to provide a range of float numbers
 		def frange(start,end):
-			step = 0.031
+			step = 0.01 #small steps so we get a visible band
 			v = start
 			while True:
 				if v > end:
@@ -306,8 +295,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## get the HSV of the incoming col.
 		hsv = colorsys.rgb_to_hsv(sr,sg,sb)
 		tob=hsv[2] # I want the brightness
-		## Start at 0.6 (not quite black) and go to the brightness
-		for bright in frange( 0.6, tob ):
+		## Start at 0.8 (fairly light) and go to the brightness
+		for bright in frange( 0.8, tob ):
 			## get the rgb of that hsv
 			rgb=colorsys.hsv_to_rgb( hsv[0],hsv[1],bright )
 			## go back to int colours (0 to 255)
@@ -343,25 +332,21 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 	def drawInfoOrError( self, w,h, style ):
+		"""
+		Draw the Info Font block, or an Error message block. Much clearer than it was before.
+		"""
 		memDc=self.makeBlankDC( w, h, style['backcol'])
 		self.bottomFadeEffect( memDc, self.minHeight, self.width, style['backcol'] )
 		
 		textTup = self.fitem.InfoOrErrorText()
 		
-		memDc.SetTextForeground(style['fcol'])#"black") 
+		memDc.SetTextForeground(style['fcol'])
 		
 		memDc.SetFont( wx.Font(12, family=wx.SWISS, style=wx.NORMAL, weight=wx.BOLD))
 		memDc.DrawText( textTup[0], 10, 15)
 		
 		memDc.SetFont( wx.Font(7, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
 		memDc.DrawText( textTup[1], 10, 34)
-		
-		## Special message - it may already be in a Pog.
-		#if self.fitem.inactive:
-		#	self.fatFont( memDc, 16, 45, Fitmap.styles['INACTIVE']['fcol'], Fitmap.styles['INACTIVE']['bcol'], 8, wx.NORMAL, self.fitem.activeInactiveMsg )
 
 		return memDc
-
-
-		
 
