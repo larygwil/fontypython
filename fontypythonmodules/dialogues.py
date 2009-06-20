@@ -40,6 +40,12 @@ class DialogHelp(wx.Dialog):
 	def __init__(self, *args, **kwds):
 		kwds["style"] = wx.DEFAULT_DIALOG_STYLE
 		wx.Dialog.__init__(self, *args, **kwds)
+		
+		ID_ESC = 1001
+		self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
+		self.SetAcceleratorTable(self.accel)
+		self.Bind(wx.EVT_MENU, self.Escape, id=ID_ESC)
+		
 		dbox = wx.BoxSizer(wx.VERTICAL)
 		btn = wx.Button(self, wx.ID_OK)
 		btn.SetDefault()
@@ -52,6 +58,9 @@ class DialogHelp(wx.Dialog):
 		#dbox.Fit(self)
 		#self.Layout()
 		win.SetFocus()# magically enables ESC key too! Go figure :)
+	def Escape(self, event):
+		self.Close()
+
 class TestHtmlPanel(wx.Panel):
 	def __init__(self, parent, size):
 		wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
@@ -330,29 +339,28 @@ class DialogCheckFonts( wx.Dialog ):
 		fpsys.checkFonts( dirtocheck, self.printer )
 		wx.EndBusyCursor()
 		
-"""
-May 2009 - Busy
-class PopupInfo(wx.Frame):
-	def __init__(self, parent, id, title, fmap):
-		wx.Frame.__init__(self, parent, id, title)
-		self.box = wx.BoxSizer(wx.VERTICAL)
-		self.list = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_WORDWRAP)
-		self.box.Add(self.list, proportion=1, flag=wx.EXPAND)
-		font = fmap.fitem
-		info = fontsearch.getInfo(font)
-		try:
-			self.SetTitle(info['Name Records']['Full Name'])
-		except KeyError:
-			self.SetTitle(font.name)
-		except:
-			self.SetTitle("Font Information")
-		text = str(info)
-		self.list.AppendText(text)
-		self.butClose = wx.Button(self, id = wx.ID_OK)
-		self.butClose.Bind(wx.EVT_BUTTON, lambda event : self.Close())
-		self.Bind(wx.EVT_COMMAND_KILL_FOCUS, lambda event : self.Close())
-		self.box.Add(self.butClose, flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER)
-		self.box.Layout()
-		self.SetSizer(self.box)		
+## May 2009 - Busy
+## June 2009 - Given up on this code for now.
 
-"""
+#class PopupInfo(wx.Frame):
+#	def __init__(self, parent, id, title, fmap):
+#		wx.Frame.__init__(self, parent, id, title)
+#		self.box = wx.BoxSizer(wx.VERTICAL)
+#		self.list = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_WORDWRAP)
+#		self.box.Add(self.list, proportion=1, flag=wx.EXPAND)
+#		font = fmap.fitem
+#		info = fontsearch.getInfo(font)
+#		try:
+#			self.SetTitle(info['Name Records']['Full Name'])
+#		except KeyError:
+#			self.SetTitle(font.name)
+#		except:
+#			self.SetTitle("Font Information")
+#		text = str(info)
+#		self.list.AppendText(text)
+#		self.butClose = wx.Button(self, id = wx.ID_OK)
+#		self.butClose.Bind(wx.EVT_BUTTON, lambda event : self.Close())
+#		self.Bind(wx.EVT_COMMAND_KILL_FOCUS, lambda event : self.Close())
+#		self.box.Add(self.butClose, flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER)
+#		self.box.Layout()
+#		self.SetSizer(self.box)		

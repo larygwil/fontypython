@@ -155,7 +155,7 @@ Tips:
   the app. Sometimes the system needs a while to
   reflect the new fonts in your fonts folder.
 
-Examples: - all using short options, see -h
+Examples: All using short options, see -h
 =========
 %(c)s /path/to/fonts/ttfs/a
   This will start off showing the fonts in that path.
@@ -211,6 +211,16 @@ Examples: - all using short options, see -h
   then you should run a check on that folder.
   This will 'mark' the dangerous fonts and let
   you use that folder in the future.
+
+%(c)s -a /some/path HolyHandGrenade
+  This will put all the fonts in that path into
+  the Pog called HolyHandGrenade.
+
+%(c)s -A /some/path Tutto
+  This will do the same as -a above: start in that 
+  path, but it will then walk down recursivly 
+  through all sub-folders too. The fonts will 
+  be placed in Tutto.
 
 Your fontypython folder is:
 %(folder)s

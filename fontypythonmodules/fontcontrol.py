@@ -254,6 +254,7 @@ class FontItem( object ):
 		return self.glyphpaf
 	
 	def InfoOrErrorText(self):
+		"""Used in Fitmap code to draw strings and things."""
 		if self.badfont:
 			l1 = self.badfontmsg
 			l2 = self.glyphpaf_unicode 
@@ -276,6 +277,7 @@ class InfoFontItem( FontItem ):
 		"""Overridden so that it does not happen for this class."""
 		pass
 	def InfoOrErrorText( self ):
+		"""An override : InfoFontItem needs only these words"""
 		l1 = _("There are no fonts to see here, move along.")
 		l2 = _("(Check your filter!)")
 		return ( l1, l2 )
@@ -452,8 +454,7 @@ class EmptyView(BasicFontList):
 		
 	def label(self):
 		return str(self.name)
-	####
-	## generate the list
+
 	def genList(self):
 		return 
 		
@@ -564,7 +565,6 @@ class Folder(BasicFontList):
 	def label( self ):
 		"""
 		A handy way to refer to Folders & Pogs in certain circumstances.
-		See around line 1296 wxgui.OnMainClick()
 		Pog.label returns the name
 		Folder.label returns the path
 		"""
