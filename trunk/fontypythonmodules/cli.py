@@ -351,7 +351,6 @@ if options.all:
 		print _("I have placed %(count)s fonts from %(folder)s into %(pog)s.") % {"count":str(count), "folder":FOLDERNAME, "pog":POGNAME }
 	else:
 		print _("The fonts from %(folder)s are *already* in %(pog)s.") % {"folder": FOLDERNAME, "pog":POGNAME  }
-	del count
 	raise SystemExit
 
 ####
