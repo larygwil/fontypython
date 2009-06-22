@@ -18,7 +18,6 @@
 import locale
 import strings
 import fpsys # Global objects
-import fontybugs
 import fpversion
 
 ## Now, bring in all those big modules

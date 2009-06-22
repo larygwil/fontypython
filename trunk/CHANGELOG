@@ -46,4 +46,10 @@ Changelist
 2. Caught an encode and decode problem in Folder.__init__. Had to jump through the usual
    unicode hoops to fix it. Hope it is fixed now...
 3. Added the licence header to a bunch of files it was missing from.
+4. Small fixes to README regarding i18n.
+5. Fixing some unicode errors and error dialog boxes.
+6. Trying to repair the "lost focus" bug when the main button is clicked -- so far no dice.
+
+22 June
+1. Rigged the main button so that focus is not lost on click. It's a hack, but what the heck.
 

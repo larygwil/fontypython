@@ -292,7 +292,8 @@ class FontViewPanel(wx.Panel):
 		"""
 		xPos, yPos = self.scrolledFontView.GetViewStart() #Saved by Robin Dunn, once again ! ! !
 		wx.BeginBusyCursor()
-		
+		doupdate = False
+
 		## Let's determine what kind of thing to do:
 		if fpsys.state.action == "REMOVE":
 			## We have a pog in viewobject and we must remove the selected fonts from it.
@@ -316,8 +317,7 @@ class FontViewPanel(wx.Panel):
 					bug = True
 					ps.pub( show_error, unicode( e ) )
 
-				## Now, let's redraw the vo
-				self.MainFontViewUpdate()
+				doupdate = True
 
 				if not bug:
 					ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
@@ -344,27 +344,17 @@ class FontViewPanel(wx.Panel):
 					bug = True
 					ps.pub( show_error, unicode( e ) )
 
-				wx.CallAfter(self.MainFontViewUpdate)
-				print "just after wx.CallAfter"
+				doupdate = True
 
 				if not bug:
 					ps.pub(print_to_status_bar,_("Selected fonts are now in %s.") % to.label())
 				else:
 					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done"))
-		
-		## After pressing the button, the focus goes ... away ...
-		## I don't know where and I'm trying to get it to go someplace
-		## so that the ESC key continues working.
-		## Forget it. I can't fix this. Onwards... other stuff to do!
-		## self.menuBar.SetFocus()
 
 		wx.EndBusyCursor()
 		self.scrolledFontView.Scroll(xPos, yPos)
 		
-		#self.textFilter.SetFocus()
-
-		evt.Skip()
-		print "sub ends"
+		if doupdate: self.MainFontViewUpdate()
 		
 	def onPagechoiceClick(self,event) :
 		wx.BeginBusyCursor()
@@ -418,15 +408,17 @@ class FontViewPanel(wx.Panel):
 		
 	def ToggleMainButton(self):
 		ps.pub( toggle_selection_menu_item, True )
+		self.buttMain.SetLabel( self.buttMainLastLabel )
 		if fpsys.state.action == "NOTHING_TO_DO":
 			self.buttMain.Enable( False )
 			ps.pub( toggle_selection_menu_item, False )
 			return
+
 		if fpsys.state.numticks > 0: 
 			self.buttMain.Enable(True)
 		else: 
-			self.buttMain.Enable(False)
-			
+			self.buttMain.SetLabel( _("Choose some fonts") )
+
 	def MainFontViewUpdate(self):
 		"""
 		Vital routine - the heart if the app. 
@@ -435,7 +427,6 @@ class FontViewPanel(wx.Panel):
 		It draws the controls and the fonts as appropriate. 
 		It also sets flags in fpsys.state
 		"""
-		print "MainFontViewUpdate runs"
 		## Get shorter vars to use.
 		V = fpsys.state.viewobject
 		T = fpsys.state.targetobject
@@ -535,11 +526,12 @@ class FontViewPanel(wx.Panel):
 			print "MOJO ERROR: %s and trouble" % Patt
 			raise SystemExit
 			
-		self.buttMain.SetLabel(btext)
+		self.buttMainLastLabel=btext
 		self.textMainInfo.SetLabel(lab)
 		self.textMainInfo.Show()
 		if status is not "":
 			ps.pub(print_to_status_bar, status)
+
 		self.ToggleMainButton()
 
 		fpsys.markInactive()
