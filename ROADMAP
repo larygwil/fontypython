@@ -12,80 +12,24 @@ run Fonty. It tries to prioritize speed of start-up and lightness of footprint.
 wxgui Bugs
 ==========
 Bug 1
-> #2 If you want change to the "Pog"-page in the left source notebook after
-> a folder was selected in the "Folder"-dircontrol, two clicks are
-> needed. The first only takes the focus from the dircontrol, the second
-> selects the "Pog"-page.
-> Replace the standard wx.Notebook with wx.aui.AuiNotebook helps.
->> Yes, AuiNotebook really fix this bug. But, I see, this is problematic,
->> AUI has an other look, that doesn't fits to the rest. I think there is
->> a way to fix this bug with the old notebook, deep in the code there
->> must lack an event.Skip(). One function has to be overwritten, but
->> don't ask me which and where.
+Notebook focus bug:
+1. Click Folder tab. 
+2. Click a folder in DirCtrl. 
+3. Click Pog Tab. Notice it takes 2 clicks to go there.
 Best fix : Keep old notebook control and have it function properly. 
 Next best: Replace with aui notebook.
 
 
-
 wxgui Tasks
 ===========
-A) Search
-We need a panel that appears above the controls and below (or over, like a 
-div on a web page) the font list (in the middle column). It should (ideally)
-slide (animate) up and down. 
-However it appears, the idea is that it will be extra room for help with searching.
-It may also house the PANOSE wizard. (see later in this doc.)
-
-Within the panel - draw the search fields (see Search Module) in some way. 
-If any one is clicked on then it should appear (at the cursor) in the search bar.
-
-We need a search bar that:
- * Keeps history.
- * Offers a way to move fwd/back in history (i.e. can access history)
- * Is clearable.
- * Has a "Search" button.
- * Has an "Assist" button. (Opens the panel above)
-
-B) Pager
+A) Pager
 If possible, replace the combo-box for paging with a more web-like 
 pager control: << < 1 | 2 | 3 | 4 > >> 
 
-Keep the Next and Previous buttons and bind keystrokes to them.
-
-C) Selection menu
-Select All, Clear all selected
-
-D) Font view selection
+B) Font view selection
 Ctrl+a for select-all (visible in page)
 shift+click for range selection
 
-E) Remove the Select All button
-
-D) Improve the errorText() messages. Use Michael's code.
-
-Search Module
-=============
-A) Parser
-1. Ensure that we have a search "language" and that it parses the search string
-into the proper tokens. Decide on the names of the fields for searching. Example Copyright:
-and PANOSE:
-* I would suggest we make the field names case insensitive!
-
-2. Ensure that this works with i18n/unicode. This is going to be difficult. At the minimum we 
-need to test on English/German but French and Italian would be good too.
-
-3. Ensure that if we cannot do 2, that the search does not crash or block the use of
-Fonty. We should still be able to "search" on simple fields like "bold" and "Italic" and, 
-most importantly, a blank search should mean "All".
-
-B) Search
-1. Given a list fields:values and a list of fontitems, go through each and supply those that 
-match the search criteria.
-The search should be "loose" i.e. not too strict. Rather include than exclude.
-The search terms are automatically "AND". I vote there is no "OR" and no "NOT".
-
-2. Make sure this works with i18n and unicode... At minimum there should be no crashes, no
-decode errors. The app should ignore and continue on any problems.
 
 Mad Ideas
 =========
@@ -112,4 +56,3 @@ a Panose number for them.
 Could this be done? If so, it should happen in the panel above the search bar.
 It should also have a history and a means to enter the wizard at arbitrary points of the 
 chain. It should be obvious, easy and quick.
-

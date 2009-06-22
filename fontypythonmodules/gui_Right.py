@@ -141,36 +141,51 @@ class TargetPogChooser(wx.Panel):
 			dlg.Destroy()
 			return
 			
+		tl = self.pogTargetlist
+
 		## DELETE
 		if e.GetId() == self.iddelete:
 			## Selected Pog to be deleted
-			pogname = fpsys.state.targetobject.name
+			tokill=[ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]
+			#@pogname = fpsys.state.targetobject.name
+			if len(tokill)>1: 
+				pogname=""
+				for f in tokill[:-1]:
+					pogname += u"%s," % f
+				pogname += tokill[-1]
+			else:
+				pogname=tokill[0]
+
 			dlg = wx.MessageDialog(self, _("Remove %s, are you sure?") % pogname,
 								   _("Are you sure?"),
 								   wx.YES_NO | wx.ICON_INFORMATION
 								  )
 			if dlg.ShowModal() == wx.ID_YES:
-				## Now kill the file on disk:
-				try:
-					fpsys.state.targetobject.delete()
-				except fontybugs.PogCannotDelete, e:
-					ps.pub(show_error, unicode( e ))
-					return
-				## This object was also our target object (it was selected - duh!)
-				## Remove from the list:
-				self.pogTargetlist.RemoveItem(pogname)
-				ps.pub( remove_pog_item_from_source, pogname)				
-				## So, we must now select no pog.
-				self.SelectNoTargetPog()
+				for victim in tokill:
+					fpsys.instantiateTargetPog(victim)
+					## Now kill the file on disk:
+					try:	
+						fpsys.state.targetobject.delete()
+					except fontybugs.PogCannotDelete, e:
+						ps.pub(show_error, unicode( e ))
+						return
+					## This object was also our target object (it was selected - duh!)
+					## Remove from the list:
+					self.pogTargetlist.RemoveItem(victim)#pogname)
+					ps.pub( remove_pog_item_from_source, victim)#pogname)				
 
-				## What if it was ALSO our view object?
-				if fpsys.state.viewobject.label() == pogname:
-					## It was! We must declare it Empty.
-					fpsys.SetViewPogToEmpty()
+					## What if it was ALSO our view object?
+					if fpsys.state.viewobject.label() == victim:
+						## It was! We must declare it Empty.
+						fpsys.SetViewPogToEmpty()
+				
 				## Now re-draw things
 				ps.pub(update_font_view)
-			dlg.Destroy()
-			return 
+				dlg.Destroy()
+
+				## Select no pog.
+				self.SelectNoTargetPog()
+				return
 		
 		## NO POG pressed
 		if e.GetId() == self.idnone:
@@ -210,7 +225,6 @@ class TargetPogChooser(wx.Panel):
 			
 
 		## Prepare for Install/Uninstall POG
-		tl = self.pogTargetlist
 
 		## install or uninstall all selected pogs - caters for multiple pog selections
 		## the instantiateTargetPog must be called on each pog-name in the list

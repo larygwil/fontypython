@@ -3,7 +3,7 @@
 <table cellpadding="5">
 <TR><TD valign="middle">
 <img src="../common/logo_dec_2007.png"><BR>
-<font color="#768b94"><h1>Fonty Python Help</h1>Updated May 2009</font>
+<font color="#768b94"><h1>Fonty Python Help</h1>Updated June 2009</font>
 </TD></TR>
 <tr><TD>
 		<p><i>FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.</i></p>
@@ -17,11 +17,11 @@
 		<p>Fonty is also great for just looking at fonts wherever they are on your computer, without having to install them first. She also has a command-line, allowing very quick use. You can install/remove pogs without having to start the entire gui, which is neat.</p>
 		<h1>Home dot fonts</h1>
 		<p>In your home directory there is a hidden directory named ".fonts". The dot makes it hidden. In there you will find font files of various kinds. Whatever is listed in that directory is a font that your system can use. It's not as simple as this because on GNU/Linux there are other places where fonts are also installed, but it's a handy place to work. You should never need to go into this directory so there's no reason to worry about it.</p>
-		<h1>News</h1>
+		<h1>Latest News</h1>
 		<ol>
-			<li>(May 2009) There is a "Select All fonts" button now. You can select every font in a folder (or another Pog) in one go.</li>
-			<li>Fonty now supports TTF, OTF, TTC (Truetype Collections) and Type1 fonts (PFA and PFB)</li>
-			<li>Fonty is also localized! As long as your LANG variable is set properly! <strong>Please see the LOCAliZATION TIPS</strong> at the end of this help.</li>
+			<li>(June 2009) There is an "Include sub-folders" check box now. See also the command-line option "-A"</li>
+			<li>(June 2009) New keyboard shortcuts. Left and Right arrows will step through your fonts.</li>
+			<li>(June 2009) Multiple Pog selection. Remove, Install or Uninstall many Pogs at once.</li>
 		</ol>
 </TD></tr>
 
@@ -31,7 +31,7 @@
 <h1>Layout</h1>
 <table cellspacing="10">
 <TR><TD>
-		<IMG src="fp_1to8.png" align="left" border="0">
+		<IMG src="fp_1to8-nq8.png" align="left" border="0">
 </TD></TR>
 <TR><TD>
 		<p><h4>The interface works from left to right. You select a Source on the far left (1), then you  select fonts from the middle section (3) and finally you choose a Target "Pog" (4) where you want to store them.</h4></p>
@@ -41,7 +41,8 @@
 <tr><td valign="top">
 	<IMG src="../common/fp1.png.cr.png" align="left" border="0">
 </td><td><br>
-This section lets you choose the fonts you want to look at. You can choose a folder <i>or</i> another Pog as the Source, simply choose the appropriate tab.<br>It's quite nice to get fonts out of another Pog sometimes; it's quicker than trying to find them on a drive somewhere, this is why Pogs can be Sources too - don't let this confuse you!<br>Keep your eyes on the label at 2 to see what the current selected Source is.
+This section lets you choose the fonts you want to look at. You can choose a folder <i>or</i> another Pog as the Source, simply choose the appropriate tab.<br>It's quite nice to get fonts out of another Pog sometimes (it's quicker than trying to find them on a drive somewhere), so Pogs can be Sources too - don't let this confuse you!<br>Keep your eyes on the label at 2 to see what the current selected Source is.<br><br>
+<strong>NEW: Recursion</strong><br>Above the Folders is a checkbox to include fonts in sub-folders under your chosen folder. You can deal with many fonts at once in this way -- but beware the trade-off of speed and stability.<br>
 </td></tr>
 <tr><TD valign="top">
 <IMG src="../common/fp2.png.cr.png" align="left" border="0"></TD><td><br>
@@ -54,7 +55,7 @@ The fonts in the folder or Pog you chose on the left will show here.
 <br><br>
 <strong>Please note:</strong> An error marker may appear instead of the expected font glyphs. These fonts either cannot be opened (for whatever reason) or they cannot be 'rendered' (I can't draw them). You can still select these 'bad' fonts and place them into Pogs and then install them.<br> The reason for this is that Fonty Python is not <em>all</em> that good at drawing fonts (it's a long story) but other apps like Inkscape and The Gimp work just fine. So, if you know you need a font and Fonty says it's bad, just ignore the error message and select it like any other font.
 <br><br>
-<strong>New: </strong>You can now change the size of the fonts with Ctrl and the mouse wheel. It's a little slow, but handy.
+<strong>Tip: </strong>You can change the size of the fonts with <strong>Ctrl + mouse wheel (up/down)</strong>.
 <br><br>
 This section has various behaviours, depending on what you have selected:<br>
 <ol>
@@ -92,19 +93,29 @@ This is the main <i>action</i> button. It will change it's functionality as you 
 </td></tr>
 <tr><TD valign="top">
 <IMG src="../common/fp7.png.cr.png" align="left" border="0"></TD><td><br>
-These controls (and the Back button on the left) allow you to navigate between "pages" of fonts. You can choose any page from the pull-down, or you can step forward/back one at a time. Please go to File->Settings (or hit Ctrl+S -- for English locales) where you can change the number of fonts in a page.<br>
-<i>I use the paged approach to reduce the memory demands of the app.</i>
+These controls, Forward and the Back (shortcut keys Left and Right arrows) allow you to navigate between "pages" of fonts. You can also choose any page from the pull-down. Please go to File->Settings (or hit Ctrl+S -- for English locales) where you can change the number of fonts in a page. <i>I use the paged approach to reduce the memory demands of the app.</i>
 </td></tr>
 <tr><TD valign="top">
 <IMG src="../common/fp8.png.cr.png" align="left" border="0"></td><td><br>
 The buttons in this section all act upon the currently selected <strong>target</strong> Pog. You can variously delete, install, uninstall and purge the selected Pog. You can also create new Pogs from here.
+<br>
+<strong>Multiple selection</strong> is now available. You can delete or Install or Uninstall many Pogs at once.
 </td></tr>
 </table>
 
 <hr>
+<h1>Shortcut keys</h1>
+<ol>
+	<li><strong>If shortcut keys don't work</strong>, click in the filter text box. This seems to kick them back to life. Don't ask me what's going on....</li>
+	<li><strong>Esc key</strong> will close your app (and help etc.) quickly.</li>
+	<li><strong>Left and Right arrow keys</strong> will step through fonts like the Next and Previous buttons do.</li>
+	<li><strong>Middle-click (the wheel-button)</strong> in the font view (position 3 above) will open the Settings screen (like Ctrl+S does)</li>
+	<li><strong>Ctrl + Mouse wheel up/down</strong> will increase/decrease the size of your font previews quickly.</li>
+</ol>
+
+<hr>
 <h1>Handy tips</h1>
 <ol>
-	<li>Use the new "Select ALL fonts" button to quickly select <b>everything</b> in a Folder (or a Pog).</li>
 	<li>Try to use Fonty from the command-line (from a console). It's easy, simply type: <pre>fontypython --help</pre></li>
 	<li>Pog files are merely text files. They are very, very simple and this was intentional. Here are some things you can do with them:
 	<ul>
