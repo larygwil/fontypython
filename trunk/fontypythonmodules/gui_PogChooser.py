@@ -1,3 +1,20 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
 import wx, locale
 
 ## Setup wxPython to access translations : enables the stock buttons.
@@ -56,7 +73,7 @@ class PogChooser(wx.ListCtrl) :
 
 		self.__PC = fpsys.iPC # reuse the global pathcontrol object
 		
-		self.__fillPogList() 
+		self.fillPogList() 
 		
 		## Highlight the pog selected (the last one, or the cli chosen one)
 		if select:
@@ -71,7 +88,7 @@ class PogChooser(wx.ListCtrl) :
 		self.ClearBackground() 
 		self.items = None
 		
-		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.__onSelect) 
+		self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.onSelect) 
 		
 		## This one is a double click event
 		## self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.__onActivate )
@@ -82,7 +99,7 @@ class PogChooser(wx.ListCtrl) :
 		## twice by the app...
 		ps.sub(change_pog_icon, self.ChangeIcon) ##DND: class PogChooser
 		
-	def __Sorter(self, key1, key2):
+	def Sorter(self, key1, key2):
 		"""
 		Fetch the strings from our CLASS LEVEL copy of the pognames
 		so that we can compare them via locale.
@@ -91,7 +108,7 @@ class PogChooser(wx.ListCtrl) :
 		## Since the gui is unicode, I *think* I don't have to worry about errors here.
 		return locale.strcoll( s1, s2 )
 		
-	def __onSelect(self, e):
+	def onSelect(self, e):
 		wx.BeginBusyCursor()
 		self.indexselected = e.m_itemIndex
 		pognochange = False
@@ -117,7 +134,6 @@ class PogChooser(wx.ListCtrl) :
 		Determines the images of the list items.
 		Is called from TargetPogChooser as well (when clear button is clicked)
 		"""
-		
 		if pognochange is ():
 			pognochange = True
 			
@@ -153,22 +169,17 @@ class PogChooser(wx.ListCtrl) :
 				CLONE = ti.GetImage()# gets the image index, not an image bitmap.
 				self.__VIEW.SetItemImage(x, CLONE)
 				
-		
 	def __del__(self) :
 		del self.items
-		
 
-	def __fillPogList(self):
+	def fillPogList(self):
 		"""
 		This is among the very FIRST things we do.
 		Fill the list with pogs.
 		This will CULL any bad pogs (i.e. those with malformed content)
 		Thus the PogInvalid error should not happen any more after a run.
 		"""
-		#print "__fillPogList runs:\n\n"
 		pl = self.__PC.getPogNames() # pl will always be a BYTE STRING list
-		#print "pl:", pl
-		#print
 		
 		for p in pl: # 'p' is a byte string.
 			ipog = fontcontrol.Pog(p)
@@ -199,7 +210,7 @@ class PogChooser(wx.ListCtrl) :
 			row = self.InsertItem( li ) 
 			self.SetItemData( row, id ) # associate back to __poglistCopy
 
-		self.SortItems( self.__Sorter )
+		self.SortItems( self.Sorter )
 		
 	def AddItem(self, pogname):
 		"""
@@ -212,7 +223,7 @@ class PogChooser(wx.ListCtrl) :
 		self.__poglistCopy[id] = pogname 
 		row = self.InsertItem(li)
 		self.SetItemData( row, id )
-		self.SortItems( self.__Sorter )
+		self.SortItems( self.Sorter )
 		
 	def RemoveItem(self, pogname):
 		row = self.FindItem(-1, pogname)

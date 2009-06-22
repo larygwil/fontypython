@@ -1,6 +1,12 @@
 import fpsys # Global objects
 import re
 
+"""
+June 2009
+Created this file with the intention of more complex searching using the 
+FontTools module. This has not come to fruition, but I will keep this
+module just in-case.
+"""
 def doFilter( filter_string ):
 	##filter_string is a unicode object
 

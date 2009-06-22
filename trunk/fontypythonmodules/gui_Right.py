@@ -1,3 +1,20 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
 import wx
 
 ## Setup wxPython to access translations : enables the stock buttons.
@@ -12,8 +29,6 @@ from gui_PogChooser import *
 import fpsys # Global objects
 import fontyfilter
 import fontybugs
-
-
 
 
 class TargetPogChooser(wx.Panel):
@@ -83,17 +98,17 @@ class TargetPogChooser(wx.Panel):
 		
 		## Bind the events:
 		e=wx.EVT_BUTTON # was wx.EVT_LEFT_UP
-		self.buttNoPog.Bind(e, self.__multiClick)
-		self.buttNew.Bind(e, self.__multiClick)
-		self.buttInstall.Bind(e, self.__multiClick)
-		self.buttUninstall.Bind(e, self.__multiClick)
-		self.buttDelete.Bind(e, self.__multiClick)
-		self.buttPurge.Bind(e, self.__multiClick)
+		self.buttNoPog.Bind(e, self.multiClick)
+		self.buttNew.Bind(e, self.multiClick)
+		self.buttInstall.Bind(e, self.multiClick)
+		self.buttUninstall.Bind(e, self.multiClick)
+		self.buttDelete.Bind(e, self.multiClick)
+		self.buttPurge.Bind(e, self.multiClick)
 		
-		self.__toggleButtons()
+		self.toggleButtons()
 		
 	## Catch all the button clicks on the control.
-	def __multiClick(self, e):
+	def multiClick(self, e):
 		## NEW
 		if e.GetId() == self.idnew: 
 			## New Pog button pressed
@@ -102,9 +117,11 @@ class TargetPogChooser(wx.Panel):
 					_("New Pog"), _("Fonty Python"))
 			dlg.SetValue("")
 			if dlg.ShowModal() == wx.ID_OK:
-				## Is it unique?
 				nam = dlg.GetValue()
-				if fpsys.isPog(nam):
+				if nam == "":
+					ps.pub( show_message, _("A Pog with no name won't be created, however it was a good try!") )
+				## Is it unique?
+				elif fpsys.isPog(nam):
 					## Nope, it's there already
 					ps.pub(show_message, _("%s already exists.") % nam)
 				else:
@@ -223,7 +240,7 @@ class TargetPogChooser(wx.Panel):
 				if ok:
 					## Update GUI
 					ps.pub( change_pog_icon )
-					self.__toggleButtons()
+					self.toggleButtons()
 					ps.pub( update_font_view )
 
 			wx.EndBusyCursor()
@@ -247,7 +264,7 @@ class TargetPogChooser(wx.Panel):
 				if ok:
 					## Update GUI
 					ps.pub( change_pog_icon )
-					self.__toggleButtons()
+					self.toggleButtons()
 					ps.pub( update_font_view )
 
 			wx.EndBusyCursor()	
@@ -270,9 +287,9 @@ class TargetPogChooser(wx.Panel):
 			return
 
 		ps.pub(update_font_view)
-		self.__toggleButtons()
+		self.toggleButtons()
 		
-	def __toggleButtons(self):
+	def toggleButtons(self):
 		## If this is a no target pog situation, hide 'em all.
 		if fpsys.state.targetobject is None:
 			self.buttDelete.Enable(False)
@@ -296,5 +313,5 @@ class TargetPogChooser(wx.Panel):
 		self.pogTargetlist.ClearSelection() #Select nothing.
 		
 		fpsys.SetTargetPogToNone()  # Tell fpsys that we have no pog target selected	
-		self.__toggleButtons() # Disable the buttons on the bottom right.		
+		self.toggleButtons() # Disable the buttons on the bottom right.		
 		wx.EndBusyCursor()

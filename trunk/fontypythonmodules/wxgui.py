@@ -35,8 +35,7 @@ ps = CPubsub()
 ## Fetch the dialogue classes *About, Settings, Help, etc.*
 import dialogues
 
-## DND: NB--
-## Comments that have DND: in them mean DO NOT DELETE. They are used by me via grep on the cli.
+## DND: NB--Comments that have DND: in them mean DO NOT DELETE. They are used by me via grep on the cli.
 
 
 #from gui_PogChooser import *
@@ -120,10 +119,7 @@ class MainFrame(wx.Frame):
 		## Tell the frame the news
 		self.SetMenuBar(self.menuBar)
 
-		## Setup the ESC key trap
-		#accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId())])
-		#self.SetAcceleratorTable(accel)
-		
+		## Setup the ESC key and the LEFT / RIGHT keys
 		accel = wx.AcceleratorTable([
 			(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId()),
 			(wx.ACCEL_NORMAL, wx.WXK_RIGHT, wx.ID_FORWARD),
@@ -136,17 +132,17 @@ class MainFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_BACKWARD )
 
 		## The X close window button.
-		self.Bind( wx.EVT_CLOSE, self.__onHandleESC )
+		self.Bind( wx.EVT_CLOSE, self.onHandleESC )
 	
 		## Bind events for the menu items
-		self.Bind(wx.EVT_MENU, self.__onHandleESC, self.exit)
-		self.Bind(wx.EVT_MENU, self.__menuSettings, id = 101)
-		self.Bind(wx.EVT_MENU, self.__menuCheckFonts, id = 102 )
-		self.Bind(wx.EVT_MENU, self.__menuAbout, id = 202)
-		self.Bind(wx.EVT_MENU, self.__menuHelp, id = 201)
+		self.Bind(wx.EVT_MENU, self.onHandleESC, self.exit)
+		self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
+		self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
+		self.Bind(wx.EVT_MENU, self.menuAbout, id = 202)
+		self.Bind(wx.EVT_MENU, self.menuHelp, id = 201)
 		# June 2009
-		self.Bind(wx.EVT_MENU, self.__menuSelectionALL, id=301)
-		self.Bind(wx.EVT_MENU, self.__menuSelectionNONE, id=302)
+		self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
+		self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
 		
 		## Create a splitter 
 		self.splitter = Splitter(self) 
@@ -218,12 +214,12 @@ class MainFrame(wx.Frame):
 		ps.sub(show_message, self.MessageBox) ##DND: class MainFrame
 		ps.sub(print_to_status_bar, self.StatusbarPrint) ##DND: class MainFrame
 		## Dec 2007 - Used on middle click in gui_Fitmap.py
-		ps.sub( menu_settings, self.__menuSettings ) ##DND: class MainFrame
+		ps.sub( menu_settings, self.menuSettings ) ##DND: class MainFrame
 		ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem ) ##DND: class MainFrame
 
 		## When splitter is changed (after the drag), we want to redraw
 		## the fonts to the new width.
-		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.__onSize)
+		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
 		
 		self.Layout()
 
@@ -231,7 +227,7 @@ class MainFrame(wx.Frame):
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
 		## A nasty looking line to call the SortOutTheDamnImages function
-		## This is to draw the right icons dep on the params from cli.
+		## This is to draw the right icons depending on the params from cli.
 		self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
 	def OnAccelKey(self,evt):
@@ -241,7 +237,7 @@ class MainFrame(wx.Frame):
 	def toggleSelectionMenuItem(self, onoff):
 		self.menuBar.EnableTop(1,onoff[0])
 
-	def __onSize( self, evt ):
+	def onSize( self, evt ):
 		"""
 		The splitter has been moved. Don't ask me why splitter and not splitter2
 		is the one we have to use. Go figure.
@@ -265,13 +261,13 @@ class MainFrame(wx.Frame):
 		dlg.Destroy()
 	def ErrorAbort(self, args):
 		self.ErrorBox(args) #Pass it along to be displayed
-		self.__endApp()
+		self.endApp()
 		
-	def __onHandleESC(self, e) :
+	def onHandleESC(self, e) :
 		print strings.done
-		self.__endApp() 
+		self.endApp() 
 
-	def __endApp(self) :
+	def endApp(self) :
 		"""
 		Save app's vital statistics and exit.
 		See the end of start.py where it's actually saved.
@@ -285,7 +281,7 @@ class MainFrame(wx.Frame):
 		fpsys.config.recurseFolders = app.GetTopWindow().nb.recurseFolders.GetValue()
 		self.Destroy() 
    
-	def __menuSettings(self, e):
+	def menuSettings(self, e):
 		lastnuminpage, lastpoints, lasttext = fpsys.config.numinpage ,fpsys.config.text, fpsys.config.points
 		dlg = dialogues.DialogSettings(self)
 		val = dlg.ShowModal()
@@ -302,17 +298,17 @@ class MainFrame(wx.Frame):
 			ps.pub( update_font_view )
 		dlg.Destroy()
 
-	def __menuAbout(self, e):
+	def menuAbout(self, e):
 		dlg =dialogues.DialogAbout(self)
 		val = dlg.ShowModal()
 		dlg.Destroy()
 		
-	def __menuHelp(self, e):
+	def menuHelp(self, e):
 		dlg = dialogues.DialogHelp(self, size=(800, 600))
 		val = dlg.ShowModal()
 		dlg.Destroy()
 
-	def __menuCheckFonts( self, e ):
+	def menuCheckFonts( self, e ):
 		"""
 		Added Jan 18 2008
 		User can visit suspicious directories with this tool
@@ -329,7 +325,7 @@ class MainFrame(wx.Frame):
 		val = dlg.ShowModal()
 		dlg.Destroy()
 
-	def __menuSelectionALL(self,e):
+	def menuSelectionALL(self,e):
 		if not fpsys.state.cantick: return # Can't tick if this is False.
 		fpsys.state.numticks=0
 		vo=fpsys.state.filteredViewObject # We want to select what is FILTERED
@@ -340,7 +336,7 @@ class MainFrame(wx.Frame):
 		## Now update the view
 		ps.pub( update_font_view )	
 
-	def __menuSelectionNONE(self,e):
+	def menuSelectionNONE(self,e):
 		fpsys.state.numticks=0
 		vo=fpsys.state.viewobject # We *REALLY* mean select NONE. So ignore filter.
 		for fi in vo:
@@ -352,18 +348,27 @@ class MainFrame(wx.Frame):
 
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-import wx.lib.mixins.inspection
+#import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App, wx.lib.mixins.inspection.InspectionMixin) :
+class App(wx.App):#, wx.lib.mixins.inspection.InspectionMixin) :
 	def OnInit(self):
-		self.Init()  # initialize the inspection tool
+		#self.Init()  # initialize the inspection tool
+		
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:
 			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )
 			raise SystemExit
+
+		bmp=wx.Image(fpsys.mythingsdir + "aboutfplogo.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+		ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
+
 		frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
+		
 		self.SetTopWindow(frame) 
+		
 		frame.Show(True) 
+		ss.Close()
+
 		return True
 		
 ## app

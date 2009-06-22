@@ -37,8 +37,8 @@ Using the makefile
 ==================
 May 2009
 I wrote a makefile to help with translation. It lives in the root of the app.
-1. make : Will build the fp_all.pot file. Look for errors.
-2. make renamepot : Will make the .po files (in fontypythonmodules/pofiles. Go edit them.
+1. make : Will build the fp_all.pot file. Please look for errors.
+2. make renamepot : Will make the .po files in fontypythonmodules/pofiles. Go edit them.
 3. make mos : Will make the .mo files and put them into the fontypythonmodules/locale/XX/LC_MESSAGSE/all.mo
    If you make a .mo with poedit (or some other app) then that's fine too. Don't run make mos.
 

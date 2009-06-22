@@ -62,7 +62,7 @@ if p1 == 0:
     print
     #print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
 elif p1 == 1:
-    print "Some other error happened"
+	print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
 else: # err code -11
     #print "ERROR CODE:", p1
     ## This actually works!
@@ -91,7 +91,7 @@ else: # err code -11
             raise
         return culprit
         
-    ## Start the main frame and then show it.
+    ## Start the App and then show the Segfault dialog.
     class App(wx.App) :
         def OnInit(self) :
             culprit = getSegfaulter()

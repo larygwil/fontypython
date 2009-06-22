@@ -1,3 +1,20 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
 import wx
 import colorsys
 
@@ -12,6 +29,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	This class is a bitmap of a TTF font - it detects a click and 
 	also displays itself with other information below it.
 	"""
+	
+	## This class-level dict describes the colours to use in fitmap drawing.
 	styles={
 			'FILE_NOT_FOUND':
 				{
@@ -88,11 +107,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self,parent, -1, self.bitmap, pos, sz)
 				
 		## Very cool event, gives us life!
-		self.Bind(wx.EVT_LEFT_UP,self.__onClick) 
-		self.Bind(wx.EVT_MIDDLE_UP, self.__onMiddleClick)	
+		self.Bind(wx.EVT_LEFT_UP,self.onClick) 
+		self.Bind(wx.EVT_MIDDLE_UP, self.onMiddleClick)	
 		
 		## Redraw event
-		self.Bind(wx.EVT_PAINT,  self.__onPaint) 
+		self.Bind(wx.EVT_PAINT,  self.onPaint) 
 		
 		## Very cool,sets the icon for font items.
 		self.SetCursor( wx.StockCursor( wx.CURSOR_ARROW ) )
@@ -107,7 +126,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				if not self.fitem.inactive:
 					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
 
-	def __onPaint(self, event):
+	def onPaint(self, event):
 		"""
 		Dump the bitmap to the screen.
 		"""
@@ -118,10 +137,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			## here that's all there is to it.
 			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
-	def __onMiddleClick(self, event):
+	def onMiddleClick(self, event):
 		ps.pub( menu_settings, None )
 
-	def __onClick(self, event) :
+	def onClick(self, event) :
 		if fpsys.state.cantick and not self.fitem.inactive:
 			self.fitem.ticked = not(self.fitem.ticked)
 			self.prepareBitmap() # This only redraws a single font item.
@@ -147,7 +166,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			return # Just get out.
 			
 		## Normal FontItem object
-		spacer = 38 # Gap below each font bitmap
+		spacer = 40 # Gap below each font bitmap
 		
 		
 		## Get a list of pilimages, for each subface: Some fonts 
@@ -276,7 +295,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		 "Now a dividing gradient, you can say "wow" ;-)"
 		 Donn says, "..Wow!" :-D   
 		
-		It goes from col and darkens it to almost black.
+		It goes from col and darkens it a little.
 		"""
 		memDc.SetBrush ( wx.TRANSPARENT_BRUSH ) 
 		##Go from int colour to float colour (0 to 1 range)

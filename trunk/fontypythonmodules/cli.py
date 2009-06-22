@@ -420,8 +420,7 @@ if A and not B:
 		try:
 			fpsys.instantiateViewPog(A)# creates state.targetobject globally
 		except fontybugs.PogInvalid, e:
-			print repr( e )
-			sys.exit()
+			sys.exit( unicode( e ) )
 	## Because we are catering for a potential full gui,
 	## we must make an official "targetobject" set to None
 	fpsys.SetTargetPogToNone()

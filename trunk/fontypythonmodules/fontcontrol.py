@@ -533,7 +533,7 @@ class Folder(BasicFontList):
 					except:
 						## No, could not get a hold of that file.
 						## In theory, this should never happen.
-						print "CORNER CASE in Folder.__init__:", [apath], " + ", [f]
+						print "CORNER CASE in Folder.__init__.safeJoin():", [apath], " + ", [f]
 						fpsys.logBadStrings(f) # I'm keeping a list of bad names.
 			return returnList
 
@@ -547,8 +547,17 @@ class Folder(BasicFontList):
 		else:
 			# Recursive code
 			sourceList=[]
-			for root, dirs, files in os.walk( self.path ):
-				sourceList.extend( safeJoin( root, files ) )
+			try:
+				P = self.path.encode( locale.getpreferredencoding() )# Force P to be BYTE STRING from unicode<-came in as
+				for root, dirs, files in os.walk( P ):
+					## I need root and each file to be UNICODE, so I must decode them here
+					R = root.decode( locale.getpreferredencoding(),"replace" )
+					F = [ f.decode(locale.getpreferredencoding(),"replace") for f in files ]
+					sourceList.extend( safeJoin( R, F ) )
+			except UnicodeDecodeError:
+				## The encoding and decoding just above have fixed this error, but I will leave this catch here just in case.
+				print _("CORNER CASE in Folder.__init__: UnicodeDecodeError under: %s") % [ P ]
+				raise SystemExit
 
 		## Now employ the generator magic:
 		## Makes FontItem objects for each paf in the list.
@@ -868,7 +877,6 @@ class Pog(BasicFontList):
 				f.write( gpaf + "\n") 
 			f.close() 
 		except:
-			raise
 			raise fontybugs.PogWriteError(self.paf)
 
 	def delete(self):
