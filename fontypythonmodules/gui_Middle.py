@@ -1,3 +1,20 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
 import wx
 
 ## Setup wxPython to access translations : enables the stock buttons.
@@ -10,6 +27,7 @@ from wxgui import ps
 
 from gui_ScrolledFontView import *
 
+import fontybugs
 import fpsys # Global objects
 import fontyfilter
 
@@ -84,7 +102,6 @@ class FontViewPanel(wx.Panel):
 		
 		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
-		#self.inputFilter = wx.ComboBox(self, 500, "", (90, 50),  (160, -1), [], wx.CB_DROPDOWN	 )
 		self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN )
 		self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
 		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
@@ -93,7 +110,7 @@ class FontViewPanel(wx.Panel):
 		
 		## The pager pulldown
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
-		self.choicePage.Bind(wx.EVT_CHOICE, self.__onPagechoiceClick) #Bind choice event
+		self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
 
 		#self.SA=SearchAssistant(self)
 
@@ -111,7 +128,8 @@ class FontViewPanel(wx.Panel):
 		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL) 
 		self.buttPrev = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
 
-		self.buttMain = wx.Button(self, label=" ", id = 3) 
+		self.buttMain = wx.Button(self, label=" ")#, id = 3) 
+		self.buttMainLastLabel=" "
 		## This stock button has not been translated into Afrikaans yet. (Dec 2007)
 		## I can't tell you how this fkuced me around!
 		self.buttNext = wx.Button(self, wx.ID_FORWARD)  
@@ -141,14 +159,16 @@ class FontViewPanel(wx.Panel):
 		self.SetSizer(self.sizerFontView)
 	
 		e = wx.EVT_BUTTON #was wx.EVT_LEFT_UP
-		self.buttPrev.Bind(e,self.__navClick) 
-		self.buttNext.Bind(e,self.__navClick) 
-		self.buttMain.Bind(e,self.__onMainClick) 
+		self.buttPrev.Bind(e,self.navClick) 
+		self.buttNext.Bind(e,self.navClick) 
+		#self.buttMain.Bind(e,self.onMainClick) 
+		self.Bind(e,self.onMainClick,self.buttMain)#.GetId() ) 
 
+		## Advertise some local functions:
 		ps.sub( left_or_right_key_pressed, self.OnLeftOrRightKey ) ##DND: class FontViewPanel
-		ps.sub(toggle_main_button, self.ToggleMainButton) ##DND: class FontViewPanel
-		ps.sub(update_font_view, self.MainFontViewUpdate) ##DND: class FontViewPanel
-		ps.sub(reset_to_page_one, self.ResetToPageOne) ##DND: class FontViewPanel 
+		ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
+		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
+		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
 
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
@@ -156,7 +176,7 @@ class FontViewPanel(wx.Panel):
 		## Now command a change of the view.
 		## First, return user to page 1:
 		self.pageindex = 1
-		self.__filterAndPageThenCallCreateFitmaps()
+		self.filterAndPageThenCallCreateFitmaps()
 		self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 
 	# Capture events when the user types something into the control then
@@ -187,10 +207,10 @@ class FontViewPanel(wx.Panel):
 		self.pageindex = 1
 
 		## Now command a change of the view.
-		self.__filterAndPageThenCallCreateFitmaps()
+		self.filterAndPageThenCallCreateFitmaps()
 
 		
-	def __filterAndPageThenCallCreateFitmaps(self):
+	def filterAndPageThenCallCreateFitmaps(self):
 		"""
 		Figure out what list of fonts to draw, divide them into pages,
 		then go make Fitmaps out of them.
@@ -263,10 +283,10 @@ class FontViewPanel(wx.Panel):
 			self.choicePage.Enable(True)
 			
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
-		self.__buttonState()
+		self.EnableDisablePrevNext()
 
 
-	def __onMainClick(self, e) :
+	def onMainClick(self, evt) :
 		"""
 		Removes fonts, or Appends fonts. Depends on situation in fpsys.state
 		"""
@@ -292,11 +312,13 @@ class FontViewPanel(wx.Panel):
 				bug = False
 				try:
 					vo.write()	  
-				except(fontybugs.PogWriteError), e:
+				except (fontybugs.PogWriteError), e:
 					bug = True
-					self.errorBox([unicode( e ),])
+					ps.pub( show_error, unicode( e ) )
+
 				## Now, let's redraw the vo
-				ps.pub( update_font_view )
+				self.MainFontViewUpdate()
+
 				if not bug:
 					ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
 				else:
@@ -318,10 +340,13 @@ class FontViewPanel(wx.Panel):
 				bug = False
 				try:
 					to.write()	  
-				except(fontybugs.PogWriteError), e:
+				except (fontybugs.PogWriteError), e:
 					bug = True
-					self.ErrorBox( [repr( e )] )
-				ps.pub( update_font_view )
+					ps.pub( show_error, unicode( e ) )
+
+				wx.CallAfter(self.MainFontViewUpdate)
+				print "just after wx.CallAfter"
+
 				if not bug:
 					ps.pub(print_to_status_bar,_("Selected fonts are now in %s.") % to.label())
 				else:
@@ -335,16 +360,20 @@ class FontViewPanel(wx.Panel):
 
 		wx.EndBusyCursor()
 		self.scrolledFontView.Scroll(xPos, yPos)
-
 		
-	def __onPagechoiceClick(self,event) :
+		#self.textFilter.SetFocus()
+
+		evt.Skip()
+		print "sub ends"
+		
+	def onPagechoiceClick(self,event) :
 		wx.BeginBusyCursor()
 		if self.pageindex != int(event.GetString() ) : #Only redraw if actually onto another page.
 			self.pageindex =  int(event.GetString() ) 
-			self.__filterAndPageThenCallCreateFitmaps() 
+			self.filterAndPageThenCallCreateFitmaps() 
 		wx.EndBusyCursor()
 		
-	def __navClick(self,event) :
+	def navClick(self,event) :
 		wx.BeginBusyCursor()
 		if event.GetId()  == wx.ID_FORWARD: 
 			self.pageindex += 1
@@ -356,25 +385,25 @@ class FontViewPanel(wx.Panel):
 			self.pageindex = 1
 		 
 		self.buttMain.SetFocus()  #a GTK bug demands this move.
-		self.__filterAndPageThenCallCreateFitmaps() 
+		self.filterAndPageThenCallCreateFitmaps() 
 		wx.EndBusyCursor()
 
 	def OnLeftOrRightKey(self, evt):
 		## This comes along from MainFrame via the AcceleratorTable events.
 		evt=evt[0] # just get around pubsub tuple.
 		id=evt.GetId()
-		## We can't just pass on to __navClick yet because we don't know if
+		## We can't just pass on to navClick yet because we don't know if
 		## the button (left/right) is enabled or not. So determine that and then
 		## pass on to the other handler.
 		if id==wx.ID_FORWARD: #right arrow was pressed
 			if self.buttNext.IsEnabled():
-				self.__navClick( evt )
+				self.navClick( evt )
 		else:
 			if self.buttPrev.IsEnabled():
-				self.__navClick( evt )
+				self.navClick( evt )
+		#evt.Skip() # If this is here, the keyboard shortcuts get really buggy....
 
-
-	def __buttonState(self) :
+	def EnableDisablePrevNext(self) :
 		"""
 		Enabled state of PREV/NEXT buttons
 		"""
@@ -406,7 +435,7 @@ class FontViewPanel(wx.Panel):
 		It draws the controls and the fonts as appropriate. 
 		It also sets flags in fpsys.state
 		"""
-		
+		print "MainFontViewUpdate runs"
 		## Get shorter vars to use.
 		V = fpsys.state.viewobject
 		T = fpsys.state.targetobject
@@ -415,7 +444,6 @@ class FontViewPanel(wx.Panel):
 		Tpatt = fpsys.state.targetpattern # Target pattern
 	
 		Patt = Vpatt + Tpatt # Patt = Pattern
-		
 
 		lab = ""
 		status = ""
@@ -515,7 +543,7 @@ class FontViewPanel(wx.Panel):
 		self.ToggleMainButton()
 
 		fpsys.markInactive()
-		self.__filterAndPageThenCallCreateFitmaps()
+		self.filterAndPageThenCallCreateFitmaps()
 
 	def ResetToPageOne(self):
 		self.pageindex = 1 # I start here

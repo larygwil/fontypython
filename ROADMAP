@@ -1,26 +1,5 @@
 ROADMAP
 =======
-Aim : Release 0.3.9
-1. Recursive switch: Folder vs Folder(recursive). 
- Not sure where to put this. I picture it as a global control toggling the 
- recursive behaviour on any selected Folder. Perhaps a tick-box above the
- dir control.
- 1.1 Also have a -R flag for the CLI.
-[DONE: June 2009]
-
-2. A middle click in the FontView opens the settings dialog.
-[DONE: June 2009]
-
-3. Search improvements: incorporate the field + PANOSE data in a simple
-"google" search interface.
-
-4. A font inspector - open a dialogue showing all the glyphs at each
-character position. This has been asked for, but may not make it into 
-Fonty soon.
-
-5. Splash screen : Fonty takes too long to start sometimes. A cut-out (clipped
-to the shape of the logo perhaps) splash dialogue could be nice.
-
 
 NOTE 1
 In order to move ahead we need to stick to a single conceptual framework and 
@@ -46,36 +25,7 @@ Bug 1
 Best fix : Keep old notebook control and have it function properly. 
 Next best: Replace with aui notebook.
 
-Bug 2: FIXED but it's a little hacky.
-> #4 Changing the page in the notebook ("Folder" <> "Pog") updates the
-> fontview directly (not in two steps: > click the page > click the
-> pog/folder).
-> We Bound the "Folder" dircontrol to EVT_TREE_SEL_CHANGED instead of
-> EVT_LEFT_UP.
-> This Bug and EVT_TREE_SEL_CHANGED are connected in a subtle way.
-> EVT_TREE_SEL_CHANGED is fine, but imagine following scenario. 
-> The user selects a folder "A", than he
-> opens the pog panel and choose a pog "B". He wants to go back to the
-> folder "A" he selected first. So he opens the folder panel again and
-> click on folder "A", and NOTHING happens. Why that? The selection is
-> not changed, no EVT_TREE_SEL_CHANGED is emitted. That's the reason why
-> I made the change #4 to avoid this. The only way for the user is to
-> select an other folder "C" and than folder "A" a third time. Everybody
-> must say this is crazy! The bindings must be very clever to reach the
-> behavior we wish (no update on every click, but update on selecting a
-> selected folder).
-Best fix : Proper behaviour *without* changing the font-source (and redrawing
-the fonts) when Folder <--> Pog tabs are clicked. One click on a folder
-(even one that was selected last time) should change source view.
-Next best : Force the font source to flip with the notebook tabs. 
-** Please see Note 1 for related info.
 
-Bug 3
-Font view display/draw:
-* leaves gaps
-* leaves a 'ghost' infofontitem.
-* There are mystery problems. Items not drawing correctly or at all. I can't
-  nail this down.
 
 wxgui Tasks
 ===========

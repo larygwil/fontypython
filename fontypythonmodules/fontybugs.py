@@ -45,11 +45,6 @@ class Errors ( Exception ):
 	def __str__( self ):
 		return "%s : %s" % ( self.__class__.messages[self._id], self._item )
 		
-	def __repr__(self):
-		s = "%s : %s" % ( self.__class__.messages[self._id], self._item )
-		s = s.decode( locale.getpreferredencoding(), errors="replace" )
-		return s
-		
 ## testing i18n with fontybugs
 ##try:
 ##	raise fontybugs.BadVoodoo("bad voodoo")

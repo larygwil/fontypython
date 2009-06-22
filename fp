@@ -24,5 +24,3 @@ if os.name != "posix": sys.exit(_("Sorry, only Gnu/Linux is supported at the mom
 
 ## start the show!
 import fontypythonmodules.start
-
-## Where am I?

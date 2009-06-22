@@ -40,3 +40,10 @@ Changelist
 2. I got the left and right arrow keys to step through the list - like the buttons do.
 3. I (think I) fixed the ESC key to work from anywhere.
 
+20 June
+1. Cleaning-up files etc. Lot's of little zipzap commits. Yesterday I merged the branch
+   back into the trunk.
+2. Caught an encode and decode problem in Folder.__init__. Had to jump through the usual
+   unicode hoops to fix it. Hope it is fixed now...
+3. Added the licence header to a bunch of files it was missing from.
+

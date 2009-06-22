@@ -1,3 +1,20 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
 import wx, os
 
 ## Setup wxPython to access translations : enables the stock buttons.
@@ -17,7 +34,7 @@ import fontybugs
 
 class DirControl(wx.GenericDirCtrl) :
 	"""
-	The Directory tree view.
+	The Directory tree view. Note: Directory names are all UNICODE!
 	"""
 	def __init__(self, parent):
 		if fpsys.state.viewpattern == "F": 
@@ -48,10 +65,13 @@ class NoteBook(wx.Notebook):
 
 		## THE DIR CONTROL
 		self.dircontrol = DirControl(pan1) 
+
+		## The Recurse check-box
 		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
 		self.recurseFolders.SetValue( fpsys.config.recurseFolders )
 		self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
 
+		## Add them to a sizer
 		box = wx.BoxSizer(wx.VERTICAL) 
 		box.Add( self.recurseFolders,0,wx.EXPAND )
 		box.Add( self.dircontrol,1, wx.EXPAND ) 
@@ -60,7 +80,6 @@ class NoteBook(wx.Notebook):
 
 		self.pogindexselected = 0
 	
-
 		## The SOURCE POG control
 		pan2 = wx.Panel(self) 
 		page = 0
@@ -77,6 +96,7 @@ class NoteBook(wx.Notebook):
 		ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
 		ps.sub( remove_pog_item_from_source, self.RemoveItem ) #DND: class NoteBook
 
+		# Get a ref to the dircontrol.
 		self.tree = self.dircontrol.GetTreeCtrl()
 		
 		## Dud tree events, causing bad behaviour:
@@ -88,6 +108,7 @@ class NoteBook(wx.Notebook):
 		## 5.3.2009 Michael Hoeft
 		self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick) 	
 
+		## Had a context menu, but not using it.
 		#self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
 		box2 = wx.BoxSizer(wx.HORIZONTAL) 
@@ -110,7 +131,7 @@ class NoteBook(wx.Notebook):
 		
 		self.SetSelection(page)
 	
-		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.__onPageChanged) # Bind page changed event
+		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
 
 		## If the app is started with a Folder as the Source, then
 		## check if we must recurse. If so, fake a click to kick that off.
@@ -119,7 +140,7 @@ class NoteBook(wx.Notebook):
 				self.__onDirCtrlClick(None) # Fake an event
 		
 
-	def __onPageChanged(self, e):
+	def onPageChanged(self, e):
 		self.ctrlPogSource.ClearLastIndex()
 		if self.GetSelection() == 0: # The dircontrol
 			## I want to force the dir control to clear the selection.
@@ -127,8 +148,6 @@ class NoteBook(wx.Notebook):
 			## from last visit is still there. Clicking on it again does NOT UPDATE
 			## the font view. This is wierd. So, clearing the selection makes this moot.
 			self.tree.UnselectAll() # Found this method in the wxpython book.
-
-	## ------- JUNE 2009 ------ BEGINS
 
 	"""
 	def OnContextMenu(self, event):
@@ -162,7 +181,6 @@ class NoteBook(wx.Notebook):
 	def OnPopupTwo(self, event):
 		print "Popup one\n"
 	"""
-	## -------------- JUNE 2009 ----- ENDS
 
 	def __onDirCtrlClick(self, e):
 		wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
@@ -181,7 +199,7 @@ class NoteBook(wx.Notebook):
 
 	def OnViewPogClick(self, args):
 		"""
-		args[0] pogname, args[1] is pognochange
+		args[0] is pogname, args[1] is pognochange
 		"""
 		## Check pognochange, it means this is the same pog as last time.
 		if args[1]: return 
@@ -214,4 +232,3 @@ class NoteBook(wx.Notebook):
 		self.ctrlPogSource.ClearSelection()
 		fpsys.SetViewPogToEmpty()
 		wx.EndBusyCursor()
-

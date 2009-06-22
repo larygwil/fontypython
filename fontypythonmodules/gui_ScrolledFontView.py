@@ -1,3 +1,20 @@
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+##
+##	This file is part of Fonty Python.
+##	Fonty Python is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	Fonty Python is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
 import wx
 import wx.lib.scrolledpanel
 
@@ -29,7 +46,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 				
 		## At least this one works.
 		self.wheelValue = fpsys.config.points
-		self.Bind( wx.EVT_MOUSEWHEEL, self.__onWheel )
+		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 		
 		## Make the sizer to hold the fitmaps
 		self.mySizer = wx.BoxSizer(wx.VERTICAL)
@@ -37,7 +54,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 		self.SetupScrolling(rate_y=5, scroll_x=False)
 
-	def __onWheel( self, evt ):
+	def onWheel( self, evt ):
 		"""
 		Added Dec 2007
 		Change point size with ctrl+scroll

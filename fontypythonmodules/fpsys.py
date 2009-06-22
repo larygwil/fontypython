@@ -25,16 +25,6 @@ import pathcontrol
 import strings
 import fontcontrol
 
-#Consts
-POG = 0
-FOLDER = 1
-CLOSE = 1 #Just close
-UNINSTALL = 2 #uninstall the selected fonts from the pog
-COPY = 3 #Copy the selected fonts from target to store
-
-## Name of my images
-PNGfilename = "tick.png" #default image
-
 ## Ensure we have a .fontypython folder and a .fonts folder.
 iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i'
 
@@ -49,8 +39,6 @@ fontyroot = os.path.dirname(os.path.abspath(root))
 
 ## Where my images and things are.
 mythingsdir = os.path.join(fontyroot,"things/")
-
-
 
 ## Jan 18 2008
 segfonts = []# Global var
