@@ -89,6 +89,7 @@ files = find_data_files('fontypythonmodules/', '*.*')
 ## but this works on my system.
 files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
+files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this puts COPYING into fontypythonmodules
 
 setup(name = "fontypython",
 	version = fontypythonmodules.fpversion.version,

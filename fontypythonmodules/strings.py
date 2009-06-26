@@ -343,7 +343,7 @@ try:
 	if os.path.islink(root):                     
 		root = os.path.realpath(root)            
 	fontyroot = os.path.dirname(os.path.abspath(root)) 
-	p = os.path.join(fontyroot,'../COPYING')
+	p = os.path.join(fontyroot,'COPYING')
 	GPL = open(p,"r").read()
 except:
 	GPL = """

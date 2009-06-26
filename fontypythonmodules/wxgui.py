@@ -339,6 +339,7 @@ class MainFrame(wx.Frame):
 				fi.ticked=True
 				fpsys.state.numticks += 1
 		## Now update the view
+		#self.panelFontView.scrolledFontView.lastViewList=None #Force a redraw in the CreateFitmaps def.
 		ps.pub( update_font_view )	
 
 	def menuSelectionNONE(self,e):
@@ -348,6 +349,7 @@ class MainFrame(wx.Frame):
 			if not fi.inactive:
 				fi.ticked=False
 		## Now update the view
+		#self.panelFontView.scrolledFontView.lastViewList=None #Force a redraw in the CreateFitmaps def.
 		ps.pub( update_font_view )	
 
 	def TogglePurgeMenuItem(self, vis):
