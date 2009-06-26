@@ -94,8 +94,11 @@ class MainFrame(wx.Frame):
 		menu1.AppendSeparator()
 		## Jan 18 2008
 		menu1.Append( 102, _("&Check fonts"), _("Find those fonts that crash Fonty.") )
+		menu1.Append( 103, _("&Purge Pog"), _("Remove all ghost fonts from the selected Pog.") )
 		
-		self.exit = menu1.Append(103, _("&Exit"), _("Close the app"))
+		self.MENUPURGE = menu1
+
+		self.exit = menu1.Append(104, _("&Exit"), _("Close the app"))
 		## Add menu to the menu bar
 		self.menuBar.Append(menu1, _("&File"))
 
@@ -137,6 +140,7 @@ class MainFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.onHandleESC, self.exit)
 		self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
 		self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
+		self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
 		self.Bind(wx.EVT_MENU, self.menuAbout, id = 202)
 		self.Bind(wx.EVT_MENU, self.menuHelp, id = 201)
 		# June 2009
@@ -215,6 +219,8 @@ class MainFrame(wx.Frame):
 		## Dec 2007 - Used on middle click in gui_Fitmap.py
 		ps.sub( menu_settings, self.menuSettings ) ##DND: class MainFrame
 		ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem ) ##DND: class MainFrame
+
+		ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
 
 		## When splitter is changed (after the drag), we want to redraw
 		## the fonts to the new width.
@@ -344,6 +350,30 @@ class MainFrame(wx.Frame):
 		## Now update the view
 		ps.pub( update_font_view )	
 
+	def TogglePurgeMenuItem(self, vis):
+		vis=vis[0]
+		self.MENUPURGE.Enable(103,vis)
+	
+	def menuPurgePog(self,e):
+		##The menu item only becomes active for Pogs that are not installed,
+		##so we can purge without further tests:
+		pogname = fpsys.state.viewobject.name
+		dlg = wx.MessageDialog(self,_("Do you want to purge %s?\n\nPurging means all the fonts in the pog\nthat are not pointing to actual files\nwill be removed from this pog.") % pogname, _("Purge font?"), wx.YES_NO | wx.ICON_INFORMATION )
+		if dlg.ShowModal() == wx.ID_YES:
+			## pog.purge() Raises
+			##		  PogEmpty
+			##		  PogInstalled
+			try:
+				fpsys.state.viewobject.purge()
+			except(fontybugs.PogEmpty, fontybugs.PogInstalled),e:
+				ps.pub(show_error, unicode( e ))
+				ps.pub(print_to_status_bar, _("%s has not been purged.") % pogname)
+				return 
+
+			## Update GUI
+			ps.pub(print_to_status_bar, _("%s has been purged.") % pogname)
+
+			ps.pub(update_font_view)
 
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
