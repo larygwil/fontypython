@@ -200,10 +200,6 @@ class TargetPogChooser(wx.Panel):
 			ps.pub(update_font_view)
 			return #No need to tell mainframe about this.
 			
-		## PURGE
-		#if e.GetId() == self.idpurge:
-
-			
 
 		## Prepare for Install/Uninstall POG
 
