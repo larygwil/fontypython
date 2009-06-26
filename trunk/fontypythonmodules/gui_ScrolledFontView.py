@@ -40,7 +40,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		self.fitmaps = []
 		self.parent = parent
 	
-		self.lastViewList=None
+		#self.lastViewList=None
 
 		## Whitebrush is really whatever the default colour is.
 		#self.whitebrush = wx.Brush(self.parent.GetBackgroundColour(),wx.SOLID)
@@ -85,8 +85,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		"""
 
 		# June 2009: Added this test to prevent re-drawing of fonts when the list has not actually changed.
-		if viewobject == self.lastViewList: return
-		self.lastViewList = viewobject
+		## Cancelled. There are problems with this. Need more time to fix.
+		#if viewobject == self.lastViewList: return
+		#self.lastViewList = viewobject
 			
 		## Setup intial width and subsequent ones
 		## Found on the web, thanks to James Geurts' Blog

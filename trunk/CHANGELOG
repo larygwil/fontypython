@@ -58,3 +58,6 @@ Changelist
 2. Delete multiple pogs at once from the gui.
 3. Fixed the help text. Changed the app screenshot.
 4. Moved the Purge function out to the File menu. It now applies to the VIEW POG selected.
+26 June 
+1. Added a test to prevent fonts re-drawing when a new target Pog is clicked.
+2. Added help about the Purge menu item.
