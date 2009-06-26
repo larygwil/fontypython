@@ -53,3 +53,8 @@ Changelist
 22 June
 1. Rigged the main button so that focus is not lost on click. It's a hack, but what the heck.
 
+26 June
+1. Main button focus issue has a hack-fix
+2. Delete multiple pogs at once from the gui.
+3. Fixed the help text. Changed the app screenshot.
+4. Moved the Purge function out to the File menu. It now applies to the VIEW POG selected.
