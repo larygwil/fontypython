@@ -64,7 +64,6 @@ class TargetPogChooser(wx.Panel):
 		self.idinstall = wx.NewId()
 		self.iduninstall = wx.NewId()
 		self.iddelete = wx.NewId()
-		self.idpurge = wx.NewId()
 		
 		self.buttNew = wx.Button(self, label = _("New Pog"), id = self.idnew ) 
 		self.buttNew.SetToolTipString(_("Creates a new, empty Pog"))
@@ -78,10 +77,6 @@ class TargetPogChooser(wx.Panel):
 		self.buttDelete = wx.Button(self, label = _("Delete Pog") , id = self.iddelete) 
 		self.buttDelete.SetToolTipString(_("Deletes the last selected Pog"))
 		
-		# I apologize in-advance for the name of the next button :P
-		self.buttPurge = wx.Button(self, label = _("Purge Pog"), id = self.idpurge) 
-		self.buttPurge.SetToolTipString(_("Purges the last selected Pog"))
-
 		self.sizer = wx.BoxSizer(wx.VERTICAL)		 
 		self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
 		self.iconandtext.Add(self.icon, 0, wx.TOP | wx.BOTTOM, border = 4)
@@ -93,7 +88,6 @@ class TargetPogChooser(wx.Panel):
 		self.sizer.Add(self.buttUninstall, 0, wx.EXPAND) 
 		self.sizer.Add(self.buttNew, 0, wx.EXPAND) 
 		self.sizer.Add(self.buttDelete, 0, wx.EXPAND) 
-		self.sizer.Add(self.buttPurge, 0, wx.EXPAND)
 		self.SetSizer(self.sizer)
 		
 		## Bind the events:
@@ -103,7 +97,6 @@ class TargetPogChooser(wx.Panel):
 		self.buttInstall.Bind(e, self.multiClick)
 		self.buttUninstall.Bind(e, self.multiClick)
 		self.buttDelete.Bind(e, self.multiClick)
-		self.buttPurge.Bind(e, self.multiClick)
 		
 		self.toggleButtons()
 		
@@ -140,52 +133,64 @@ class TargetPogChooser(wx.Panel):
 					ps.pub( update_font_view )
 			dlg.Destroy()
 			return
-			
+		
+		## A list of multiple-selected pog names:
 		tl = self.pogTargetlist
+		multipogs=[ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]
 
 		## DELETE
 		if e.GetId() == self.iddelete:
-			## Selected Pog to be deleted
-			tokill=[ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]
-			#@pogname = fpsys.state.targetobject.name
-			if len(tokill)>1: 
-				pogname=""
-				for f in tokill[:-1]:
-					pogname += u"%s," % f
-				pogname += tokill[-1]
-			else:
-				pogname=tokill[0]
+			## Selected Pog(s) to be deleted:
+			tokill = multipogs
 
-			dlg = wx.MessageDialog(self, _("Remove %s, are you sure?") % pogname,
-								   _("Are you sure?"),
-								   wx.YES_NO | wx.ICON_INFORMATION
-								  )
-			if dlg.ShowModal() == wx.ID_YES:
-				for victim in tokill:
-					fpsys.instantiateTargetPog(victim)
-					## Now kill the file on disk:
-					try:	
-						fpsys.state.targetobject.delete()
-					except fontybugs.PogCannotDelete, e:
-						ps.pub(show_error, unicode( e ))
-						return
-					## This object was also our target object (it was selected - duh!)
-					## Remove from the list:
-					self.pogTargetlist.RemoveItem(victim)#pogname)
-					ps.pub( remove_pog_item_from_source, victim)#pogname)				
+			##Is any one of those installed?
+			allok=True
+			for p in tokill:
+				if p.isInstalled():
+					ps.pub( show_error, _("One or more selected fonts is installed, fix your selection and try again.") )
+					allok=False
+					break
 
-					## What if it was ALSO our view object?
-					if fpsys.state.viewobject.label() == victim:
-						## It was! We must declare it Empty.
-						fpsys.SetViewPogToEmpty()
-				
-				## Now re-draw things
-				ps.pub(update_font_view)
-				dlg.Destroy()
+			if allok:
+				## Build a string for reporting in the dialog
+				if len(tokill) > 1: 
+					pogname=""
+					for f in tokill[:-1]:
+						pogname += u"%s," % f
+					pogname += tokill[-1] #We want "remove blah,bloop,zoom, are you sure?"
+				else:
+					pogname=tokill[0]
 
-				## Select no pog.
-				self.SelectNoTargetPog()
-				return
+				dlg = wx.MessageDialog(self, _("Remove %s, are you sure?") % pogname,
+									   _("Are you sure?"),
+									   wx.YES_NO | wx.ICON_INFORMATION
+									  )
+				if dlg.ShowModal() == wx.ID_YES:
+					## Let's do them in:
+					for victim in tokill:
+						fpsys.instantiateTargetPog(victim) #Makes the fpsys.state.targetobject
+						## Now kill the file on disk:
+						try:	
+							fpsys.state.targetobject.delete()
+						except fontybugs.PogCannotDelete, e:
+							ps.pub(show_error, unicode( e ))
+							return
+						## Remove from the lists:
+						self.pogTargetlist.RemoveItem(victim)
+						ps.pub( remove_pog_item_from_source, victim)
+
+						## What if it was ALSO our view object?
+						if fpsys.state.viewobject.label() == victim:
+							## It was! We must declare it Empty.
+							fpsys.SetViewPogToEmpty()
+					
+					## Now re-draw things
+					ps.pub(update_font_view)
+					dlg.Destroy()
+
+					## Select no pog.
+					self.SelectNoTargetPog()
+					return
 		
 		## NO POG pressed
 		if e.GetId() == self.idnone:
@@ -196,32 +201,8 @@ class TargetPogChooser(wx.Panel):
 			return #No need to tell mainframe about this.
 			
 		## PURGE
-		if e.GetId() == self.idpurge:
-			if not fpsys.state.targetobject.isInstalled():
-				pogname = fpsys.state.targetobject.name
-				dlg = wx.MessageDialog(self,_("Do you want to purge %s?\n\nPurging means all the fonts in the pog\nthat are not pointing to actual files\nwill be removed from this pog.") % pogname, _("Purge font?"), wx.YES_NO | wx.ICON_INFORMATION )
-				if dlg.ShowModal() == wx.ID_YES:
-					## pog.purge() Raises
-					##		  PogEmpty
-					##		  PogInstalled
-					try:
-						fpsys.state.targetobject.purge()
-					except(fontybugs.PogEmpty, fontybugs.PogInstalled),e:
-						ps.pub(show_error, unicode( e ))
-						ps.pub(print_to_status_bar, _("%s has not been purged.") % pogname)
-						return 
+		#if e.GetId() == self.idpurge:
 
-					## The problem here is that the targetobject has been
-					## purged, but all those same bad fontitems are *still*
-					## in the viewobject.
-					## So, hack the list:
-					fpsys.state.viewobject.clear()
-					for fi in fpsys.state.targetobject:
-						fpsys.state.viewobject.append(fi)
-					## Update GUI
-					ps.pub(print_to_status_bar, _("%s has been purged.") % pogname)
-
-					ps.pub(update_font_view)
 			
 
 		## Prepare for Install/Uninstall POG
@@ -235,7 +216,7 @@ class TargetPogChooser(wx.Panel):
 		## Install
 		if e.GetId() == self.idinstall:
 			wx.BeginBusyCursor()
-			for p in [ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]:
+			for p in multipogs: 
 				fpsys.instantiateTargetPog(p) # sets up fpsys.state.targetobject
 				
 				ok=True
@@ -262,7 +243,7 @@ class TargetPogChooser(wx.Panel):
 		## Uninstall
 		if e.GetId() == self.iduninstall:
 			wx.BeginBusyCursor()
-			for p in [ tl.GetItemText(i) for i in xrange(tl.GetItemCount()) if tl.IsSelected(i)]:
+			for p in multipogs:
 				fpsys.instantiateTargetPog(p)
 
 				ok=True
@@ -309,13 +290,11 @@ class TargetPogChooser(wx.Panel):
 			self.buttDelete.Enable(False)
 			self.buttInstall.Enable(False)
 			self.buttUninstall.Enable(False)
-			self.buttPurge.Enable(False)
 			return 
 		installed = fpsys.state.targetobject.isInstalled()
 		self.buttDelete.Enable(not(installed)) # DELETE button is inverse of installed status
 		self.buttInstall.Enable(not(installed)) # INSTALL button is inverse 
 		self.buttUninstall.Enable(installed) # UNINSTALL = True if pog is installed.
-		self.buttPurge.Enable(not(installed))
 		
 	def SelectNoTargetPog(self):
 		"""

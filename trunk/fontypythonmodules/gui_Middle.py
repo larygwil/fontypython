@@ -525,7 +525,14 @@ class FontViewPanel(wx.Panel):
 		else:
 			print "MOJO ERROR: %s and trouble" % Patt
 			raise SystemExit
-			
+
+		## Enable/Disable the Purge menu item
+		ps.pub( toggle_purge_menu_item, False )
+		if Vpatt=="P":
+			if not fpsys.state.viewobject.isInstalled():
+				ps.pub( toggle_purge_menu_item, True )
+		
+
 		self.buttMainLastLabel=btext
 		self.textMainInfo.SetLabel(lab)
 		self.textMainInfo.Show()
