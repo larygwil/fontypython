@@ -1,4 +1,5 @@
 To make a source tarball: 
+rm MANIFEST
 python setup.py sdist
 
 The tarball will be in the dist/ directory.
