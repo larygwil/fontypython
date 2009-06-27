@@ -124,8 +124,8 @@ class MainFrame(wx.Frame):
 		## Setup the ESC key and the LEFT / RIGHT keys
 		accel = wx.AcceleratorTable([
 			(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId()),
-			(wx.ACCEL_NORMAL, wx.WXK_RIGHT, wx.ID_FORWARD),
-			(wx.ACCEL_NORMAL, wx.WXK_LEFT, wx.ID_BACKWARD)
+			(wx.ACCEL_NORMAL, wx.WXK_PAGEUP, wx.ID_FORWARD),
+			(wx.ACCEL_NORMAL, wx.WXK_PAGEDOWN, wx.ID_BACKWARD)
 			])
 		self.SetAcceleratorTable(accel)
 
@@ -390,7 +390,7 @@ class App(wx.App):#, wx.lib.mixins.inspection.InspectionMixin) :
 			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )
 			raise SystemExit
 
-		bmp=wx.Image(fpsys.mythingsdir + "aboutfplogo.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+		bmp=wx.Image(fpsys.mythingsdir + "splash.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 		ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
 
 		frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))

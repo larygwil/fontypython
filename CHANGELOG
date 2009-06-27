@@ -61,3 +61,6 @@ Changelist
 26 June 
 1. Added a test to prevent fonts re-drawing when a new target Pog is clicked.
 2. Added help about the Purge menu item.
+26 June 
+1. Reversed decision to not redraw the target Pog. There are too many subtleties involved for the hammer-and-nail approach I took and I just don't have time to be subtle now. So, it will redraw when you choose another target Pog. Tough.
+
