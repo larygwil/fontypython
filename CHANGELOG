@@ -66,4 +66,6 @@ Changelist
 27 June
 1. Changed left/right arrow to pageup/pagedown. Michael Hoeft warned of the damage to editing the search term.
 2. Improving the splash image.
+27 June
+1. Fixed ref to page up/down keys in help.
 

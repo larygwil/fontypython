@@ -124,8 +124,8 @@ class MainFrame(wx.Frame):
 		## Setup the ESC key and the LEFT / RIGHT keys
 		accel = wx.AcceleratorTable([
 			(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, self.exit.GetId()),
-			(wx.ACCEL_NORMAL, wx.WXK_PAGEUP, wx.ID_FORWARD),
-			(wx.ACCEL_NORMAL, wx.WXK_PAGEDOWN, wx.ID_BACKWARD)
+			(wx.ACCEL_CTRL, wx.WXK_RIGHT, wx.ID_FORWARD),
+			(wx.ACCEL_CTRL, wx.WXK_LEFT, wx.ID_BACKWARD)
 			])
 		self.SetAcceleratorTable(accel)
 
