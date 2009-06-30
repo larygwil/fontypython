@@ -63,9 +63,13 @@ Changelist
 2. Added help about the Purge menu item.
 26 June 
 1. Reversed decision to not redraw the target Pog. There are too many subtleties involved for the hammer-and-nail approach I took and I just don't have time to be subtle now. So, it will redraw when you choose another target Pog. Tough.
+
 27 June
 1. Changed left/right arrow to pageup/pagedown. Michael Hoeft warned of the damage to editing the search term.
 2. Improving the splash image.
 27 June
 1. Fixed ref to page up/down keys in help.
+
+28 June
+1. Upon reflection, the arrow keys are easier than page up/down. So, I added CTRL as a modifier. Now it's ctrl+left/right to step through the pages. (Help updated too.)
 
