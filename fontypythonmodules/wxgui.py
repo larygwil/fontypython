@@ -109,7 +109,7 @@ class MainFrame(wx.Frame):
 		menu3.Append( 302, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
 		## Add menu to the menu bar
 		self.menuBar.Append(menu3, _("&Selection"))
-
+		self.MENUSELECTION = menu3
 
 		## HELP MENU
 		menu2 = wx.Menu() 
@@ -240,7 +240,9 @@ class MainFrame(wx.Frame):
 
 
 	def toggleSelectionMenuItem(self, onoff):
-		self.menuBar.EnableTop(1,onoff[0])
+		#HIG says to leave top menu alone and only toggle sub-items.
+		self.MENUSELECTION.Enable(301,onoff[0])
+		self.MENUSELECTION.Enable(302,onoff[0])
 
 	def onSize( self, evt ):
 		"""
