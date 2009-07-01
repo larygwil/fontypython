@@ -72,8 +72,14 @@ Changelist
 
 28 June
 1. Upon reflection, the arrow keys are easier than page up/down. So, I added CTRL as a modifier. Now it's ctrl+left/right to step through the pages. (Help updated too.)
+
 29 June
 1. Repaired the .desktop file to comply with HIG.
+
 30 June
 1. Changed selection menu item toggling system. Recently read a little Gnome HIG :)
+
+1 July
+1. Changed logo in help, about and splash.
+2. Altered setup.py to remove MANIFEST file if it's there. Unless it's removed, setup.py sdist will potentially miss new files.
 
