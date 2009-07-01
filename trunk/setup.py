@@ -77,7 +77,13 @@ def find_data_files(srcdir, *wildcards, **kw):
 					srcdir,
 					[os.path.basename(f) for f in glob.glob(opj(srcdir, '*'))])
 	return file_list
-	
+
+## Remove the MANIFEST file, if there.
+try:
+	os.remove("MANIFEST")
+	print "MANIFEST removed"
+except: 
+	print "No MANIFEST to remove."
 	
 ## This is a list of files to install, and where:
 ## Make sure the MANIFEST.in file points to all the right 
