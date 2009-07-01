@@ -1,35 +1,35 @@
 pwd=`pwd`
-P=${pwd}/fontypythonmodules/pofiles/
-M=${pwd}/fontypythonmodules/locale/
+POFILES=${pwd}/fontypythonmodules/pofiles/
+LOCALE=${pwd}/fontypythonmodules/locale/
 
 prep : fp_all.pot
 	echo Done
 	
 fp_all.pot:
 	xgettext -o fp_all.pot -L Python fp -L Python fontypython fontypythonmodules/*.py
-	mv fp_all.pot ${P}
+	mv fp_all.pot ${POFILES}
 
-	msgmerge ${P}fr_all.merged.po ${P}fp_all.pot -o ${P}fr_all.merged.pot
-	msgmerge ${P}it_all.merged.po ${P}fp_all.pot -o ${P}it_all.merged.pot
-	msgmerge ${P}de_all.merged.po ${P}fp_all.pot -o ${P}de_all.merged.pot
+	msgmerge ${POFILES}fr_all.merged.po ${POFILES}fp_all.pot -o ${POFILES}fr_all.merged.pot
+	msgmerge ${POFILES}it_all.merged.po ${POFILES}fp_all.pot -o ${POFILES}it_all.merged.pot
+	msgmerge ${POFILES}de_all.merged.po ${POFILES}fp_all.pot -o ${POFILES}de_all.merged.pot
 	
-	rm ${P}fr_all.merged.po
-	rm ${P}it_all.merged.po
-	rm ${P}de_all.merged.po
+	rm ${POFILES}fr_all.merged.po
+	rm ${POFILES}it_all.merged.po
+	rm ${POFILES}de_all.merged.po
 
 	echo Now edit the new.pot files and then run make renamepot
 	
 renamepot :
-	mv ${P}fr_all.merged.pot ${P}fr_all.merged.po
-	mv ${P}it_all.merged.pot ${P}it_all.merged.po
-	mv ${P}de_all.merged.pot ${P}de_all.merged.po
+	mv ${POFILES}fr_all.merged.pot ${POFILES}fr_all.merged.po
+	mv ${POFILES}it_all.merged.pot ${POFILES}it_all.merged.po
+	mv ${POFILES}de_all.merged.pot ${POFILES}de_all.merged.po
 	
 	echo Now poedit the po files and make mo files. Then run make mos
 	
 mos :
-	msgfmt ${P}fr_all.merged.po -o ${M}fr/LC_MESSAGES/all.mo
-	msgfmt ${P}it_all.merged.po -o ${M}it/LC_MESSAGES/all.mo
-	msgfmt ${P}de_all.merged.po -o ${M}de/LC_MESSAGES/all.mo
+	msgfmt ${POFILES}fr_all.merged.po -o ${LOCALE}fr/LC_MESSAGES/all.mo
+	msgfmt ${POFILES}it_all.merged.po -o ${LOCALE}it/LC_MESSAGES/all.mo
+	msgfmt ${POFILES}de_all.merged.po -o ${LOCALE}de/LC_MESSAGES/all.mo
 	
 	echo mo files have been moved.
 	
