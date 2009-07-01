@@ -72,4 +72,8 @@ Changelist
 
 28 June
 1. Upon reflection, the arrow keys are easier than page up/down. So, I added CTRL as a modifier. Now it's ctrl+left/right to step through the pages. (Help updated too.)
+29 June
+1. Repaired the .desktop file to comply with HIG.
+30 June
+1. Changed selection menu item toggling system. Recently read a little Gnome HIG :)
 
