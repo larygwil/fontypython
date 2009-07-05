@@ -1,0 +1,173 @@
+Fonty Python
+Copyright (C) 2006,2007,2008,2009 Donn.C.Ingle
+donn.ingle@gmail.com
+
+Fonty Python comes with ABSOLUTELY NO WARRANTY; for details
+see the COPYING file.  This is free software, and you are welcome
+to redistribute it under certain conditions; see the COPYING file 
+for details.
+
+NB: Remove the old version BEFORE you install FP.
+==============
+You can find the path by:
+locate fontypythonmodules
+
+If that does not work, then you must update your locate database:
+As root run: locate -u
+Go make coffee.Then run the locate command above again.
+
+This will give you a directory something like:
+/usr/lib/python2.5/site-packages/fontypythonmodules
+
+Use your root account to remove that folder:
+sudo rm -fr /usr/lib/python2.5/site-packages/fontypythonmodules
+
+(Be *very* careful what you type!)
+You should be good to go now.
+
+How to install
+==============
+Please see the end of this file if your install fails, there are
+certain files that FP relies upon.
+
+I assume you have extracted the "tarball" already.
+Change to the directory it creates.
+
+As the root user enter this command:
+python setup.py install
+
+If you are on Ubuntu/Kubuntu/Xubuntu/Debian etc:
+sudo python setup.py install
+
+This will create a program called 'fontypython'
+
+Alternative installation
+========================
+Move the entire extracted folder to a folder that
+is in your PATH, like ~/bin
+Make a link to the fontypython script like this: (for e.g.)
+tar -s ~/bin/fontypython-x.x.x/fontypython .
+Make it executable:
+chmod u+x fontypython
+
+Now you should be good to go.
+If it does not work, try closing your console and
+starting it again.
+
+Running the program
+===================
+To get started:
+fontypython -h
+
+For more info:
+fontypython -e
+
+Please read the help ( -h or Help menu in app ).
+
+Troubleshooting the installation
+================================
+Fonty Python depends on several other libraries:
+( These are minimum version numbers )
+1. python2.4 to python2.6 (Not python3)
+2. python-dev (odd one this. See notes below)
+3. python-imaging
+4. python-wxgtk2.6 or greater.
+
+Items 1 and 3 are usually pre-installed on Gnu\Linux distros.
+Item 2 is a new twist. I am not sure why it's required for FP
+(yes - I don't know everything :)) but some users have had
+problems and installing python2.4-dev fixed them.
+(replace 2.4 with the actual version of python you are using.)
+On *buntu:
+sudo apt-get install python2.4-dev
+
+If you cannot install item 2 - try the alternative 
+installation instructions above.
+
+Item 4 may be installed, or it may be in your distro's
+main repository.To install item 4, try the following:
+On *buntu/Debian:
+apt-cache search python-wxgtk
+Find the latest version in the list, then:
+sudo apt-get install python-wxgtkX.Y
+(replacing X.Y with the results of your search)
+
+On distro X:
+*Please send me your experiences and I'll fill this in*
+
+After this has installed, try to run fontypython again.
+
+If you still do not come right, then I advise you
+to go to the following web sites for help directly
+from the horse's mouth:
+http://wxpython.org
+http://www.pythonware.com/products/pil/index.htm
+
+
+LOCALIZATION TIPS
+=================
+Make sure your LANG variable is set properly.
+To run under a locale, do something like this:
+LANG=en_ZA.utf8
+./fontypython
+
+You can find your locales by:
+locale -a
+
+If localization is not working it could be that there is no 
+translation for your language yet, it can also be a 
+problem with missing packages in your distro.
+
+This is what I installed on my system (Kubuntu 7.10 as of 
+December 2007) while I was developing:
+ 
+language-support-fr
+language-support-en
+language-pack-gnome-fr (*)
+(*) This one is VERY important, it has many stock translations for GTK. Without it
+you likely not see buttons and widgets in the right language.
+
+Substitute your language code as you please.
+
+TRANSLATION TIPS
+================
+If you want to help translate, please contact us via the 
+fontypython list: fontypython@googlegroups.com
+
+I have included the pot files that I have. Look at fontypythonmodules/pofiles/README
+(Translation stuff is messy. Headers are all wrong and versions all over the place.)
+
+CHANGELOG
+================
+Jan 22 2008 : FP version 0.3.6
+* Fixed another font bug (0 width).
+* Bad wxImage badfont catch - draws a yellow block like a segfont.
+* Made the Check Font dialog work a lot better. feedback & better layout.
+* Updated the po/mo files, but no new translating has been done.
+
+Jan 20 2008 : FP version 0.3.5
+* Added a .desktop file and an icon - changes to setup.py
+
+Jan 18 2008 : FP version 0.3.4
+* Did a lot of locale/unicode work to support LANG=C
+* Added a tool to 'check' fonts - marks segfaulters
+* Added long command-line options
+* Repairs to help file
+* Many bugs fixed, new ones created :)
+
+Jan 10 2008 : FP version 0.3.3
+* Fixed setup.py bug - should install properly now.
+* Tweaked some gui things - like spacing.
+* Added a clear button for the filter.
+* Major overhaul of the Type1 code in fontcontrol.
+
+Jan 4 2008 : FP version 0.3.1
+* Fixed img height/width bugs in help file. It scrolls smoothly now.
+* Fixed startup bug when last folder viewed no longer has any fonts.
+* Fixed some text in strings.
+* Improved the setup.py system to use i18n, strings and fpversion modules.
+* Added Italian translation (Thanks to Pietro Battiston)
+
+Please send me reports about your experiences with Fonty Python.
+Donn,2007,2008,2009.
+

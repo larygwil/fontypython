@@ -1,0 +1,58 @@
+ROADMAP
+=======
+
+NOTE 1
+In order to move ahead we need to stick to a single conceptual framework and 
+I think the one to use is:
+  "Make and show font items and fitmaps *only* in pages of X items."
+This is a conservative approach. It assumes few resources are available to
+run Fonty. It tries to prioritize speed of start-up and lightness of footprint.
+
+
+wxgui Bugs
+==========
+Bug 1
+Notebook focus bug:
+1. Click Folder tab. 
+2. Click a folder in DirCtrl. 
+3. Click Pog Tab. Notice it takes 2 clicks to go there.
+Best fix : Keep old notebook control and have it function properly. 
+Next best: Replace with aui notebook.
+
+
+wxgui Tasks
+===========
+A) Pager
+If possible, replace the combo-box for paging with a more web-like 
+pager control: << < 1 | 2 | 3 | 4 > >> 
+
+B) Font view selection
+Ctrl+a for select-all (visible in page)
+shift+click for range selection
+
+
+Mad Ideas
+=========
+PANOSE WIZARD
+My understanding of Panose is very basic. I could not find proper info online. I read
+what I could. 
+
+Given that Panose is some kind of encoding of a Font's attributes and that
+some of those are its appearance -- it should be possible to construct a Panose number
+from a series of visuals. For example:
+(picture of a serif letter)[radio button]
+(picture of a sans letter)[radio button]
+Next>>
+(picture of a western letter)[radio button]
+(picture of a non-western letter)[radio button]
+Next>>
+{Latin fork in road}
+(picture of a curved serif)[radio button]
+(picture of a block serif)[radio button]
+Next>>
+And so on... until the entire set of Panose choices has been run and we can present
+a Panose number for them.
+
+Could this be done? If so, it should happen in the panel above the search bar.
+It should also have a history and a means to enter the wizard at arbitrary points of the 
+chain. It should be obvious, easy and quick.
