@@ -15,7 +15,8 @@
 ##
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
-	
+
+
 import pathcontrol 
 import fpversion
 import os
@@ -23,7 +24,14 @@ import os
 copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle"
 contact = "email: donn.ingle@gmail.com"
 done = "Done."
-_pc = pathcontrol.PathControl()
+
+## We use PathControl to get some info, BUT we DO NOT WANT TO MAKE
+## the ~/.fontypython folder from this module.
+## This module (strings) also gets used via setup.py
+## and that has the result of making the folder with root ownership! Bad news.
+## So, there is a new flag to manage this now:
+_pc = pathcontrol.PathControl( makeFolder=False )
+
 version = _("Fonty Python version %s") % fpversion.version
 
 warranty = """This program is distributed in the

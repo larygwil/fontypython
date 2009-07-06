@@ -21,9 +21,11 @@ import fontypythonmodules.i18n
 import fontypythonmodules.sanitycheck
 import fontypythonmodules.fpversion
 
+
 import os, sys, glob, fnmatch
 from distutils.core import setup, Extension
 import distutils.command.install_data
+
 
 ## Code borrowed from wxPython's setup and config files
 ## Thanks to Robin Dunn for the suggestion.
@@ -46,10 +48,13 @@ def find_data_files(srcdir, *wildcards, **kw):
 	
 	## A list of partials within a filename that would disqualify it
 	## from appearing in the tarball.
-	badnames=[".pyc","~","no_"]
+	badnames=[".pyc","~","no_",".svn","CVS"]
 
 	def walk_helper(arg, dirname, files):
-		if 'CVS' in dirname:
+		BL=[ bad for bad in badnames if bad in dirname ]
+		L=len( BL )
+		if L > 0:
+			# There is a bad string in the dirname, so we skip it
 			return
 		names = []
 		lst, wildcards = arg
@@ -57,12 +62,10 @@ def find_data_files(srcdir, *wildcards, **kw):
 			wc_name = opj(dirname, wc)
 			for f in files:
 				filename = opj(dirname, f)
-				#if ".pyc" not in filename and "~" not in filename:
 				## This hairy looking line excludes the filename
 				## if any part of one of  badnames is in it:
 				L=len([bad for bad in badnames if bad in filename])
 				if L == 0:
-					print "USING:",filename
 					if fnmatch.fnmatch(filename, wc_name) and not os.path.isdir(filename):
 						names.append(filename)
 		if names:
