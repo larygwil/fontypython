@@ -27,7 +27,7 @@ class PathControl:
 	* All these vars contain/return BYTE STRING paths and files.
 	"""
 	
-	def __init__(self):
+	def __init__(self, makeFolder=True ):
 		## __HOME will be a BYTE STRING
 		self.__HOME = os.environ['HOME']
 		
@@ -47,14 +47,15 @@ Please check your write permissions and try again.""") % self.__HOME
 		self.__userfontpath = self.__HOME + "/.fonts"
 		
 		## Make ~/.fontypython
-		if not os.path.exists(self.__fphomepath):
-			try:
-				os.makedirs(self.__fphomepath) #using makedirs - just in case.
-			except:
-				print _("""
+		if makeFolder:
+			if not os.path.exists(self.__fphomepath):
+				try:
+					os.makedirs(self.__fphomepath) #using makedirs - just in case.
+				except:
+					print _("""
 Couldn't make the folder in %s
 Please check your write permissions and try again.""") % self.__fphomepath
-				raise SystemExit
+					raise SystemExit
 			
 	def appPath(self): 
 		""" Kind of spastic, but I was in a get/set mode"""
