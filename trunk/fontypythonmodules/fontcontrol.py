@@ -556,7 +556,7 @@ class Folder(BasicFontList):
 					sourceList.extend( safeJoin( R, F ) )
 			except UnicodeDecodeError:
 				## The encoding and decoding just above have fixed this error, but I will leave this catch here just in case.
-				print _("CORNER CASE in Folder.__init__: UnicodeDecodeError under: %s") % [ P ]
+				print "CORNER CASE in Folder.__init__: UnicodeDecodeError under: %s" % [ P ]
 				raise SystemExit
 
 		## Now employ the generator magic:

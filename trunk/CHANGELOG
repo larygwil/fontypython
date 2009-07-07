@@ -83,3 +83,6 @@ Changelist
 1. Changed logo in help, about and splash.
 2. Altered setup.py to remove MANIFEST file if it's there. Unless it's removed, setup.py sdist will potentially miss new files.
 
+6 July 2009
+1. Fixed a problem with setup.py that was making ~/.fontypython folder (and as root too). That folder now only gets made when the app is run for the first time, not during setup. Thanks to Pietro for catching this one.
+
