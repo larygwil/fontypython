@@ -86,3 +86,7 @@ Changelist
 6 July 2009
 1. Fixed a problem with setup.py that was making ~/.fontypython folder (and as root too). That folder now only gets made when the app is run for the first time, not during setup. Thanks to Pietro for catching this one.
 
+7 July
+1. Pietro sent us an Italian .po file. I did "make mos" and I hope that was right.
+2. Removed some _() stuff from CORNER CASE error messages.
+3. Redacted pofiles/README file somewhat.
