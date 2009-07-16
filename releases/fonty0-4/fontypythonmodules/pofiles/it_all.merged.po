@@ -6,9 +6,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fontypython 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-28 15:55+0200\n"
-"PO-Revision-Date: 2008-01-22 19:49+0200\n"
-"Last-Translator: Donn Ingle <donn.ingle@gmail.com>\n"
+"POT-Creation-Date: 2009-07-06 12:30+0200\n"
+"PO-Revision-Date: 2009-07-07 12:35+0100\n"
+"Last-Translator: Pietro Battiston <toobaz@email.it>\n"
 "Language-Team: Italian Translation Project <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22,46 +22,52 @@ msgstr "Spiacente, al momento sono supportati solo sistemi Gnu/Linux."
 
 #: fontypython:101
 #, python-format
-msgid ""
-"Please restart Fonty Python after you have moved:\"%s\" to some other place."
+msgid "Please restart Fonty Python after you have moved:\"%s\" to some other place."
 msgstr "Per favore sposta:\"%s\" in un'altra posizione e riavvia Fonty Python."
 
-#: fontypythonmodules/cli.orig.py:59 fontypythonmodules/cli.py:60
-msgid ""
-"I can't decode your argument(s). Please check your LANG variable. Also, "
-"don't paste text, type it in."
-msgstr ""
+#: fontypythonmodules/cli.py:61
+msgid "I can't decode your argument(s). Please check your LANG variable. Also, don't paste text, type it in."
+msgstr "Impossibile decifrare il/gli argomento/i. Verificare la variabile LANG. Attenzione: non incollare testo, ma digitarlo direttamente."
 
-#: fontypythonmodules/cli.orig.py:106 fontypythonmodules/cli.orig.py:114
-#: fontypythonmodules/cli.py:115 fontypythonmodules/cli.py:123
+#: fontypythonmodules/cli.py:116
+#: fontypythonmodules/cli.py:124
 #, python-format
 msgid "Please use a number for %s"
 msgstr "Per favore usa un numero per %s"
 
-#: fontypythonmodules/cli.orig.py:141 fontypythonmodules/cli.py:171
+#: fontypythonmodules/cli.py:144
+#, python-format
+msgid "%s takes two arguments: SOURCE(folder) TARGET(pog)"
+msgstr "%s richiede due argomenti: SORGENTE(cartella) OBIETTIVO(pog)"
+
+#: fontypythonmodules/cli.py:145
+msgid "NB: If you wanted to use spaces in a pogname or folder then please put \"quotes around them.\"  "
+msgstr "NB: se si vuole utilizzare degli spazi nel nome di un pog o di una cartella è necessario metterlo \"tra virgolette\"."
+
+#: fontypythonmodules/cli.py:163
 #, python-format
 msgid "I can't find %s"
-msgstr ""
+msgstr "Impossibile trovare %s"
 
-#: fontypythonmodules/cli.orig.py:158 fontypythonmodules/cli.py:189
+#: fontypythonmodules/cli.py:181
 msgid "There are no pogs available."
 msgstr "Nessun pog disponibile."
 
-#: fontypythonmodules/cli.orig.py:160 fontypythonmodules/cli.py:191
+#: fontypythonmodules/cli.py:183
 #, python-format
 msgid "Listing %d pog(s)"
 msgstr "Lista di %d pog"
 
-#: fontypythonmodules/cli.orig.py:161 fontypythonmodules/cli.py:192
+#: fontypythonmodules/cli.py:184
 msgid " * indicates installed pogs"
 msgstr "* indica i pog installati"
 
-#: fontypythonmodules/cli.orig.py:169 fontypythonmodules/cli.py:200
+#: fontypythonmodules/cli.py:192
 #, python-format
 msgid "Could not open (%s)."
 msgstr "Impossibile aprire (%s)."
 
-#: fontypythonmodules/cli.orig.py:196 fontypythonmodules/cli.py:227
+#: fontypythonmodules/cli.py:219
 #, python-format
 msgid ""
 "Your text has been set to \"%s\"\n"
@@ -74,160 +80,143 @@ msgstr ""
 "\n"
 "Per favore riavvia Fonty Python per vedere il risultato."
 
-#: fontypythonmodules/cli.orig.py:222 fontypythonmodules/cli.orig.py:251
-#: fontypythonmodules/cli.py:253 fontypythonmodules/cli.py:282
+#: fontypythonmodules/cli.py:245
+#: fontypythonmodules/cli.py:274
 #, python-format
 msgid "(%s) cannot be found. Try -l to see the names."
 msgstr "Impossibile trovare (%s). Prova -l per vedere i nomi."
 
-#: fontypythonmodules/cli.orig.py:243 fontypythonmodules/cli.py:274
+#: fontypythonmodules/cli.py:266
 #, python-format
 msgid "Installing (%s)"
 msgstr "Installo (%s)"
 
-#: fontypythonmodules/cli.orig.py:272 fontypythonmodules/cli.py:303
+#: fontypythonmodules/cli.py:295
 #, python-format
 msgid "Removing (%s)"
 msgstr "Rimuovo (%s)"
 
-#: fontypythonmodules/cli.orig.py:279 fontypythonmodules/cli.py:310
+#: fontypythonmodules/cli.py:302
 #, python-format
 msgid "Sorry, can't find (%s). Try -l to see the names."
 msgstr "Spiacente, non trovo (%s). Prova -l per vedere i nomi."
 
-#: fontypythonmodules/cli.orig.py:289 fontypythonmodules/cli.py:364
+#: fontypythonmodules/cli.py:328
+#, python-format
+msgid "Creating a new pog: %s"
+msgstr "Creo un nuovo pog: %s"
+
+#: fontypythonmodules/cli.py:351
+#, python-format
+msgid "I have placed %(count)s fonts from %(folder)s into %(pog)s."
+msgstr "Ho sistemato %(count)s fonts da %(folder)s in %(pog)s."
+
+#: fontypythonmodules/cli.py:353
+#, python-format
+msgid "The fonts from %(folder)s are *already* in %(pog)s."
+msgstr "I font della cartella %(folder)s sono *già* in %(pog)s."
+
+#: fontypythonmodules/cli.py:360
 msgid ""
 "Please check your arguments, there seem to be too many.\n"
-"(Remember: it's one pound for a five-minute argument, but only eight pounds "
-"for a course of ten.)\n"
+"(Remember: it's one pound for a five-minute argument, but only eight pounds for a course of ten.)\n"
 "\n"
-"NB: If you wanted to use spaces in a pogname or folder then please put "
-"\"quotes around them.\" "
+"NB: If you wanted to use spaces in a pogname or folder then please put \"quotes around them.\" "
 msgstr ""
 "Per favore controlla gli argomenti, sembrano essere troppi.\n"
-"(Ricorda: un argomento da cinque minuti viene una sterlina, ma se ne compri "
-"dieci paghi solo otto sterline.)\n"
+"(Ricorda: un argomento da cinque minuti viene una sterlina, ma se ne compri dieci paghi solo otto sterline.)\n"
 "\n"
-"NB: Se il nome di un pog o di una cartella contiene spazi, mettilo \"tra "
-"virgolette\"."
+"NB: Se il nome di un pog o di una cartella contiene spazi, mettilo \"tra virgolette\"."
 
-#: fontypythonmodules/cli.orig.py:316 fontypythonmodules/cli.py:391
+#: fontypythonmodules/cli.py:387
 #, python-format
 msgid "Sorry, (%s) does not exist. Try --list"
 msgstr "Spiacente, (%s) non esiste. Prova --list."
 
-#: fontypythonmodules/cli.orig.py:321 fontypythonmodules/cli.py:396
+#: fontypythonmodules/cli.py:392
 msgid "You cannot use a folder as the target argument. Try --help"
 msgstr "Non puoi utilizzare una cartella come destinazione. Prova --help"
 
-#: fontypythonmodules/cli.orig.py:372 fontypythonmodules/cli.orig.py:393
-#: fontypythonmodules/cli.py:447 fontypythonmodules/cli.py:468
+#: fontypythonmodules/cli.py:442
+#: fontypythonmodules/cli.py:463
 #, python-format
-msgid ""
-"The target pog (%s) is currently installed, you can't use it as a target."
-msgstr ""
-"Il pog destinazione (%s) è attualmente installato, non puoi utilizzarlo come "
-"destinazione."
+msgid "The target pog (%s) is currently installed, you can't use it as a target."
+msgstr "Il pog destinazione (%s) è attualmente installato, non puoi utilizzarlo come destinazione."
 
-#: fontypythonmodules/cli.orig.py:378 fontypythonmodules/cli.py:453
+#: fontypythonmodules/cli.py:448
 msgid "Your pogs are the same! Try -e"
 msgstr "I pog sono lo stesso! Prova -e"
 
-#: fontypythonmodules/cli.orig.py:385 fontypythonmodules/cli.py:460
+#: fontypythonmodules/cli.py:455
 msgid "This pog is empty"
 msgstr "Questo pog è vuoto"
 
-#: fontypythonmodules/cli.py:147
-#, python-format
-msgid "%s takes two arguments: SOURCE(folder) TARGET(pog)"
-msgstr ""
-
-#: fontypythonmodules/cli.py:148
-msgid ""
-"NB: If you wanted to use spaces in a pogname or folder then please put "
-"\"quotes around them.\"  "
-msgstr ""
-
-#: fontypythonmodules/cli.py:328
-#, fuzzy, python-format
-msgid "Creating a new pog: %s"
-msgstr "Errore nella creazione di una wximage di %s"
-
-#: fontypythonmodules/cli.py:354
-#, fuzzy, python-format
-msgid "I have placed %s fonts from %s into %s."
-msgstr "I font selezionati sono ora in %s."
-
-#: fontypythonmodules/cli.py:356
-#, python-format
-msgid "The fonts from %s are already in %s."
-msgstr ""
-
-#: fontypythonmodules/dialogues.py:118
+#: fontypythonmodules/dialogues.py:127
 msgid "About FontyPython"
 msgstr "Informazioni su Fonty Python"
 
-#: fontypythonmodules/dialogues.py:159
+#: fontypythonmodules/dialogues.py:168
 msgid "About"
 msgstr "Informazioni su..."
 
-#: fontypythonmodules/dialogues.py:160
+#: fontypythonmodules/dialogues.py:169
 msgid "Thanks"
-msgstr ""
+msgstr "Grazie"
 
-#: fontypythonmodules/dialogues.py:161
+#: fontypythonmodules/dialogues.py:170
 msgid "Licence"
 msgstr "Licenza"
 
-#: fontypythonmodules/dialogues.py:177 fontypythonmodules/dialogues.py:181
+#: fontypythonmodules/dialogues.py:186
+#: fontypythonmodules/dialogues.py:190
 msgid "Settings"
 msgstr "Impostazioni"
 
-#: fontypythonmodules/dialogues.py:184
+#: fontypythonmodules/dialogues.py:193
 msgid "Sample text:"
 msgstr "Testo di esempio:"
 
-#: fontypythonmodules/dialogues.py:188
+#: fontypythonmodules/dialogues.py:197
 msgid "Point size:"
 msgstr "Dimensione (in punti):"
 
-#: fontypythonmodules/dialogues.py:193
+#: fontypythonmodules/dialogues.py:202
 msgid "Page length:"
 msgstr "Lunghezza della pagina:"
 
-#: fontypythonmodules/dialogues.py:240
+#: fontypythonmodules/dialogues.py:249
 msgid "Oh boy..."
 msgstr "O cribbio..."
 
-#: fontypythonmodules/dialogues.py:244
+#: fontypythonmodules/dialogues.py:253
 msgid "Fonty Python, um ... crashed."
 msgstr "Fonty Python... ehm... ha crashato."
 
-#: fontypythonmodules/dialogues.py:248
+#: fontypythonmodules/dialogues.py:257
 msgid "Oh dear,"
 msgstr "Oh caspita,"
 
-#: fontypythonmodules/dialogues.py:252
+#: fontypythonmodules/dialogues.py:261
 msgid ""
-"There's some problem with the font named below. Please use the Check Fonts "
-"tool in Fonty\n"
-"(from the command-line or the File menu) to go through this directory and "
-"mark all the dangerous fonts.\n"
-"(You could simply move this font elsewhere, but others may remain to cause "
-"trouble.)\n"
+"There's some problem with the font named below. Please use the Check Fonts tool in Fonty\n"
+"(from the command-line or the File menu) to go through this directory and mark all the dangerous fonts.\n"
+"(You could simply move this font elsewhere, but others may remain to cause trouble.)\n"
 msgstr ""
+"C'è qualche problema con il font riportato sotto. Si prega di utilizzare lo strumento \"Controlla font\" in Fonty\n"
+"(dal terminale o dal menu File) per scorrere la cartella e contrassegnare i font dannosi.\n"
+"(In alternativa, è possibile semplicemente spostare altrove il font, ma ne potrebbero rimanere altri problematici.)\n"
 
-#: fontypythonmodules/dialogues.py:286
+#: fontypythonmodules/dialogues.py:295
 msgid "Check for dangerous fonts."
-msgstr ""
+msgstr "Controllo font dannosi."
 
-#: fontypythonmodules/dialogues.py:291
+#: fontypythonmodules/dialogues.py:300
 msgid "Choose a directory and double click it to start"
-msgstr ""
+msgstr "Doppio click su una cartella per avviare il controllo"
 
 #: fontypythonmodules/fontcontrol.py:108
-msgid "Font cannot be found, you should purge it."
-msgstr "Impossibile trovare il font, dovresti epurarlo."
+msgid "Font cannot be found, you should purge this Pog."
+msgstr "Impossibile trovare il font, dovresti ripulire questo pog."
 
 #: fontypythonmodules/fontcontrol.py:114
 #, python-format
@@ -236,637 +225,35 @@ msgid ""
 "Please move (%s) away from here and report this to us."
 msgstr ""
 "Errore non gestito:\n"
-"Per favore sposta (%s) da questa posizione e riporta l'errore ai "
-"programmatori."
+"Per favore sposta (%s) da questa posizione e riporta l'errore ai programmatori."
 
-#: fontypythonmodules/fontcontrol.py:125 fontypythonmodules/fontcontrol.py:141
+#: fontypythonmodules/fontcontrol.py:125
 msgid "Font may be bad and it cannot be drawn."
 msgstr "Il font potrebbe essere corrotto, non è possibile raffigurarlo."
 
+#: fontypythonmodules/fontcontrol.py:141
+msgid "Unicode problem. Font may be bad and it cannot be drawn."
+msgstr "Problema unicode. Il font potrebbe essere corrotto, non è possibile raffigurarlo."
+
 #: fontypythonmodules/fontcontrol.py:168
 msgid "Font causes a segfault. Fix or remove it."
-msgstr ""
+msgstr "Il font causa un segfault. È necessario ripararlo o rimuoverlo."
 
 #: fontypythonmodules/fontcontrol.py:239
-msgid "Font cannot be drawn."
-msgstr "Impossibile raffigurare il font."
+msgid "Font causes a memory error, it can't be drawn."
+msgstr "Il font causa un errore di memoria, non è possibile raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:277
+#: fontypythonmodules/fontcontrol.py:281
 msgid "There are no fonts to see here, move along."
 msgstr "Qui non c'è nessun font da vedere."
 
-#: fontypythonmodules/fontcontrol.py:278
+#: fontypythonmodules/fontcontrol.py:282
 msgid "(Check your filter!)"
 msgstr "(Controlla il filtro!)"
 
-#: fontypythonmodules/fontsearch.py:10 fontypythonmodules/fontsearch_ui.py:12
-#: fontypythonmodules/fontsearch_ui.py:70 fontypythonmodules/wxgui.037.py:1472
-#: fontypythonmodules/wxgui.037.py:1530
-msgid "Name Records"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:10 fontypythonmodules/fontsearch_ui.py:29
-#: fontypythonmodules/fontsearch_ui.py:74 fontypythonmodules/wxgui.037.py:1489
-#: fontypythonmodules/wxgui.037.py:1534
-msgid "PANOSE Classification"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:10
-msgid "Appearance"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:12
-msgid "Copyright"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:12
-msgid "Font Family"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:12
-msgid "Font Subfamily"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:12
-msgid "Font Identifer"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:12
-msgid "Full Name"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:13
-msgid "Version"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:13
-msgid "Postscript Name"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:13
-msgid "Trademark"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:13
-msgid "Manufacture Name"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:13
-msgid "Designer"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:14
-msgid "Description"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:14
-msgid "URL Vendor"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:14
-msgid "URL Designer"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:14
-#, fuzzy
-msgid "License"
-msgstr "Licenza"
-
-#: fontypythonmodules/fontsearch.py:14
-msgid "License Info URL"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:15
-msgid "Unknown"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:15
-msgid "Preferred Family"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:15
-msgid "Preferred Subfamily"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:15
-msgid "Compatible Full (Mac)"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:16
-#, fuzzy
-msgid "Sample text"
-msgstr "Testo di esempio:"
-
-#: fontypythonmodules/fontsearch.py:16
-msgid "PostScript CID findfont name"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:16
-msgid "WWS Family Name"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:16
-msgid "WWS Subfamily Name"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:17
-msgid "Number of glyphs"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:17
-msgid "PaintType"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25
-msgid "FamilyType"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25 fontypythonmodules/fontsearch.py:26
-#: fontypythonmodules/fontsearch.py:29 fontypythonmodules/fontsearch.py:31
-#: fontypythonmodules/fontsearch.py:33 fontypythonmodules/fontsearch.py:35
-#: fontypythonmodules/fontsearch.py:38 fontypythonmodules/fontsearch.py:42
-#: fontypythonmodules/fontsearch.py:46 fontypythonmodules/fontsearch.py:49
-msgid "Any"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25 fontypythonmodules/fontsearch.py:26
-#: fontypythonmodules/fontsearch.py:29 fontypythonmodules/fontsearch.py:31
-#: fontypythonmodules/fontsearch.py:33 fontypythonmodules/fontsearch.py:35
-#: fontypythonmodules/fontsearch.py:38 fontypythonmodules/fontsearch.py:42
-#: fontypythonmodules/fontsearch.py:46 fontypythonmodules/fontsearch.py:49
-msgid "No Fit"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25
-msgid "Latin Text"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25
-msgid "Latin Hand Written"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25
-msgid "Latin Decorative"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:25
-msgid "Latin Symbol"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:26
-msgid "SerifStyle"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:26
-#, fuzzy
-msgid "Cove"
-msgstr "&Chiudi"
-
-#: fontypythonmodules/fontsearch.py:26
-msgid "Obtuse Cove"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:26
-msgid "Square Cove"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:26
-msgid "Obtuse Square Cove"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:26
-msgid "Square"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:27 fontypythonmodules/fontsearch.py:29
-msgid "Thin"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:27
-msgid "Oval"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:27
-msgid "Exaggerated"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:27
-msgid "Triangle"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:27
-msgid "Normal Sans"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:27
-msgid "Obtuse Sans"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:28
-msgid "Perpendicular Sans"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:28
-msgid "Flared"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:28
-msgid "Rounded"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29
-msgid "Weight"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29
-msgid "Very Light"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29
-msgid "Light"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29
-msgid "Book"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29 fontypythonmodules/fontsearch.py:33
-msgid "Medium"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29
-msgid "Demi"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:29
-msgid "Bold"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:30
-msgid "Heavy"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:30
-msgid "Black"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:30
-msgid "Extra Black"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:31
-msgid "Proportion"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:31
-msgid "Old Style"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:31
-#, fuzzy
-msgid "Modern"
-msgstr "Cartelle"
-
-#: fontypythonmodules/fontsearch.py:31
-msgid "Even Width"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:31
-msgid "Extended"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:31
-msgid "Condensed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:32
-msgid "Very Extended"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:32
-msgid "Very Condensed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:32
-msgid "Monospaced"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:33
-msgid "Contrast"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:33
-msgid "None"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:33
-msgid "Very Low"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:33
-msgid "Low"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:33
-msgid "Medium Low"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:33
-msgid "Medium High"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:34
-msgid "High"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:34
-msgid "Very High"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:35
-msgid "StrokeVariation"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:35
-msgid "No Variation"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:35
-msgid "Gradual/Diagonal"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:35
-msgid "Gradual/Transitional"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:36
-msgid "Gradual/Vertical"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:36
-msgid "Gradual/Horizontal"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:36
-msgid "Rapid/Vertical"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:36
-msgid "Rapid/Horizontal"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:37
-msgid "Instant/Vertical"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:37
-msgid "Instant/Horizontal"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:38
-msgid "ArmStyle"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:38
-msgid "Straight Arms/Horizontal"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:38
-msgid "Straight Arms/Wedge"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:38
-msgid "Straight Arms/Vertical"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:39
-msgid "Straight Arms/Single Serif"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:39
-msgid "Straight Arms/Double Serif"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:39
-msgid "Non-Straight/Horizontal"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:40
-msgid "Non-Straight/Wedge"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:40
-msgid "Non-Straight/Vertical"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:40
-msgid "Non-Straight/Single Serif"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:41
-msgid "Non-Straight/Double Serif"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:42
-msgid "LetterForm"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:42
-msgid "Normal/Contact"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:42
-msgid "Normal/Weighted"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:42
-msgid "Normal/Boxed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:42
-msgid "Normal/Flattened"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:43
-msgid "Normal/Rounded"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:43
-msgid "Normal/Off Center"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:43
-msgid "Normal/Square"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:43
-msgid "Oblique/Contact"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:43
-msgid "Oblique/Weighted"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:44
-msgid "Oblique/Boxed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:44
-msgid "Oblique/Flattened"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:44
-msgid "Oblique/Rounded"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:44
-msgid "Oblique/Off Center"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:45
-msgid "Oblique/Square"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:46
-msgid "Midline"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:46
-msgid "Standard/Trimmed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:46
-msgid "Standard/Pointed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:46
-msgid "Standard/Serifed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:46
-msgid "High/Trimmed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:47
-msgid "High/Pointed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:47
-msgid "High/Serifed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:47
-msgid "Constant/Trimmed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:47
-msgid "Constant/Pointed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:47
-msgid "Constant/Serifed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:48
-msgid "Low/Trimmed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:48
-msgid "Low/Pointed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:48
-msgid "Low/Serifed"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:49
-msgid "XHeight"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:49
-msgid "Constant/Small"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:49
-msgid "Constant/Standard"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:49
-msgid "Constant/Large"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:49
-msgid "Ducking/Small"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:50
-msgid "Ducking/Standard"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:50
-msgid "Ducking/Large"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:52
-msgid "Shape"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:54
-msgid "quite simple"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:54
-msgid "serif/rounded"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:54
-msgid "decorated"
-msgstr ""
-
-#: fontypythonmodules/fontsearch.py:54
-msgid "fanciful"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:13 fontypythonmodules/wxgui.037.py:1473
-msgid "Search Name Records"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:18
-#: fontypythonmodules/fontsearch_ui.py:35 fontypythonmodules/wxgui.037.py:1478
-#: fontypythonmodules/wxgui.037.py:1495
-msgid "Compile"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:30 fontypythonmodules/wxgui.037.py:1490
-msgid "Search PANOSE"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:46 fontypythonmodules/wxgui.037.py:1506
-msgid "Appereance"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:47 fontypythonmodules/wxgui.037.py:1507
-msgid "Search Appereance"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:51 fontypythonmodules/wxgui.037.py:1511
-msgid "Search actual Pog"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:53 fontypythonmodules/wxgui.037.py:1513
-msgid "Search all Pogs"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:55 fontypythonmodules/wxgui.037.py:1515
-msgid "Search actual Folder"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:57 fontypythonmodules/wxgui.037.py:1517
-msgid "Search selected Folder"
-msgstr ""
-
-#: fontypythonmodules/fontsearch_ui.py:86 fontypythonmodules/wxgui.037.py:1546
-msgid "Searching..."
+#: fontypythonmodules/fontcontrol.py:559
+#, python-format
+msgid "CORNER CASE in Folder.__init__: UnicodeDecodeError under: %s"
 msgstr ""
 
 #: fontypythonmodules/fontybugs.py:21
@@ -924,12 +311,10 @@ msgstr "Pog non installato."
 #, python-format
 msgid ""
 "Some fonts could not be uninstalled.\n"
-"Please check your home .fonts (with a dot in front) folder for broken links.%"
-"s"
+"Please check your home .fonts (with a dot in front) folder for broken links.%s"
 msgstr ""
 "Impossibile disinstallare alcuni font.\n"
-"Per favore controlla eventuali link interrotti nella cartella .fonts (con un "
-"punto all'inizio) all'interno della tua home.%s"
+"Per favore controlla eventuali link interrotti nella cartella .fonts (con un punto all'inizio) all'interno della tua home.%s"
 
 #: fontypythonmodules/fontybugs.py:32
 #, python-format
@@ -947,51 +332,48 @@ msgstr ""
 #: fontypythonmodules/fontybugs.py:34
 msgid ""
 "Not a single font in this pog could be uninstalled.\n"
-"None of the fonts were in your fonts folder, please check your home .fonts "
-"(with a dot in front) folder for broken links.\n"
+"None of the fonts were in your fonts folder, please check your home .fonts (with a dot in front) folder for broken links.\n"
 "The pog has been marked as \"not installed\"."
 msgstr ""
 "Non è stato possibile disinstallare neanche un font di questo pog.\n"
-"Nessuno di questi font era nella tua cartella dei font, per favore controlla "
-"eventuali link interrotti nella cartella .fonts (con un punto all'inizio) "
-"all'interno della tua home.\n"
+"Nessuno di questi font era nella tua cartella dei font, per favore controlla eventuali link interrotti nella cartella .fonts (con un punto all'inizio) all'interno della tua home.\n"
 "Il pog è stato segnato come \"non installato\"."
 
 #: fontypythonmodules/fontybugs.py:35
 msgid "This folder has no fonts in it."
 msgstr "Questa cartella non contiene alcun font."
 
-#: fontypythonmodules/fpsys.py:111
+#: fontypythonmodules/fpsys.py:99
 msgid "Checking fonts, this could take some time."
-msgstr ""
+msgstr "Sto controllando i font: potrebbe prendere un po' di tempo."
 
-#: fontypythonmodules/fpsys.py:112
+#: fontypythonmodules/fpsys.py:100
 #, python-format
 msgid "Starting in %s:"
-msgstr ""
+msgstr "Parto in %s:"
 
-#: fontypythonmodules/fpsys.py:119
+#: fontypythonmodules/fpsys.py:107
 #, python-format
 msgid "Looking in %s..."
-msgstr ""
+msgstr "Controllo in %s..."
 
-#: fontypythonmodules/fpsys.py:123
+#: fontypythonmodules/fpsys.py:111
 msgid "No supported fonts found there..."
-msgstr ""
+msgstr "Nessun font supportato qui..."
 
-#: fontypythonmodules/fpsys.py:134
+#: fontypythonmodules/fpsys.py:122
 msgid "I could not find any bad fonts."
-msgstr ""
+msgstr "Non ho trovato alcun font dannoso."
 
-#: fontypythonmodules/fpsys.py:155
+#: fontypythonmodules/fpsys.py:143
 msgid "The process is complete."
-msgstr ""
+msgstr "Il processo è completo."
 
-#: fontypythonmodules/fpsys.py:214
+#: fontypythonmodules/fpsys.py:211
 msgid "Jump the lazy dog fox"
 msgstr "Ma la volpe col suo balzo ha raggiunto il quieto fido"
 
-#: fontypythonmodules/fpsys.py:236
+#: fontypythonmodules/fpsys.py:235
 msgid "No config file found, creating it with defaults."
 msgstr "Non ho trovato il file di configurazione, ne ricreo uno standard."
 
@@ -1003,14 +385,249 @@ msgstr ""
 "Il file di configurazione fontypython è danneggiato.\n"
 "Per favore rimuovilo e riprova."
 
-#: fontypythonmodules/fpsys.py:287
+#: fontypythonmodules/fpsys.py:288
 msgid "Could not write to the config file."
 msgstr "Impossibile modificare il file di configurazione."
 
-#: fontypythonmodules/fpsys.py:420
+#: fontypythonmodules/fpsys.py:425
 #, python-format
 msgid "This font is in %s"
 msgstr "Questo font è in %s"
+
+#: fontypythonmodules/gui_Fitmap.py:232
+msgid "This text cannot be drawn. Hey, it happens..."
+msgstr "Impossibile raffigurare questo testo. Oh, capita..."
+
+#: fontypythonmodules/gui_Left.py:70
+msgid "Include sub-folders."
+msgstr "Includi sottocartelle."
+
+#: fontypythonmodules/gui_Left.py:119
+msgid "Folders"
+msgstr "Cartelle"
+
+#: fontypythonmodules/gui_Left.py:120
+msgid "Pogs"
+msgstr "Pog"
+
+#: fontypythonmodules/gui_Middle.py:100
+msgid "Clear filter"
+msgstr "Ripulisci filtro"
+
+#: fontypythonmodules/gui_Middle.py:104
+msgid "Filter:"
+msgstr "Filtro:"
+
+#: fontypythonmodules/gui_Middle.py:323
+msgid "Selected fonts have been removed."
+msgstr "I font selezionati sono stati rimossi."
+
+#: fontypythonmodules/gui_Middle.py:325
+#: fontypythonmodules/gui_Middle.py:352
+msgid "There was an error writing the pog to disk. Nothing has been done"
+msgstr "C'è stato un errore nella memorizzazione del file. Non è stato fatto nulla."
+
+#: fontypythonmodules/gui_Middle.py:332
+#, python-format
+msgid "Copying fonts from %(source)s to %(target)s"
+msgstr "Copia di font da %(source)s a %(target)s"
+
+#: fontypythonmodules/gui_Middle.py:350
+#, python-format
+msgid "Selected fonts are now in %s."
+msgstr "I font selezionati sono ora in %s."
+
+#: fontypythonmodules/gui_Middle.py:420
+msgid "Choose some fonts"
+msgstr "Scegli i font"
+
+#: fontypythonmodules/gui_Middle.py:453
+#, python-format
+msgid "Your active Target Pog is:%s"
+msgstr "Il tuo attuale pog destinazione è:%s"
+
+#: fontypythonmodules/gui_Middle.py:454
+msgid "Please choose a Source."
+msgstr "Per favore scegli una sorgente."
+
+#: fontypythonmodules/gui_Middle.py:456
+msgid "There are no fonts in here."
+msgstr "Non ci sono font qui."
+
+#: fontypythonmodules/gui_Middle.py:457
+msgid "Please choose a Pog or a Font folder on the left."
+msgstr "Per favore scegli un pog o una cartella di font sulla sinistra."
+
+#: fontypythonmodules/gui_Middle.py:458
+#: fontypythonmodules/gui_Middle.py:466
+#: fontypythonmodules/gui_Middle.py:474
+#: fontypythonmodules/gui_Middle.py:490
+#: fontypythonmodules/gui_Middle.py:506
+#: fontypythonmodules/gui_Middle.py:515
+msgid "Nothing to do"
+msgstr "Niente da fare"
+
+#: fontypythonmodules/gui_Middle.py:464
+#: fontypythonmodules/gui_Middle.py:489
+#, python-format
+msgid "Viewing Folder:%s"
+msgstr "Visualizzazione della cartella:%s"
+
+#: fontypythonmodules/gui_Middle.py:468
+msgid "Viewing a folder."
+msgstr "Visualizzazione di una cartella."
+
+#: fontypythonmodules/gui_Middle.py:473
+#, python-format
+msgid "Viewing (installed) Pog: %s"
+msgstr "Visualizzazione del pog (installato): %s"
+
+#: fontypythonmodules/gui_Middle.py:477
+#: fontypythonmodules/gui_Middle.py:493
+#: fontypythonmodules/gui_Middle.py:509
+msgid "You cannot change an installed Pog."
+msgstr "Non puoi modificare un pog installato."
+
+#: fontypythonmodules/gui_Middle.py:479
+#, python-format
+msgid "Viewing (editable) Pog: %s"
+msgstr "Visualizzazione del pog (modificabile): %s"
+
+#: fontypythonmodules/gui_Middle.py:481
+#, python-format
+msgid "Remove fonts from %s"
+msgstr "Rimuovi i font da %s"
+
+#: fontypythonmodules/gui_Middle.py:484
+msgid "You can remove fonts from the selected Target Pog."
+msgstr "Puoi rimuovere dei font dal pog destinazione."
+
+#: fontypythonmodules/gui_Middle.py:495
+#, python-format
+msgid "Append From: %(source)s To:%(target)s"
+msgstr "Aggiungi i font da: %(source)s a:%(target)s"
+
+#: fontypythonmodules/gui_Middle.py:496
+#: fontypythonmodules/gui_Middle.py:520
+#, python-format
+msgid "Put fonts into %s"
+msgstr "Metti i font in %s"
+
+#: fontypythonmodules/gui_Middle.py:500
+#: fontypythonmodules/gui_Middle.py:524
+msgid "You can append fonts to your target Pog."
+msgstr "Puoi aggiungere font al tuo pog destinazione."
+
+#: fontypythonmodules/gui_Middle.py:505
+#, python-format
+msgid "Viewing Pog:%(source)s, but Pog:%(target)s is installed."
+msgstr "Visualizzando il pog:%(source)s, ma il pog:%(target)s è installato."
+
+#: fontypythonmodules/gui_Middle.py:513
+msgid "These two are the same Pog."
+msgstr "Questi due pog sono lo stesso."
+
+#: fontypythonmodules/gui_Middle.py:517
+msgid "Your Source and Target are the same Pog."
+msgstr "Il tuo pog origine e quello destinazione sono lo stesso."
+
+#: fontypythonmodules/gui_Middle.py:519
+#, python-format
+msgid "Append from Pog:%(source)s into Pog:%(target)s"
+msgstr "Aggiungi dal pog:%(source)s nel pog:%(target)s"
+
+#: fontypythonmodules/gui_PogChooser.py:192
+#, python-format
+msgid "(%s) skipped. It's an invalid pog."
+msgstr "(%s) saltato. È un pog non valido."
+
+#: fontypythonmodules/gui_PogChooser.py:202
+#, python-format
+msgid "(%s) skipped. I can't display this name under your locale."
+msgstr "(%s) skipped. Non riesco a mostrarne il nome con la locale attuale."
+
+#: fontypythonmodules/gui_Right.py:43
+msgid "Target Pogs"
+msgstr "Pog destinazione"
+
+#: fontypythonmodules/gui_Right.py:59
+msgid "Clear selection"
+msgstr "Deseleziona tutto"
+
+#: fontypythonmodules/gui_Right.py:60
+msgid "Deselects any chosen pogs."
+msgstr "Deseleziona ogni pog selezionato."
+
+#: fontypythonmodules/gui_Right.py:68
+#: fontypythonmodules/gui_Right.py:110
+msgid "New Pog"
+msgstr "Nuovo pog"
+
+#: fontypythonmodules/gui_Right.py:69
+msgid "Creates a new, empty Pog"
+msgstr "Crea un nuovo pog vuoto"
+
+#: fontypythonmodules/gui_Right.py:71
+msgid "Install Pog"
+msgstr "Installa pog"
+
+#: fontypythonmodules/gui_Right.py:72
+msgid ""
+"Installs all selected Pogs.\n"
+"Use SHIFT/CTRL+Click on the list above."
+msgstr ""
+"Installa tutti i pog selezionati.\n"
+"Usa SHIFT/CTRL+Click sulla lista sopra."
+
+#: fontypythonmodules/gui_Right.py:74
+msgid "Uninstall Pog"
+msgstr "Disinstalla pog"
+
+#: fontypythonmodules/gui_Right.py:75
+msgid ""
+"Uninstalls all selected Pogs.\n"
+"Use SHIFT/CTRL+Click on the list above."
+msgstr ""
+"Disinstalla tutti i pog selezionati.\n"
+"Usa SHIFT/CTRL+Click sulla lista sopra."
+
+#: fontypythonmodules/gui_Right.py:77
+msgid "Delete Pog"
+msgstr "Cancella pog"
+
+#: fontypythonmodules/gui_Right.py:78
+msgid "Deletes the last selected Pog"
+msgstr "Cancella l'ultimo pog selezionato."
+
+#: fontypythonmodules/gui_Right.py:109
+msgid "Enter a name for the new pog"
+msgstr "Inserisci un nome per il nuovo pog"
+
+#: fontypythonmodules/gui_Right.py:110
+msgid "Fonty Python"
+msgstr "Fonty Python"
+
+#: fontypythonmodules/gui_Right.py:115
+msgid "A Pog with no name won't be created, however it was a good try!"
+msgstr "Buon tentativo... ma non creerò un pog senza nome!"
+
+#: fontypythonmodules/gui_Right.py:119
+#, python-format
+msgid "%s already exists."
+msgstr "%s esiste già."
+
+#: fontypythonmodules/gui_Right.py:150
+msgid "One or more selected fonts is installed, fix your selection and try again."
+msgstr "Uno o più dei font selezionati sono installati: modificare la selezione e riprovare."
+
+#: fontypythonmodules/gui_Right.py:164
+#, python-format
+msgid "Remove %s, are you sure?"
+msgstr "Sei sicuro di voler cancellare %s?"
+
+#: fontypythonmodules/gui_Right.py:165
+msgid "Are you sure?"
+msgstr "Sei sicuro?"
 
 #: fontypythonmodules/pathcontrol.py:43
 #, python-format
@@ -1023,7 +640,7 @@ msgstr ""
 "Impossibile creare la cartella .fonts in %s\n"
 "Per favore verifica i permessi di scrittura e riprova."
 
-#: fontypythonmodules/pathcontrol.py:54
+#: fontypythonmodules/pathcontrol.py:55
 #, python-format
 msgid ""
 "\n"
@@ -1034,12 +651,12 @@ msgstr ""
 "Impossibile creare la cartella in %s\n"
 "Per favore verifica i permessi di scrittura e riprova."
 
-#: fontypythonmodules/strings.py:26
+#: fontypythonmodules/strings.py:35
 #, python-format
 msgid "Fonty Python version %s"
 msgstr "Fonty Python, versione %s"
 
-#: fontypythonmodules/strings.py:37
+#: fontypythonmodules/strings.py:46
 msgid ""
 "Options:\n"
 "  -v --version  Show program's version number and exit.\n"
@@ -1083,13 +700,63 @@ msgid ""
 "  --all folder pog\n"
 "\t\t\t\tPuts all fonts in this folder into the pog.\n"
 "\t\t\t\tIf the pog already exists, it will add\n"
-"\t\t\t\tall new fonts, this means fonts are not\n"
-"\t\t\t\tdoubled. Use this option carefully, it \n"
-"\t\t\t\tmay result in much zombie data.\n"
+"\t\t\t\tonly *new* fonts, this means fonts are not\n"
+"\t\t\t\trepeated in that pog.\n"
+"  -A folder pog\n"
+"  --all-recurse folder pog\n"
+"\t\t\t\tPuts all fonts in this folder and *all*\n"
+"\t\t\t\tsub-folders into the pog. Rest same as -a.\n"
+"\n"
 "\t\t\t\t"
 msgstr ""
+"Opzioni:\n"
+"  -v --version  Scrivi il numero di versione del programma ed esci.\n"
+"  -h --help\t Mostra questo messaggio di aiuto ed esci.\n"
+"  -e --examples\n"
+"\t\t\t\tMostra qualche %$@#$ di esempio!\n"
+"  -i pog --install=pog\n"
+"\t\t\t\tInstalla i font in questo pog nella tua cartella font \n"
+"  -u pog --uninstall=pog\n"
+"\t\t\t\tDisinstalla i font in questo pog.\n"
+"  -l --list\t Elenca i nomi di tutti i pog.\n"
+"  -s num --size=num\n"
+"\t\t\t\tModifica la dimensione standard, in punti tipografici.\n"
+"  -n num --number=num\n"
+"\t\t\t\tModifica il numero di font da visualizzare per volta. Non esagerare.\n"
+"  -t \"text\" --text=\"testo\"\n"
+"\t\t\t\tModifica il testo di esempio.  \n"
+"\t\t\t\tTipo \"Questo è un ex-pappagallo!\". \n"
+"\t\t\t\tAttenzione ad utilizzare le virgolette.\n"
+"  -p pog --purge=pog\n"
+"\t\t\t\tRipulisci il pog dai file ttf che non ci sono più.\n"
+"  -c folder --check=cartella\n"
+"\t\t\t\tControlla se ci sono font maligni che fanno crashare Fonty.\n"
+"\t\t\t\tIl controllo riguarderà anche le sottocartelle.\n"
+"\t\t\t\tIl risultato sarà un file:\n"
+"\t\t\t\t~/.fontypython/segfonts\n"
+"\t\t\t\tDopo avere utilizzato questo strumento, dovresti poter\n"
+"\t\t\t\tnavigare tra i font che fanno crashare Fonty.\n"
+"\t\t\t\t(Il processo non è effettuato automaticamente\n"
+"\t\t\t\tperché è molto lento.)\n"
+"\t\t\t\t* ATTENZIONE: I font che fanno crashare Fonty\n"
+"\t\t\t\tsono probabilmente a posto ed utilizzabili\n"
+"\t\t\t\tin altre applicazioni: è semplicemente un bug\n"
+"\t\t\t\tnella libreria utilizzata per accedere ai font\n"
+"\t\t\t\tche causa il problema. Ciò sarà (auspicabilmente)\n"
+"\t\t\t\trisolto in futuro.\n"
+"  -a cartella pog\n"
+"  --all cartella pog\n"
+"\t\t\t\tInserisci tutti i font della cartella nel pog.\n"
+"\t\t\t\tSe il pog esiste già, saranno aggiunti solo i\n"
+"\t\t\t\t*nuovi* font, ovvero le ripetizioni saranno evitate.\n"
+"  -A cartella pog\n"
+"  --all-recurse cartella pog\n"
+"\t\t\t\tMette tutti i font nella cartella ed in *tutte*\n"
+"\t\t\t\tle sottocartelle nel pog. Si veda -a.\n"
+"\n"
+"\t\t\t\t"
 
-#: fontypythonmodules/strings.py:84
+#: fontypythonmodules/strings.py:97
 #, python-format
 msgid ""
 "%(c)s [OPTIONS] [VIEW] [TARGET]\n"
@@ -1190,8 +857,8 @@ msgstr ""
 "\n"
 "%(contact)s\n"
 
-#: fontypythonmodules/strings.py:135
-#, fuzzy, python-format
+#: fontypythonmodules/strings.py:148
+#, python-format
 msgid ""
 "The basic format is:\n"
 "%(c)s [VIEW] [TARGET]\n"
@@ -1211,7 +878,7 @@ msgid ""
 "  the app. Sometimes the system needs a while to\n"
 "  reflect the new fonts in your fonts folder.\n"
 "\n"
-"Examples: - all using short options, see -h\n"
+"Examples: All using short options, see -h\n"
 "=========\n"
 "%(c)s /path/to/fonts/ttfs/a\n"
 "  This will start off showing the fonts in that path.\n"
@@ -1268,6 +935,16 @@ msgid ""
 "  This will 'mark' the dangerous fonts and let\n"
 "  you use that folder in the future.\n"
 "\n"
+"%(c)s -a /some/path HolyHandGrenade\n"
+"  This will put all the fonts in that path into\n"
+"  the Pog called HolyHandGrenade.\n"
+"\n"
+"%(c)s -A /some/path Tutto\n"
+"  This will do the same as -a above: start in that \n"
+"  path, but it will then walk down recursivly \n"
+"  through all sub-folders too. The fonts will \n"
+"  be placed in Tutto.\n"
+"\n"
 "Your fontypython folder is:\n"
 "%(folder)s\n"
 "If you want to backup your pogs, that's where ya go.\n"
@@ -1275,11 +952,11 @@ msgid ""
 "\n"
 "%(copy)s"
 msgstr ""
-"FIXMEIl formato base è:\n"
+"Il formato base è:\n"
 "%(c)s [VISTA] [DESTINAZIONE]\n"
 "  VISTA   = Un posto in cui ci sono dei font. Può\n"
-"            essere un pog o una cartella.\n"
-"  DESTINAZIONE = Un pog, ovvero un posto che\n"
+"\t\t   essere un pog o una cartella.\n"
+"  DESTINAZIONE = Un pog, ovvero un posto\n"
 "                  in cui catalogare dei font.\n"
 "                  Se non includi una destinazione, puoi\n"
 "                  solo guardare/modificare.\n"
@@ -1293,13 +970,12 @@ msgstr ""
 "  sistema necessita di un po' di tempo per riconoscere\n"
 "  tutti i nuovi font nella tua cartella dei font.\n"
 "\n"
-"Esempi: - principalmente usando le opzioni brevi, vedi -h\n"
+"Esempi - principalmente usando le opzioni brevi, vedi -h:\n"
 "=========\n"
 "%(c)s /percorso/dei/font/ttf/a\n"
 "  Mostra i font presenti a tale indirizzo.\n"
 " \n"
-"%(c)s /percorso/dei/font/ttf/b\n"
-" Pantaloni\n"
+"%(c)s /percorso/dei/font/ttf/b Pantaloni\n"
 "  Visualizza i font presenti all'indirizzo dato e mettili\n"
 "  in un pog chiamato \"Pantaloni\".\n"
 "  Se il pog non esiste, verrà creato.\n"
@@ -1342,21 +1018,36 @@ msgstr ""
 "\n"
 "%(c)s -p Ingordo\n"
 "  Se ci sono dei font in Ingordo non più presenti\n"
-"  nei tuoi dischi/supporti, rimuovili dal pog.\n"
-"    \n"
-"La tua cartella fontypython è:\n"
+"  (perché li hai cancellati, o l'ha fatto il tuo gatto)  nei tuoi dischi/supporti, rimuovili dal pog.\n"
+"\n"
+"%(c)s -c /percorso/per/qualche/font\n"
+"  Se Fonty crasha continuamente in /percorso/per/qualche/font,\n"
+"  dovresti avviare un controllo su quella cartella.\n"
+"  I font maligni verranno così \"contrassegnati\", e la cartella\n"
+"  sarà di nuovo utilizzabile.\n"
+"\n"
+"%(c)s -a /un/percorso GranataSacra\n"
+"  Metti tutti i font a quell'indirizzo\n"
+"  nel pog chiamato GranataSacra.\n"
+"\n"
+"%(c)s -A /un/indirizzo Tutto\n"
+"  Simile ad -a visto sopra: parti da quell'indirizzo,\n"
+"  ma poi visista ricorsivamente tutte le sottocartelle.\n"
+"  I font saranno messi in Tutto.\n"
+"\n"
+"La tua cartella di fontypython è:\n"
 "%(folder)s\n"
 "Se vuoi fare un backup dei tuoi pog, li trovi lì.\n"
 "%(contact)s\n"
 "\n"
 "%(copy)s"
 
-#: fontypythonmodules/strings.py:218
+#: fontypythonmodules/strings.py:241
 msgid "Fonty Python - view and manage all kinds of fonts on Gnu/Linux"
-msgstr ""
+msgstr "Fonty Python - visualizza e gestisci ogni tipo di font in Gnu/Linux"
 
-#: fontypythonmodules/strings.py:219
-#, fuzzy, python-format
+#: fontypythonmodules/strings.py:242
+#, python-format
 msgid ""
 "Manage your fonts on Gnu/Linux.\n"
 "NEWS : We now support TTF, OTF, Type1 (PFB, PFA) \n"
@@ -1389,24 +1080,10 @@ msgid ""
 "\t%(contact)s\n"
 "\t"
 msgstr ""
-"FIXME%(c)s [OPZIONI] [VISTA] [DESTINAZIONE]\n"
-"VISTA   : Posizione in cui ci sono dei font.\n"
-"         (Un pog o una cartella.)\n"
-"DESTINAZIONE : Un \"pog\". Un luogo dove tenere questi font.\n"
+"Gestisci i tuoi font su Gnu/Linux.\n"
+"NOVITÀ: Support font TTF, OTF, Typ1 (PFB, PFA) \n"
+"e TTC.\n"
 "\n"
-"(\"%(c)s\" da solo avvia l'interfaccia grafica.)\n"
-"\n"
-"NB: Cerca di non usare spazi nei nomi di pog.\n"
-"Se è necessario, \"usa le virgolette\".\n"
-"\n"
-"Usa il parametro -e per più informazioni.\n"
-"\n"
-"NOVITÀ : Sono oramai supportati font\n"
-"TTF, OTF, Type1 (PFB, PFM) e TTC.\n"
-"%(version)s\n"
-"\n"
-"Idea base:\n"
-"===============\n"
 "Molti grafici hanno collezioni di file di font in grandi\n"
 "cartelle su dischi o altri supporti. Fonty Python\n"
 "permette di raccogliere i font ed organizzarli in\n"
@@ -1416,10 +1093,11 @@ msgstr ""
 "Puoi stare tranquillo che i tuoi font non sono mai\n"
 " effettivamente spostati. È sufficiente selezionare\n"
 "dei font ed inserirli in un pog, quindi installare e\n"
-" disinstallare i pog secondo necessità.\n"
+"disinstallare i pog secondo necessità.\n"
 "Non viene fatta nessuna copia dei font; per\n"
 "installare i font vengono utilizzati solo dei\n"
 "collegamenti.\n"
+"\n"
 "Per esempio, puoi creare un pog chiamato \"logo\"\n"
 "e metterci dentro tutti i file ttf con logo di aziende\n"
 "che hai. A questo punto, quando devi lavorare con\n"
@@ -1429,16 +1107,12 @@ msgstr ""
 "FP è anche un ottimo strumento per passare in\n"
 "rassegna i font che ci sono sul computer, senza\n"
 "dover per forza installarli a livello di sistema.\n"
-"\n"
-"Gestisci i tuoi font in Gnu/Linux!\n"
-"===============================\n"
-"%(copy)s\n"
-"\n"
-"%(warranty)s\n"
-"\n"
-"%(contact)s\n"
+"\t\n"
+"\t%(copy)s\n"
+"\t%(contact)s\n"
+"\t"
 
-#: fontypythonmodules/strings.py:251
+#: fontypythonmodules/strings.py:274
 msgid ""
 "I cannot find \"python-wxversion\"\n"
 "Please install this package - NB: ensure that\n"
@@ -1479,7 +1153,7 @@ msgstr ""
 "Puoi sempre ottenere l'ultima versione qui:\n"
 "http://wxpython.org/download.php\n"
 
-#: fontypythonmodules/strings.py:272
+#: fontypythonmodules/strings.py:295
 msgid ""
 "I cannot find \"python-wxgtkX.Y\"\n"
 "Please install this package - NB: ensure that\n"
@@ -1517,7 +1191,7 @@ msgstr ""
 "Puoi sempre ottenere l'ultima versione qui:\n"
 "http://wxwidgets.org/downloads\n"
 
-#: fontypythonmodules/strings.py:291
+#: fontypythonmodules/strings.py:314
 msgid ""
 "I cannot find \"python-imaging\"\n"
 "Please install this package.\n"
@@ -1554,205 +1228,92 @@ msgstr ""
 "Puoi sempre ottenere l'ultima versione qui:\n"
 "http://www.pythonware.com/products/pil/index.htm\n"
 
-#: fontypythonmodules/wxgui.037.py:283 fontypythonmodules/wxgui.py:283
-msgid "This font cannot be drawn"
-msgstr "Impossibile raffigurare il font."
-
-#: fontypythonmodules/wxgui.037.py:301 fontypythonmodules/wxgui.py:301
+#: fontypythonmodules/wxgui.py:61
 #, python-format
-msgid "Error creating a wximage of %s"
-msgstr "Errore nella creazione di una wximage di %s"
+msgid "Welcome to Fonty Python version %s"
+msgstr "Benvenuto in Fonty Python versione %s"
 
-#: fontypythonmodules/wxgui.037.py:608 fontypythonmodules/wxgui.py:583
-msgid "Clear filter"
-msgstr ""
+#: fontypythonmodules/wxgui.py:93
+msgid "&Settings\tCtrl+S"
+msgstr "Preferen&ze\tCtrl+S"
 
-#: fontypythonmodules/wxgui.037.py:611 fontypythonmodules/wxgui.py:586
-msgid "Filter:"
-msgstr "Filtro:"
+#: fontypythonmodules/wxgui.py:93
+msgid "Change settings"
+msgstr "Cambia le preferenze"
 
-#: fontypythonmodules/wxgui.037.py:842 fontypythonmodules/wxgui.py:840
-#, python-format
-msgid "Your active Target Pog is:%s"
-msgstr "Il tuo attuale pog destinazione è:%s"
+#: fontypythonmodules/wxgui.py:96
+msgid "&Check fonts"
+msgstr "&Controllo font"
 
-#: fontypythonmodules/wxgui.037.py:843 fontypythonmodules/wxgui.py:841
-msgid "Please choose a Source."
-msgstr "Per favore scegli una sorgente."
+#: fontypythonmodules/wxgui.py:96
+msgid "Find those fonts that crash Fonty."
+msgstr "Trova i font che crashano Fonty."
 
-#: fontypythonmodules/wxgui.037.py:845 fontypythonmodules/wxgui.py:843
-msgid "There are no fonts in here."
-msgstr "Non ci sono font qui."
+#: fontypythonmodules/wxgui.py:97
+msgid "&Purge Pog"
+msgstr "&Epura pog"
 
-#: fontypythonmodules/wxgui.037.py:846 fontypythonmodules/wxgui.py:844
-msgid "Please choose a Pog or a Font folder on the left."
-msgstr "Per favore scegli un pog o una cartella di font sulla sinistra."
+#: fontypythonmodules/wxgui.py:97
+msgid "Remove all ghost fonts from the selected Pog."
+msgstr "Rimuovi fantasmi dal pog selezionato."
 
-#: fontypythonmodules/wxgui.037.py:847 fontypythonmodules/wxgui.037.py:855
-#: fontypythonmodules/wxgui.037.py:863 fontypythonmodules/wxgui.037.py:879
-#: fontypythonmodules/wxgui.037.py:895 fontypythonmodules/wxgui.037.py:904
-#: fontypythonmodules/wxgui.py:845 fontypythonmodules/wxgui.py:853
-#: fontypythonmodules/wxgui.py:861 fontypythonmodules/wxgui.py:877
-#: fontypythonmodules/wxgui.py:893 fontypythonmodules/wxgui.py:902
-msgid "Nothing to do"
-msgstr "Niente da fare"
+#: fontypythonmodules/wxgui.py:101
+msgid "&Exit"
+msgstr "&Esci"
 
-#: fontypythonmodules/wxgui.037.py:853 fontypythonmodules/wxgui.037.py:878
-#: fontypythonmodules/wxgui.py:851 fontypythonmodules/wxgui.py:876
-#, python-format
-msgid "Viewing Folder:%s"
-msgstr "Visualizzazione della cartella:%s"
+#: fontypythonmodules/wxgui.py:101
+msgid "Close the app"
+msgstr "Chiudi il programma"
 
-#: fontypythonmodules/wxgui.037.py:857 fontypythonmodules/wxgui.py:855
-msgid "Viewing a folder."
-msgstr "Visualizzazione di una cartella."
+#: fontypythonmodules/wxgui.py:103
+msgid "&File"
+msgstr "&File"
 
-#: fontypythonmodules/wxgui.037.py:862 fontypythonmodules/wxgui.py:860
-#, python-format
-msgid "Viewing (installed) Pog: %s"
-msgstr "Visualizzazione del pog (installato): %s"
+#: fontypythonmodules/wxgui.py:108
+msgid "&Select ALL the source fonts"
+msgstr "&Seleziona TUTTI i font sorgente"
 
-#: fontypythonmodules/wxgui.037.py:866 fontypythonmodules/wxgui.037.py:882
-#: fontypythonmodules/wxgui.037.py:898 fontypythonmodules/wxgui.py:864
-#: fontypythonmodules/wxgui.py:880 fontypythonmodules/wxgui.py:896
-msgid "You cannot change an installed Pog."
-msgstr "Non puoi modificare un pog installato."
+#: fontypythonmodules/wxgui.py:108
+msgid "Select ABSOLUTELY ALL the fonts in the chosen source."
+msgstr "Seleziona ASSOLUTAMENTE TUTTI i font nella sorgente scelta."
 
-#: fontypythonmodules/wxgui.037.py:868 fontypythonmodules/wxgui.py:866
-#, python-format
-msgid "Viewing (editable) Pog: %s"
-msgstr "Visualizzazione del pog (modificabile): %s"
+#: fontypythonmodules/wxgui.py:109
+msgid "&Clear ENTIRE selection"
+msgstr "&Ripulisci TUTTA la selezione"
 
-#: fontypythonmodules/wxgui.037.py:870 fontypythonmodules/wxgui.py:868
-#, python-format
-msgid "Remove fonts from %s"
-msgstr "Rimuovi i font da %s"
+#: fontypythonmodules/wxgui.py:109
+msgid "Clear the selection completely."
+msgstr "Ripulisci completamente la selezione."
 
-#: fontypythonmodules/wxgui.037.py:873 fontypythonmodules/wxgui.py:871
-msgid "You can remove fonts from the selected Target Pog."
-msgstr "Puoi rimuovere dei font dal pog destinazione."
+#: fontypythonmodules/wxgui.py:111
+msgid "&Selection"
+msgstr "&Selezione"
 
-#: fontypythonmodules/wxgui.037.py:884 fontypythonmodules/wxgui.py:882
-#, python-format
-msgid "Append From: %(source)s To:%(target)s"
-msgstr "Aggiungi i font da: %(source)s a:%(target)s"
+#: fontypythonmodules/wxgui.py:116
+msgid "H&elp\tF1"
+msgstr "A&iuto\tF1"
 
-#: fontypythonmodules/wxgui.037.py:885 fontypythonmodules/wxgui.037.py:909
-#: fontypythonmodules/wxgui.py:883 fontypythonmodules/wxgui.py:907
-#, python-format
-msgid "Put fonts into %s"
-msgstr "Metti i font in %s"
+#: fontypythonmodules/wxgui.py:117
+msgid "&About"
+msgstr "I&nformazioni su..."
 
-#: fontypythonmodules/wxgui.037.py:889 fontypythonmodules/wxgui.037.py:913
-#: fontypythonmodules/wxgui.py:887 fontypythonmodules/wxgui.py:911
-msgid "You can append fonts to your target Pog."
-msgstr "Puoi aggiungere font al tuo pog destinazione."
+#: fontypythonmodules/wxgui.py:119
+msgid "&Help"
+msgstr "A&iuto"
 
-#: fontypythonmodules/wxgui.037.py:894 fontypythonmodules/wxgui.py:892
-#, python-format
-msgid "Viewing Pog:%(source)s, but Pog:%(target)s is installed."
-msgstr "Visualizzando il pog:%(source)s, ma il pog:%(target)s è installato."
+#: fontypythonmodules/wxgui.py:161
+msgid "Source Folder, or Pog"
+msgstr "Cartella sorgente o pog"
 
-#: fontypythonmodules/wxgui.037.py:902 fontypythonmodules/wxgui.py:900
-msgid "These two are the same Pog."
-msgstr "Questi due pog sono lo stesso."
+#: fontypythonmodules/wxgui.py:262
+msgid "Warning"
+msgstr "Attenzione"
 
-#: fontypythonmodules/wxgui.037.py:906 fontypythonmodules/wxgui.py:904
-msgid "Your Source and Target are the same Pog."
-msgstr "Il tuo pog origine e quello destinazione sono lo stesso."
+#: fontypythonmodules/wxgui.py:266
+msgid "Error"
+msgstr "Errore"
 
-#: fontypythonmodules/wxgui.037.py:908 fontypythonmodules/wxgui.py:906
-#, python-format
-msgid "Append from Pog:%(source)s into Pog:%(target)s"
-msgstr "Aggiungi dal pog:%(source)s nel pog:%(target)s"
-
-#: fontypythonmodules/wxgui.037.py:940 fontypythonmodules/wxgui.py:944
-msgid "Target Pogs"
-msgstr "Pog destinazione"
-
-#: fontypythonmodules/wxgui.037.py:957 fontypythonmodules/wxgui.py:961
-msgid "Clear selection"
-msgstr "Deseleziona tutto"
-
-#: fontypythonmodules/wxgui.037.py:958 fontypythonmodules/wxgui.py:962
-msgid "Deselects any chosen pogs."
-msgstr "Deseleziona ogni pog selezionato."
-
-#: fontypythonmodules/wxgui.037.py:967 fontypythonmodules/wxgui.037.py:1013
-#: fontypythonmodules/wxgui.py:971 fontypythonmodules/wxgui.py:1018
-msgid "New Pog"
-msgstr "Nuovo pog"
-
-#: fontypythonmodules/wxgui.037.py:968 fontypythonmodules/wxgui.py:972
-msgid "Creates a new, empty Pog"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:969
-#, fuzzy
-msgid "Install Pog(s)"
-msgstr "Installa pog"
-
-#: fontypythonmodules/wxgui.037.py:970 fontypythonmodules/wxgui.py:975
-msgid ""
-"Installs all selected Pogs.\n"
-"Use SHIFT/CTRL+Click on the list above."
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:971
-#, fuzzy
-msgid "Uninstall Pog(s)"
-msgstr "Disinstalla pog"
-
-#: fontypythonmodules/wxgui.037.py:972 fontypythonmodules/wxgui.py:978
-msgid ""
-"Uninstalls all selected Pogs.\n"
-"Use SHIFT/CTRL+Click on the list above."
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:973 fontypythonmodules/wxgui.py:980
-msgid "Delete Pog"
-msgstr "Cancella pog"
-
-#: fontypythonmodules/wxgui.037.py:974 fontypythonmodules/wxgui.py:981
-msgid "Deletes the last selected Pog"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:975 fontypythonmodules/wxgui.py:984
-msgid "Purge Pog"
-msgstr "Epura pog"
-
-#: fontypythonmodules/wxgui.037.py:976 fontypythonmodules/wxgui.py:985
-msgid "Purges the last selected Pog"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1012 fontypythonmodules/wxgui.py:1017
-msgid "Enter a name for the new pog"
-msgstr "Inserisci un nome per il nuovo pog"
-
-#: fontypythonmodules/wxgui.037.py:1013 fontypythonmodules/wxgui.py:1018
-msgid "Fonty Python"
-msgstr "Fonty Python"
-
-#: fontypythonmodules/wxgui.037.py:1020 fontypythonmodules/wxgui.py:1025
-#, python-format
-msgid "%s already exists."
-msgstr "%s esiste già."
-
-#: fontypythonmodules/wxgui.037.py:1041 fontypythonmodules/wxgui.py:1046
-#, python-format
-msgid "%s is to be deleted"
-msgstr "%s sta per essere cancellato"
-
-#: fontypythonmodules/wxgui.037.py:1042 fontypythonmodules/wxgui.py:1047
-#, python-format
-msgid "Remove %s, are you sure?"
-msgstr "Sei sicuro di voler cancellare %s?"
-
-#: fontypythonmodules/wxgui.037.py:1043 fontypythonmodules/wxgui.py:1048
-msgid "Are you sure?"
-msgstr "Sei sicuro?"
-
-#: fontypythonmodules/wxgui.037.py:1081 fontypythonmodules/wxgui.py:1086
+#: fontypythonmodules/wxgui.py:365
 #, python-format
 msgid ""
 "Do you want to purge %s?\n"
@@ -1767,178 +1328,74 @@ msgstr ""
 "pog che non puntano a file effettivi\n"
 "saranno rimossi dal pog."
 
-#: fontypythonmodules/wxgui.037.py:1081 fontypythonmodules/wxgui.py:1086
+#: fontypythonmodules/wxgui.py:365
 msgid "Purge font?"
 msgstr "Epurare font?"
 
-#: fontypythonmodules/wxgui.037.py:1090 fontypythonmodules/wxgui.py:1095
+#: fontypythonmodules/wxgui.py:374
 #, python-format
 msgid "%s has not been purged."
 msgstr "%s non è stato epurato."
 
-#: fontypythonmodules/wxgui.037.py:1101 fontypythonmodules/wxgui.py:1106
+#: fontypythonmodules/wxgui.py:378
 #, python-format
 msgid "%s has been purged."
 msgstr "%s è stato epurato."
 
-#: fontypythonmodules/wxgui.037.py:1363 fontypythonmodules/wxgui.py:1374
-#, python-format
-msgid "(%s) skipped. It's an invalid pog."
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1373 fontypythonmodules/wxgui.py:1384
-#, python-format
-msgid "(%s) skipped. I can't display this name under your locale."
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1564
-msgid "All fonts in a (new) Pog"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1607 fontypythonmodules/wxgui.py:1522
-msgid "Folders"
-msgstr "Cartelle"
-
-#: fontypythonmodules/wxgui.037.py:1608 fontypythonmodules/wxgui.py:1523
-msgid "Pogs"
-msgstr "Pog"
-
-#: fontypythonmodules/wxgui.037.py:1609
-msgid "Search"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1651
-#, python-format
+#: fontypythonmodules/wxgui.py:392
 msgid ""
-"The Source '%s' seems to be saved in\n"
-"Pog '%s' before!\n"
-"\n"
-"\tContinue anyway?"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1652 fontypythonmodules/wxgui.037.py:1941
-#: fontypythonmodules/wxgui.py:1789
-msgid "Warning"
-msgstr "Attenzione"
-
-#: fontypythonmodules/wxgui.037.py:1757 fontypythonmodules/wxgui.py:1606
-#, python-format
-msgid "Welcome to Fonty Python version %s"
-msgstr "Benvenuto in Fonty Python versione %s"
-
-#: fontypythonmodules/wxgui.037.py:1791 fontypythonmodules/wxgui.py:1639
-msgid "&Settings\tCtrl+S"
-msgstr "Preferen&ze\tCtrl+S"
-
-#: fontypythonmodules/wxgui.037.py:1791 fontypythonmodules/wxgui.py:1639
-msgid "Change settings"
-msgstr "Cambia le preferenze"
-
-#: fontypythonmodules/wxgui.037.py:1794 fontypythonmodules/wxgui.py:1642
-msgid "&Check fonts"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1794 fontypythonmodules/wxgui.py:1642
-msgid "Find those fonts that crash Fonty."
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1796 fontypythonmodules/wxgui.py:1644
-msgid "&Exit"
-msgstr ""
-
-#: fontypythonmodules/wxgui.037.py:1796 fontypythonmodules/wxgui.py:1644
-msgid "Close the app"
-msgstr "Chiudi il programma"
-
-#: fontypythonmodules/wxgui.037.py:1798 fontypythonmodules/wxgui.py:1646
-msgid "&File"
-msgstr "&File"
-
-#: fontypythonmodules/wxgui.037.py:1802 fontypythonmodules/wxgui.py:1650
-msgid "H&elp\tF1"
-msgstr "A&iuto\tF1"
-
-#: fontypythonmodules/wxgui.037.py:1803 fontypythonmodules/wxgui.py:1651
-msgid "&About"
-msgstr "I&nformazioni su..."
-
-#: fontypythonmodules/wxgui.037.py:1805 fontypythonmodules/wxgui.py:1653
-msgid "&Help"
-msgstr "A&iuto"
-
-#: fontypythonmodules/wxgui.037.py:1834 fontypythonmodules/wxgui.py:1682
-msgid "Source Folder, or Pog"
-msgstr "Cartella sorgente o pog"
-
-#: fontypythonmodules/wxgui.037.py:1945 fontypythonmodules/wxgui.py:1793
-msgid "Error"
-msgstr "Errore"
-
-#: fontypythonmodules/wxgui.037.py:1975 fontypythonmodules/wxgui.py:1823
-#, python-format
-msgid "%s has been installed."
-msgstr "%s installato."
-
-#: fontypythonmodules/wxgui.037.py:1997 fontypythonmodules/wxgui.py:1845
-#, python-format
-msgid "%s has been uninstalled."
-msgstr "%s disinstallato"
-
-#: fontypythonmodules/wxgui.037.py:2035 fontypythonmodules/wxgui.py:1883
-msgid "Selected fonts have been removed."
-msgstr "I font selezionati sono stati rimossi."
-
-#: fontypythonmodules/wxgui.037.py:2037 fontypythonmodules/wxgui.037.py:2062
-#: fontypythonmodules/wxgui.py:1885 fontypythonmodules/wxgui.py:1910
-msgid "There was an error writing the pog to disk. Nothing has been done"
-msgstr ""
-"C'è stato un errore nella memorizzazione del file. Non è stato fatto nulla."
-
-#: fontypythonmodules/wxgui.037.py:2044 fontypythonmodules/wxgui.py:1892
-#, python-format
-msgid "Copying fonts from %(source)s to %(target)s"
-msgstr "Copia di font da %(source)s a %(target)s"
-
-#: fontypythonmodules/wxgui.037.py:2060 fontypythonmodules/wxgui.py:1908
-#, python-format
-msgid "Selected fonts are now in %s."
-msgstr "I font selezionati sono ora in %s."
-
-#: fontypythonmodules/wxgui.037.py:2135 fontypythonmodules/wxgui.py:1983
-msgid ""
-"I am sorry, but Unicode is not supported by this installation of wxPython. "
-"Fonty Python relies on Unicode and will simply not work without it.\n"
+"I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n"
 "\n"
 "Please fetch and install the Unicode version of python-wxgtk."
 msgstr ""
-"Spiacente, questa installazione di wxpython non supporta l'Unicode. Fonty "
-"Python necessità di Unicode e semplicemente non può funzionare senza.\n"
+"Spiacente, questa installazione di wxpython non supporta l'Unicode. Fonty Python necessità di Unicode e semplicemente non può funzionare senza.\n"
 "\n"
 "Per favore procurati ed installa la versione Unicode di python-wxgtk."
 
-#: fontypythonmodules/wxgui.037.py:2135 fontypythonmodules/wxgui.py:1983
+#: fontypythonmodules/wxgui.py:392
 msgid "SORRY: UNICODE MUST BE SUPPORTED"
 msgstr "SPIACENTE: L'UNICODE DEVE ESSERE SUPPORTATO"
 
-#: fontypythonmodules/wxgui.037.py:2137 fontypythonmodules/wxgui.py:1985
+#: fontypythonmodules/wxgui.py:398
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python: porta i tuoi font allo scoperto!"
 
-#: fontypythonmodules/wxgui.py:593
-msgid "Select ALL the fonts"
-msgstr ""
+#~ msgid "Font cannot be drawn."
+#~ msgstr "Impossibile raffigurare il font."
 
-#: fontypythonmodules/wxgui.py:974
-msgid "Install Pog"
-msgstr "Installa pog"
+#, fuzzy
+#~ msgid "License"
+#~ msgstr "Licenza"
 
-#: fontypythonmodules/wxgui.py:977
-msgid "Uninstall Pog"
-msgstr "Disinstalla pog"
+#, fuzzy
+#~ msgid "Sample text"
+#~ msgstr "Testo di esempio:"
 
+#, fuzzy
+#~ msgid "Cove"
+#~ msgstr "&Chiudi"
+
+#, fuzzy
+#~ msgid "Modern"
+#~ msgstr "Cartelle"
+#~ msgid "Error creating a wximage of %s"
+#~ msgstr "Errore nella creazione di una wximage di %s"
+
+#, fuzzy
+#~ msgid "Install Pog(s)"
+#~ msgstr "Installa pog"
+
+#, fuzzy
+#~ msgid "Uninstall Pog(s)"
+#~ msgstr "Disinstalla pog"
+#~ msgid "%s is to be deleted"
+#~ msgstr "%s sta per essere cancellato"
+#~ msgid "%s has been installed."
+#~ msgstr "%s installato."
+#~ msgid "%s has been uninstalled."
+#~ msgstr "%s disinstallato"
 #~ msgid "Thanks for trying Fonty Python!"
 #~ msgstr "Grazie per aver provato Fonty Python!"
-
 #~ msgid ""
 #~ "There's some problem with the font named below.\n"
 #~ "Please *move* it away somewhere else, or this will keep happening. Start "
@@ -1947,7 +1404,6 @@ msgstr "Disinstalla pog"
 #~ "C'è qualche problema con il font sottostante.\n"
 #~ "Per favore *spostalo* da qualche altra parte, o il problema si ripeterà. "
 #~ "Riavvia Fonty Python quando hai fatto.\n"
-
 #~ msgid ""
 #~ "Options:\n"
 #~ "  -v            Show program's version number and exit.\n"
@@ -1981,16 +1437,14 @@ msgstr "Disinstalla pog"
 #~ "                Ad esempio: \"Sono un ex-pappagallo!\". \n"
 #~ "                Non dimenticare le virgolette.\n"
 #~ "  -p pog        Rimuovi dal pog i file ttf non più presenti."
-
 #~ msgid "(%s) skipped"
 #~ msgstr "salto (%s)"
-
 #~ msgid ""
 #~ "I'm sorry, but something is wrong.\n"
 #~ "There is no __file__ variable. Please panic."
 #~ msgstr ""
 #~ "Spiacente, ma qualcosa non va.\n"
 #~ "Non c'è alcuna variabile __file__. È il momento del panico."
-
 #~ msgid "An appropriate GUI could not be found."
 #~ msgstr "Impossibile trovare un'interfaccia grafica appropriata."
+
