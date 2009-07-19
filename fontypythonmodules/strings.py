@@ -305,7 +305,7 @@ python-wxgtk2.8
 I then install it like this:
 sudo aptitude install python-wxgtk2.8
 
-Make sure it's at least version 2.6
+Make sure it's at least version 2.8
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
