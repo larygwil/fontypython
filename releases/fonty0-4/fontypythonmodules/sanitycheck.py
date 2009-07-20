@@ -31,7 +31,7 @@ except:
 
 try:
 	import wxversion ## Dec 2007: noticed that it may not be installed along with wxPython....
-	wxversion.ensureMinimal("2.6") 
+	wxversion.ensureMinimal("2.8") 
 except:
 	print strings.wxVersionError
 	print
