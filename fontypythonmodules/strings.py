@@ -331,18 +331,23 @@ http://www.pythonware.com/products/pil/index.htm
 
 ## Won't xlate the thanks:
 thanks = u"""Many thanks to:
-Robin Dunn - wxPython and much sundry help.
-Martin v. Löwis - Essential concepts regarding unicode and files.
-Pietro Battiston - Italian translation.
-Baptiste - French translation and many ideas.
-Jason Yamada-Hanff - For the wiki, at least :)
-Michael Hoeft - For some code and German translation.
+1. Robin Dunn - wxPython and much sundry help.
 
-Kartik Mistry - For man pages, Debian packages and patience.
+2. Martin v. Löwis - Essential concepts regarding unicode and files.
 
-savannah.nongnu.org - For the hosting.
+3. Pietro Battiston - Italian translation.
 
-And all those I have neglected to include.
+4. Baptiste - French translation and many ideas.
+
+5. Jason Yamada-Hanff - For the wiki, at least :)
+
+6. Michael Hoeft - For code, friendship and the German translation.
+
+7. Kartik Mistry - Our esteemed Debian packager!
+
+8. savannah.nongnu.org - For the hosting.
+
+9. And all those I have neglected to include.
 """
 
 ## June 2009 : Get the GPL from the COPYING file rather than a copy of it all here again.
