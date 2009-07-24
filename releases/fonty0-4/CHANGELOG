@@ -90,3 +90,6 @@ Changelist
 1. Pietro sent us an Italian .po file. I did "make mos" and I hope that was right.
 2. Removed some _() stuff from CORNER CASE error messages.
 3. Redacted pofiles/README file somewhat.
+
+24 July
+1. A bug was caught by Michael Hoeft - the combo box (for search field) requires wxPython 2.8 -- So we had to shift a few things around. After a false start, I have created version 0.4.1 and am about to upload to the ftp site.

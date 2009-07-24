@@ -97,11 +97,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			firstRunSizeFlag = True
 			self.width = 1024 # I cannot get a sensible value for 1st run.
 		else:
-			## Prevent deprecation warning:
-			try:
-				self.width = self.DoGetSize()[0] - sbwidth  # 2.8 onwards, I hope.
-			except:
-				self.width = self.base_DoGetSize()[0] - sbwidth # old 2.6 version of that.
+			## Prevent deprecation warning: Nt needed in vers 0.4 as we use 2.8 wxPython
+			#try:
+			self.width = self.DoGetSize()[0] - sbwidth  # 2.8 onwards, I hope.
+			#except:
+			#	self.width = self.base_DoGetSize()[0] - sbwidth # old 2.6 version of that.
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
 		for f in self.fitmaps:
