@@ -271,6 +271,7 @@ them system-wide.
 	""") % {"copy":copyright, "contact":contact}
 
 
+wxvers="2.8"
 wxVersionError = _("""I cannot find "python-wxversion"
 Please install this package - NB: ensure that
 you use only the "Unicode build".
@@ -286,11 +287,11 @@ sudo aptitude install python-wxversion
 
 If you get long error messages, you will need to
 install python-wxgtk*, where the star means the 
-version number and it should be at least 2.6
+version number and it should be at least %(wxv)s
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
-""")
+""") % {"wxv":wxvers}
 	
 wxError =_("""I cannot find "python-wxgtkX.Y"
 Please install this package - NB: ensure that
@@ -301,15 +302,16 @@ TIP
 On my distro I can search for it like this:
 aptitude search python-wx
 This returns many results, one of which is:
-python-wxgtk2.8
+python-wxgtk%(wxv)s
 I then install it like this:
-sudo aptitude install python-wxgtk2.8
+sudo aptitude install python-wxgtk%(wxv)s
 
-Make sure it's at least version 2.8
+Make sure it's at least version %(wxv)s
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
-""")
+""") % {"wxv":wxvers}
+
 
 PILError = _("""I cannot find "python-imaging"
 Please install this package.
