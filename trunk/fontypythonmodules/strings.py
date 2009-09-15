@@ -92,6 +92,11 @@ options=_("""Options:
 				Puts all fonts in this folder and *all*
 				sub-folders into the pog. Rest same as -a.
 
+  -z pog --zip=pog
+				All the fonts inside pog will be zipped
+				and the zipfile will be named after the pog.
+				The file will be placed in the current
+				directory.
 				""")
 
 use = _("""%(c)s [OPTIONS] [VIEW] [TARGET]

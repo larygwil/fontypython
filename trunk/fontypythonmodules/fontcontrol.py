@@ -20,6 +20,15 @@ import Image, ImageFont, ImageDraw
 import fontybugs, fpsys
 from pathcontrol import *
 
+## Sep 2009 : zip functionality
+import zipfile
+zcompress=zipfile.ZIP_STORED #we default to uncompressed.
+try:
+	import zlib
+	zcompress=zipfile.ZIP_DEFLATED #i.e. we can compress using this formula.
+except:
+	pass
+
 class FontItem( object ):
 	"""
 	Represents a single font file. It has the ability to provide a font image
@@ -908,3 +917,20 @@ class Pog(BasicFontList):
 			raise fontybugs.PogCannotDelete(self.paf)
 		self.clear()
 		self.__installed = "no"
+	
+	def zip(self, todir):
+		"""Add all the fonts to a zip file in todir."""
+		## Start a zip file: I am not sure if a filename should be bytestrings or unicode....
+		file = zipfile.ZipFile(os.path.join(todir,self.name + ".zip"), "w")
+		self.genList() # I forget how to handle errors raised in that labyrinth... sorry world :(
+		#print "ZIP:",ipog.name
+		for fi in self:	
+			## zipfiles have no internal encoding, so I must encode from unicode to a byte string
+			if type(fi.glyphpaf) is unicode:
+				arcfile = os.path.basename(fi.glyphpaf).encode(locale.getpreferredencoding(),"replace")
+			else:
+				arcfile= os.path.basename(fi.glyphpaf)
+
+			file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
+
+		file.close()		
