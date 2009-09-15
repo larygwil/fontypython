@@ -324,7 +324,7 @@ class FontViewPanel(wx.Panel):
 				else:
 					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done"))
 		
-		## APPEND - Copy ttf to a pog.
+		## APPEND - Copy font to a pog.
 		if fpsys.state.action == "APPEND":
 			## We must append the fonts to the Pog
 			vo = fpsys.state.viewobject

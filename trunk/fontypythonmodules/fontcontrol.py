@@ -158,7 +158,18 @@ class FontItem( object ):
 				if self.glyphpaf not in fpsys.segfonts:
 					## No point Try-ing here, this segfaults when style/family is Null.
 					fpsys.logSegfaulters( self.glyphpaf ) # record the potential destroyer of apps!
-					self.family.append( font.getname()[0] )
+					##
+					## Sep 2009
+					## It has been reported by a user that some fonts have family names (and other info?) that
+					## are not English. They appear as ???y??? etc. in the font list. On my system Inkscape
+					## draws tham with squares (holding a unicode number) and a few Eastern characters.
+					## I am not sure AT ALL what to do about this. Is it a font/locale I should have installed?
+
+					#self.family.append( font.getname()[0] ) # old code
+
+					## Trying stuff:
+					self.family.append( font.getname()[0].decode(locale.getpreferredencoding(),"replace") )
+
 					self.style.append( font.getname()[1] )
 					i += 1
 				else:
@@ -767,7 +778,14 @@ class Pog(BasicFontList):
 			PogEmpty
 			PogAllFontsFailedToInstall
 			PogSomeFontsDidNotInstall
-		"""		
+		"""	
+		def linkfont(frompaf, topaf):
+			## 15 Sept 2009 : Catch situations where the font is already installed.
+			try:
+				os.symlink(frompaf, topaf)  #Should do the trick.
+			except OSError, detail:
+				if detail.errno != 17: raise # File exists -- this font is already installed, we can ignore 17.
+
 		## We start thinking all is rosey:
 		self.__installed = "yes"
 
@@ -786,14 +804,15 @@ class Pog(BasicFontList):
 			## I am not checking for errors on os.symlink ...
 			if not os.path.exists(linkDestination):  
 				if os.path.exists(fi.glyphpaf):
-					os.symlink(fi.glyphpaf, linkDestination)  #Should do the trick.
+					linkfont(fi.glyphpaf,linkDestination)
+
 					## Now, the Type1 special case, link the metric file.
 					if isinstance( fi, Type1Item ):
 						## It's a Type 1, does it have a metricpaf?
 						if fi.metricpaf:
 							linkDestination = \
 							os.path.join( self.__pc.userFontPath(), os.path.basename( fi.metricpaf ) )
-							os.symlink( fi.metricpaf, linkDestination )
+							linkfont( fi.metricpaf, linkDestination )
 				else:
 					bugs += 1
 		if bugs == len(self): # There was 100% failure to install fonts.

@@ -254,7 +254,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				## Added Style info 3 Dec 2006:			
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
 				memDc.SetTextForeground( fcol )
-				memDc.SetFont( wx.Font( 8, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
+				## Sep 2009: Trying to draw foreign chars via DrawText
+				memDc.SetFont( wx.Font( 8, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL,encoding=wx.FONTENCODING_DEFAULT))
 				memDc.DrawText( txt, 16, texty)
 						
 				## Move TOP down to next BOTTOM (for next sub-face)
