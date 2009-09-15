@@ -93,3 +93,6 @@ Changelist
 
 24 July
 1. A bug was caught by Michael Hoeft - the combo box (for search field) requires wxPython 2.8 -- So we had to shift a few things around. After a false start, I have created version 0.4.1 and am about to upload to the ftp site.
+
+15 Sept 2009
+1. Fixed a bug where fonts that are already installed would refuse to install again. It ignores OSError 17 now.
