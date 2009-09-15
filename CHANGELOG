@@ -96,3 +96,5 @@ Changelist
 
 15 Sept 2009
 1. Fixed a bug where fonts that are already installed would refuse to install again. It ignores OSError 17 now.
+2. Added zip function -- zip all fonts in a pog(s) for easy distribution.
+3. Moved to vers 0.4.2

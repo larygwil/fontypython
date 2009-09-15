@@ -64,7 +64,9 @@ class TargetPogChooser(wx.Panel):
 		self.idinstall = wx.NewId()
 		self.iduninstall = wx.NewId()
 		self.iddelete = wx.NewId()
-		
+		#Sept 2009
+		self.idzip = wx.NewId()
+
 		self.buttNew = wx.Button(self, label = _("New Pog"), id = self.idnew ) 
 		self.buttNew.SetToolTipString(_("Creates a new, empty Pog"))
 		
@@ -75,7 +77,11 @@ class TargetPogChooser(wx.Panel):
 		self.buttUninstall.SetToolTipString(_("Uninstalls all selected Pogs.\nUse SHIFT/CTRL+Click on the list above."))
 		
 		self.buttDelete = wx.Button(self, label = _("Delete Pog") , id = self.iddelete) 
-		self.buttDelete.SetToolTipString(_("Deletes the last selected Pog"))
+		self.buttDelete.SetToolTipString(_("Deletes the selected Pog(s)"))
+
+		self.buttZip = wx.Button(self, label = _("Zip Pog(s)") , id = self.idzip) 
+		self.buttZip.SetToolTipString(_("Save a zip file of the selected Pogs"))
+		
 		
 		self.sizer = wx.BoxSizer(wx.VERTICAL)		 
 		self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
@@ -88,6 +94,7 @@ class TargetPogChooser(wx.Panel):
 		self.sizer.Add(self.buttUninstall, 0, wx.EXPAND) 
 		self.sizer.Add(self.buttNew, 0, wx.EXPAND) 
 		self.sizer.Add(self.buttDelete, 0, wx.EXPAND) 
+		self.sizer.Add(self.buttZip, 0, wx.EXPAND) 
 		self.SetSizer(self.sizer)
 		
 		## Bind the events:
@@ -97,6 +104,7 @@ class TargetPogChooser(wx.Panel):
 		self.buttInstall.Bind(e, self.multiClick)
 		self.buttUninstall.Bind(e, self.multiClick)
 		self.buttDelete.Bind(e, self.multiClick)
+		self.buttZip.Bind(e, self.multiClick)
 		
 		self.toggleButtons()
 		
@@ -235,7 +243,7 @@ class TargetPogChooser(wx.Panel):
 					ps.pub( update_font_view )
 
 			wx.EndBusyCursor()
-
+			
 		## Uninstall
 		if e.GetId() == self.iduninstall:
 			wx.BeginBusyCursor()
@@ -259,6 +267,25 @@ class TargetPogChooser(wx.Panel):
 					ps.pub( update_font_view )
 
 			wx.EndBusyCursor()	
+
+		## Sep 2009 : ZIP POGS 
+		if e.GetId() == self.idzip: 
+			dlg = wx.DirDialog(self, _("Choose a directory where the zip file(s) will be saved:"), style=wx.DD_DEFAULT_STYLE)
+			ok=False
+			if dlg.ShowModal() == wx.ID_OK:
+				todir=dlg.GetPath()
+				ok=True
+			dlg.Destroy()
+			if ok:
+				wx.BeginBusyCursor()
+				
+				for p in multipogs:
+					ipog = fontcontrol.Pog(p)
+					ipog.zip( todir )
+
+				wx.EndBusyCursor()	
+				ps.pub( show_message, _("Zip file(s) have been created.") )
+
 
 
 	def OnPogTargetClick(self, args):

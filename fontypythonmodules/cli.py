@@ -43,6 +43,7 @@ class options(object):
 	check = False
 	all = None
 	allrecurse = None
+	zip = None
 	
 ## If non-ascii chars get entered on the cli, say a Japanese word for
 ## a pog's name, we may have a problem. 
@@ -64,9 +65,9 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:t:p:a:A:",\
+	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:t:p:a:A:z:",\
 	["help", "version", "list", "check=","examples","install=",\
-	"uninstall=","size=","number=","text=","purge=","all=","all-recurse="])
+	"uninstall=","size=","number=","text=","purge=","all=","all-recurse=","zip="])
 except getopt.GetoptError, err:
 	print str(err) # will print something like "option -a not recognized"
 	raise SystemExit
@@ -144,6 +145,13 @@ for o, a in opts:
 			print _("%s takes two arguments: SOURCE(folder) TARGET(pog)") % o
 			print _("""NB: If you wanted to use spaces in a pogname or folder then please put "quotes around them."  """)
 			raise SystemExit
+	elif o in ("-z","--zip"):
+		# a is the Pog name we must zip.
+		# This only does one pog, not several at once.
+		# (due to the limits of gnu_getopt)
+		options.zip = True
+		options.pog = a
+
 	else:
 		## We should not reach here at all.
 		print "Your arguments amuse me :) Please read the help."
@@ -194,6 +202,17 @@ if options.list:
 		if installed.upper() == "INSTALLED":
 			s = "*"
 		print "%s %s" % (s,pog)
+	raise SystemExit
+
+## Sep 2009 : ZIP
+if options.zip:
+	if fpsys.isPog( options.pog ):
+		todir="." #always where we run this
+		ipog = fontcontrol.Pog( options.pog )
+		ipog.zip( todir )
+		print _("Zipped as %s.zip in this directory.") % options.pog
+	else:
+		print _("I can't find a pog named %s") % options.pog
 	raise SystemExit
 
 ####
