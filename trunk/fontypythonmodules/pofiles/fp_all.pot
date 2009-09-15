@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-22 18:41+0200\n"
+"POT-Creation-Date: 2009-09-15 18:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,52 +26,62 @@ msgid ""
 "Please restart Fonty Python after you have moved:\"%s\" to some other place."
 msgstr ""
 
-#: fontypythonmodules/cli.py:61
+#: fontypythonmodules/cli.py:62
 msgid ""
 "I can't decode your argument(s). Please check your LANG variable. Also, "
 "don't paste text, type it in."
 msgstr ""
 
-#: fontypythonmodules/cli.py:116 fontypythonmodules/cli.py:124
+#: fontypythonmodules/cli.py:117 fontypythonmodules/cli.py:125
 #, python-format
 msgid "Please use a number for %s"
 msgstr ""
 
-#: fontypythonmodules/cli.py:144
+#: fontypythonmodules/cli.py:145
 #, python-format
 msgid "%s takes two arguments: SOURCE(folder) TARGET(pog)"
 msgstr ""
 
-#: fontypythonmodules/cli.py:145
+#: fontypythonmodules/cli.py:146
 msgid ""
 "NB: If you wanted to use spaces in a pogname or folder then please put "
 "\"quotes around them.\"  "
 msgstr ""
 
-#: fontypythonmodules/cli.py:163
+#: fontypythonmodules/cli.py:171
 #, python-format
 msgid "I can't find %s"
 msgstr ""
 
-#: fontypythonmodules/cli.py:181
+#: fontypythonmodules/cli.py:189
 msgid "There are no pogs available."
 msgstr ""
 
-#: fontypythonmodules/cli.py:183
+#: fontypythonmodules/cli.py:191
 #, python-format
 msgid "Listing %d pog(s)"
 msgstr ""
 
-#: fontypythonmodules/cli.py:184
+#: fontypythonmodules/cli.py:192
 msgid " * indicates installed pogs"
 msgstr ""
 
-#: fontypythonmodules/cli.py:192
+#: fontypythonmodules/cli.py:200
 #, python-format
 msgid "Could not open (%s)."
 msgstr ""
 
-#: fontypythonmodules/cli.py:219
+#: fontypythonmodules/cli.py:213
+#, python-format
+msgid "Zipped as %s.zip in this directory."
+msgstr ""
+
+#: fontypythonmodules/cli.py:215
+#, python-format
+msgid "I can't find a pog named %s"
+msgstr ""
+
+#: fontypythonmodules/cli.py:238
 #, python-format
 msgid ""
 "Your text has been set to \"%s\"\n"
@@ -80,42 +90,42 @@ msgid ""
 "Please start FontyPython again to see the result."
 msgstr ""
 
-#: fontypythonmodules/cli.py:245 fontypythonmodules/cli.py:274
+#: fontypythonmodules/cli.py:264 fontypythonmodules/cli.py:293
 #, python-format
 msgid "(%s) cannot be found. Try -l to see the names."
 msgstr ""
 
-#: fontypythonmodules/cli.py:266
+#: fontypythonmodules/cli.py:285
 #, python-format
 msgid "Installing (%s)"
 msgstr ""
 
-#: fontypythonmodules/cli.py:295
+#: fontypythonmodules/cli.py:314
 #, python-format
 msgid "Removing (%s)"
 msgstr ""
 
-#: fontypythonmodules/cli.py:302
+#: fontypythonmodules/cli.py:321
 #, python-format
 msgid "Sorry, can't find (%s). Try -l to see the names."
 msgstr ""
 
-#: fontypythonmodules/cli.py:328
+#: fontypythonmodules/cli.py:347
 #, python-format
 msgid "Creating a new pog: %s"
 msgstr ""
 
-#: fontypythonmodules/cli.py:351
+#: fontypythonmodules/cli.py:370
 #, python-format
 msgid "I have placed %(count)s fonts from %(folder)s into %(pog)s."
 msgstr ""
 
-#: fontypythonmodules/cli.py:353
+#: fontypythonmodules/cli.py:372
 #, python-format
 msgid "The fonts from %(folder)s are *already* in %(pog)s."
 msgstr ""
 
-#: fontypythonmodules/cli.py:360
+#: fontypythonmodules/cli.py:379
 msgid ""
 "Please check your arguments, there seem to be too many.\n"
 "(Remember: it's one pound for a five-minute argument, but only eight pounds "
@@ -125,26 +135,26 @@ msgid ""
 "\"quotes around them.\" "
 msgstr ""
 
-#: fontypythonmodules/cli.py:387
+#: fontypythonmodules/cli.py:406
 #, python-format
 msgid "Sorry, (%s) does not exist. Try --list"
 msgstr ""
 
-#: fontypythonmodules/cli.py:392
+#: fontypythonmodules/cli.py:411
 msgid "You cannot use a folder as the target argument. Try --help"
 msgstr ""
 
-#: fontypythonmodules/cli.py:442 fontypythonmodules/cli.py:463
+#: fontypythonmodules/cli.py:461 fontypythonmodules/cli.py:482
 #, python-format
 msgid ""
 "The target pog (%s) is currently installed, you can't use it as a target."
 msgstr ""
 
-#: fontypythonmodules/cli.py:448
+#: fontypythonmodules/cli.py:467
 msgid "Your pogs are the same! Try -e"
 msgstr ""
 
-#: fontypythonmodules/cli.py:455
+#: fontypythonmodules/cli.py:474
 msgid "This pog is empty"
 msgstr ""
 
@@ -210,38 +220,38 @@ msgstr ""
 msgid "Choose a directory and double click it to start"
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:108
+#: fontypythonmodules/fontcontrol.py:117
 msgid "Font cannot be found, you should purge this Pog."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:114
+#: fontypythonmodules/fontcontrol.py:123
 #, python-format
 msgid ""
 "Unhandled error:\n"
 "Please move (%s) away from here and report this to us."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:125
+#: fontypythonmodules/fontcontrol.py:134
 msgid "Font may be bad and it cannot be drawn."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:141
+#: fontypythonmodules/fontcontrol.py:150
 msgid "Unicode problem. Font may be bad and it cannot be drawn."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:168
+#: fontypythonmodules/fontcontrol.py:188
 msgid "Font causes a segfault. Fix or remove it."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:239
+#: fontypythonmodules/fontcontrol.py:259
 msgid "Font causes a memory error, it can't be drawn."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:281
+#: fontypythonmodules/fontcontrol.py:301
 msgid "There are no fonts to see here, move along."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:282
+#: fontypythonmodules/fontcontrol.py:302
 msgid "(Check your filter!)"
 msgstr ""
 
@@ -525,71 +535,87 @@ msgstr ""
 msgid "Deselects any chosen pogs."
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:68 fontypythonmodules/gui_Right.py:110
+#: fontypythonmodules/gui_Right.py:70 fontypythonmodules/gui_Right.py:118
 msgid "New Pog"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:69
+#: fontypythonmodules/gui_Right.py:71
 msgid "Creates a new, empty Pog"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:71
+#: fontypythonmodules/gui_Right.py:73
 msgid "Install Pog"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:72
+#: fontypythonmodules/gui_Right.py:74
 msgid ""
 "Installs all selected Pogs.\n"
 "Use SHIFT/CTRL+Click on the list above."
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:74
+#: fontypythonmodules/gui_Right.py:76
 msgid "Uninstall Pog"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:75
+#: fontypythonmodules/gui_Right.py:77
 msgid ""
 "Uninstalls all selected Pogs.\n"
 "Use SHIFT/CTRL+Click on the list above."
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:77
+#: fontypythonmodules/gui_Right.py:79
 msgid "Delete Pog"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:78
-msgid "Deletes the last selected Pog"
+#: fontypythonmodules/gui_Right.py:80
+msgid "Deletes the selected Pog(s)"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:109
+#: fontypythonmodules/gui_Right.py:82
+msgid "Zip Pog(s)"
+msgstr ""
+
+#: fontypythonmodules/gui_Right.py:83
+msgid "Save a zip file of the selected Pogs"
+msgstr ""
+
+#: fontypythonmodules/gui_Right.py:117
 msgid "Enter a name for the new pog"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:110
+#: fontypythonmodules/gui_Right.py:118
 msgid "Fonty Python"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:115
+#: fontypythonmodules/gui_Right.py:123
 msgid "A Pog with no name won't be created, however it was a good try!"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:119
+#: fontypythonmodules/gui_Right.py:127
 #, python-format
 msgid "%s already exists."
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:150
+#: fontypythonmodules/gui_Right.py:158
 msgid ""
 "One or more selected fonts is installed, fix your selection and try again."
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:164
+#: fontypythonmodules/gui_Right.py:172
 #, python-format
 msgid "Remove %s, are you sure?"
 msgstr ""
 
-#: fontypythonmodules/gui_Right.py:165
+#: fontypythonmodules/gui_Right.py:173
 msgid "Are you sure?"
+msgstr ""
+
+#: fontypythonmodules/gui_Right.py:273
+msgid "Choose a directory where the zip file(s) will be saved:"
+msgstr ""
+
+#: fontypythonmodules/gui_Right.py:287
+msgid "Zip file(s) have been created."
 msgstr ""
 
 #: fontypythonmodules/pathcontrol.py:43
@@ -664,10 +690,15 @@ msgid ""
 "\t\t\t\tPuts all fonts in this folder and *all*\n"
 "\t\t\t\tsub-folders into the pog. Rest same as -a.\n"
 "\n"
+"  -z pog --zip=pog\n"
+"\t\t\t\tAll the fonts inside pog will be zipped\n"
+"\t\t\t\tand the zipfile will be named after the pog.\n"
+"\t\t\t\tThe file will be placed in the current\n"
+"\t\t\t\tdirectory.\n"
 "\t\t\t\t"
 msgstr ""
 
-#: fontypythonmodules/strings.py:97
+#: fontypythonmodules/strings.py:102
 #, python-format
 msgid ""
 "%(c)s [OPTIONS] [VIEW] [TARGET]\n"
@@ -720,7 +751,7 @@ msgid ""
 "%(contact)s\n"
 msgstr ""
 
-#: fontypythonmodules/strings.py:148
+#: fontypythonmodules/strings.py:153
 #, python-format
 msgid ""
 "The basic format is:\n"
@@ -816,11 +847,11 @@ msgid ""
 "%(copy)s"
 msgstr ""
 
-#: fontypythonmodules/strings.py:241
+#: fontypythonmodules/strings.py:246
 msgid "Fonty Python - view and manage all kinds of fonts on Gnu/Linux"
 msgstr ""
 
-#: fontypythonmodules/strings.py:242
+#: fontypythonmodules/strings.py:247
 #, python-format
 msgid ""
 "Manage your fonts on Gnu/Linux.\n"
@@ -855,7 +886,8 @@ msgid ""
 "\t"
 msgstr ""
 
-#: fontypythonmodules/strings.py:274
+#: fontypythonmodules/strings.py:280
+#, python-format
 msgid ""
 "I cannot find \"python-wxversion\"\n"
 "Please install this package - NB: ensure that\n"
@@ -872,13 +904,14 @@ msgid ""
 "\n"
 "If you get long error messages, you will need to\n"
 "install python-wxgtk*, where the star means the \n"
-"version number and it should be at least 2.8\n"
+"version number and it should be at least %(wxv)s\n"
 "\n"
 "You can also get the latest version from here:\n"
 "http://wxpython.org/download.php\n"
 msgstr ""
 
-#: fontypythonmodules/strings.py:295
+#: fontypythonmodules/strings.py:301
+#, python-format
 msgid ""
 "I cannot find \"python-wxgtkX.Y\"\n"
 "Please install this package - NB: ensure that\n"
@@ -889,17 +922,17 @@ msgid ""
 "On my distro I can search for it like this:\n"
 "aptitude search python-wx\n"
 "This returns many results, one of which is:\n"
-"python-wxgtk2.8\n"
+"python-wxgtk%(wxv)s\n"
 "I then install it like this:\n"
-"sudo aptitude install python-wxgtk2.8\n"
+"sudo aptitude install python-wxgtk%(wxv)s\n"
 "\n"
-"Make sure it's at least version 2.8\n"
+"Make sure it's at least version %(wxv)s\n"
 "\n"
 "You can also get the latest version from here:\n"
 "http://wxpython.org/download.php\n"
 msgstr ""
 
-#: fontypythonmodules/strings.py:314
+#: fontypythonmodules/strings.py:321
 msgid ""
 "I cannot find \"python-imaging\"\n"
 "Please install this package.\n"
