@@ -919,7 +919,7 @@ class Pog(BasicFontList):
 		self.__installed = "no"
 	
 	def zip(self, todir):
-		"""Add all the fonts to a zip file in todir."""
+		"""Sept 2009 : Add all the fonts to a zip file in todir."""
 		## Start a zip file: I am not sure if a filename should be bytestrings or unicode....
 		file = zipfile.ZipFile(os.path.join(todir,self.name + ".zip"), "w")
 		self.genList() # I forget how to handle errors raised in that labyrinth... sorry world :(
