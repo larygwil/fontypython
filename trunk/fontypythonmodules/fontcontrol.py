@@ -924,13 +924,19 @@ class Pog(BasicFontList):
 		file = zipfile.ZipFile(os.path.join(todir,self.name + ".zip"), "w")
 		self.genList() # I forget how to handle errors raised in that labyrinth... sorry world :(
 		#print "ZIP:",ipog.name
+		bugs=False
 		for fi in self:	
 			## zipfiles have no internal encoding, so I must encode from unicode to a byte string
 			if type(fi.glyphpaf) is unicode:
 				arcfile = os.path.basename(fi.glyphpaf).encode(locale.getpreferredencoding(),"replace")
 			else:
 				arcfile= os.path.basename(fi.glyphpaf)
-
-			file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
+			try:
+				file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
+			except OSError,e:
+				bugs=True
+				# e.errno == 2: # 2 is No such file or directory
+				print e # whatever is wrong, print the message and continue
 
 		file.close()		
+		return bugs # a flag for later.

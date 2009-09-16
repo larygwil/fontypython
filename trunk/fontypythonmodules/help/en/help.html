@@ -3,7 +3,7 @@
 <table cellpadding="5">
 <TR><TD valign="middle">
 <img src="../common/fphelplogo.png"><BR>
-<font color="#768b94"><h1>Fonty Python Help</h1>Updated June 2009</font>
+<font color="#768b94"><h1>Fonty Python Help</h1>Updated September 2009</font>
 </TD></TR>
 <tr><TD>
 		<p><i>FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.</i></p>
@@ -18,7 +18,8 @@
 		<h1>Home dot fonts</h1>
 		<p>In your home directory there is a hidden directory named ".fonts". The dot makes it hidden. In there you will find font files of various kinds. Whatever is listed in that directory is a font that your system can use. It's not as simple as this because on GNU/Linux there are other places where fonts are also installed, but it's a handy place to work. You should never need to go into this directory so there's no reason to worry about it.</p>
 		<h1>Latest News</h1>
-		<ol>
+		<ol>	
+			<li>(Sept 2009) You can now zip pog(s). This puts all those fonts into a zip file for convenience. You can then send them with a project.</li>
 			<li>(June 2009) There is an "Include sub-folders" check box now. See also the command-line option "-A"</li>
 			<li>(June 2009) New keyboard shortcuts. Ctrl+LeftArrow and Ctrl+RightArrow will step through your fonts.</li>
 			<li>(June 2009) Multiple Pog selection. Remove, Install or Uninstall many Pogs at once.</li>
@@ -93,11 +94,13 @@ This is the main <i>action</i> button. It will change it's functionality as you 
 </td></tr>
 <tr><TD valign="top">
 <IMG src="../common/fp7.png.cr.png" align="left" border="0"></TD><td><br>
-These controls allow you to navigate between "pages" of fonts. You can also choose any page from the pull-down. Please go to File->Settings (or hit Ctrl+S -- for English locales) where you can change the number of fonts in a page. <i>I use the paged approach to reduce the memory demands of the app.</i>
+These controls allow you to navigate between "pages" of fonts. You can also choose any page from the pull-down. Please go to Tools->Settings (or hit Ctrl+S -- for English locales) where you can change the number of fonts in a page. <i>I use the paged approach to reduce the memory demands of the app.</i>
 </td></tr>
 <tr><TD valign="top">
 <IMG src="../common/fp8.png.cr.png" align="left" border="0"></td><td><br>
 The buttons in this section all act upon the currently selected <strong>target</strong> Pog. You can variously delete, install and uninstall the selected Pog. You can also create new Pogs from here.
+<br>
+You can also <strong>zip</strong> the fonts within the selected pog(s) up. You get to choose the directory and then the zip files are named after the pogs.
 <br>
 <strong>Multiple selection</strong> is now available. You can delete or Install or Uninstall many Pogs at once.
 </td></tr>
@@ -105,7 +108,7 @@ The buttons in this section all act upon the currently selected <strong>target</
 <hr>
 <h1>Menu items</h1>
 <ol>
-	<li><strong>File</strong>
+	<li><strong>Tools</strong>
 	<ol>
 		<li><u>Settings</u>: Access the settings for the font view. Same as Ctrl+S or middle-click.</li>
 		<li><u>Check Fonts</u>: Choose a folder and scan for bad fonts which are then noted to prevent crashing Fonty in the future. Use this if your head is tired of the wall/desktop.</li>
@@ -168,7 +171,7 @@ You should see a list of locales. If you see one ending in utf8 that looks like 
 <h1>Fonty bugs</h1>
 <ol>
    <li><strong>Fatal crashes and Dangerous Fonts:</strong> Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window should appear and tell you which font is to blame. You should <em>move</em> that font <em>entirely</em> away from where it is. Start Fonty again to resume. If you are stuck, go into your .fontypython folder and open the file named 'lastFontBeforeSegfault', that will be the culprit!</li>
-   <li><strong>Check Fonts:</strong> I've added a new tool to the File menu that will let you choose a folder (and it will go through all the sub-folders too) of fonts for checking. Any fonts that are likely to kill Fonty will be recorded in your ~/.fontypython folder in a file named 'segfonts'. After you do this, you can visit those folders in Fonty and it will display those fonts in yellow. <strong>If you find that Fonty is crashing too often</strong>, then use this tool!<br>There is also a command-line to the same tool:<pre>fontypython -c /some/folder</pre>Please check the command-line help.</li>
+   <li><strong>Check Fonts:</strong> I've added a new tool to the Tools menu that will let you choose a folder (and it will go through all the sub-folders too) of fonts for checking. Any fonts that are likely to kill Fonty will be recorded in your ~/.fontypython folder in a file named 'segfonts'. After you do this, you can visit those folders in Fonty and it will display those fonts in yellow. <strong>If you find that Fonty is crashing too often</strong>, then use this tool!<br>There is also a command-line to the same tool:<pre>fontypython -c /some/folder</pre>Please check the command-line help.</li>
    <li>If you get errors, email them to the list (fontypython@googlegroups.com). This is easier to do when you run Fonty from the command line because you can copy what's displayed.</li>
    <li>When Fonty starts-up it checks your Pog files (in your home folder under .fontypython). If there are any pogs that cannot be read for whatever reason, then they are renamed to .badpog. You should go in there and do some sleuthing.</li>
    <li>As Fonty reads font files here and there, it keeps a list of the fonts it could not open. It's in the .fontypython folder. Open "badfiles" in a text editor if you want to see them.</li>
@@ -176,7 +179,7 @@ You should see a list of locales. If you see one ending in utf8 that looks like 
 </li>
  </ol>
 <hr>
-<p>Fonty Python is Copyright (C) 2006, 2007, 2008 Donn.C.Ingle.</p>
+<p>Fonty Python is Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle.</p>
 <p>This file is part of Fonty Python.<br>
 Fonty Python is free software: you can redistribute it and/or modify<br>
 it under the terms of the GNU General Public License as published by<br>
