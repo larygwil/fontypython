@@ -270,7 +270,12 @@ class TargetPogChooser(wx.Panel):
 
 		## Sep 2009 : ZIP POGS 
 		if e.GetId() == self.idzip: 
-			dlg = wx.DirDialog(self, _("Choose a directory where the zip file(s) will be saved:"), style=wx.DD_DEFAULT_STYLE)
+			dlg = wx.DirDialog(self, _("Choose a directory where the zip file(s) will be saved:"), 
+					style=wx.DD_DEFAULT_STYLE
+					| wx.DD_DIR_MUST_EXIST
+					| wx.DD_CHANGE_DIR
+					| wx.DD_NEW_DIR_BUTTON	
+					)
 			ok=False
 			if dlg.ShowModal() == wx.ID_OK:
 				todir=dlg.GetPath()
@@ -284,7 +289,7 @@ class TargetPogChooser(wx.Panel):
 					ipog.zip( todir )
 
 				wx.EndBusyCursor()	
-				ps.pub( show_message, _("Zip file(s) have been created.") )
+				ps.pub(print_to_status_bar,_("Zip file(s) have been created.") )
 
 
 
