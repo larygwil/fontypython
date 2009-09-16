@@ -98,3 +98,12 @@ Changelist
 1. Fixed a bug where fonts that are already installed would refuse to install again. It ignores OSError 17 now.
 2. Added zip function -- zip all fonts in a pog(s) for easy distribution.
 3. Moved to vers 0.4.2
+
+16 Sept
+1. Removed irritating message dialogs from zip function.
+2. Removed pofiles directory from MANIFEST.in so they do not go into the tarball
+3. There is a weird bug in the zip files -- when you unzip one there are odd files that want renaming... Not sure what this is yet.
+4. Changed File menu to Tools menu.
+5. Added error catch and report to zip.
+6. Improved directory dialogue for zip.
+7. Fixed help file and image.

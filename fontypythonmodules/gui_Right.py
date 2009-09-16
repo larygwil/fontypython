@@ -30,6 +30,8 @@ import fpsys # Global objects
 import fontyfilter
 import fontybugs
 
+## Fetch the dialogue classes - used for zip dir dialog.
+import dialogues
 
 class TargetPogChooser(wx.Panel):
 	"""
@@ -270,12 +272,7 @@ class TargetPogChooser(wx.Panel):
 
 		## Sep 2009 : ZIP POGS 
 		if e.GetId() == self.idzip: 
-			dlg = wx.DirDialog(self, _("Choose a directory where the zip file(s) will be saved:"), 
-					style=wx.DD_DEFAULT_STYLE
-					| wx.DD_DIR_MUST_EXIST
-					| wx.DD_CHANGE_DIR
-					| wx.DD_NEW_DIR_BUTTON	
-					)
+			dlg = dialogues.LocateDirectory( self )
 			ok=False
 			if dlg.ShowModal() == wx.ID_OK:
 				todir=dlg.GetPath()
@@ -286,11 +283,14 @@ class TargetPogChooser(wx.Panel):
 				
 				for p in multipogs:
 					ipog = fontcontrol.Pog(p)
-					ipog.zip( todir )
+					bugs=ipog.zip( todir )
 
 				wx.EndBusyCursor()	
-				ps.pub(print_to_status_bar,_("Zip file(s) have been created.") )
-
+				extra=""
+				if bugs: extra=_("Some fonts were skipped, try purging the pog(s) involved.")
+				ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
+			else:
+				ps.pub(print_to_status_bar,_("Zip cancelled."))
 
 
 	def OnPogTargetClick(self, args):

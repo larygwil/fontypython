@@ -88,7 +88,7 @@ class MainFrame(wx.Frame):
 		## Prepare the menu bar
 		self.menuBar = wx.MenuBar()
 
-		## FILE MENU
+		## FILE MENU : Changed to "Tools" menu Sep 2009
 		menu1 = wx.Menu()
 		menu1.Append(101, _("&Settings\tCtrl+S"), _("Change settings"))
 		menu1.AppendSeparator()
@@ -100,7 +100,7 @@ class MainFrame(wx.Frame):
 
 		self.exit = menu1.Append(104, _("&Exit"), _("Close the app"))
 		## Add menu to the menu bar
-		self.menuBar.Append(menu1, _("&File"))
+		self.menuBar.Append(menu1, _("&Tools"))
 
 
 		## SELECT MENU: June 2009
