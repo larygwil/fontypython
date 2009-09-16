@@ -318,11 +318,13 @@ class TargetPogChooser(wx.Panel):
 			self.buttDelete.Enable(False)
 			self.buttInstall.Enable(False)
 			self.buttUninstall.Enable(False)
+			self.buttZip.Enable(False)
 			return 
 		installed = fpsys.state.targetobject.isInstalled()
 		self.buttDelete.Enable(not(installed)) # DELETE button is inverse of installed status
 		self.buttInstall.Enable(not(installed)) # INSTALL button is inverse 
 		self.buttUninstall.Enable(installed) # UNINSTALL = True if pog is installed.
+		self.buttZip.Enable(True)
 		
 	def SelectNoTargetPog(self):
 		"""
