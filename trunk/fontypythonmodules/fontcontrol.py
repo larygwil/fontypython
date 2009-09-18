@@ -788,16 +788,25 @@ class Pog(BasicFontList):
 			PogAllFontsFailedToInstall
 			PogSomeFontsDidNotInstall
 		"""	
-		def linkfont(frompaf, topaf):
+		def linkfont(fi, frompaf, topaf):
 			## 15 Sept 2009 : Catch situations where the font is already installed.
 			try:
 				os.symlink(frompaf, topaf)  #Should do the trick.
+				return True
 			except OSError, detail:
 				if detail.errno != 17: raise # File exists -- this font is already installed, we can ignore 17.
+				## This font has been linked before.
+				fpsys.Overlap.inc(fi.name) # Use the class in fpsys to manage overlaps.
+				
+				return False
 
-		## We start thinking all is rosey:
+		## If this is flagged as installed, then just get out.
+		if self.__installed == "yes":
+			print _("%s is already installed." % self.name)
+			return
+
+		## We start thinking all is rosy:
 		self.__installed = "yes"
-
 		## Now we make sure ...
 		if len(self) == 0: 
 			self.__installed = "no"
@@ -810,20 +819,17 @@ class Pog(BasicFontList):
 			linkDestination = os.path.join(self.__pc.userFontPath(), dirname )
 
 			## Link it if it ain't already there.
-			## I am not checking for errors on os.symlink ...
-			if not os.path.exists(linkDestination):  
-				if os.path.exists(fi.glyphpaf):
-					linkfont(fi.glyphpaf,linkDestination)
-
-					## Now, the Type1 special case, link the metric file.
+			if os.path.exists(fi.glyphpaf):
+				if linkfont(fi, fi.glyphpaf, linkDestination): #link the font and if True, it was not overlapped, so also do Type1 step 2
+					## Now, the Type1 step 2, link the metric file.
 					if isinstance( fi, Type1Item ):
 						## It's a Type 1, does it have a metricpaf?
 						if fi.metricpaf:
 							linkDestination = \
 							os.path.join( self.__pc.userFontPath(), os.path.basename( fi.metricpaf ) )
-							linkfont( fi.metricpaf, linkDestination )
-				else:
-					bugs += 1
+							linkfont( fi, fi.metricpaf, linkDestination )
+			else:
+				bugs += 1
 		if bugs == len(self): # There was 100% failure to install fonts.
 			## We flag ourselves as NOT INSTALLED
 			self.__installed = "no"
@@ -834,7 +840,9 @@ class Pog(BasicFontList):
 			self.write()
 			raise fontybugs.PogSomeFontsDidNotInstall(self.name) # RAISED :: PogSomeFontsDidNotInstall
 		self.write()
+		#print "    [INSTALL COMPLETE]"
 
+		
 	def uninstall(self):
 		"""
 		Uninstall the fonts.
@@ -853,6 +861,11 @@ class Pog(BasicFontList):
 		bugs = 0
 		if self.__installed == "yes":
 			for fi in self:
+				#print "*Uninstalling candidate %s" % fi.name
+				if fpsys.Overlap.dec(fi.name): 
+					#print " Going to leave this one here"
+					continue # If it overlaps then we skip removing it by going to next fi in loop.
+				#print "  Going to REMOVE this one"
 				dirname = os.path.basename( fi.glyphpaf )
 				link = os.path.join(self.__pc.userFontPath(), dirname )
 				## Step one - look for the actual file (link)
@@ -879,6 +892,7 @@ class Pog(BasicFontList):
 				## Okay - there were no problems, so we are now done.
 				self.__installed = "no"
 				self.write() #save to disk
+			#print "   [UNINSTALL COMPLETE]"
 		else:
 			## self.__installed says we are not installed:
 			raise fontybugs.PogNotInstalled(self.name) # RAISED :: PogNotInstalled
