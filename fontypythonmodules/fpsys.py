@@ -40,6 +40,96 @@ fontyroot = os.path.dirname(os.path.abspath(root))
 ## Where my images and things are.
 mythingsdir = os.path.join(fontyroot,"things/")
 
+
+## Sept 2009
+class Overlaperize(object):
+	'''
+	If a single font is in many pogs, then we count each 'overlap' and
+	control the removal of them until there are no overlaps anymore.
+	i.e. When no other installed pogs are using the font, it is safe to
+	remove the link (should that last pog be removed by the user).
+	'''
+	def __init__(self):
+		self.OVERLAP_COUNT_DICT = {}
+		self.DISABLE_THIS = False # In case all this makes a horrible mess : users can flip this to True....
+
+	def inc(self,key):
+		if self.DISABLE_THIS: return True
+
+		if key in self.OVERLAP_COUNT_DICT:
+			self.OVERLAP_COUNT_DICT[key] += 1
+			#print "%s UP 1" % key
+		else:
+			self.OVERLAP_COUNT_DICT[key] = 2 #starts at 2 because there is already one installed.
+		#self.report(key)
+		return True
+
+	def dec(self,key):
+		'''
+		Return True means : This font overlaps
+		Return False means : This font can be uninstalled
+		'''
+		if self.DISABLE_THIS: return False
+
+		if key in self.OVERLAP_COUNT_DICT:
+			self.OVERLAP_COUNT_DICT[key] -= 1
+			#print "%s DOWN 1" % key
+			if self.OVERLAP_COUNT_DICT[key] == 0:
+				del self.OVERLAP_COUNT_DICT[key]
+				#print "KEY %s REMOVED" % key
+				return False # it does NOT overlap anymore.
+			else:
+				#self.report(key)
+				return True # It still overlaps
+
+		# It gets if the font is totally unknown to the OVERLAP_COUNT_DICT
+		return False #It therefore does NOT overlap.
+
+	def report(self,key):
+			print "%s has overlap count of %d" % (key, self.OVERLAP_COUNT_DICT[key])
+
+	def sleep(self):
+		'''Save the OVERLAP_COUNT_DICT to a file (if it has content). Called when app closes.'''
+		#print "SAVING"
+		if self.DISABLE_THIS: return
+
+		#for i in self.OVERLAP_COUNT_DICT:
+			#print "********SAVING:",i, self.OVERLAP_COUNT_DICT[i]
+		
+		if not self.OVERLAP_COUNT_DICT:
+			self.OVERLAP_COUNT_DICT={} # Ensure there is a blank overlap_counts file!
+
+		paf = os.path.join(iPC.appPath(),"overlap_counts")
+		try:
+			fr = open( paf, 'wb' ) # pickle says use 'binary' files, but only Windows makes this distinction. I use it to be safe...
+			pickle.dump( self.OVERLAP_COUNT_DICT, fr, protocol=pickle.HIGHEST_PROTOCOL )
+			fr.close()
+		except:
+			## CORNER CASE
+			raise
+	
+	def wakeup(self):
+		'''Restore the OVERLAP_COUNT_DICT from a file (if any). Called as app starts.'''
+		if self.DISABLE_THIS: return 
+
+		paf = os.path.join(iPC.appPath(),"overlap_counts")
+		if os.path.exists( paf ):
+			try:
+				fr = open( paf, "rb" )
+				self.OVERLAP_COUNT_DICT = pickle.load( fr )
+				fr.close()
+			except:
+				## Damn!
+				raise
+		#print "LOADING"
+		#for i in self.OVERLAP_COUNT_DICT:
+			#print "********LOADING:",i, self.OVERLAP_COUNT_DICT[i]
+## start it up!
+Overlap = Overlaperize()
+Overlap.wakeup()
+
+
+
 ## Jan 18 2008
 segfonts = []# Global var
 
@@ -286,6 +376,8 @@ class Configure:
 			pf.close() 
 		except IOError:
 			print _("Could not write to the config file.")
+
+		Overlap.sleep() #sept 2009 : Save the OVERLAP_COUNT_DICT
 
 
 ## Our config instance - it will have one instance across

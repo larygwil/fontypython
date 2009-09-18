@@ -107,3 +107,6 @@ Changelist
 5. Added error catch and report to zip.
 6. Improved directory dialogue for zip.
 7. Fixed help file and image.
+
+18 Sept
+Added reference counting to fonts that are shared/common among pogs: When a pog is uninstalled *and* another installed pog has the same font(s), those fonts are left installed.
