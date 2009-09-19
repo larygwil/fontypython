@@ -28,7 +28,7 @@ class PathControl:
 	"""
 	
 	def __init__(self, makeFolder=True ):
-		## __HOME will be a BYTE STRING
+		## __HOME will be a BYTE STRING (Under Linux)
 		self.__HOME = os.environ['HOME']
 		
 		self.__fphomepath = self.__HOME + "/.fontypython/" # byte string

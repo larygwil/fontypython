@@ -193,10 +193,8 @@ class PogChooser(wx.ListCtrl) :
 				continue
 
 			## Let's try to make a unicode of p so li.SetText(p) can display it:
-			## I think it's easier to do this myself.
 			try:
-				up = p.decode(locale.getpreferredencoding())
-				p = up
+				p = fpsys.LSP.to_unicode( p )
 			except UnicodeDecodeError:
 				## We can't convert it under this locale
 				print _(u"(%s) skipped. I can't display this name under your locale.") % [p]

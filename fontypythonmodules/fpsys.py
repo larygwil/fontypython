@@ -20,10 +20,17 @@
 ## This is a common-ground for variables and defs that will be used from
 ## other modules - so they are global to everything.
 
-import sys, os, pickle, locale
+import sys, os, pickle
+
+import linux_safe_path_library
+LSP = linux_safe_path_library.linuxSafePath()
+
 import pathcontrol
 import strings
 import fontcontrol
+
+
+
 
 ## Ensure we have a .fontypython folder and a .fonts folder.
 iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i'
@@ -185,12 +192,11 @@ except:
 		if retval != 0:
 			segfault_I_hope = True
 		return segfault_I_hope
-   
 	printer ( _("Checking fonts, this could take some time.") )
 	printer ( _("Starting in %s:") % dirtocheck )
 	printer ()
 	## dirtocheck comes-in as unicode - let's stick to byte strings:
-	dirtocheck = dirtocheck.encode( locale.getpreferredencoding() )
+	dirtocheck = LSP.to_bytes( dirtocheck )
 	seglist = [] # our local list of newly found bad fonts
 	gotsome = False
 	for cwd, dirs, files in os.walk( dirtocheck ):
@@ -240,14 +246,9 @@ def isFolder(thing):
 def isPog(thing):
 	"""True if a Pog. False if not."""
 	## thing comes in as UNICODE
-##	## These come in handy when debugging Unicode errors
-##	print "thing:", thing
-##	print "type of thing:", type(thing)
-##	print
-##	print "iPC.getPogNames():", [iPC.getPogNames()]
 	## iPC.getPogNames() is a list of BYTE STRINGS
 	## We must encode thing to a byte string to avoid warnings:
-	if thing.encode(locale.getpreferredencoding()) in iPC.getPogNames(): #getPogNames contains UNICODE elements
+	if LSP.to_bytes( thing ) in iPC.getPogNames(): #getPogNames contains byte strings!
 		return True
 	if thing == "EMPTY": return True #Special case
 	return False
@@ -504,15 +505,12 @@ def markInactive():
 	if state.viewobject and state.targetobject:
 		## What's in TARGET must be inactive in VIEW
 
-		## glyphpaf is a BYTE STRING... :(
 		## pafBlist is a list of UNICODEs
 		## glyphpaf_unicode is UNICODE, so I will use it instead		
 		## because we compare it to pafBlist
-#TO DO : I suspect there will be subtle problems here. Too tired now to test this.		
 		pafBlist = [i.glyphpaf_unicode for i in state.targetobject]
 
 		for iA in state.viewobject:
-			#print [iA.glyphpaf_unicode]
 			if iA.glyphpaf_unicode in pafBlist:
 				iA.activeInactiveMsg = _("This font is in %s") % state.targetobject.name
 				iA.inactive = True
@@ -537,63 +535,11 @@ def logSegfaulters( lastPaf ):
 	paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
 	try:
 		f = open( paf, "w" )
-		## Not tested yet....
-		if type( lastPaf ) is unicode:
-			lastPaf = lastPaf.encode( locale.getpreferredencoding() )
+		lastPaf = LSP.ensure_bytes( lastPaf )
 		f.write( lastPaf + "\n" )
 		f.close()
 	except:
 		raise
 
-def logBadStrings( badPaf ):
-	"""
-	Writes badfiles and appends strings to it.
-	
-	The usefulness of this routine is questioned. What does it acheive?
-	It's really storing names that can't be read under this locale,
-	but that does not mean the fonts are really bad in any way.
-	
-	Because the app may segfault at any time, I won't keep
-	this list in RAM - I open and kill duplicate lines and
-	sort and write it every time.
-	
-	This routine fair nearly killed me. Unicode issues! Damn.
-	"""
-	#print "BADPAF IS:", [badPaf]
-	## badPaf comes in BYTE STRING 99% of the time
-	## There are some corners where a UNICODE is sent-in
-	## I am writing an ASCII file. Oh great FSM, what am I gonna noodle now?
-	if type(badPaf) is unicode:
-		badPaf = badPaf.encode( locale.getpreferredencoding() )
-	
-	paf = os.path.join( iPC.appPath(),"badfiles")
-	
-	try:
-		if os.path.exists( paf ):
-			#read it
-			fr = open( paf, 'r' ) # byte string only ascii file
-			tmp = fr.read().split("\n")
-			fr.close()
-			tmp.append( badPaf )
-			uniquelines =  list( set( tmp ) )# remove dupes
-		else:
-			uniquelines = []
-			uniquelines.append( badPaf )
-		try:
-			uniquelines.sort( cmp = locale.strcoll )
-		except:
-			print "CORNER CASE ERROR in logBadStrings:"
-			print sys.exc_info()
-			raise SystemExit
-		
-		#Remove dupes, write.
-		fw = open( paf, "a" ) # byte string ascii
-		bytestring = "".join([line + "\n" for line in uniquelines if line != ""])
-		fw.write( bytestring )
-		fw.close()
 
-	except:
-		print "CORNER CASE ERROR in logBadStrings:"
-		print sys.exc_info()
-		raise SystemExit
 		

@@ -15,6 +15,19 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 import locale
+import fpsys
+
+"""
+testing i18n with fontybugs
+try:
+	raise fontybugs.BadVoodoo("bad voodoo")
+except fontybugs.BadVoodoo, e:
+	print "error:", unicode(e)
+try:
+	raise fontybugs.PogWriteError("/some/path/po.pog")
+except fontybugs.PogWriteError, e:
+		print unicode(e)
+"""
 
 ## The %s must be OUTSIDE the _() construct.
 class Errors ( Exception ):
@@ -35,27 +48,24 @@ class Errors ( Exception ):
 	1030 : _("This folder has no fonts in it.")
 	}
 
-#TO DO
-	## Jan 14 2008 
-	## I'm a bit fuzzy on these. I use print unicode(e) mostly
-	## but a few print repr( e )'s have snuck in here and there.
 	def __unicode__( self ):
 		return u"%s : %s" % ( self.__class__.messages[self._id], self._item )
-		
-	def __str__( self ):
-		return "%s : %s" % ( self.__class__.messages[self._id], self._item )
-		
-## testing i18n with fontybugs
-##try:
-##	raise fontybugs.BadVoodoo("bad voodoo")
-##except fontybugs.BadVoodoo, e:
-##	print "error:", unicode(e)
-##try:
-##	raise fontybugs.PogWriteError("/some/path/po.pog")
-##except fontybugs.PogWriteError, e:
-##		print unicode(e)
-##		
-##raise SystemExit
+
+	def _format_error(self):
+		## As of Python 2.6 e.message has been deprecated.
+		## Turn 'e' into a 'string like object' by calling __unicode__ above.
+		msg = unicode(self)
+		msg = fpsys.LSP.to_bytes( msg )
+		return msg
+
+	def print_error(self):
+		print self._format_error()
+
+	def print_error_and_quit(self):
+		self.print_error()
+		raise SystemExit
+
+
 
 class BadVoodoo ( Errors ):
 	def __init__ ( self, item = None): 
