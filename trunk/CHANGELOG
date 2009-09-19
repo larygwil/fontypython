@@ -110,3 +110,7 @@ Changelist
 
 18 Sept
 Added reference counting to fonts that are shared/common among pogs: When a pog is uninstalled *and* another installed pog has the same font(s), those fonts are left installed.
+
+19 Sept
+1. A long day of tidying-up and abstracting the unicode/str stuff.
+2. Gone a long way to a standard error approach. Still have some loose ends.

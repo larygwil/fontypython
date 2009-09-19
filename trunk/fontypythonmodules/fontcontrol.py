@@ -47,17 +47,12 @@ class FontItem( object ):
 		## I want to have a var I can use when I display the glyphpaf
 		## either in the gui or onto the cli. This should be a unicode
 		## object, so I must make sure of it's type before I do so.
-		if type(glyphpaf) is str:
-			## It's a byte string, not unicode. Convert it.
-			self.glyphpaf_unicode = glyphpaf.decode(locale.getpreferredencoding(), "replace")
-		else:
-			self.glyphpaf_unicode = glyphpaf
+		self.glyphpaf_unicode = fpsys.LSP.ensure_unicode( glyphpaf )
 
 		## The same goes for name. It *must* be unicode.
-		self.name = os.path.basename ( glyphpaf )
-		if type(self.name) is str:
-			self.name = self.name.decode(locale.getpreferredencoding(), "replace")
-			
+		self.name = os.path.basename ( self.glyphpaf_unicode )
+		self.name = fpsys.LSP.ensure_unicode( self.name )
+
 		self.ticked = False # State of the tick/cross symbol.
 		self.inactive = False # Set in fpsys.markInactive()
 		self.activeInactiveMsg = "" #Say something unique when I draw this item.  
@@ -112,7 +107,6 @@ class FontItem( object ):
 			try:
 				fileDoesExist = os.path.exists( self.glyphpaf )
 				if not fileDoesExist:
-					fpsys.logBadStrings( self.glyphpaf )
 					self.badfont = True
 					self.badfontmsg = _("Font cannot be found, you should purge this Pog.")
 					self.badstyle = "FILE_NOT_FOUND"
@@ -145,7 +139,6 @@ class FontItem( object ):
 				## mailed the PIL list about this.
 				##
 				## In the meantime, this will have to be flagged as a bad font.
-				fpsys.logBadStrings( self.glyphpaf )
 				self.badfont = True
 				self.badfontmsg = _("Unicode problem. Font may be bad and it cannot be drawn.")
 				self.badstyle = "PIL_UNICODE_ERROR"
@@ -173,11 +166,13 @@ class FontItem( object ):
 					## are not English. They appear as ???y??? etc. in the font list. On my system Inkscape
 					## draws tham with squares (holding a unicode number) and a few Eastern characters.
 					## I am not sure AT ALL what to do about this. Is it a font/locale I should have installed?
+					##
+					## This is bug number: https://savannah.nongnu.org/bugs/index.php?27305
+					##
+					## I await help from PIL list.
 
 					#self.family.append( font.getname()[0] ) # old code
-
-					## Trying stuff:
-					self.family.append( font.getname()[0].decode(locale.getpreferredencoding(),"replace") )
+					self.family.append( fpsys.LSP.ensure_unicode( font.getname()[0] ) )
 
 					self.style.append( font.getname()[1] )
 					i += 1
@@ -258,7 +253,6 @@ class FontItem( object ):
 				## cause the MemoryError in the rendering step.
 				self.badfontmsg = _("Font causes a memory error, it can't be drawn.")
 				self.badstyle = "PIL_CANNOT_RENDER"
-				fpsys.logBadStrings( self.glyphpaf )
 				self.badfont = True
 				break
 			## These two must be caught, but are already known about 
@@ -496,88 +490,49 @@ class Folder(BasicFontList):
 		BasicFontList.__init__(self)
 		#print "path:",[path]
 		
-		## I still have to verify this, but:
-		## I reckon path is always coming in as unicode.
+		## I reckon self.path is always coming in as unicode.
 		## From the gui, it's unicode anyway cos of the dir control.
 		## From the cli, I converted args to unicode there.
 		self.path = os.path.abspath(path) # fix relative paths
 
-		## NEW INFO : DEC 2007
-		## Linux is Posix and that means all filenames are stored as byte strings
-		## "Unlike Windows NT/2000/XP, which always store filenames in Unicode format, 
-		##  POSIX systems (including Linux) always store filenames as binary strings. 
-		##  This is somewhat more flexible, since the operating system itself doesn't 
-		##  have to know (or care) what encoding is used for filenames. The downside 
-		##  is that the user is responsible for setting up their environment 
-		##  ("locale") for the proper coding."
-		##
-		## On Linux: os.path.supports_unicode_filename is always == True
-		## On my system, with LANG=en_ZA.utf8
-		## >>> locale.getpreferredencoding()
-		## 'UTF-8'
-		##	Return the charset that the user is likely using,
-		##	according to the system configuration.
-		## With LANG=C it returns "ANSI****"
-		## On my system:
-		## >>> sys.getfilesystemencoding()
-		## 'UTF-8'
-		## This one returns the ENCODING (byte string to unicode) needed to
-		## convert filenames from the O/S *to* unicode.
-			
-		## If self.path is unicode, return will be list of unicode objects (with some slip-ups...)
-		## self.path comes from the GenericDirCtrl, which is part of a Unicode wxPython build
-		## therefore it always emits Unicode objects. (Or it comes from cli, which also converted)
-
-
 		## Added June 2009
 		def safeJoin(apath,filelist):
-			## I could use this:
-			## sourceList = [ os.path.join( apath, f ) for f in listOfFilenamesOnly ]
-			## But I won't know (when there's an error) which element of the listOfFilenamesOnly was
-			## the culprit, so I'm gonna loop this one.
+			'''
+			It seems filelist cannot be relied on to be anything other than a mixed-bag
+			of unicode and/or bytestrings. I will join each to the apath and force the
+			result to bytestrings.
+			'''
 			returnList = []
 			for f in filelist:
-				try:
-					paf = os.path.join( apath, f )
-					if os.path.isfile(paf):
-						returnList.append( paf )
-				except:
-					## Okay, 'f' was not able to join to apath
-					## This is because 'f' is a byte string, not a unicode
-					## That means that os.listdir couldn't figure it out...
-					## I will revert to byte strings and try again:
-					try:
-						paf = os.path.join( apath.encode( locale.getpreferredencoding()), f )
-						if os.path.isfile( paf ):
-							returnList.append( paf )
-					except:
-						## No, could not get a hold of that file.
-						## In theory, this should never happen.
-						print "CORNER CASE in Folder.__init__.safeJoin():", [apath], " + ", [f]
-						fpsys.logBadStrings(f) # I'm keeping a list of bad names.
+				paf = fpsys.LSP.path_join_ensure_bytestring_result( apath, f )
+				if os.path.isfile( paf ):
+					returnList.append( paf )
 			return returnList
+
 
 		## All recursive changes June 2009
 		if not recurse:
 			## Note: If self.path DOES NOT EXIST then this raises and OSError
 			##	   This can happen when we use the --all cli argument (see cli.py)
+
+			# Calling os.listdir here is okay because self.path is unicode, but
+			# listOfFilenamesOnly *should* be a list of pure unicode objects as a result.
+			# It's NOT - I have found problems... see safeJoin func just above.
 			listOfFilenamesOnly = os.listdir (  self.path  ) # Get the unicode list
 		
 			sourceList = safeJoin(self.path, listOfFilenamesOnly )
 		else:
 			# Recursive code
 			sourceList=[]
-			try:
-				P = self.path.encode( locale.getpreferredencoding() )# Force P to be BYTE STRING from unicode<-came in as
-				for root, dirs, files in os.walk( P ):
-					## I need root and each file to be UNICODE, so I must decode them here
-					R = root.decode( locale.getpreferredencoding(),"replace" )
-					F = [ f.decode(locale.getpreferredencoding(),"replace") for f in files ]
-					sourceList.extend( safeJoin( R, F ) )
-			except UnicodeDecodeError:
-				## The encoding and decoding just above have fixed this error, but I will leave this catch here just in case.
-				print "CORNER CASE in Folder.__init__: UnicodeDecodeError under: %s" % [ P ]
-				raise SystemExit
+			# Force P to be BYTE STRING from unicode<-came in as
+			P = fpsys.LSP.ensure_bytes( self.path )
+			for root, dirs, files in os.walk( P ):
+				## I need root and each file to be UNICODE, so I must decode them here
+				R = fpsys.LSP.to_unicode( root )
+				F = [ fpsys.LSP.to_unicode(f) for f in files ]
+				sourceList.extend( safeJoin( R, F ) )
+		
+		# At this point sourceList is full of PURE BYTE STRINGS
 
 		## Now employ the generator magic:
 		## Makes FontItem objects for each paf in the list.
@@ -616,21 +571,21 @@ class Pog(BasicFontList):
 		## name always comes in as a byte string because
 		## we built the path up to .fontypython from byte strings
 		
-		#print "Pog create"
-		#print "name coming in as:", [name] # So far, for all locales, this is always str.
 		## Make a unicode of that name:
-		if type(name) is str:
-			uname = name.decode(locale.getpreferredencoding(),"replace")
-		else:
-			uname = name
+		uname = fpsys.LSP.ensure_unicode( name )
 		## Stores a unicode for access from other places:
 		self.name = uname
 		
 		self.__installed = "dirty" #am I installed?
 		
-		## Note, name (not self.name) is used here. 
-		## We are continuing to use pure byte strings for the paf
+		##
+		## NB NOTE: self.paf IS A BYTE STRING
+		##
+
+		## Note, name (not self.name) is used here. It is a byte string. 
+		## appPath() is a bs, name is a bs so join leaves this all as a bs.
 		self.paf = os.path.join( self.__pc.appPath(),name + ".pog")
+		## OVERKILL : self.paf = fpsys.LSP.path_join_ensure_bytestring_result( self.__pc.appPath(),name + ".pog" )
 
 		self.badpog = False #To be used mainly to draw icons and ask user to purge.
 		
@@ -750,10 +705,10 @@ class Pog(BasicFontList):
 		"""
 		## can't purge an empty pog
 		if len(self) == 0:
-			raise fontybugs.PogEmpty # RAISED :: PogEmpty
+			raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
 		## can't purge an installed pog
 		if self.__installed == "yes":
-			raise fontybugs.PogInstalled # RAISED :: PogInstalled
+			raise fontybugs.PogInstalled(self.name) # RAISED :: PogInstalled
 		else:
 			## Let's build a new list of all the bad font items.
 			badfonts = []
@@ -811,10 +766,12 @@ class Pog(BasicFontList):
 		if len(self) == 0: 
 			self.__installed = "no"
 			raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
+
 		## Now we go through the guts of the pog, font by font:
 		bugs = 0
 		for fi in self:
-			
+			## These os.path functions have been performing flawlessly.
+			## See linux_safe_path_library remarks (at top) for details.
 			dirname = os.path.basename( fi.glyphpaf )
 			linkDestination = os.path.join(self.__pc.userFontPath(), dirname )
 
@@ -857,7 +814,7 @@ class Pog(BasicFontList):
 				 PogLinksRemain
 				 PogNotInstalled
 		"""		
-		if len(self) == 0: raise fontybugs.PogEmpty # RAISED :: PogEmpty
+		if len(self) == 0: raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
 		bugs = 0
 		if self.__installed == "yes":
 			for fi in self:
@@ -912,10 +869,8 @@ class Pog(BasicFontList):
 			for i in self:
 				## since the glyphpaf can vary it's type
 				## we must encode it to a byte string if it's unicode.
-				if type(i.glyphpaf) is unicode:
-					gpaf = i.glyphpaf.encode( locale.getpreferredencoding() )
-				else:
-					gpaf = i.glyphpaf
+				gpaf = fpsys.LSP.ensure_bytes( i.glyphpaf )
+
 				f.write( gpaf + "\n") 
 			f.close() 
 		except:
@@ -941,10 +896,7 @@ class Pog(BasicFontList):
 		bugs=False
 		for fi in self:	
 			## zipfiles have no internal encoding, so I must encode from unicode to a byte string
-			if type(fi.glyphpaf) is unicode:
-				arcfile = os.path.basename(fi.glyphpaf).encode(locale.getpreferredencoding(),"replace")
-			else:
-				arcfile= os.path.basename(fi.glyphpaf)
+			arcfile = fpsys.LSP.ensure_bytes(os.path.basename(fi.glyphpaf))
 			try:
 				file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
 			except OSError,e:
