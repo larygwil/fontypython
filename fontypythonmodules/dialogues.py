@@ -341,13 +341,13 @@ class DialogCheckFonts( wx.Dialog ):
 		size=(200,-1), style = wx.TE_MULTILINE | wx.TE_READONLY )
 		rightsz.Add(self.output,1,wx.EXPAND | wx.ALL)
 
-		btnsizer = wx.StdDialogButtonSizer()
-		btn = wx.Button(self, wx.ID_OK)
-		btn.SetDefault()
-		btnsizer.AddButton(btn)
-		btnsizer.Realize()
-		
-		rightsz.Add(btn,0,wx.EXPAND)
+		bsz = wx.BoxSizer(wx.HORIZONTAL)
+		self.btn = wx.Button(self, wx.ID_CLOSE)
+		self.btn.SetDefault()
+		bsz.Add(self.btn,1,wx.EXPAND)
+		self.btn.Bind( wx.EVT_BUTTON, self.OnClick)
+
+		rightsz.Add(bsz,0,wx.EXPAND)
 		
 		sz = wx.BoxSizer(wx.HORIZONTAL)
 		
@@ -359,6 +359,8 @@ class DialogCheckFonts( wx.Dialog ):
 		self.tree = self.treedir.GetTreeCtrl()
 
 		self.tree.Bind(wx.EVT_LEFT_DCLICK, self.__goFigure)
+	def OnClick(self,e):
+		self.Close(True)
 
 	def printer( self, txt=None ):
 		if txt is None: txt = "\n"
