@@ -124,3 +124,6 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 1. Got a workaround for fitem widths going.
 2. Improved the rendering of fitems under various conditions.
 3. Removed fatfont.
+
+22 Sept
+1. Changed button on Check fonts form to 'Close' -- makes more sense now.
