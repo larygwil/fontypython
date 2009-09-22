@@ -83,7 +83,7 @@ class linuxSafePath( object ):
 		return u.encode( self.PREFENC )
 
 	def to_unicode( self, b ):
-		'''Given a know byte string, return a unicode'''
+		'''Given a known byte string, return a unicode'''
 		return b.decode( self.PREFENC,"replace" )
 
 	def ensure_bytes( self, anything ):

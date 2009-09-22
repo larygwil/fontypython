@@ -53,7 +53,7 @@ class Errors ( Exception ):
 
 	def _format_error(self):
 		## As of Python 2.6 e.message has been deprecated.
-		## Turn 'e' into a 'string like object' by calling __unicode__ above.
+		## Turn 'self' into a 'string like object' by calling __unicode__ above.
 		msg = unicode(self)
 		msg = fpsys.LSP.to_bytes( msg )
 		return msg

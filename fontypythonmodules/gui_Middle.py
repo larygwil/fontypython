@@ -75,7 +75,8 @@ class FontViewPanel(wx.Panel):
 	"""
 	def __init__(self, parent):
 		wx.Panel.__init__(self, parent, id = -1)
-		
+		self.firstrun = True
+
 		self.pageindex = 1 # I start here
 		self.total_number_of_pages = 0
 		
@@ -84,7 +85,13 @@ class FontViewPanel(wx.Panel):
 		self.TICKMAP = None
 		self.TICK = wx.Bitmap(fpsys.mythingsdir + "tick.png", type=wx.BITMAP_TYPE_PNG)
 		self.CROSS = wx.Bitmap(fpsys.mythingsdir + "cross.png", type=wx.BITMAP_TYPE_PNG)
-		
+	
+		#Sept 2009
+		self.SEGFAULT = wx.Bitmap(fpsys.mythingsdir + 'font_segfault.png', wx.BITMAP_TYPE_PNG)
+		self.NO_DRAW = wx.Bitmap(fpsys.mythingsdir + 'font_no_draw.png', wx.BITMAP_TYPE_PNG)
+		self.NOT_FOUND = wx.Bitmap(fpsys.mythingsdir + 'font_not_found.png', wx.BITMAP_TYPE_PNG)
+		self.INFO_ITEM = wx.Bitmap(fpsys.mythingsdir + 'font_info_item.png', wx.BITMAP_TYPE_PNG)
+
 		## Main Label on top
 		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL) 
 		self.textMainInfo = wx.StaticText(self, -1, " ") 
@@ -169,6 +176,12 @@ class FontViewPanel(wx.Panel):
 		ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
 		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
 		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
+
+	def getWidthOfMiddle( self ):
+		if self.firstrun:
+			return fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
+		else:
+			return self.sizerFontView.GetSize()[0] # After this flag is tripped, the app is aware of sizes and we can get a real number.
 
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
@@ -285,6 +298,7 @@ class FontViewPanel(wx.Panel):
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
 		self.EnableDisablePrevNext()
 
+		self.firstrun = False # After all the fitmaps are drawn, the sizer knows how wide it is, so we trip this flag (see getWidthOfMiddle)
 
 	def onMainClick(self, evt) :
 		"""

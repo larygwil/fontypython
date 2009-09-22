@@ -258,7 +258,7 @@ class SegfaultDialog(wx.Dialog):
 		self.ohDear.SetFont( font )
 		
 
-		self.sadStory = wx.StaticText( self, -1, _("There's some problem with the font named below. Please use the Check Fonts tool in Fonty\n(from the command-line or the File menu) to go through this directory and mark all the dangerous fonts.\n(You could simply move this font elsewhere, but others may remain to cause trouble.)\n" ))
+		self.sadStory = wx.StaticText( self, -1, _("There's some problem with the font named below. Please use the Check Fonts tool in Fonty\n(from the command-line or the Tools menu) to go through this directory and mark all the dangerous fonts.\n(You could simply move this font elsewhere, but others may remain to cause trouble.)\n" ))
 
 		font = wx.Font(11, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.culprit = wx.StaticText( self, -1, culprit ) 
@@ -327,7 +327,10 @@ class DialogCheckFonts( wx.Dialog ):
 		
 		## LEFT
 		leftsz = wx.BoxSizer(wx.VERTICAL)
+
+		font = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		title = wx.StaticText( self,-1,  _("Choose a directory and double click it to start"))
+		title.SetFont( font )
 		leftsz.Add(title,0,wx.EXPAND | wx.ALL, border=4 )
 		self.treedir = wx.GenericDirCtrl( self, -1, dir=startdir, style=wx.DIRCTRL_DIR_ONLY )
 		leftsz.Add( self.treedir, 1, wx.EXPAND|wx.ALL)
