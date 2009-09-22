@@ -1,6 +1,6 @@
 Section One : Copyright
 =======================
-The following images are Copyright (C) 2006, 2007, 2008 Donn.C.Ingle
+The following images are Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
 aboutfplogo.png
 cross.png
 fplogo.png
@@ -13,6 +13,10 @@ pog16x16.png
 pog16x16.target.png
 tick.png
 clear.png
+font_info_item.png 
+font_no_draw.png
+font_not_found.png
+font_segfault.png
 
 Section Two : License
 =======================

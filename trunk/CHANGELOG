@@ -114,3 +114,13 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 19 Sept
 1. A long day of tidying-up and abstracting the unicode/str stuff.
 2. Gone a long way to a standard error approach. Still have some loose ends.
+
+21 Sept
+1. Adding icons for the various font items that are bad in some way.
+2. Tweaking colours and effects to look better
+3. Trying to get the widths of fitems to fit the middle panel. Kind of working, but not on first run.
+
+22 Sept
+1. Got a workaround for fitem widths going.
+2. Improved the rendering of fitems under various conditions.
+3. Removed fatfont.

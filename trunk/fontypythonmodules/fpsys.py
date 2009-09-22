@@ -33,7 +33,7 @@ import fontcontrol
 
 
 ## Ensure we have a .fontypython folder and a .fonts folder.
-iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i'
+iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
 
 ##  Borrowed from wxglade.py
 ## The reason for this is to find the path of this file
@@ -65,7 +65,6 @@ class Overlaperize(object):
 
 		if key in self.OVERLAP_COUNT_DICT:
 			self.OVERLAP_COUNT_DICT[key] += 1
-			#print "%s UP 1" % key
 		else:
 			self.OVERLAP_COUNT_DICT[key] = 2 #starts at 2 because there is already one installed.
 		#self.report(key)
@@ -80,10 +79,8 @@ class Overlaperize(object):
 
 		if key in self.OVERLAP_COUNT_DICT:
 			self.OVERLAP_COUNT_DICT[key] -= 1
-			#print "%s DOWN 1" % key
 			if self.OVERLAP_COUNT_DICT[key] == 0:
 				del self.OVERLAP_COUNT_DICT[key]
-				#print "KEY %s REMOVED" % key
 				return False # it does NOT overlap anymore.
 			else:
 				#self.report(key)
@@ -97,23 +94,15 @@ class Overlaperize(object):
 
 	def sleep(self):
 		'''Save the OVERLAP_COUNT_DICT to a file (if it has content). Called when app closes.'''
-		#print "SAVING"
 		if self.DISABLE_THIS: return
-
-		#for i in self.OVERLAP_COUNT_DICT:
-			#print "********SAVING:",i, self.OVERLAP_COUNT_DICT[i]
 		
 		if not self.OVERLAP_COUNT_DICT:
 			self.OVERLAP_COUNT_DICT={} # Ensure there is a blank overlap_counts file!
 
 		paf = os.path.join(iPC.appPath(),"overlap_counts")
-		try:
-			fr = open( paf, 'wb' ) # pickle says use 'binary' files, but only Windows makes this distinction. I use it to be safe...
-			pickle.dump( self.OVERLAP_COUNT_DICT, fr, protocol=pickle.HIGHEST_PROTOCOL )
-			fr.close()
-		except:
-			## CORNER CASE
-			raise
+		fr = open( paf, 'wb' ) # pickle says use 'binary' files, but only Windows makes this distinction. I use it to be safe...
+		pickle.dump( self.OVERLAP_COUNT_DICT, fr, protocol=pickle.HIGHEST_PROTOCOL )
+		fr.close()
 	
 	def wakeup(self):
 		'''Restore the OVERLAP_COUNT_DICT from a file (if any). Called as app starts.'''
@@ -121,16 +110,9 @@ class Overlaperize(object):
 
 		paf = os.path.join(iPC.appPath(),"overlap_counts")
 		if os.path.exists( paf ):
-			try:
-				fr = open( paf, "rb" )
-				self.OVERLAP_COUNT_DICT = pickle.load( fr )
-				fr.close()
-			except:
-				## Damn!
-				raise
-		#print "LOADING"
-		#for i in self.OVERLAP_COUNT_DICT:
-			#print "********LOADING:",i, self.OVERLAP_COUNT_DICT[i]
+			fr = open( paf, "rb" )
+			self.OVERLAP_COUNT_DICT = pickle.load( fr )
+			fr.close()
 ## start it up!
 Overlap = Overlaperize()
 Overlap.wakeup()

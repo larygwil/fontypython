@@ -180,7 +180,7 @@ class FontItem( object ):
 					## It WAS in the list! So, we can flag it and get on with life :)
 					#print "SKIPPING:",[self.glyphpaf]
 					self.badfont = True
-					self.badfontmsg = _("Font causes a segfault. Fix or remove it.")
+					self.badfontmsg = _("Font causes a segfault. It cannot be drawn.")
 					self.badstyle = "PIL_SEGFAULT_ERROR"
 					break
 				
