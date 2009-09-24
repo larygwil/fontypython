@@ -95,7 +95,9 @@ class FontViewPanel(wx.Panel):
 		## Main Label on top
 		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL) 
 		self.textMainInfo = wx.StaticText(self, -1, " ") 
-		self.textMainInfo.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD))
+		self.infoFont = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.textMainInfo.SetFont(self.infoFont)
+		self.widthOfInfo = None
 		sizerMainLabel.Add(self.textMainInfo,1,wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT) 
 		
 		## Page choice and Filter controls
@@ -176,6 +178,33 @@ class FontViewPanel(wx.Panel):
 		ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
 		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
 		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
+
+
+		#wx.EVT_PAINT(self, self.OnPaint)
+		
+	def OnPaint(self, event):
+		pdc = wx.PaintDC(self)
+		try:
+			dc = wx.GCDC(pdc)
+		except:
+			dc = pdc
+		backColour = self.GetBackgroundColour()
+		backBrush = wx.Brush('red', wx.SOLID)
+		dc.SetBackground(backBrush)
+		dc.Clear()
+
+		w=(self.widthOfInfo or 100) + 50
+		rect = wx.Rect(0,0, w, 100)
+		
+		#penclr   = wx.Colour(255, 255, 255, wx.ALPHA_OPAQUE)
+		penclr   = wx.Colour(0, 0, 0, wx.ALPHA_OPAQUE)
+		brushclr = wx.Colour(255, 255, 255, 255)  
+		dc.SetPen(wx.Pen(penclr))
+		dc.SetBrush(wx.Brush(brushclr))
+		rect.SetPosition( (0,0) )
+		dc.DrawRoundedRectangleRect(rect, 4)
+
+		print "PAINT:",w
 
 	def getWidthOfMiddle( self ):
 		if self.firstrun:
@@ -548,7 +577,9 @@ class FontViewPanel(wx.Panel):
 		
 
 		self.buttMainLastLabel=btext
-		self.textMainInfo.SetLabel(lab)
+		self.textMainInfo.SetLabel( " %s" % lab)
+		## Calc the width of that text:
+		#self.widthOfInfo = wx.PaintDC(self).GetFullTextExtent(lab,self.infoFont)[0]
 		self.textMainInfo.Show()
 		if status is not "":
 			ps.pub(print_to_status_bar, status)

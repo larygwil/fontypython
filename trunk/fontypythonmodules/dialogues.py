@@ -47,7 +47,7 @@ class DialogHelp(wx.Dialog):
 		self.Bind(wx.EVT_MENU, self.Escape, id=ID_ESC)
 		
 		dbox = wx.BoxSizer(wx.VERTICAL)
-		btn = wx.Button(self, wx.ID_OK)
+		btn = wx.Button(self, wx.ID_CANCEL)
 		btn.SetDefault()
 		win = TestHtmlPanel(self, size = kwds["size"]) 
 		dbox.Add(win, 1, wx.EXPAND)
@@ -65,8 +65,16 @@ class TestHtmlPanel(wx.Panel):
 	def __init__(self, parent, size):
 		wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
 		self.html = MyHtmlWindow(self, -1, size)
-		self.box = wx.BoxSizer(wx.HORIZONTAL)
+		self.box = wx.BoxSizer(wx.VERTICAL)
 		self.box.Add(self.html, 1, wx.GROW)
+
+		#A BACK button. I used internal 'top' links instead
+		#subbox = wx.BoxSizer(wx.HORIZONTAL)
+		#btn = wx.Button(self, wx.ID_BACKWARD)
+		#self.Bind(wx.EVT_BUTTON ,self.OnBack, btn)
+		#subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
+		#self.box.Add(subbox, 0, wx.GROW)
+
 		self.SetSizer(self.box)
 		self.SetAutoLayout(True)
 		
@@ -78,7 +86,8 @@ class TestHtmlPanel(wx.Panel):
 		self.html.LoadPage( helppaf )
 
 		self.box.Fit(self)
-
+	#def OnBack( self, e ):
+		#self.html.HistoryBack()
 
 class MyHtmlWindow(html.HtmlWindow):
 	def __init__(self, parent, id, size):
@@ -341,6 +350,9 @@ class DialogCheckFonts( wx.Dialog ):
 		size=(200,-1), style = wx.TE_MULTILINE | wx.TE_READONLY )
 		rightsz.Add(self.output,1,wx.EXPAND | wx.ALL)
 
+		## Because I want a CLOSE button -- I have to do all the button
+		## stuff manually. StdDialogButtonSizer only provides certain buttons
+		## that are not appropriate for this form.
 		bsz = wx.BoxSizer(wx.HORIZONTAL)
 		self.btn = wx.Button(self, wx.ID_CLOSE)
 		self.btn.SetDefault()

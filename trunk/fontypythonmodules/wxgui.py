@@ -37,8 +37,6 @@ import dialogues
 ## DND: NB--Comments that have DND: in them mean DO NOT DELETE. They are used by me via grep on the cli.
 
 
-#from gui_PogChooser import *
-
 from gui_Left import *
 from gui_Middle import *
 from gui_Right import *
