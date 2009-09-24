@@ -16,6 +16,7 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
+import wx.lib.stattext
 
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
@@ -94,11 +95,8 @@ class FontViewPanel(wx.Panel):
 
 		## Main Label on top
 		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL) 
-		self.textMainInfo = wx.StaticText(self, -1, " ") 
-		self.infoFont = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
-		self.textMainInfo.SetFont(self.infoFont)
-		self.widthOfInfo = None
-		sizerMainLabel.Add(self.textMainInfo,1,wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT) 
+		self.textMainInfo = MyLabel(self)
+		sizerMainLabel.Add(self.textMainInfo,1,wx.ALIGN_LEFT)
 		
 		## Page choice and Filter controls
 		sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
@@ -153,7 +151,7 @@ class FontViewPanel(wx.Panel):
 		## Now the sizer to hold all the fontview controls
 		self.sizerFontView = wx.BoxSizer( wx.VERTICAL )
 		## The Main label
-		self.sizerFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 5 )
+		self.sizerFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.BOTTOM, border = 0 )
 		## The font view
 		self.sizerFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
 
@@ -178,33 +176,6 @@ class FontViewPanel(wx.Panel):
 		ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
 		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
 		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
-
-
-		#wx.EVT_PAINT(self, self.OnPaint)
-		
-	def OnPaint(self, event):
-		pdc = wx.PaintDC(self)
-		try:
-			dc = wx.GCDC(pdc)
-		except:
-			dc = pdc
-		backColour = self.GetBackgroundColour()
-		backBrush = wx.Brush('red', wx.SOLID)
-		dc.SetBackground(backBrush)
-		dc.Clear()
-
-		w=(self.widthOfInfo or 100) + 50
-		rect = wx.Rect(0,0, w, 100)
-		
-		#penclr   = wx.Colour(255, 255, 255, wx.ALPHA_OPAQUE)
-		penclr   = wx.Colour(0, 0, 0, wx.ALPHA_OPAQUE)
-		brushclr = wx.Colour(255, 255, 255, 255)  
-		dc.SetPen(wx.Pen(penclr))
-		dc.SetBrush(wx.Brush(brushclr))
-		rect.SetPosition( (0,0) )
-		dc.DrawRoundedRectangleRect(rect, 4)
-
-		print "PAINT:",w
 
 	def getWidthOfMiddle( self ):
 		if self.firstrun:
@@ -575,11 +546,8 @@ class FontViewPanel(wx.Panel):
 			if not fpsys.state.viewobject.isInstalled():
 				ps.pub( toggle_purge_menu_item, True )
 		
-
 		self.buttMainLastLabel=btext
-		self.textMainInfo.SetLabel( " %s" % lab)
-		## Calc the width of that text:
-		#self.widthOfInfo = wx.PaintDC(self).GetFullTextExtent(lab,self.infoFont)[0]
+		self.textMainInfo.SetLabel( lab)
 		self.textMainInfo.Show()
 		if status is not "":
 			ps.pub(print_to_status_bar, status)
@@ -591,4 +559,54 @@ class FontViewPanel(wx.Panel):
 
 	def ResetToPageOne(self):
 		self.pageindex = 1 # I start here
+
+class MyLabel( wx.lib.stattext.GenStaticText ):
+	"""
+	To spice-up the info label I made this control. It draws a shape behind the text.
+	Thanks to Andrea: http://wiki.wxpython.org/CreatingCustomControls
+	"""
+	def __init__(self, parent):
+		self.lab = u" " 
+		self.infoFont = wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_NORMAL)#BOLD)
+		self.back = self.bord = wx.Colour(255, 255, 255, wx.ALPHA_OPAQUE)
+		# call parent init after vital settings are done.
+		wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
+		self.backColour = self.GetBackgroundColour()
+		self.Bind(wx.EVT_PAINT, self.OnPaint)
+	def SetLabel( self, lab ):
+		self.lab=lab
+		self.Refresh()
+	def DoGetBestSize(self):
+		bestw,besth = self.MySize()
+		besth += 5
+		best = wx.Size(bestw,besth)
+		self.CacheBestSize(best)
+		return best
+	def MySize(self):
+		dc = wx.ClientDC(self)
+		dc.SetFont(self.infoFont)
+		s=dc.GetTextExtent(self.lab) or (100,100)
+		return s
+	def OnPaint(self, event):
+		pdc = wx.PaintDC(self)
+		try:
+			dc = wx.GCDC(pdc)
+		except:
+			dc = pdc
+		backBrush = wx.Brush(self.backColour, wx.SOLID)
+		dc.SetBackground(backBrush)
+		dc.Clear()
+		# I have a dc, may as well use it:
+		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 50
+
+		#Now draw the thing:
+		rect = wx.Rect(0,0, w, 100)
+		
+		dc.SetPen(wx.Pen(self.bord))
+		dc.SetBrush(wx.Brush(self.back))
+		rect.SetPosition( (0,0) )
+		dc.DrawRoundedRectangleRect(rect, 4)
+
+		dc.SetFont(self.infoFont) 
+		dc.DrawText(self.lab, 10,5)
 
