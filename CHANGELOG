@@ -127,3 +127,10 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 
 22 Sept
 1. Changed button on Check fonts form to 'Close' -- makes more sense now.
+
+24 Sept
+1. Major update of help file and graphics.
+2. Trying to fancy-up the info label in the font-view. So far no luck.
+
+
+

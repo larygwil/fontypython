@@ -25,7 +25,8 @@ from pubsub import *
 from wxgui import ps
 
 ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
-
+black=(0,0,0)
+white=(255,255,255)
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	"""
 	This class is a bitmap of a TTF font - it detects a click and 
@@ -37,63 +38,63 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			'FILE_NOT_FOUND':
 				{
 					'backcol': (255,214,57),
-					'fcol'   : (0,0,0),
-					'bcol'   : (255,255,255),
+					'fcol'   : black,
+					'bcol'   : white,
 					'icon'	 : "NOT_FOUND",
 					'fx'	 : {'step':0.02, 'range':0.6}
 					},
 			'PIL_SEGFAULT_ERROR':
 				{
 					'backcol': (183,200,190),
-					'fcol'   : (0,0,0),
-					'bcol'   : (255,255,255),
+					'fcol'   : black,
+					'bcol'   : white,
 					'icon'	 : "SEGFAULT" ,
 					'fx'	 : {'step':0.02, 'range':0.4}
 					},
 			'PIL_IO_ERROR':
 				{
 					'backcol': ndc,
-					'fcol'   : (0,0,0),
-					'bcol'   : (255,255,255),
+					'fcol'   : black,
+					'bcol'   : white,
 					'icon'	 : "NO_DRAW",
 					'fx'	 : {'step':0.02, 'range':0.4}
 					},
 			'PIL_UNICODE_ERROR':
 				{
 					'backcol': ndc,
-					'fcol'   : (0,0,0),
-					'bcol'   : (255,255,255),
+					'fcol'   : black,
+					'bcol'   : white,
 					'icon'	 : "NO_DRAW",
 					'fx'	 : {'step':0.02, 'range':0.4}
 					},
 			'PIL_CANNOT_RENDER':
 				{
 					'backcol': ndc,
-					'fcol'   : (0,0,0),
-					'bcol'   : (255,255,255),
+					'fcol'   : black,
+					'bcol'   : white,
 					'icon'	 : "NO_DRAW",
 					'fx'	 : {'step':0.02, 'range':0.4}
 					},
 			'ACTIVE':
 				{
-					'backcol': (255,255,255),
-					'fcol'   : (0,0,0),
+					'backcol': white,
+					'fcol'   : black,
 					'bcol'   : (200,200,200),
 					'icon'	 : None,
 					'fx'	 : {'step':0.01, 'range':0.8}
 				},
 			'INACTIVE':
 				{
-					'backcol': (255,255,255),
+					'backcol': white,
 					'fcol'   : (128,128,128), 
-					'bcol'   : (255,255,255),
+					'bcol'   : white,
 					'icon'	 : None,
 					'fx'	 : {'step':0.01, 'range':0.8}
 				},
 			'INFO_FONT_ITEM':
 				{
-					'backcol': (255,255,255),
-					'fcol'   : (0,0,0),
+					'backcol': white,
+					'fcol'   : black,
 					'icon'	 : "INFO_ITEM",
 					'fx'	 : {'step':0.01, 'range':0.9}
 				}
@@ -235,7 +236,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## It's *not* a badfont
 		else:
 			## Make one big bitmap to house one or more faces (subfaces)
-			memDc=self.makeBlankDC( maxwidth, totheight, (255,255,255) )
+			memDc=self.makeBlankDC( maxwidth, totheight, white )
 			fcol = self.style['fcol']
 			bcol = self.style['bcol']		
 
@@ -300,7 +301,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				memDc.DrawBitmap(self.TICKMAP, 20, 5, True)
 			
 		## Now a dividing line
-		memDc.SetPen( wx.Pen( (0,0,0), 2 ) ) 
+		memDc.SetPen( wx.Pen( black, 2 ) ) 
 		memDc.SetBrush( wx.TRANSPARENT_BRUSH ) 
 		memDc.DrawLine( 0, self.height-1, maxwidth, self.height-1 )
 
