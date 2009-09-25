@@ -566,47 +566,52 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 	Thanks to Andrea: http://wiki.wxpython.org/CreatingCustomControls
 	"""
 	def __init__(self, parent):
+		self.FVP = parent
 		self.lab = u" " 
 		self.infoFont = wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_NORMAL)#BOLD)
 		self.back = self.bord = wx.Colour(255, 255, 255, wx.ALPHA_OPAQUE)
+		self.h=100
 		# call parent init after vital settings are done.
 		wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
-		self.backColour = self.GetBackgroundColour()
 		self.Bind(wx.EVT_PAINT, self.OnPaint)
 	def SetLabel( self, lab ):
 		self.lab=lab
 		self.Refresh()
 	def DoGetBestSize(self):
-		bestw,besth = self.MySize()
-		besth += 5
-		best = wx.Size(bestw,besth)
-		self.CacheBestSize(best)
-		return best
-	def MySize(self):
 		dc = wx.ClientDC(self)
 		dc.SetFont(self.infoFont)
-		s=dc.GetTextExtent(self.lab) or (100,100)
-		return s
+		bestw,besth = dc.GetTextExtent(self.lab) or (100,100)
+		besth += 8
+		best = wx.Size(bestw,besth)
+		self.CacheBestSize(best)
+		self.h=besth
+		return best
 	def OnPaint(self, event):
 		pdc = wx.PaintDC(self)
 		try:
 			dc = wx.GCDC(pdc)
 		except:
 			dc = pdc
-		backBrush = wx.Brush(self.backColour, wx.SOLID)
-		dc.SetBackground(backBrush)
-		dc.Clear()
 		# I have a dc, may as well use it:
 		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 50
 
 		#Now draw the thing:
-		rect = wx.Rect(0,0, w, 100)
+		rect = wx.Rect(0,0, w, self.h + 10)
 		
 		dc.SetPen(wx.Pen(self.bord))
 		dc.SetBrush(wx.Brush(self.back))
-		rect.SetPosition( (0,0) )
-		dc.DrawRoundedRectangleRect(rect, 4)
 
+		rect.SetPosition( (0,0) )
+		dc.DrawRoundedRectangleRect(rect, 5)
+		
+		#The gradient under the text
+		dc.GradientFillLinear( wx.Rect(0, self.h-15, w, self.h-1), (128,128,128,255), (255,255,255,0), nDirection=wx.NORTH )
+
+		# The text
 		dc.SetFont(self.infoFont) 
 		dc.DrawText(self.lab, 10,5)
 
+		# The faded underline
+		w2=self.FVP.getWidthOfMiddle() - 20
+		w = w2 if w2 > w else w+20
+		dc.GradientFillLinear( wx.Rect(0, self.h-1, w, self.h-1), (0,0,0,255), (0,0,0,0) )
