@@ -220,7 +220,7 @@ class FontItem( object ):
 				pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))#(255,255,255,255)) 
 				
 				if self.inactive:
-					col = (0,0,0,96) #alpha 96 makes it gray
+					col = (0,0,0,64) #alpha makes it gray
 				else:
 					col = (0,0,0,255)
 				

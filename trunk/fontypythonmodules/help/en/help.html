@@ -22,13 +22,13 @@
 		<p>You visually gather fonts into <b>"Pogs"</b>. You then install the Pog, and all its fonts will be available to other apps. When you finish your work, uninstall the Pog.</p>
 		<p>I just tumbled onto the	word "Pog", it comes from the middle of "typography". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.</p>
 		<p>Your fonts never move from where they live, neither are copies made; <i>only links to the original files are used</i> to install the fonts into your home <i>.fonts</i> directory.</p>
-		<p>For example, you might have a Pog called "logoZoo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you need to work with them, you simply install the "logoZoo" Pog and start your design app. All those fonts will now appear in Inkscape or The Gimp, and other apps. Do your work as normal, and forget about fonts. When you are done designing, you uninstall "logoZoo" and all those fonts go away. The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.</p>
-		<p>Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/remove pogs without having to start the entire gui, which is neat.</p>
+		<p>For example, you might have a Pog called "Zoo Logo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you need to work with them, you simply install the "Zoo Logo" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp and other apps. Do your work as normal, and forget about fonts. When you are done designing, you uninstall "Zoo Logo" and all those fonts go away. (The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.)</p>
+		<p>Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.</p>
 		<h3><font color="#758B94">Home dot fonts</font></h3>
 		<p>In your home directory there is a hidden directory named ".fonts". The dot makes it hidden. In there you will find font files of various kinds. Whatever is listed in that directory is a font that your system can use. It's not as simple as this because on GNU/Linux there are other places where fonts are also installed, but it's a handy place to work. You should never need to go into this directory so there's no reason to worry about it.</p>
 		<h3><font color="#758B94">Latest News</font></h3>
 		<ol>	
-			<li>(Sept 2009) You can now zip pog(s). This puts all those fonts into a zip file for convenient distribution.</li>
+			<li>(Sept 2009) You can now zip Pog(s). This puts all those fonts into a zip file for convenient distribution.</li>
 			<li>(June 2009) There is an "Include sub-folders" check box now. See also the command-line option "-A"</li>
 			<li>(June 2009) New keyboard shortcuts. Ctrl+LeftArrow and Ctrl+RightArrow will step through your fonts.</li>
 			<li>(June 2009) Multiple Pog selection. Remove, Install or Uninstall many Pogs at once.</li>
@@ -102,7 +102,7 @@
 				<ul>
 					<li>You cannot use an installed Pog as a target.</li>
 					<li>You choose a target Pog by clicking one (on the right).</li>
-					<li>By holding <i>ctrl</i> you can select many pogs at once.</li>
+					<li>By holding <i>Ctrl</i> you can select many Pogs at once.</li>
 					<li>The "Clear Selection" button will clear your entire selection.</li>
 				</ul>
 			</td>
@@ -181,8 +181,8 @@
 		<ul>
 			<li>Open and edit them in any text editor.</li>
 			<li>Append fonts to the end of them, just include the entire path and the font name.<strong>Note for Type1 fonts:</strong>Only include the PFA/B file types, not the various metric files that follow them.</li>
-			<li>If your paths change (say you renamed your folders, or re-installed your O/S) then you can use search/replace to update all the paths to all the fonts in your pogs. You could do this from the command-line using Gnu tools, but any text editor will help you here too.</li>
-			<li>You can backup your pogs by simply copying them to another folder.</li>
+			<li>If your paths change (say you renamed your folders, or re-installed your O/S) then you can use search/replace to update all the paths to all the fonts in your Pogs. You could do this from the command-line using GNU tools, but any text editor will help you here too.</li>
+			<li>You can backup your Pogs by simply copying them to another folder.</li>
 			<li>One last trick, for those proficient with the Gnu tools, you can do things like this:<pre>find /home/you/somepath/TTFS/F -iname "Fu*" >> Futura.Pog</pre></li>
 		</ul>
 	</li>
@@ -205,7 +205,7 @@
 		(Replace the last two letters with your own language code.)</li>
 
 		<li><strong>ENCODING TIP:</strong><br/>Check your LANG variable. Open a console and type: <pre>echo $LANG</pre><br/>
-	If it reports "C" or "POSIX" or it's blank then you will be running under ANSI (ASCII) encoding only. This means that unusually named fonts and pogs will likely be invisible to you, function badly, or cause errors. I am putting out fires as fast as I can, but these bugs are hard to find.<br/>
+	If it reports "C" or "POSIX" or it's blank then you will be running under ANSI (ASCII) encoding only. This means that unusually named fonts and Pogs will likely be invisible to you, function badly, or cause errors. I am putting out fires as fast as I can, but these bugs are hard to find.<br/>
 	To see what other encodings you could be using, type:<pre>locale -a</pre><br/>
 	You should see a list of locales. If you see one ending in utf8 that looks like it fits your language, then change your system to use it. You should do this via your system-settings gui, but you can do it temporarily like this:
 	<pre>LANG=xx_YY.encoding</pre> Where xx_YY and encoding are replaced by you. After that, start Fonty again.
@@ -223,7 +223,7 @@
 	   <li><strong>Fatal crashes and Dangerous Fonts:</strong> Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window should appear and tell you which font is to blame. You should <em>move</em> that font <em>entirely</em> away from where it is. Start Fonty again to resume. If you are stuck, go into your .fontypython folder and open the file named 'lastFontBeforeSegfault', that will be the culprit!</li>
 	   <li><strong>Check Fonts:</strong> I've added a new tool to the Tools menu that will let you choose a folder (and it will go through all the sub-folders too) of fonts for checking. Any fonts that are likely to kill Fonty will be recorded in your ~/.fontypython folder in a file named 'segfonts'. After you do this, you can visit those folders in Fonty and it will display those fonts in yellow. <strong>If you find that Fonty is crashing too often</strong>, then use this tool!<br><font size=-1>There is also a command line to the same tool (fontypython -c /some/folder). Please check the command-line help.</font></li>
 	   <li>If you get errors post a report on <strong><a href="https://savannah.nongnu.org/bugs/?group=fontypython">https://savannah.nongnu.org/bugs/?group=fontypython</a></strong>. Please run Fonty from the command line so that you can copy the error displayed (if any).</li>
-	   <li>When Fonty starts-up it checks your Pog files (in your home folder under .fontypython). If there are any pogs that cannot be read for whatever reason, then they are renamed to .badpog. You should go in there and do some sleuthing.</li>
+	   <li>When Fonty starts-up it checks your Pog files (in your home folder under .fontypython). If there are any Pogs that cannot be read for whatever reason, then they are renamed to .badpog. You should go in there and do some sleuthing.</li>
 	   <li>As Fonty reads font files here and there, it keeps a list of the fonts it could not open. It's in the .fontypython folder. Open "badfiles" in a text editor if you want to see them.</li>
 	</ul>
 	</li>

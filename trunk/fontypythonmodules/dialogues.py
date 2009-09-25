@@ -58,6 +58,10 @@ class DialogHelp(wx.Dialog):
 		#dbox.Fit(self)
 		#self.Layout()
 		win.SetFocus()# magically enables ESC key too! Go figure :)
+		self.SetTitle(_("Fonty Python Help! Help! I'm being oppressed!"))
+		_icon = wx.EmptyIcon()
+		_icon.CopyFromBitmap(wx.Bitmap(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_ANY))
+		self.SetIcon(_icon)
 	def Escape(self, event):
 		self.Close()
 
