@@ -18,7 +18,7 @@
 import wx
 import colorsys
 
-import wx.lib.statbmp
+import wx.lib.statbmp 
 import fontcontrol
 import fpsys # Global objects
 from pubsub import *
@@ -90,18 +90,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					'fcol'   : black,
 					'icon'	 : "INFO_ITEM",
 				}
-
 			}
 
 	def __init__( self, parent, pos, fitem ) :
 		self.name = fitem.name
 		
 		self.fitem = fitem
-		self.parent = parent
+		#self.parent = parent
 
 		Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
-		self.FVP = self.parent.parent #The Font View Panel
-		self.TICKMAP =  self.FVP.TICKMAP 
+		self.FVP = parent.parent #The Font View Panel
+		self.TICKMAP = parent.parent.TICKMAP 
 
 		self.height =  0
 	
@@ -111,6 +110,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## I based this on my preference. Some ttfs had these crazy heights
 		## and would shoot off the page. So, I nixed that.
 		self.maxHeight = int( fpsys.config.points * 1.55 )
+
+		# Some values for drawing
 		self.minHeight = 70
 		self.spacer = 35 # Gap below each font bitmap
 		self.gradientheight = 50
@@ -121,7 +122,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
 	   
 		## Do mystical voodoo that I can't remember from 2006.
-		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self,parent, -1, self.bitmap, pos, sz)
+		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
 		
 
 		## Very cool event, gives us life!
@@ -147,12 +148,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	@property # Cool.  I refer to blah.width and didn't want to alter them to blah.width(). This fixes that.
 	def width(self):
 		return self.FVP.getWidthOfMiddle()
-
-	#def DoGetBestSize(self): #This does not get run at all
-		#print "getsize"
-		#best = wx.Size(self.width,self,height)
-		#self.CacheBestSize(best)
-		#return best
 
 	def onPaint(self, event):
 		"""
@@ -218,8 +213,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## BADFONT cases
 		##  Badfonts are still available for installation, it's just that I can't
 		##  display their glyph or fam/style info (until PIL is patched).
-		##
-		## NB: FILE_NOT_FOUND is not available for installation!
 		
 		self.setStyle() #Go set the self.style
 
@@ -236,6 +229,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			memDc=self.makeBlankDC( maxwidth, totheight, white )
 			fcol = self.style['fcol']
 			bcol = self.style['bcol']		
+			#Draw the gradient. The fonts will render in alpha over that.
 			self.bottomFadeEffect( memDc, totheight, maxwidth )
 			y = i = 0
 			for pilimage, glyphHeight, pilwidth in pilList:
@@ -292,6 +286,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			memDc.DrawText( self.fitem.activeInactiveMsg, 10, self.height-20 )
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
+		## NB: FILE_NOT_FOUND is not available for installation!
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
 			if self.fitem.ticked:
 				memDc.DrawBitmap(self.TICKMAP, 20, 5, True)
