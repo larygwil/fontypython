@@ -216,14 +216,13 @@ class FontItem( object ):
 				pilheight = int(h)
 				pilwidth = int(w)
 				pilheight = min( pilheight, maxHeight )
-				pilimage = Image.new("RGB", (pilwidth, pilheight), (255,255,255)) 
+				## Sept 2009 : Fiddled this to produce alpha (ish) images.
+				pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))#(255,255,255,255)) 
 				
 				if self.inactive:
-					col = (230, 230, 230) 
+					col = (0,0,0,96) #alpha 96 makes it gray
 				else:
-					col = 0
-					
-				## text = os.path.basename(self.glyphpaf)
+					col = (0,0,0,255)
 				
 				## Well, I have since discovered that some fonts
 				## cause a MemoryError on the next command:

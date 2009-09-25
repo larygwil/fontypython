@@ -573,6 +573,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		self.h=100
 		# call parent init after vital settings are done.
 		wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
+		self.backcolour = (128,128,128,255) #self.GetBackgroundColour()
 		self.Bind(wx.EVT_PAINT, self.OnPaint)
 	def SetLabel( self, lab ):
 		self.lab=lab
@@ -605,7 +606,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		dc.DrawRoundedRectangleRect(rect, 5)
 		
 		#The gradient under the text
-		dc.GradientFillLinear( wx.Rect(0, self.h-15, w, self.h-1), (128,128,128,255), (255,255,255,0), nDirection=wx.NORTH )
+		dc.GradientFillLinear( wx.Rect(0, self.h-15, w, self.h-1), self.backcolour, (255,255,255,0), nDirection=wx.NORTH )
 
 		# The text
 		dc.SetFont(self.infoFont) 
