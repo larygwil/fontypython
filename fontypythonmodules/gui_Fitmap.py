@@ -282,8 +282,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		## Special message
 		if self.fitem.inactive:
+			mx,my=(10,self.height-20) if self.fitem.badfont else (10,self.height-26)
+			
+			#memDc.SetBrush(wx.Brush( (255,255,0),wx.SOLID ))#wx.TRANSPARENT_BRUSH)
+			#memDc.SetPen(wx.Pen( (200,200,200),1 ))
+			#memDc.DrawRectangle(mx, my, 200,20)
+
+			memDc.SetTextForeground( black )
 			memDc.SetFont( wx.Font(11,family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
-			memDc.DrawText( self.fitem.activeInactiveMsg, 10, self.height-20 )
+			memDc.DrawText( self.fitem.activeInactiveMsg, mx, my )
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
@@ -307,8 +314,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				# Dim the colour of the badfont to match look of other inactive fitems
 				bg=self.style['backcol']
 				hsv=self.rgb_to_hsv(bg)
-				sat=self.clamp(hsv[1]/2.0)
-				bright=self.clamp(hsv[2]*4.0)
+				sat=self.clamp(hsv[1]/2.5)
+				bright=self.clamp(hsv[2]*5.0)
 				nbg=self.hsv_to_rgb((hsv[0],sat,bright))
 				self.style['backcol'] = nbg
 			return
@@ -361,10 +368,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		It goes from backcol and darkens it a little as it draws downwards.
 		"""
 
-		if self.fitem.inactive: step=1.08 #inactive fonts get a lighter colour.
+		if self.fitem.inactive: 
+			return
+			#step=1.08 #inactive fonts get a lighter colour.
 		
 		col = self.style["backcol"] #from
-		hsv = self.rgb_to_hsv(col) 
+		hsv = self.rgb_to_hsv(col)
 		tob=self.hsv_to_rgb((hsv[0],hsv[1],hsv[2]/step)) #to a darker brightness.
 		sy=height-self.gradientheight
 		rect=wx.Rect(0, sy, width, self.gradientheight)
@@ -390,7 +399,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		memDc.SetTextForeground( self.style['fcol'])
 		
 		memDc.SetFont( wx.Font(12, family=wx.SWISS, style=wx.NORMAL, weight=wx.BOLD))
-		tx,ty = (46,15) if isinfo else (32 ,15)
+		tx,ty = (46,15) if isinfo else (33 ,13)
 		memDc.DrawText( textTup[0], tx, ty)
 		
 		memDc.SetFont( wx.Font(7, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
