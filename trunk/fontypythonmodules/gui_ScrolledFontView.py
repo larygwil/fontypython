@@ -39,13 +39,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		
 		self.fitmaps = []
 		self.parent = parent
-	
-		#self.lastViewList=None
-
-		## Whitebrush is really whatever the default colour is.
-		#self.whitebrush = wx.Brush(self.parent.GetBackgroundColour(),wx.SOLID)
-		self.whitebrush = wx.Brush((255,0,0),wx.SOLID)
-				
+		
 		## At least this one works.
 		self.wheelValue = fpsys.config.points
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
@@ -97,7 +91,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			firstRunSizeFlag = True
 			self.width = 1024 # I cannot get a sensible value for 1st run.
 		else:
-			## Prevent deprecation warning: Nt needed in vers 0.4 as we use 2.8 wxPython
+			## Prevent deprecation warning: Not needed in vers 0.4 as we use 2.8 wxPython
 			#try:
 			self.width = self.DoGetSize()[0] - sbwidth  # 2.8 onwards, I hope.
 			#except:
@@ -127,7 +121,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			for fitem in viewobject:
 				## Create a Fitmap out of the FontItem we have at hand.
 				fm = Fitmap( self, (0,0),fitem)# i * h), fitem )
-				fm.SetFont (wx.Font (60, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
 				self.fitmaps.append(fm) 
 				self.mySizer.Add(fm, 0, wx.GROW) 
 

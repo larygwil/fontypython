@@ -133,3 +133,7 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 2. Trying to fancy-up the info label in the font-view. So far no luck.
 3. Got the label going! Made a custom control.
 
+25 Sept
+1. Improved the drawing of fitmaps and gradients. Still have some precalcing of colours to do.
+2. Tweaked the images and icons.
+
