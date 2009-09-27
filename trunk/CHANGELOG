@@ -142,3 +142,5 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 
 27 Sept
 More gui polishing done.
+Strings changed -- PO files will be broken :(
+

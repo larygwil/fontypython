@@ -75,7 +75,7 @@ class FontViewPanel(wx.Panel):
 	as well as the buttons etc. below and the text above.
 	"""
 	def __init__(self, parent):
-		wx.Panel.__init__(self, parent, id = -1)#,style=wx.SUNKEN_BORDER)
+		wx.Panel.__init__(self, parent, id = -1)
 		self.firstrun = True
 
 		self.pageindex = 1 # I start here
@@ -326,7 +326,7 @@ class FontViewPanel(wx.Panel):
 				if not bug:
 					ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
 				else:
-					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done"))
+					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done."))
 		
 		## APPEND - Copy font to a pog.
 		if fpsys.state.action == "APPEND":
@@ -454,7 +454,7 @@ class FontViewPanel(wx.Panel):
 		if Vpatt == "E": #NOTE : TESTING VPATT, not PATT - ergo: this covers E, EN, EP
 			## Empty "E" - when the chosen Folder or Pog has NO FONTS IN IT.
 			if Tpatt == "P":
-				lab = _("Your active Target Pog is:%s") % T.name
+				lab = _("Your active Target is %s") % T.name
 				status = _("Please choose a Source.")
 			else:
 				lab = _("There are no fonts in here.")
@@ -465,7 +465,7 @@ class FontViewPanel(wx.Panel):
 			
 		elif Patt == "FN":
 			#View a Folder, no target
-			lab = _("Viewing Folder:%s") % V.label()
+			lab = _("Viewing Folder %s") % V.label()
 			fpsys.state.cantick = False
 			btext = _("Nothing to do")
 			fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
@@ -474,13 +474,13 @@ class FontViewPanel(wx.Panel):
 			#View a pog, no target
 			if V.isInstalled():
 				## Cannot remove fonts from an installed pog
-				lab = _("Viewing (installed) Pog: %s") % V.name
+				lab = _("Viewing (installed Pog)  %s") % V.name
 				btext = _("Nothing to do")
 				fpsys.state.action = "NOTHING_TO_DO"
 				fpsys.state.cantick = False
 				status = _("You cannot change an installed Pog.")
 			else:
-				lab = _("Viewing (editable) Pog: %s") % V.name
+				lab = _("Viewing (editable Pog)  %s") % V.name
 				fpsys.state.cantick = True
 				btext = _("Remove fonts from %s") % V.name
 				self.TICKMAP = self.CROSS
@@ -490,13 +490,13 @@ class FontViewPanel(wx.Panel):
 			#Folder to Pog
 			if T.isInstalled():
 				## We cannot put stuff into an installed pog
-				lab = _("Viewing Folder:%s") % V.label()
+				lab = _("Viewing Folder %s") % V.label()
 				btext = _("Nothing to do")
 				fpsys.state.action = "NOTHING_TO_DO"
 				fpsys.state.cantick = False
 				status = _("You cannot change an installed Pog.")
 			else:
-				lab = _("Append From: %(source)s To:%(target)s") % { "source":V.label(), "target":T.name }
+				lab = _("Append from %(source)s to %(target)s") % { "source":V.label(), "target":T.name }
 				btext = _("Put fonts into %s") % T.name
 				self.TICKMAP = self.TICK
 				fpsys.state.cantick = True
@@ -506,7 +506,7 @@ class FontViewPanel(wx.Panel):
 			#Pog to Pog
 			if T.isInstalled():
 				## We cannot put fonts into an installed pog
-				lab = _("Viewing Pog:%(source)s, but Pog:%(target)s is installed.") % {"source":V.name, "target":T.name}
+				lab = _("Viewing %(source)s, but Pog %(target)s is installed.") % {"source":V.name, "target":T.name}
 				btext = _("Nothing to do")
 				fpsys.state.action = "NOTHING_TO_DO"
 				fpsys.state.cantick = False
@@ -520,7 +520,7 @@ class FontViewPanel(wx.Panel):
 					fpsys.state.action = "NOTHING_TO_DO"
 					status = _("Your Source and Target are the same Pog.")
 				else: # Normal pog to pog
-					lab = _("Append from Pog:%(source)s into Pog:%(target)s") % {"source":V.name, "target":T.name}
+					lab = _("Append from %(source)s into %(target)s") % {"source":V.name, "target":T.name}
 					btext = _("Put fonts into %s") % T.name
 					self.TICKMAP = self.TICK
 					fpsys.state.cantick = True	 
@@ -599,7 +599,6 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		dc.DrawRoundedRectangleRect(rect, 5)
 		
 		#The gradient under the text
-		#dc.GradientFillLinear( wx.Rect(0, self.h-15, w, self.h-1), self.back, (255,255,255,0), nDirection=wx.NORTH )
 		dc.GradientFillLinear( wx.Rect(2, self.h-15, w-3, self.h-2), self.light, self.back, nDirection=wx.NORTH )
 
 		# The text
@@ -608,7 +607,3 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 
 		dc.DrawBitmap( self.VIEWICON, 6,5, True)
 
-		# The faded underline
-		#w2=self.FVP.getWidthOfMiddle() - 20
-		#w = w2 if w2 > w else w+20
-		#dc.GradientFillLinear( wx.Rect(0, self.h-1, w, self.h-1), (0,0,0,255), (0,0,0,0) )
