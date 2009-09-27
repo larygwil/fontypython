@@ -101,7 +101,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
 		self.FVP = parent.parent #The Font View Panel
 		self.TICKMAP = parent.parent.TICKMAP 
-
+		self.TICKSMALL = parent.parent.TICKSMALL
 		self.height =  0
 	
 		self.style = {} #Temporary space for style of fitem while drawing. It's a copy of one key from Fitem.styles
@@ -282,11 +282,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		## Special message
 		if self.fitem.inactive:
-			mx,my=(10,self.height-20) if self.fitem.badfont else (10,self.height-26)
+			mx,my=(27,self.height-20) if self.fitem.badfont else (27,self.height-26)
 			
 			#memDc.SetBrush(wx.Brush( (255,255,0),wx.SOLID ))#wx.TRANSPARENT_BRUSH)
 			#memDc.SetPen(wx.Pen( (200,200,200),1 ))
 			#memDc.DrawRectangle(mx, my, 200,20)
+			memDc.DrawBitmap( self.TICKSMALL, mx-20, my, True )
 
 			memDc.SetTextForeground( black )
 			memDc.SetFont( wx.Font(11,family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))

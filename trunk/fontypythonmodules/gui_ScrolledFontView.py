@@ -35,7 +35,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 	Draw a list of fitmaps from a font list object (derived from BasicFontList)
 	"""
 	def __init__(self, parent):
-		wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL)
+		wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
 		
 		self.fitmaps = []
 		self.parent = parent
