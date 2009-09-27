@@ -121,9 +121,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		
 		sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
 	   
-		## Do mystical voodoo that I can't remember from 2006.
+		## init my parent class 
 		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
-		
 
 		## Very cool event, gives us life!
 		self.Bind(wx.EVT_LEFT_UP,self.onClick) 
@@ -283,12 +282,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Special message
 		if self.fitem.inactive:
 			mx,my=(27,self.height-20) if self.fitem.badfont else (27,self.height-26)
-			
-			#memDc.SetBrush(wx.Brush( (255,255,0),wx.SOLID ))#wx.TRANSPARENT_BRUSH)
-			#memDc.SetPen(wx.Pen( (200,200,200),1 ))
-			#memDc.DrawRectangle(mx, my, 200,20)
 			memDc.DrawBitmap( self.TICKSMALL, mx-20, my, True )
-
 			memDc.SetTextForeground( black )
 			memDc.SetFont( wx.Font(11,family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
 			memDc.DrawText( self.fitem.activeInactiveMsg, mx, my )
@@ -302,7 +296,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Now a dividing line
 		memDc.SetPen( wx.Pen( (200,200,200),1 ) )#black, 1 ) ) 
 		memDc.DrawLine( 0, self.height-1, maxwidth, self.height-1 )
-
 
 
 	def setStyle( self ):
@@ -320,7 +313,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				nbg=self.hsv_to_rgb((hsv[0],sat,bright))
 				self.style['backcol'] = nbg
 			return
-
 		# Not bad font, just get vals from style sheet.
 		if self.fitem.inactive:
 			self.style = Fitmap.styles['INACTIVE']

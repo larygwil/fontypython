@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 11:59+0200\n"
+"POT-Creation-Date: 2009-09-27 20:34+0200\n"
 "PO-Revision-Date: 2009-07-22 19:19+0100\n"
 "Last-Translator: Michael Hoeft <michael_hoeft@vr-web.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -446,7 +446,7 @@ msgstr "Konnte die Konfigurationsdatei nicht schreiben."
 msgid "This font is in %s"
 msgstr "Diese Schrift befindet sich in %s"
 
-#: fontypythonmodules/gui_Fitmap.py:251
+#: fontypythonmodules/gui_Fitmap.py:250
 msgid "This text cannot be drawn. Hey, it happens..."
 msgstr "Dieser Text kann nicht angezeigt werden, soll vorkommen...."
 
@@ -474,8 +474,9 @@ msgstr "Filter:"
 msgid "Selected fonts have been removed."
 msgstr "Gewählte Schriften wurden entfernt."
 
-#: fontypythonmodules/gui_Middle.py:329 fontypythonmodules/gui_Middle.py:356
-msgid "There was an error writing the pog to disk. Nothing has been done"
+#: fontypythonmodules/gui_Middle.py:329
+#, fuzzy
+msgid "There was an error writing the pog to disk. Nothing has been done."
 msgstr ""
 "Ein Fehler trat beim Schreiben des Pogs auf. Es wurde nichts verändert."
 
@@ -489,13 +490,18 @@ msgstr "Kopiere %(source)s nach %(target)s"
 msgid "Selected fonts are now in %s."
 msgstr "Ausgewählte Schriften befindne sich nun in %s."
 
+#: fontypythonmodules/gui_Middle.py:356
+msgid "There was an error writing the pog to disk. Nothing has been done"
+msgstr ""
+"Ein Fehler trat beim Schreiben des Pogs auf. Es wurde nichts verändert."
+
 #: fontypythonmodules/gui_Middle.py:424
 msgid "Choose some fonts"
 msgstr "Wähle einige Schriften"
 
 #: fontypythonmodules/gui_Middle.py:457
-#, python-format
-msgid "Your active Target Pog is:%s"
+#, fuzzy, python-format
+msgid "Your active Target is %s"
 msgstr "Aktives Pog ist: %s"
 
 #: fontypythonmodules/gui_Middle.py:458
@@ -517,8 +523,8 @@ msgid "Nothing to do"
 msgstr "Nichts zu tun"
 
 #: fontypythonmodules/gui_Middle.py:468 fontypythonmodules/gui_Middle.py:493
-#, python-format
-msgid "Viewing Folder:%s"
+#, fuzzy, python-format
+msgid "Viewing Folder %s"
 msgstr "Angezeigter Order : %s"
 
 #: fontypythonmodules/gui_Middle.py:472
@@ -526,8 +532,8 @@ msgid "Viewing a folder."
 msgstr "Zeige einen Ordner."
 
 #: fontypythonmodules/gui_Middle.py:477
-#, python-format
-msgid "Viewing (installed) Pog: %s"
+#, fuzzy, python-format
+msgid "Viewing (installed Pog)  %s"
 msgstr "Zeige einen (installierten) Pog: %s"
 
 #: fontypythonmodules/gui_Middle.py:481 fontypythonmodules/gui_Middle.py:497
@@ -536,8 +542,8 @@ msgid "You cannot change an installed Pog."
 msgstr "Installierte Pogs können nicht verändert werden."
 
 #: fontypythonmodules/gui_Middle.py:483
-#, python-format
-msgid "Viewing (editable) Pog: %s"
+#, fuzzy, python-format
+msgid "Viewing (editable Pog)  %s"
 msgstr "Zeige einen (veränderbaren) Pog: %s"
 
 #: fontypythonmodules/gui_Middle.py:485
@@ -550,8 +556,8 @@ msgid "You can remove fonts from the selected Target Pog."
 msgstr "Sie können die Schriften vom gewählten Pog entfernen."
 
 #: fontypythonmodules/gui_Middle.py:499
-#, python-format
-msgid "Append From: %(source)s To:%(target)s"
+#, fuzzy, python-format
+msgid "Append from %(source)s to %(target)s"
 msgstr "Erweitere %(target)s um %(source)s"
 
 #: fontypythonmodules/gui_Middle.py:500 fontypythonmodules/gui_Middle.py:524
@@ -564,8 +570,8 @@ msgid "You can append fonts to your target Pog."
 msgstr "Das Pog kann um Schriften erweitert werden."
 
 #: fontypythonmodules/gui_Middle.py:509
-#, python-format
-msgid "Viewing Pog:%(source)s, but Pog:%(target)s is installed."
+#, fuzzy, python-format
+msgid "Viewing %(source)s, but Pog %(target)s is installed."
 msgstr ""
 "Zeige Pog:%(source)s, aber Pog:%(target)s ist installiert (nicht "
 "veränderbar). "
@@ -579,9 +585,9 @@ msgid "Your Source and Target are the same Pog."
 msgstr "Ursprung und Ziel sind das gleiche Pog! Versuche -e"
 
 #: fontypythonmodules/gui_Middle.py:523
-#, python-format
-msgid "Append from Pog:%(source)s into Pog:%(target)s"
-msgstr "Erweitere Pog: %(target)s um Pog: %(source)s"
+#, fuzzy, python-format
+msgid "Append from %(source)s into %(target)s"
+msgstr "Erweitere %(target)s um %(source)s"
 
 #: fontypythonmodules/gui_PogChooser.py:192
 #, python-format
@@ -1384,7 +1390,7 @@ msgstr "Achtung"
 msgid "Error"
 msgstr "Fehler"
 
-#: fontypythonmodules/wxgui.py:363
+#: fontypythonmodules/wxgui.py:361
 #, python-format
 msgid ""
 "Do you want to purge %s?\n"
@@ -1398,21 +1404,21 @@ msgstr ""
 "Bereinigen bedeutet, dass alle Schriften in diesem Pog,\n"
 "die nicht auf eine vorhandene Schrift verweisen, entfernt werden."
 
-#: fontypythonmodules/wxgui.py:363
+#: fontypythonmodules/wxgui.py:361
 msgid "Purge font?"
 msgstr "Schrift löschen?"
 
-#: fontypythonmodules/wxgui.py:372
+#: fontypythonmodules/wxgui.py:370
 #, python-format
 msgid "%s has not been purged."
 msgstr "%s wurde nicht gelöscht."
 
-#: fontypythonmodules/wxgui.py:376
+#: fontypythonmodules/wxgui.py:374
 #, python-format
 msgid "%s has been purged."
 msgstr "%s wurde gelöscht."
 
-#: fontypythonmodules/wxgui.py:390
+#: fontypythonmodules/wxgui.py:388
 msgid ""
 "I am sorry, but Unicode is not supported by this installation of wxPython. "
 "Fonty Python relies on Unicode and will simply not work without it.\n"
@@ -1425,13 +1431,17 @@ msgstr ""
 "\n"
 "Bitte besorgen Sie sich die Unicode-Version von python-wxgtk."
 
-#: fontypythonmodules/wxgui.py:390
+#: fontypythonmodules/wxgui.py:388
 msgid "SORRY: UNICODE MUST BE SUPPORTED"
 msgstr "ENTSCHULDIGUNG, ABER UNICODE MUSS UNTERSTÜTZT WERDEN"
 
-#: fontypythonmodules/wxgui.py:396
+#: fontypythonmodules/wxgui.py:394
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python : hole mehr aus Deinen Schriften!"
+
+#, fuzzy
+#~ msgid "Append from Pog %(source)s into Pog %(target)s"
+#~ msgstr "Erweitere Pog: %(target)s um Pog: %(source)s"
 
 #~ msgid "Font causes a segfault. Fix or remove it."
 #~ msgstr ""
