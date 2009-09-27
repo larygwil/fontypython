@@ -4,6 +4,7 @@ The following images are Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
 aboutfplogo.png
 cross.png
 fplogo.png
+splash.png
 icon_source_16x16.png
 icon_source_folder_16x16.png
 icon_source_pog_16x16.png
@@ -11,7 +12,9 @@ icon_target_16x16.png
 pog16x16.installed.png
 pog16x16.png
 pog16x16.target.png
+view16x16.png
 tick.png
+ticksmall.png
 clear.png
 font_info_item.png 
 font_no_draw.png

@@ -137,3 +137,8 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 1. Improved the drawing of fitmaps and gradients. Still have some precalcing of colours to do.
 2. Tweaked the images and icons.
 
+26 Sept
+1. Added a sunken border to font view -- better visual containment I think.
+
+27 Sept
+More gui polishing done.

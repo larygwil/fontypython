@@ -75,7 +75,7 @@ class FontViewPanel(wx.Panel):
 	as well as the buttons etc. below and the text above.
 	"""
 	def __init__(self, parent):
-		wx.Panel.__init__(self, parent, id = -1)
+		wx.Panel.__init__(self, parent, id = -1)#,style=wx.SUNKEN_BORDER)
 		self.firstrun = True
 
 		self.pageindex = 1 # I start here
@@ -92,6 +92,7 @@ class FontViewPanel(wx.Panel):
 		self.NO_DRAW = wx.Bitmap(fpsys.mythingsdir + 'font_no_draw.png', wx.BITMAP_TYPE_PNG)
 		self.NOT_FOUND = wx.Bitmap(fpsys.mythingsdir + 'font_not_found.png', wx.BITMAP_TYPE_PNG)
 		self.INFO_ITEM = wx.Bitmap(fpsys.mythingsdir + 'font_info_item.png', wx.BITMAP_TYPE_PNG)
+		self.TICKSMALL = wx.Bitmap(fpsys.mythingsdir + "ticksmall.png", type=wx.BITMAP_TYPE_PNG)
 
 		## Main Label on top
 		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL) 
@@ -557,12 +558,16 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 	def __init__(self, parent):
 		self.FVP = parent
 		self.lab = u" " 
-		self.infoFont = wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_NORMAL)#BOLD)
-		self.back = self.bord = wx.Colour(255, 255, 255, wx.ALPHA_OPAQUE)
+		self.infoFont = wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.light = wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
+		self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
+		self.back = parent.GetBackgroundColour()
 		self.h=100
+
+		self.VIEWICON = wx.Bitmap(fpsys.mythingsdir + "view16x16.png", type=wx.BITMAP_TYPE_PNG)
+
 		# call parent init after vital settings are done.
 		wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
-		self.backcolour = (128,128,128,255) #self.GetBackgroundColour()
 		self.Bind(wx.EVT_PAINT, self.OnPaint)
 	def SetLabel( self, lab ):
 		self.lab=lab
@@ -582,26 +587,28 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 			dc = wx.GCDC(pdc)
 		except:
 			dc = pdc
-		# I have a dc, may as well use it:
-		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 50
+		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 40 
 
 		#Now draw the thing:
 		rect = wx.Rect(0,0, w, self.h + 10)
 		
-		dc.SetPen(wx.Pen(self.bord))
+		dc.SetPen(wx.Pen(self.dark,width=1))
 		dc.SetBrush(wx.Brush(self.back))
 
-		rect.SetPosition( (0,0) )
+		#rect.SetPosition( (0,0) )
 		dc.DrawRoundedRectangleRect(rect, 5)
 		
 		#The gradient under the text
-		dc.GradientFillLinear( wx.Rect(0, self.h-15, w, self.h-1), self.backcolour, (255,255,255,0), nDirection=wx.NORTH )
+		#dc.GradientFillLinear( wx.Rect(0, self.h-15, w, self.h-1), self.back, (255,255,255,0), nDirection=wx.NORTH )
+		dc.GradientFillLinear( wx.Rect(2, self.h-15, w-3, self.h-2), self.light, self.back, nDirection=wx.NORTH )
 
 		# The text
 		dc.SetFont(self.infoFont) 
-		dc.DrawText(self.lab, 10,5)
+		dc.DrawText(self.lab, 27,5)
+
+		dc.DrawBitmap( self.VIEWICON, 6,5, True)
 
 		# The faded underline
-		w2=self.FVP.getWidthOfMiddle() - 20
-		w = w2 if w2 > w else w+20
-		dc.GradientFillLinear( wx.Rect(0, self.h-1, w, self.h-1), (0,0,0,255), (0,0,0,0) )
+		#w2=self.FVP.getWidthOfMiddle() - 20
+		#w = w2 if w2 > w else w+20
+		#dc.GradientFillLinear( wx.Rect(0, self.h-1, w, self.h-1), (0,0,0,255), (0,0,0,0) )

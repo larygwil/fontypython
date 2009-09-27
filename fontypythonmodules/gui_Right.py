@@ -16,7 +16,7 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
-
+#from wx.lib.buttons import ThemedGenBitmapTextButton
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 mylocale = wx.Locale( langid )
@@ -59,6 +59,9 @@ class TargetPogChooser(wx.Panel):
 		## The "no pog" button
 		self.idnone = wx.NewId()
 		self.buttNoPog = wx.Button(self, label = _("Clear selection"), id = self.idnone)
+		#bmp=wx.Bitmap(fpsys.mythingsdir + 'font_segfault.png', wx.BITMAP_TYPE_PNG)
+		#self.buttNoPog = ThemedGenBitmapTextButton( self, -1, bmp, "XXXXXXXXXFind")
+
 		self.buttNoPog.SetToolTipString(_("Deselects any chosen pogs."))
 		## The buttons under the pog list
 		## Giving them all id numbers so my single handler can tell them apart.
@@ -327,9 +330,6 @@ class TargetPogChooser(wx.Panel):
 		self.buttZip.Enable(True)
 		
 	def SelectNoTargetPog(self):
-		"""
-		Public method : for access from mainframe
-		"""
 		wx.BeginBusyCursor()
 		## Go figure out what item gets what image
 		self.pogTargetlist.SortOutTheDamnImages( pognochange = True )

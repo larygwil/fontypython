@@ -156,7 +156,7 @@ class MainFrame(wx.Frame):
 		(self.panelNotebook, -1, wx.Bitmap\
 		(fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG))		
 		self.viewLabel = wx.StaticText\
-		(self.panelNotebook, -1, _("Source Folder, or Pog"), style = wx.ALIGN_LEFT)
+		(self.panelNotebook, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT)
 		self.viewLabel.SetFont\
 		(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD))
 		
