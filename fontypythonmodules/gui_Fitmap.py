@@ -383,7 +383,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	
 		icon = self.style['icon']
 		if icon:
-			Icon = eval("self.FVP." + icon)
+			Icon = self.FVP.__dict__[icon]
 			ix,iy = (6,15) if isinfo else (2,3)
 			memDc.DrawBitmap(Icon,ix,iy,True)
 
