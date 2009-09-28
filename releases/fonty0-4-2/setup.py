@@ -48,7 +48,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 	
 	## A list of partials within a filename that would disqualify it
 	## from appearing in the tarball.
-	badnames=[".pyc","~","no_",".svn","CVS"]
+	badnames=[".pyc","~","no_",".svn","CVS",".old"]
 
 	def walk_helper(arg, dirname, files):
 		BL=[ bad for bad in badnames if bad in dirname ]

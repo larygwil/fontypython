@@ -145,5 +145,13 @@ More gui polishing done.
 Strings changed -- PO files will be broken :(
 
 28 Sept
-Seems PO files are quite robust -- the strings are marked as 'fuzzy' and should still translate fairly well.
-Today I will make a 'release' branch on the SVN and get the tarball for 0.4.2 going.
+1. Seems PO files are quite robust -- the strings are marked as 'fuzzy' and should still translate fairly well.
+2. Today I will make a 'release' branch on the SVN and get the tarball for 0.4.2 going.
+
+28 Sept : Feedback from Kartik
+1. Removed the Version tag from .desktop file -- it's not required.
+2. Removed the .png from the icon key in .desktop file -- it's not wanted.
+3. Some confusion as to whether fonty will run 100% on Python 2.5 I developed this year on 2.6
+4. Version bumped to 0.4.2.1
+
+
