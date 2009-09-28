@@ -89,7 +89,7 @@ class FontViewPanel(wx.Panel):
 	
 		#Sept 2009
 		self.SEGFAULT = wx.Bitmap(fpsys.mythingsdir + 'font_segfault.png', wx.BITMAP_TYPE_PNG)
-		self.NO_DRAW = wx.Bitmap(fpsys.mythingsdir + 'font_no_draw.png', wx.BITMAP_TYPE_PNG)
+		self.NO_DRAW = wx.Bitmap(fpsys.mythingsdir + 'font_cannot_draw.png', wx.BITMAP_TYPE_PNG)
 		self.NOT_FOUND = wx.Bitmap(fpsys.mythingsdir + 'font_not_found.png', wx.BITMAP_TYPE_PNG)
 		self.INFO_ITEM = wx.Bitmap(fpsys.mythingsdir + 'font_info_item.png', wx.BITMAP_TYPE_PNG)
 		self.TICKSMALL = wx.Bitmap(fpsys.mythingsdir + "ticksmall.png", type=wx.BITMAP_TYPE_PNG)
