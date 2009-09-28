@@ -144,3 +144,6 @@ Added reference counting to fonts that are shared/common among pogs: When a pog 
 More gui polishing done.
 Strings changed -- PO files will be broken :(
 
+28 Sept
+Seems PO files are quite robust -- the strings are marked as 'fuzzy' and should still translate fairly well.
+Today I will make a 'release' branch on the SVN and get the tarball for 0.4.2 going.
