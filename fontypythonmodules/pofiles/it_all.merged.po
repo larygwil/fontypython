@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fontypython 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 20:34+0200\n"
+"POT-Creation-Date: 2009-09-29 19:31+0200\n"
 "PO-Revision-Date: 2009-07-07 12:35+0100\n"
 "Last-Translator: Pietro Battiston <toobaz@email.it>\n"
 "Language-Team: Italian Translation Project <tp@lists.linux.it>\n"
@@ -210,19 +210,29 @@ msgstr "Dimensione (in punti):"
 msgid "Page length:"
 msgstr "Lunghezza della pagina:"
 
-#: fontypythonmodules/dialogues.py:262
+#: fontypythonmodules/dialogues.py:221
+msgid "Disable font top-left correction."
+msgstr ""
+
+#: fontypythonmodules/dialogues.py:223
+msgid ""
+"Disabling this speeds font drawing up a fraction, but degrades top-left "
+"positioning."
+msgstr ""
+
+#: fontypythonmodules/dialogues.py:269
 msgid "Oh boy..."
 msgstr "O cribbio..."
 
-#: fontypythonmodules/dialogues.py:266
+#: fontypythonmodules/dialogues.py:273
 msgid "Fonty Python, um ... crashed."
 msgstr "Fonty Python... ehm... ha crashato."
 
-#: fontypythonmodules/dialogues.py:270
+#: fontypythonmodules/dialogues.py:277
 msgid "Oh dear,"
 msgstr "Oh caspita,"
 
-#: fontypythonmodules/dialogues.py:274
+#: fontypythonmodules/dialogues.py:281
 #, fuzzy
 msgid ""
 "There's some problem with the font named below. Please use the Check Fonts "
@@ -239,23 +249,23 @@ msgstr ""
 "(In alternativa, è possibile semplicemente spostare altrove il font, ma ne "
 "potrebbero rimanere altri problematici.)\n"
 
-#: fontypythonmodules/dialogues.py:306
+#: fontypythonmodules/dialogues.py:313
 msgid "Locate a directory for the zip file(s)."
 msgstr ""
 
-#: fontypythonmodules/dialogues.py:338
+#: fontypythonmodules/dialogues.py:345
 msgid "Check for dangerous fonts."
 msgstr "Controllo font dannosi."
 
-#: fontypythonmodules/dialogues.py:345
+#: fontypythonmodules/dialogues.py:352
 msgid "Choose a directory and double click it to start"
 msgstr "Doppio click su una cartella per avviare il controllo"
 
-#: fontypythonmodules/fontcontrol.py:111
+#: fontypythonmodules/fontcontrol.py:116
 msgid "Font cannot be found, you should purge this Pog."
 msgstr "Impossibile trovare il font, dovresti ripulire questo pog."
 
-#: fontypythonmodules/fontcontrol.py:117
+#: fontypythonmodules/fontcontrol.py:122
 #, python-format
 msgid ""
 "Unhandled error:\n"
@@ -265,34 +275,34 @@ msgstr ""
 "Per favore sposta (%s) da questa posizione e riporta l'errore ai "
 "programmatori."
 
-#: fontypythonmodules/fontcontrol.py:128
+#: fontypythonmodules/fontcontrol.py:133
 msgid "Font may be bad and it cannot be drawn."
 msgstr "Il font potrebbe essere corrotto, non è possibile raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:143
+#: fontypythonmodules/fontcontrol.py:148
 msgid "Unicode problem. Font may be bad and it cannot be drawn."
 msgstr ""
 "Problema unicode. Il font potrebbe essere corrotto, non è possibile "
 "raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:183
+#: fontypythonmodules/fontcontrol.py:191
 #, fuzzy
 msgid "Font causes a segfault. It cannot be drawn."
 msgstr "Il font potrebbe essere corrotto, non è possibile raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:253
+#: fontypythonmodules/fontcontrol.py:274
 msgid "Font causes a memory error, it can't be drawn."
 msgstr "Il font causa un errore di memoria, non è possibile raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:294
+#: fontypythonmodules/fontcontrol.py:315
 msgid "There are no fonts to see here, move along."
 msgstr "Qui non c'è nessun font da vedere."
 
-#: fontypythonmodules/fontcontrol.py:295
+#: fontypythonmodules/fontcontrol.py:316
 msgid "(Check your filter!)"
 msgstr "(Controlla il filtro!)"
 
-#: fontypythonmodules/fontcontrol.py:759
+#: fontypythonmodules/fontcontrol.py:780
 #, fuzzy, python-format
 msgid "%s is already installed."
 msgstr "Pog già installato."
@@ -419,11 +429,11 @@ msgstr "Il processo è completo."
 msgid "Jump the lazy dog fox"
 msgstr "Ma la volpe col suo balzo ha raggiunto il quieto fido"
 
-#: fontypythonmodules/fpsys.py:308
+#: fontypythonmodules/fpsys.py:310
 msgid "No config file found, creating it with defaults."
 msgstr "Non ho trovato il file di configurazione, ne ricreo uno standard."
 
-#: fontypythonmodules/fpsys.py:332
+#: fontypythonmodules/fpsys.py:335
 msgid ""
 "The fontypython config file is damaged.\n"
 "Please remove it and start again"
@@ -431,16 +441,16 @@ msgstr ""
 "Il file di configurazione fontypython è danneggiato.\n"
 "Per favore rimuovilo e riprova."
 
-#: fontypythonmodules/fpsys.py:361
+#: fontypythonmodules/fpsys.py:365
 msgid "Could not write to the config file."
 msgstr "Impossibile modificare il file di configurazione."
 
-#: fontypythonmodules/fpsys.py:497
+#: fontypythonmodules/fpsys.py:501
 #, python-format
 msgid "This font is in %s"
 msgstr "Questo font è in %s"
 
-#: fontypythonmodules/gui_Fitmap.py:250
+#: fontypythonmodules/gui_Fitmap.py:303
 msgid "This text cannot be drawn. Hey, it happens..."
 msgstr "Impossibile raffigurare questo testo. Oh, capita..."
 
@@ -1395,7 +1405,7 @@ msgstr "Attenzione"
 msgid "Error"
 msgstr "Errore"
 
-#: fontypythonmodules/wxgui.py:361
+#: fontypythonmodules/wxgui.py:365
 #, python-format
 msgid ""
 "Do you want to purge %s?\n"
@@ -1410,21 +1420,21 @@ msgstr ""
 "pog che non puntano a file effettivi\n"
 "saranno rimossi dal pog."
 
-#: fontypythonmodules/wxgui.py:361
+#: fontypythonmodules/wxgui.py:365
 msgid "Purge font?"
 msgstr "Epurare font?"
 
-#: fontypythonmodules/wxgui.py:370
+#: fontypythonmodules/wxgui.py:374
 #, python-format
 msgid "%s has not been purged."
 msgstr "%s non è stato epurato."
 
-#: fontypythonmodules/wxgui.py:374
+#: fontypythonmodules/wxgui.py:378
 #, python-format
 msgid "%s has been purged."
 msgstr "%s è stato epurato."
 
-#: fontypythonmodules/wxgui.py:388
+#: fontypythonmodules/wxgui.py:392
 msgid ""
 "I am sorry, but Unicode is not supported by this installation of wxPython. "
 "Fonty Python relies on Unicode and will simply not work without it.\n"
@@ -1436,11 +1446,11 @@ msgstr ""
 "\n"
 "Per favore procurati ed installa la versione Unicode di python-wxgtk."
 
-#: fontypythonmodules/wxgui.py:388
+#: fontypythonmodules/wxgui.py:392
 msgid "SORRY: UNICODE MUST BE SUPPORTED"
 msgstr "SPIACENTE: L'UNICODE DEVE ESSERE SUPPORTATO"
 
-#: fontypythonmodules/wxgui.py:394
+#: fontypythonmodules/wxgui.py:398
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python: porta i tuoi font allo scoperto!"
 
