@@ -18,6 +18,8 @@
 import wx
 import wx.lib.scrolledpanel
 
+from pubsub import *
+
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 mylocale = wx.Locale( langid )
@@ -49,6 +51,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		self.SetSizer(self.mySizer)
 
 		self.SetupScrolling(rate_y=5, scroll_x=False)
+		
+		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
 
 	def onWheel( self, evt ):
 		"""
@@ -65,14 +69,20 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			
 			## Tried to restore the scrollbar, but it crashes the app
 			##xPos, yPos = self.GetViewStart()
-			
+			self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
 			ps.pub( update_font_view ) # starts a chain of calls.
 			
 			##self.Scroll(xPos, yPos)
 			return
 		## Keep the wheel event going
 		evt.Skip()
-		
+
+	# Sept 2009
+	def ResetTopLeftAdjustFlag( self ):
+		'''Each fitem has a top_left_adjust_completed flag. False forced the fitmaps to re-calculate the adjustment for top-left.'''
+		for fi in fpsys.state.viewobject:
+			fi.top_left_adjust_completed = False
+
 	def CreateFitmaps(self, viewobject) :
 		"""
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.

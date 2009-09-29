@@ -292,6 +292,8 @@ class Configure:
 		self.rightSash = 128
 		## Added June 2009
 		self.recurseFolders = False 
+		## Added Sept 2009
+		self.ignore_adjustments = False
 
 		self.__setData()
 		
@@ -322,6 +324,7 @@ class Configure:
 			self.leftSash = self.__data['leftSash']
 			self.rightSash = self.__data['rightSash']
 			self.recurseFolders = self.__data['recurseFolders']
+			self.ignore_adjustments = self.__data['ignore_adjustments']
 			
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
@@ -346,7 +349,8 @@ class Configure:
 								"lastdir" : self.lastdir,
 								"leftSash" : self.leftSash,
 								"rightSash" : self.rightSash,
-								"recurseFolders": self.recurseFolders
+								"recurseFolders": self.recurseFolders,
+								"ignore_adjustments": self.ignore_adjustments
 								}
 	def Save(self) :
 		#If we are NOT to save the numinpage, then fetch it from what was there before.

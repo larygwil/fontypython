@@ -78,6 +78,11 @@ class FontItem( object ):
 		## and we must open the file and query it to know that.
 		self.__queryFontFamilyStyleFlagBad()
 		
+		## Vars used in the rendering stage.
+		self.fx = [None for i in xrange(self.numFaces)] # Position calculated for best top-left of each face image.
+		self.fy = self.fx[:]
+		self.top_left_adjust_completed = False
+
 	def __queryFontFamilyStyleFlagBad( self ):
 		"""
 		Get the family, style and size of entire font.
@@ -158,8 +163,9 @@ class FontItem( object ):
 				## So, before we do a getname and cause a segfault, let's
 				## see whether that font is in segfonts, and if so, skip it.
 				if self.glyphpaf not in fpsys.segfonts:
-					## No point Try-ing here, this segfaults when style/family is Null.
-					fpsys.logSegfaulters( self.glyphpaf ) # record the potential destroyer of apps!
+					# This writes to lastFontBeforeSegfault file. Just in case it crashes the 
+					# app on the .family call below.
+					fpsys.logSegfaulters( self.glyphpaf ) 
 					##
 					## Sep 2009
 					## It has been reported by a user that some fonts have family names (and other info?) that
@@ -172,6 +178,8 @@ class FontItem( object ):
 					## I await help from PIL list.
 
 					#self.family.append( font.getname()[0] ) # old code
+
+					## No point Try-ing here, this segfaults when style/family is Null.
 					self.family.append( fpsys.LSP.ensure_unicode( font.getname()[0] ) )
 
 					self.style.append( font.getname()[1] )
@@ -215,7 +223,20 @@ class FontItem( object ):
 					w = 1
 				pilheight = int(h)
 				pilwidth = int(w)
-				pilheight = min( pilheight, maxHeight )
+
+				#gh=[]
+				#for c in text:
+				#	glyph = font.getmask(c)
+				#	glyph_width, glyph_height = glyph.size 
+				#	gh.append(glyph_height)
+
+				#print paf, gh, " vs ", pilheight
+				#maxHeight = min ( max(gh), maxHeight)		
+			#	print maxHeight
+				#pilheight = min( pilheight, maxHeight )
+			#	print pilheight
+				pilheight += 10
+
 				## Sept 2009 : Fiddled this to produce alpha (ish) images.
 				pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))#(255,255,255,255)) 
 				
