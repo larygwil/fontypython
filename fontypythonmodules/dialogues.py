@@ -217,11 +217,16 @@ class DialogSettings(wx.Dialog):
 		self.inputPageLen.SetRange(1, 5000) # It's your funeral!
 		self.inputPageLen.SetValue(fpsys.config.numinpage) 
 
+		## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
+		self.chkAdjust = wx.CheckBox(self, -1, _("Disable font top-left correction."))
+		self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
+		self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds font drawing up a fraction, but degrades top-left positioning.") ) )
+
 		box = wx.BoxSizer(wx.HORIZONTAL)
 		verticalSizer = wx.BoxSizer(wx.VERTICAL)
 		box.Add(verticalSizer, 1, flag = wx.ALL, border = 10)
 		
-		gridSizer = wx.FlexGridSizer( rows=3, cols=2, hgap=5, vgap=8 )
+		gridSizer = wx.FlexGridSizer( rows=4, cols=2, hgap=5, vgap=8 )
 		
 		verticalSizer.Add(self.labelHeading, 0, wx.ALIGN_LEFT )
 		verticalSizer.Add( (0,5), 0 )
@@ -232,7 +237,9 @@ class DialogSettings(wx.Dialog):
 		gridSizer.Add(self.inputPointSize, 0 )
 		gridSizer.Add(self.label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
 		gridSizer.Add(self.inputPageLen, 0 )
-		
+		gridSizer.Add( (10,10), 0 )
+		gridSizer.Add(self.chkAdjust, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+
 		verticalSizer.Add(gridSizer, 1, wx.EXPAND )
 		verticalSizer.Add((0,10),0) #space between bottom of grid and buttons
 		btnsizer = wx.StdDialogButtonSizer()

@@ -43,6 +43,8 @@ toggle_purge_menu_item = 210
 
 left_or_right_key_pressed = 1000
 
+reset_top_left_adjustments = 2000
+
 ## A hack to allow values to return from published topics
 globRetVal = {}
 

@@ -116,6 +116,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.spacer = 35 # Gap below each font bitmap
 		self.gradientheight = 50
 
+		#self.fx = self.fy = None
+		
 		self.bitmap = None
 		self.prepareBitmap()
 		
@@ -174,6 +176,51 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			ps.pub(toggle_main_button)
 		event.Skip()	
 
+
+	def CalculateTopLeftAdjustments(self, image, i, pilimage):
+		## Sept 2009
+		## Find the first pixel from the top-left of the image (if it's not stored)
+		## Using this pixel as the x,y I can draw fonts from where their actual data
+		## begins and not where the pilimage *thinks* it does (leaving big white spaces
+		## to the left of many fonts.)
+		
+		if fpsys.config.ignore_adjustments: return 0,0
+		wx.BeginBusyCursor()
+		if not self.fitem.top_left_adjust_completed:
+			W,H = pilimage.size
+			#if  not self.fitem.fx[i] and not self.fitem.fy[i]:
+			fx=fy=0
+			esc = False
+			# Scan ACROSS WIDTH and repeatedly DOWN looking for a pixel.
+			for tx in xrange(W):
+				for ty in xrange(H):
+					ap=image.GetAlpha(tx,ty)
+					#image.SetRGB(tx,ty,0,255,0)
+					#image.SetAlpha(tx,ty,255)
+					if ap != 0: #Found X coord, let's kill both loops
+						fx=tx
+						esc = True
+						break
+				if esc: break #uses fact that 0 is False
+			# Scan DOWN the HEIGHT and repeatedly ACROSS.
+			esc = False
+			for ty in xrange(H):
+				for tx in xrange(W):
+					ap=image.GetAlpha(tx,ty)
+					if ap != 0:
+						fy=ty # Found Y coord
+						esc = True
+						break
+				if esc: break
+			self.fitem.fx[i]=fx
+			self.fitem.fy[i]=fy
+			# If we are at the end of the number of faces (for ttc files this is > 0) then flag it true
+			if i+1 == self.fitem.numFaces: self.fitem.top_left_adjust_completed = True
+		else:
+			fx,fy = (self.fitem.fx[i], self.fitem.fy[i])
+		wx.EndBusyCursor()
+		return fx,fy
+
 	def prepareBitmap( self ):
 		"""
 		This is where all the drawing code goes. It gets the font rendered
@@ -226,11 +273,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				totheight += (self.spacer-20) #want room for 'is in pog' message.
 			## Make one big bitmap to house one or more faces (subfaces)
 			memDc=self.makeBlankDC( maxwidth, totheight, white )
+			#print self.fitem.name, totheight
 			fcol = self.style['fcol']
 			bcol = self.style['bcol']		
 			#Draw the gradient. The fonts will render in alpha over that.
 			self.bottomFadeEffect( memDc, totheight, maxwidth )
 			y = i = 0
+
+
 			for pilimage, glyphHeight, pilwidth in pilList:
 				try:
 					## Get the data from PIL into wx.
@@ -241,6 +291,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					image = apply( wx.EmptyImage, pilimage.size )
 					image.SetData( pilimage.convert( "RGB").tostring() )
 					image.SetAlphaData(pilimage.convert("RGBA").tostring()[3::4])
+
+					fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
+
 					faceBitmap = image.ConvertToBitmap() 
 				except:
 					## Some new error that I have not caught before has happened.
@@ -252,10 +305,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					memDc.DrawText( txt, 10, y+2)
 				else: #no error happened, we carry on.
 					## Place it into the main image, down a tad so it looks better.
-					facex = 5
+					facex = 10
 					if i > 0: facex *= 2 # Shift sub-faces over a little
 					## Draw the face into the memDc
-					memDc.DrawBitmap( faceBitmap, facex, y + 4, True )
+					psx = facex-fx# if (facex-fx) < 0 else psx = facex-fx
+					psy = y-fy
+					memDc.DrawBitmap( faceBitmap, psx, psy + 10, True )
 				
 				## Postion 
 				texty = y + glyphHeight + 8

@@ -295,11 +295,15 @@ class MainFrame(wx.Frame):
 			num = int(dlg.inputPageLen.GetValue())
 			points = int(dlg.inputPointSize.GetValue())
 			txt = dlg.inputSampleString.GetValue()
+			ignoreAdjust = dlg.chkAdjust.GetValue() #Sept 2009
 			if (num, txt, points) != (lastnuminpage, lastpoints, lasttext):
 				fpsys.config.numinpage = int(num)
 				fpsys.config.points = int(points)
 				if len(txt) > 0: fpsys.config.text =  txt
+			fpsys.config.ignore_adjustments = ignoreAdjust #Sept 2009
 			## Now to refresh things:
+			## Sept 2009 : size change means we need new values for fitmaps
+			ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
 			ps.pub( update_font_view )
 		dlg.Destroy()
 
