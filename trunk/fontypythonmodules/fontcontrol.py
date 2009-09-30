@@ -194,8 +194,6 @@ class FontItem( object ):
 				
 		self.numFaces = i
 				
-	#def generatePilFont( self, width, maxHeight, enc="unicode" ):
-	#def generatePilFont( self, maxHeight, enc="unicode" ):
 	def generatePilFont( self, enc="unicode" ):
 		"""
 		This function seems too similar to the __queryFontFamilyStyleFlagBad one
@@ -231,11 +229,6 @@ class FontItem( object ):
 				#	glyph_width, glyph_height = glyph.size 
 				#	gh.append(glyph_height)
 
-				#print paf, gh, " vs ", pilheight
-				#maxHeight = min ( max(gh), maxHeight)		
-			#	print maxHeight
-				#pilheight = min( pilheight, maxHeight )
-			#	print pilheight
 				pilheight += 10
 
 				## Sept 2009 : Fiddled this to produce alpha (ish) images.

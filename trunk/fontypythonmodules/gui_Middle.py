@@ -164,9 +164,6 @@ class FontViewPanel(wx.Panel):
 		self.sizerScrolledFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
 		## The buttons   
 		self.sizerScrolledFontView.Add(buttonsSizer,0,wx.EXPAND)	
-	
-		#w=self.scrolledFontView.getWidthOfMiddle()
-		#self.sizerScrolledFontView.
 
 		self.SetSizer(self.sizerScrolledFontView)
 	
@@ -184,7 +181,6 @@ class FontViewPanel(wx.Panel):
 	
 	#def DoGetBestSize(self):
 		# DOES NOT RUN FOR A wx.Panel
-
 
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
@@ -212,9 +208,7 @@ class FontViewPanel(wx.Panel):
 	def EvtComboBox(self, evt):
 		cb = evt.GetEventObject()
 		termsstring = evt.GetString()
-
 		self.startSearch(termsstring)
-		
 		self.buttMain.SetFocus()
 
 	def startSearch(self, terms):

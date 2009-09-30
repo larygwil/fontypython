@@ -203,9 +203,7 @@ class MainFrame(wx.Frame):
 		self.splitter.SetMinimumPaneSize(64) 
 		self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
 		
-		
-		#w=self.fontViewPanel.scrolledFontView.getWidthOfMiddle()
-		self.splitter2.SetMinimumPaneSize(128)#w)
+		self.splitter2.SetMinimumPaneSize(128)
 		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser) #Don't suggest a size here.
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
@@ -228,7 +226,7 @@ class MainFrame(wx.Frame):
 		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize) #Give splitter an event (not splitter2) weird.
 
 		# Force splitter2 to the correct position. 
-		self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )#, redraw=True)
+		self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )
 
 		self.Layout()
 

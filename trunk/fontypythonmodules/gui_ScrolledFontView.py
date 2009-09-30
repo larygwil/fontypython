@@ -85,6 +85,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 	def DoGetBestSize(self):
 		# This is actually called BEFORE the __init__ to this object!
+		#  What calls this function and when is a dark art. It's related to splitter events (at least)
+		#  In my big 30 Sept 2009 fix I just ended-up with this solution -- it's not really something I am savvy about :(
 
 		w = fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
 		wl = fpsys.config.leftSash
@@ -111,8 +113,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		"""
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
 		"""
-		self.InvalidateBestSize() #Force DoGetBestSize to run again!
-		self.DoGetBestSize()
+		#self.InvalidateBestSize() # Reset the cache (seems uneccessary)
+		self.DoGetBestSize() # Force re-call
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
 		for f in self.fitmaps:
