@@ -106,11 +106,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	
 		self.style = {} #Temporary space for style of fitem while drawing. It's a copy of one key from Fitem.styles
 		
-		## I control font's own height due to mad results.
-		## I based this on my preference. Some ttfs had these crazy heights
-		## and would shoot off the page. So, I nixed that.
-		self.maxHeight = int( fpsys.config.points * 1.55 )
-
 		# Some values for drawing
 		self.minHeight = 70
 		self.spacer = 35 # Gap below each font bitmap
@@ -233,10 +228,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		
 		## Get a list of pilimages, for each subface: Some fonts 
 		## have multiple faces, and their heights.
-		## If the height returned by PIL is larger than the maxHeight then
-		## I force pil to render to maxHeight.
 		## REMEMBER: This loop is all FOR THIS ONE FONT ITEM.
-		##
 		## It only supplies pilimages for fonts it could open and
 		## render. So this font may indeed have nothing in the pilList[]
 		## after this loop.
