@@ -157,4 +157,7 @@ Strings changed -- PO files will be broken :(
 29 Sept
 1. Working on a way to scan the font images and remove that leading blank space on certain fonts. Done, and included an override in settings dialog.
 
+30 Sept
+1. Spent the *ENTIRE* day fighting the damn splitter and sizers. Not really sure why or how, but I got it working okay. I also don't really know what broke from last version! 
+
 

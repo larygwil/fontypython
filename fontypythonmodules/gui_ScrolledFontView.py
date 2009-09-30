@@ -26,10 +26,7 @@ mylocale = wx.Locale( langid )
 
 import fpsys # Global objects
 
-from gui_Fitmap import *
-
-## Crappy flag to handle startup sizing issues.
-firstRunSizeFlag = False
+from gui_Fitmap import * #Also brings in 'ps' variable
 
 class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 	"""
@@ -49,6 +46,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		## Make the sizer to hold the fitmaps
 		self.mySizer = wx.BoxSizer(wx.VERTICAL)
 		self.SetSizer(self.mySizer)
+
+		self.firstrun =True 
 
 		self.SetupScrolling(rate_y=5, scroll_x=False)
 		
@@ -83,29 +82,37 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		for fi in fpsys.state.viewobject:
 			fi.top_left_adjust_completed = False
 
+
+	def DoGetBestSize(self):
+		# This is actually called BEFORE the __init__ to this object!
+
+		w = fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
+		wl = fpsys.config.leftSash
+		wr = fpsys.config.rightSash
+		w = w-wl-wr
+	
+		## This try block is to get-around the odd fact that DoGetBestSize is called prior to __init__
+		try:
+			## If this succeeds then we have the width of the parent panel.
+			w2=self.parent.GetSize()[0]
+			## This is not always sensible, esp. on first run. So, fake it if it's too small.
+			if w2 < w: w2=w
+		except:
+			## __init__ not run yet, we need a value. Use the default.
+			w2=w
+		w=w2
+		self.width=w # This property is used in gui_Fitmap
+		best = wx.Size(w,0)
+		self.CacheBestSize(best) #Prevent this def running too often.
+		return best
+
+
 	def CreateFitmaps(self, viewobject) :
 		"""
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
 		"""
-
-		# June 2009: Added this test to prevent re-drawing of fonts when the list has not actually changed.
-		## Cancelled. There are problems with this. Need more time to fix.
-		#if viewobject == self.lastViewList: return
-		#self.lastViewList = viewobject
-			
-		## Setup intial width and subsequent ones
-		## Found on the web, thanks to James Geurts' Blog
-		sbwidth = wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X)
-		global firstRunSizeFlag
-		if not firstRunSizeFlag:
-			firstRunSizeFlag = True
-			self.width = 1024 # I cannot get a sensible value for 1st run.
-		else:
-			## Prevent deprecation warning: Not needed in vers 0.4 as we use 2.8 wxPython
-			#try:
-			self.width = self.DoGetSize()[0] - sbwidth  # 2.8 onwards, I hope.
-			#except:
-			#	self.width = self.base_DoGetSize()[0] - sbwidth # old 2.6 version of that.
+		self.InvalidateBestSize() #Force DoGetBestSize to run again!
+		self.DoGetBestSize()
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
 		for f in self.fitmaps:
@@ -126,16 +133,18 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			empty_fitem = fontcontrol.InfoFontItem()
 			fm = Fitmap( self, (0, 0), empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
-			self.mySizer.Add( fm, 0, wx.GROW )
+			self.mySizer.Add( fm, 0, wx.GROW ) 
 		else:
 			for fitem in viewobject:
 				## Create a Fitmap out of the FontItem we have at hand.
 				fm = Fitmap( self, (0,0),fitem)# i * h), fitem )
 				self.fitmaps.append(fm) 
 				self.mySizer.Add(fm, 0, wx.GROW) 
-
+		
 		# Layout should be called after adding items.
 		self.mySizer.Layout()
 
-		# This gets the sizer to resize in harmony with the virtual (scrolling) nature of it's parent (self).
+		# This gets the sizer to resize in harmony with the virtual (scrolling) nature of its parent (self).
 		self.mySizer.FitInside(self)	
+	
+
