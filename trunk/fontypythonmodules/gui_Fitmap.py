@@ -115,14 +115,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.minHeight = 70
 		self.spacer = 35 # Gap below each font bitmap
 		self.gradientheight = 50
-
-		#self.fx = self.fy = None
 		
+		self.width = parent.width # Get it from the scrollFontViewPanel.
+
 		self.bitmap = None
 		self.prepareBitmap()
 		
 		sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
-	   
+
 		## init my parent class 
 		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
 
@@ -145,10 +145,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			elif fpsys.state.action == "APPEND":
 				if not self.fitem.inactive:
 					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
-
-	@property # Cool.  I refer to blah.width and didn't want to alter them to blah.width(). This fixes that.
-	def width(self):
-		return self.FVP.getWidthOfMiddle()
 
 	def onPaint(self, event):
 		"""
@@ -217,6 +213,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			# If we are at the end of the number of faces (for ttc files this is > 0) then flag it true
 			if i+1 == self.fitem.numFaces: self.fitem.top_left_adjust_completed = True
 		else:
+			## Fetch the values from the cache list.
 			fx,fy = (self.fitem.fx[i], self.fitem.fy[i])
 		wx.EndBusyCursor()
 		return fx,fy
@@ -247,10 +244,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		totheight = 0
 		maxwidth = [self.width] # to figure-out the biggest width
 
-		for pilimage,height,pilwidth in self.fitem.generatePilFont( self.maxHeight ):
-			pilList.append( [pilimage, height, pilwidth] )
-			totheight += height + self.spacer
-			maxwidth.append(pilwidth)
+		for pilimage in self.fitem.generatePilFont( ):
+			pilList.append( pilimage )
+			totheight += pilimage.size[1] + self.spacer
+			maxwidth.append(pilimage.size[0])
 		## Limit the minimum we allow.
 		if totheight < self.minHeight:
 			totheight = self.minHeight		
@@ -273,15 +270,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				totheight += (self.spacer-20) #want room for 'is in pog' message.
 			## Make one big bitmap to house one or more faces (subfaces)
 			memDc=self.makeBlankDC( maxwidth, totheight, white )
-			#print self.fitem.name, totheight
 			fcol = self.style['fcol']
 			bcol = self.style['bcol']		
 			#Draw the gradient. The fonts will render in alpha over that.
 			self.bottomFadeEffect( memDc, totheight, maxwidth )
 			y = i = 0
 
-
-			for pilimage, glyphHeight, pilwidth in pilList:
+			for pilimage in pilList:
+				pilwidth, glyphHeight = pilimage.size
 				try:
 					## Get the data from PIL into wx.
 					## Now with alpha! Thanks to:
@@ -455,4 +451,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		memDc.DrawText( textTup[1], tx, ty)
 
 		return memDc
+
+	#def DoGetBestSize(self):
+		#DOES NOT RUN
+		#print "             FITMAP ?"
+
 

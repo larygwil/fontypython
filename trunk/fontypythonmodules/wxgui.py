@@ -185,11 +185,12 @@ class MainFrame(wx.Frame):
 		self.splitter2 = Splitter(self.splitter) # gets the second slot of splitter
 		
 		## Font View Panel Control:
-		self.panelFontView = FontViewPanel(self.splitter2) # first slot in splitter2
+		self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
 		
 		self.sizerFontView  = wx.BoxSizer(wx.VERTICAL) 
-		self.sizerFontView.Add(self.panelFontView, 1, wx.EXPAND)
-		self.panelFontView.Layout()
+		self.sizerFontView.Add(self.fontViewPanel, 1, wx.EXPAND)
+		self.sizerFontView.SetDimension( 0, 0, 1024, 0)
+		#self.fontViewPanel.Layout()
 	   
 		## THE FAR RIGHT HAND SIDE
 		## The TargetPogChooser
@@ -200,12 +201,12 @@ class MainFrame(wx.Frame):
 		self.panelTargetPogChooser.Layout()
 		
 		self.splitter.SetMinimumPaneSize(64) 
-		self.splitter.SplitVertically\
-		(self.panelNotebook, self.splitter2, fpsys.config.leftSash )
-		self.splitter2.SetMinimumPaneSize(128)
-		# Negative here means pixels from the right edge.
-		self.splitter2.SplitVertically\
-		(self.panelFontView, self.panelTargetPogChooser, -fpsys.config.rightSash )
+		self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
+		
+		
+		#w=self.fontViewPanel.scrolledFontView.getWidthOfMiddle()
+		self.splitter2.SetMinimumPaneSize(128)#w)
+		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser) #Don't suggest a size here.
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 		
@@ -220,14 +221,16 @@ class MainFrame(wx.Frame):
 
 		ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
 
-		## When splitter is changed (after the drag), we want to redraw
-		## the fonts to the new width.
-		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
-		
-		self.Layout()
-
 		## call the big one - the big chief, the big cheese:
+		## This eventually draws all the Fitmaps - giving the middle have a width.
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
+	
+		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize) #Give splitter an event (not splitter2) weird.
+
+		# Force splitter2 to the correct position. 
+		self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )#, redraw=True)
+
+		self.Layout()
 
 		## A nasty looking line to call the SortOutTheDamnImages function
 		## This is to draw the right icons depending on the params from cli.
@@ -381,11 +384,11 @@ class MainFrame(wx.Frame):
 
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-#import wx.lib.mixins.inspection
+import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App):#, wx.lib.mixins.inspection.InspectionMixin) :
+class App(wx.App, wx.lib.mixins.inspection.InspectionMixin) :
 	def OnInit(self):
-		#self.Init()  # initialize the inspection tool
+		self.Init()  # initialize the inspection tool
 		
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:

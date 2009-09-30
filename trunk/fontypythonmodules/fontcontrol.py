@@ -80,7 +80,7 @@ class FontItem( object ):
 		
 		## Vars used in the rendering stage.
 		self.fx = [None for i in xrange(self.numFaces)] # Position calculated for best top-left of each face image.
-		self.fy = self.fx[:]
+		self.fy = self.fx[:] #Damn! Make a COPY of that list!
 		self.top_left_adjust_completed = False
 
 	def __queryFontFamilyStyleFlagBad( self ):
@@ -195,7 +195,8 @@ class FontItem( object ):
 		self.numFaces = i
 				
 	#def generatePilFont( self, width, maxHeight, enc="unicode" ):
-	def generatePilFont( self, maxHeight, enc="unicode" ):
+	#def generatePilFont( self, maxHeight, enc="unicode" ):
+	def generatePilFont( self, enc="unicode" ):
 		"""
 		This function seems too similar to the __queryFontFamilyStyleFlagBad one
 		and in many ways it is. I am forced to work with PIL and it's not ideal
@@ -253,7 +254,7 @@ class FontItem( object ):
 				## All is well, so we step ahead to the next *potential* sub-face
 				## and return the font image data.
 				i += 1
-				yield pilimage, pilheight, pilwidth
+				yield pilimage#, pilheight, pilwidth
 
 			except MemoryError:
 				"""

@@ -130,7 +130,7 @@ class FontViewPanel(wx.Panel):
 		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
 		sizerOtherControls.Add(self.choicePage, 0 ,wx.EXPAND | wx.ALIGN_RIGHT)  #Added it to the sizer
 		
-		## The FONT panel:
+		## The SCROLLED FONT VIEW panel:
 		self.scrolledFontView = ScrolledFontView(self) 
 		
 		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL) 
@@ -150,21 +150,25 @@ class FontViewPanel(wx.Panel):
 		buttonsSizer.Add(self.buttNext,0,wx.EXPAND) 
 
 		## Now the sizer to hold all the fontview controls
-		self.sizerFontView = wx.BoxSizer( wx.VERTICAL )
+		self.sizerScrolledFontView = wx.BoxSizer( wx.VERTICAL )
 		## The Main label
-		self.sizerFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.BOTTOM, border = 0 )
-		## The font view
-		self.sizerFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
+		self.sizerScrolledFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.BOTTOM, border = 0 )
+
+		## The SIZER FOR THE SCROLLED FONT VIEW
+		self.sizerScrolledFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
 
 		## The Search Assistant
-		#self.sizerFontView.Add( self.SA, 0, wx.EXPAND)
+		#self.sizerScrolledFontView.Add( self.SA, 0, wx.EXPAND)
 
 		## Choice and Filter
-		self.sizerFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
+		self.sizerScrolledFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
 		## The buttons   
-		self.sizerFontView.Add(buttonsSizer,0,wx.EXPAND)	
-		
-		self.SetSizer(self.sizerFontView)
+		self.sizerScrolledFontView.Add(buttonsSizer,0,wx.EXPAND)	
+	
+		#w=self.scrolledFontView.getWidthOfMiddle()
+		#self.sizerScrolledFontView.
+
+		self.SetSizer(self.sizerScrolledFontView)
 	
 		e = wx.EVT_BUTTON #was wx.EVT_LEFT_UP
 		self.buttPrev.Bind(e,self.navClick) 
@@ -177,12 +181,10 @@ class FontViewPanel(wx.Panel):
 		ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
 		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
 		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
+	
+	#def DoGetBestSize(self):
+		# DOES NOT RUN FOR A wx.Panel
 
-	def getWidthOfMiddle( self ):
-		if self.firstrun:
-			return fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
-		else:
-			return self.sizerFontView.GetSize()[0] # After this flag is tripped, the app is aware of sizes and we can get a real number.
 
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
@@ -288,7 +290,7 @@ class FontViewPanel(wx.Panel):
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
 		self.EnableDisablePrevNext()
 
-		self.firstrun = False # After all the fitmaps are drawn, the sizer knows how wide it is, so we trip this flag (see getWidthOfMiddle)
+		#self.firstrun = False # After all the fitmaps are drawn, the sizer knows how wide it is, so we trip this flag (see getWidthOfMiddle)
 
 	def onMainClick(self, evt) :
 		"""
