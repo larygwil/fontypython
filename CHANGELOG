@@ -160,4 +160,9 @@ Strings changed -- PO files will be broken :(
 30 Sept
 1. Spent the *ENTIRE* day fighting the damn splitter and sizers. Not really sure why or how, but I got it working okay. I also don't really know what broke from last version! 
 
+1 Oct 2009
+1. Renamed 'fp' script to 'start_fontypython' - had to edit a bunch of files. 
+1.1 It turns out that fonty has been running without the segfault catcher all along. This should be remedied as of now. Backported fix to 0.4.2.x as well.
+2. Taking-over the maintenance of the man page. I will leave it in the root of the tarball and Kartik will deal with it from there. Backported to 0.4.2.x
+
 

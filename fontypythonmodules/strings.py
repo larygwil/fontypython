@@ -48,12 +48,12 @@ options=_("""Options:
   -h --help	 Show this help message and exit.
   -e --examples
 				Show some %$@#$ examples!
-  -i pog --install=pog
-				Install the fonts in this pog to your 
+  -i Pog --install=Pog
+				Install the fonts in this Pog to your 
 				fonts folder.
-  -u pog --uninstall=pog
-				Uninstall the fonts in this pog.
-  -l --list	 List the names of all the pogs.
+  -u Pog --uninstall=Pog
+				Uninstall the fonts in this Pog.
+  -l --list	 List the names of all the Pogs.
   -s num --size=num
 				Set a new default point size.
   -n num --number=num
@@ -63,8 +63,8 @@ options=_("""Options:
 				Set a new default sample text.  
 				"This is an ex-parrot!", say. 
 				Be sure to use the quotes.
-  -p pog --purge=pog
-				Purge the pog of ttf files that are no
+  -p Pog --purge=Pog
+				Purge the Pog of ttf files that are no
 				longer really there.
   -c folder --check=folder
 				Check for bad fonts that crash Fonty.
@@ -81,31 +81,31 @@ options=_("""Options:
 				simply a bug in the library we use to
 				access fonts that chokes things. This
 				will (hopefully) improve in the future.
-  -a folder pog
-  --all folder pog
-				Puts all fonts in this folder into the pog.
-				If the pog already exists, it will add
+  -a folder Pog
+  --all folder Pog
+				Puts all fonts in this folder into the Pog.
+				If the Pog already exists, it will add
 				only *new* fonts, this means fonts are not
-				repeated in that pog.
-  -A folder pog
-  --all-recurse folder pog
+				repeated in that Pog.
+  -A folder Pog
+  --all-recurse folder Pog
 				Puts all fonts in this folder and *all*
-				sub-folders into the pog. Rest same as -a.
+				sub-folders into the Pog. Rest same as -a.
 
-  -z pog --zip=pog
-				All the fonts inside pog will be zipped
-				and the zipfile will be named after the pog.
+  -z Pog --zip=Pog
+				All the fonts inside Pog will be zipped
+				and the zipfile will be named after the Pog.
 				The file will be placed in the current
 				directory.
 				""")
 
 use = _("""%(c)s [OPTIONS] [VIEW] [TARGET]
 VIEW   : A place where fonts are. (A Pog or a Folder.)
-TARGET : A "pog". A place to keep those fonts.
+TARGET : A "Pog". A place to keep those fonts.
 
 ("%(c)s" on it's own will start the GUI.)
 
-NB: Try not to use spaces in pog names. If you must, 
+NB: Try not to use spaces in Pog names. If you must, 
 then "quote the name."
 
 Please use -e to see more info.
@@ -120,20 +120,20 @@ The basic idea:
 Many designers have collections of font files in big
 directory structures or on other media. Fonty Python
 will let you gather your fonts and structure them
-into collections -- or what I call "pogs" -- a place
+into collections -- or what I call "Pogs" -- a place
 to keep tyPOGraphy. Well, why not?
 
 Your fonts never move from where they are
 (so don't worry). All that happens is that you select 
-fonts visually and place their names into a pog,
-then you install or uninstall pogs as you need them.
+fonts visually and place their names into a Pog,
+then you install or uninstall Pogs as you need them.
 No copies of your fonts are made, only links to the
 original files are used to install the fonts.
 
-For example, you might have a pog called "logos"
+For example, you might have a Pog called "logos"
 into which you place all the ttfs you have of
 company logos. After that, when you need to work
-with those logos, you simply install the 'logos' pog
+with those logos, you simply install the 'logos' Pog
 and start your design app!
 
 FP is also great for just looking at fonts wherever
@@ -152,15 +152,15 @@ Manage your fonts on Gnu/Linux!
 	
 examples = _("""The basic format is:
 %(c)s [VIEW] [TARGET]
-  VIEW   = A place where fonts are. A pog or a folder
+  VIEW   = A place where fonts are. A Pog or a folder
 		   someplace.
-  TARGET = A pog, a place to keep references to fonts
+  TARGET = A Pog, a place to keep references to fonts
 		   If you don't include a target then you are
 		   viewing/editing only.
 
 Tips:
 =====
-* Don't use spaces in pog names. If you absolutely
+* Don't use spaces in Pog names. If you absolutely
   must then use quotes around the name, e.g. "Pogs
   of Ni"
 * If your design apps (for example The Gimp) do not
@@ -175,11 +175,11 @@ Examples: All using short options, see -h
  
 %(c)s /path/to/fonts/ttfs/b Trouser
   This will let you view and choose fonts from the
-  path and it will store them in a pog named "Trouser".
-  The pog will be created if it's not already there.
+  path and it will store them in a Pog named "Trouser".
+  The Pog will be created if it's not already there.
 
 %(c)s Lumberjack
-  This will let you see the fonts in the pog named
+  This will let you see the fonts in the Pog named
   "Lumberjack". You can also uninstall individual
   fonts by selecting them. A cross will appear
   indicating the fonts that will be uninstalled.
@@ -187,14 +187,14 @@ Examples: All using short options, see -h
 %(c)s Camelot Spamalot
   This will let you see and choose fonts in
   "Camelot" and it will store them in "Spamalot"
-  It lets you copy fonts between pogs.
+  It lets you copy fonts between Pogs.
 
 %(c)s -i Cheese
-  Will install the fonts in pog Cheese so you can
+  Will install the fonts in Pog Cheese so you can
   use them in other apps.
 
 %(c)s -u Trouser
-  Will uninstall the fonts listed in pog Trouser,
+  Will uninstall the fonts listed in Pog Trouser,
   so you can't use 'em anymore.( You Naughty thing) 
 
 %(c)s -t "Pigs on the wing"
@@ -211,13 +211,13 @@ Examples: All using short options, see -h
 	
 %(c)s -s 64 -v 10 Pimple
   Will set the point size to 64, the number of fonts
-  to view is 10 and then display the Pimple pog.
+  to view is 10 and then display the Pimple Pog.
 
 %(c)s -p Glutton
   If there are any fonts in "Glutton" that are not
   really on your drive/media anymore (perhaps you
   deleted them or the cat did) then this will go 
-  through your pog and cull them.
+  through your Pog and cull them.
 
 %(c)s -c /some/path/to/fonts
   If Fonty keeps crashing on /some/path/to/fonts
@@ -237,7 +237,7 @@ Examples: All using short options, see -h
 
 Your fontypython folder is:
 %(folder)s
-If you want to backup your pogs, that's where ya go.
+If you want to backup your Pogs, that's where ya go.
 %(contact)s
 
 %(copy)s""") % { "c":"fontypython", "folder":_pc.appPath(), "contact":contact, "copy":copyright }

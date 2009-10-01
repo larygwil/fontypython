@@ -18,7 +18,7 @@
 
 """
 Dec 2007
-This wraps fp and catches the segfaults that kill it.
+This wraps start_fontypython and catches the segfaults that kill it.
 A window displays the situation and gives the user some hope.
 """
 
@@ -51,8 +51,8 @@ import fontypythonmodules.i18n as i18n
 # not work properly. User should be able to open a view
 # on the current directory.
 # Thus:
-# Point to the absolute path of the 'fp' script.
-c1 = [os.path.join(fontyroot,'fp') ]
+# Point to the absolute path of the 'start_fontypython' script.
+c1 = [os.path.join(fontyroot,'start_fontypython') ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )

@@ -262,7 +262,7 @@ class DialogSettings(wx.Dialog):
 class SegfaultDialog(wx.Dialog):
 	"""
 	Dec 2007
-	Runs from the wrapper script (which runs fp) so that we
+	Runs from the wrapper script (which runs start_fontypython) so that we
 	can tell the user that there was a segfault and why.
 	"""
 	def __init__(self, parent, culprit):
