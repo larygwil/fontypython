@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fontypython 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-29 20:04+0200\n"
+"POT-Creation-Date: 2009-10-01 13:55+0200\n"
 "PO-Revision-Date: 2008-01-22 19:46+0200\n"
 "Last-Translator: Donn Ingle <donn.ingle@gmail.com>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: fp:23
+#: start_fontypython:23
 msgid "Sorry, only Gnu/Linux is supported at the moment."
 msgstr ""
 

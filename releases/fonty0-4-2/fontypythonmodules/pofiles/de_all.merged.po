@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-29 20:04+0200\n"
+"POT-Creation-Date: 2009-10-01 13:55+0200\n"
 "PO-Revision-Date: 2009-09-28 10:11+0200\n"
 "Last-Translator: Donn <donn.ingle@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fp:23
+#: start_fontypython:23
 msgid "Sorry, only Gnu/Linux is supported at the moment."
 msgstr "Entschuldigung, nur GNU/Linux wird zur Zeit unterstützt"
 
