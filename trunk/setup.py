@@ -98,6 +98,7 @@ files = find_data_files('fontypythonmodules/', '*.*')
 ## but this works on my system.
 files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
+## files.append( ('/usr/share/man/man1',['fontypython.1']) ) # leave this up to Kartik to handle.
 files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this puts COPYING into fontypythonmodules
 
 setup(name = "fontypython",
@@ -114,8 +115,8 @@ setup(name = "fontypython",
 	## Override some of the default distutils command classes with my own.
 	cmdclass = { 'install_data':	wx_smart_install_data },
 
-	#'fontypython' and 'fp' are in the root.
-	scripts = ["fontypython", "fp"],
+	#'fontypython' and 'start_fontypython' are in the root.
+	scripts = ["fontypython", "start_fontypython"],
 long_description = fontypythonmodules.strings.long_description,
 	classifiers=[
 	  'Development Status :: 4 - Beta',
