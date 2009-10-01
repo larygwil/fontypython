@@ -52,7 +52,7 @@ try:
 
 except IOError:
 	## Could not find the domain.mo file.
-	## I won't print a message because this file runs twice (fontypython and fp)
+	## I won't print a message because this file runs twice (fontypython and start_fontypython)
 	## and that dumps two messages, which sucks.
 	pass # default to English.
 

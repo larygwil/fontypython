@@ -410,7 +410,7 @@ if B and fpsys.isFolder(B):
 	raise SystemExit
 	
 ## Let's ensure that B exists, else we must make it.
-## This is because when you call ./fp VIEW TARGET and
+## This is because when you call VIEW TARGET and
 ## TARGET gets created (the file) if it's not there.
 if B and not fpsys.isPog(B):
 	ipog = fontcontrol.Pog(B)
