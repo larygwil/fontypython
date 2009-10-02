@@ -151,7 +151,7 @@ Strings changed -- PO files will be broken :(
 28 Sept : Feedback from Kartik
 1. Removed the Version tag from .desktop file -- it's not required.
 2. Removed the .png from the icon key in .desktop file -- it's not wanted.
-3. Some confusion as to whether fonty will run 100% on Python 2.5 I developed this year on 2.6
+3. Some confusion as to whether fonty will run 100% on Python 2.5, I developed this year on 2.6
 4. Version bumped to 0.4.2.1
 
 29 Sept
@@ -164,5 +164,8 @@ Strings changed -- PO files will be broken :(
 1. Renamed 'fp' script to 'start_fontypython' - had to edit a bunch of files. 
 1.1 It turns out that fonty has been running without the segfault catcher all along. This should be remedied as of now. Backported fix to 0.4.2.x as well.
 2. Taking-over the maintenance of the man page. I will leave it in the root of the tarball and Kartik will deal with it from there. Backported to 0.4.2.x
+
+2 Oct
+1. Spot changes. Made label above font views look better.
 
 
