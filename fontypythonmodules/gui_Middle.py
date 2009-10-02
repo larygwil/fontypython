@@ -554,20 +554,28 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 	def __init__(self, parent):
 		self.FVP = parent
 		self.lab = u" " 
-		self.infoFont = wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
-		self.light = wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
+		self.infoFont = wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.light = (255,255,255)#wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
 		self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
 		self.back = parent.GetBackgroundColour()
 		self.h=100
+		self.width = 10
 
 		self.VIEWICON = wx.Bitmap(fpsys.mythingsdir + "view16x16.png", type=wx.BITMAP_TYPE_PNG)
 
 		# call parent init after vital settings are done.
 		wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
 		self.Bind(wx.EVT_PAINT, self.OnPaint)
+		self.Bind(wx.EVT_SIZE, self.OnSize)
+
+	def OnSize(self,e):
+		self.width=self.FVP.GetSize()[0]
+		self.Refresh()
+
 	def SetLabel( self, lab ):
 		self.lab=lab
 		self.Refresh()
+
 	def DoGetBestSize(self):
 		dc = wx.ClientDC(self)
 		dc.SetFont(self.infoFont)
@@ -577,25 +585,18 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		self.CacheBestSize(best)
 		self.h=besth
 		return best
-	def OnPaint(self, event):
-		pdc = wx.PaintDC(self)
-		try:
-			dc = wx.GCDC(pdc)
-		except:
-			dc = pdc
-		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 40 
 
+	def OnPaint(self, event):
+		dc = wx.PaintDC(self)
+		w = self.width
+		w -= wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X)
 		#Now draw the thing:
 		rect = wx.Rect(0,0, w, self.h + 10)
 		
 		dc.SetPen(wx.Pen(self.dark,width=1))
-		dc.SetBrush(wx.Brush(self.back))
+		dc.SetBrush( wx.TRANSPARENT_BRUSH ) 
 
-		#rect.SetPosition( (0,0) )
 		dc.DrawRoundedRectangleRect(rect, 5)
-		
-		#The gradient under the text
-		dc.GradientFillLinear( wx.Rect(2, self.h-15, w-3, self.h-2), self.light, self.back, nDirection=wx.NORTH )
 
 		# The text
 		dc.SetFont(self.infoFont) 
@@ -603,3 +604,21 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 
 		dc.DrawBitmap( self.VIEWICON, 6,5, True)
 
+	def OnPaintFakeTab(self, event):
+		'''Old fake tab look. Keep for future ref.'''
+		pdc = wx.PaintDC(self)
+		try:
+			dc = wx.GCDC(pdc)
+		except:
+			dc = pdc
+		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 40 
+		rect = wx.Rect(0,0, w, self.h + 10)
+		dc.SetPen(wx.Pen(self.dark,width=1))
+		dc.SetBrush(wx.Brush(self.back))
+		dc.DrawRoundedRectangleRect(rect, 5)
+		#The gradient under the text
+		dc.GradientFillLinear( wx.Rect(2, self.h-15, w-3, self.h-2), self.light, self.back, nDirection=wx.NORTH )
+		# The text
+		dc.SetFont(self.infoFont) 
+		dc.DrawText(self.lab, 27,5)
+		dc.DrawBitmap( self.VIEWICON, 6,5, True)
