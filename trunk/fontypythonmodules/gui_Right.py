@@ -155,14 +155,18 @@ class TargetPogChooser(wx.Panel):
 		if e.GetId() == self.iddelete:
 			## Selected Pog(s) to be deleted:
 			tokill = multipogs
-
+			iPogsToKill = []
 			##Is any one of those installed?
 			allok=True
 			for p in tokill:
-				if p.isInstalled():
+				## Michael Hoeft tested pog delete and noticed the bug. Thanks.
+				## Fixed Oct 2009
+				iPog = fontcontrol.Pog(p)
+				if iPog.isInstalled():
 					ps.pub( show_error, _("One or more selected fonts is installed, fix your selection and try again.") )
 					allok=False
 					break
+				iPogsToKill.append( iPog )
 
 			if allok:
 				## Build a string for reporting in the dialog
@@ -180,20 +184,21 @@ class TargetPogChooser(wx.Panel):
 									  )
 				if dlg.ShowModal() == wx.ID_YES:
 					## Let's do them in:
-					for victim in tokill:
-						fpsys.instantiateTargetPog(victim) #Makes the fpsys.state.targetobject
+					for victim in iPogsToKill: #tokill:
+						#fpsys.instantiateTargetPog(victim) #Makes the fpsys.state.targetobject
 						## Now kill the file on disk:
-						try:	
-							fpsys.state.targetobject.delete()
+						try:
+							victim.delete()
+							#fpsys.state.targetobject.delete()
 						except fontybugs.PogCannotDelete, e:
 							ps.pub(show_error, unicode( e ))
 							return
 						## Remove from the lists:
-						self.pogTargetlist.RemoveItem(victim)
-						ps.pub( remove_pog_item_from_source, victim)
+						self.pogTargetlist.RemoveItem(victim.name)
+						ps.pub( remove_pog_item_from_source, victim.name)
 
 						## What if it was ALSO our view object?
-						if fpsys.state.viewobject.label() == victim:
+						if fpsys.state.viewobject.label() == victim.name:
 							## It was! We must declare it Empty.
 							fpsys.SetViewPogToEmpty()
 					
@@ -203,7 +208,7 @@ class TargetPogChooser(wx.Panel):
 
 					## Select no pog.
 					self.SelectNoTargetPog()
-					return
+			return
 		
 		## NO POG pressed
 		if e.GetId() == self.idnone:

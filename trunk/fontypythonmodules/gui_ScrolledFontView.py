@@ -142,7 +142,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 				fm = Fitmap( self, (0,0),fitem)# i * h), fitem )
 				self.fitmaps.append(fm) 
 				self.mySizer.Add(fm, 0, wx.GROW) 
-		
+				wx.Yield()
+
 		# Layout should be called after adding items.
 		self.mySizer.Layout()
 

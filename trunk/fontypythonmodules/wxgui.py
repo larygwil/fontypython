@@ -152,21 +152,15 @@ class MainFrame(wx.Frame):
 		self.panelNotebook = wx.Panel(self.splitter) 
 		
 		## Notebook label and icon
-		self.viewIcon = wx.StaticBitmap\
-		(self.panelNotebook, -1, wx.Bitmap\
-		(fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG))		
-		self.viewLabel = wx.StaticText\
-		(self.panelNotebook, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT)
-		self.viewLabel.SetFont\
-		(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD))
+		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))		
+		self.viewLabel = wx.StaticText( self.panelNotebook, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
+		self.viewLabel.SetFont( wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
 		
 		## A horiz sizer to hold the icon and text
 		self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer_iconandtext.Add((4,1),0)
-		self.sizer_iconandtext.Add\
-		(self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4)
-		self.sizer_iconandtext.Add\
-		(self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
+		self.sizer_iconandtext.Add( (4, 1), 0 )
+		self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4 )
+		self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
 		
 		## Now the actual notebook
 		self.nb = NoteBook(self.panelNotebook)

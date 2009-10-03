@@ -29,8 +29,9 @@ import pathcontrol
 import strings
 import fontcontrol
 
+import wx
 
-
+import subprocess
 
 ## Ensure we have a .fontypython folder and a .fonts folder.
 iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
@@ -46,6 +47,9 @@ fontyroot = os.path.dirname(os.path.abspath(root))
 
 ## Where my images and things are.
 mythingsdir = os.path.join(fontyroot,"things/")
+
+## OCt 2009
+##  Determine whether gucharmap or kfontview are installed.
 
 
 ## Sept 2009
@@ -151,7 +155,6 @@ def checkFonts( dirtocheck, printer ):
 	
 	Can be called from the cli or the gui.
 	"""
-	import subprocess
 	global segfonts
 	
 	code = """
@@ -294,6 +297,8 @@ class Configure:
 		self.recurseFolders = False 
 		## Added Sept 2009
 		self.ignore_adjustments = False
+		## Added 3 Oct 2009
+		self.app_char_map = None
 
 		self.__setData()
 		
@@ -325,6 +330,7 @@ class Configure:
 			self.rightSash = self.__data['rightSash']
 			self.recurseFolders = self.__data['recurseFolders']
 			self.ignore_adjustments = self.__data['ignore_adjustments']
+			self.app_char_map = self.__data['app_char_map']
 			
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
@@ -350,7 +356,8 @@ class Configure:
 								"leftSash" : self.leftSash,
 								"rightSash" : self.rightSash,
 								"recurseFolders": self.recurseFolders,
-								"ignore_adjustments": self.ignore_adjustments
+								"ignore_adjustments": self.ignore_adjustments,
+								"app_char_map" : self.app_char_map
 								}
 	def Save(self) :
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
@@ -528,4 +535,3 @@ def logSegfaulters( lastPaf ):
 		raise
 
 
-		
