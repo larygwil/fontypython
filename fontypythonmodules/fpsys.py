@@ -50,14 +50,20 @@ mythingsdir = os.path.join(fontyroot,"things/")
 
 ## OCt 2009
 ##  Determine whether gucharmap or kfontview are installed.
-def does_charmap_exist(program):
+def does_app_exist(program):
 	for path in os.environ.get('PATH', '').split(':'):
 		if os.path.exists(os.path.join(path, program)) and \
 		   not os.path.isdir(os.path.join(path, program)):
 			#return os.path.join(path, program)
 			return program
 	return None
-
+def make_apps_list():
+	apps=[]
+	apps.append( does_app_exist('gucharmap') )
+	apps.append( does_app_exist('kfontview') )
+	got_apps=[str(t) for t in apps if t is not None]
+	return got_apps
+GOT_APPS = make_apps_list()
 
 ## Sept 2009
 class Overlaperize(object):
@@ -384,6 +390,7 @@ class Configure:
 ## Our config instance - it will have one instance across
 ## all the modules that use it.
 config = Configure()
+if not GOT_APPS: config.app_char_map = None
 
 def instantiateViewFolder( foldername, recurse=False ):
 	"""

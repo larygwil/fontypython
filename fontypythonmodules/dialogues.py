@@ -244,11 +244,7 @@ class DialogSettings(wx.Dialog):
 		PANE2sizer.Add(self.chkAdjust, 0, wx.ALIGN_LEFT | wx.BOTTOM, border=10 )
 
 		# The Character map choice
-		apps=[]
-		apps.append( fpsys.does_charmap_exist('gucharmap') )
-		apps.append( fpsys.does_charmap_exist('kfontview') )
-		self.got_apps=[str(t) for t in apps if t is not None]
-		#self.got_apps=False
+		self.got_apps=fpsys.GOT_APPS
 		if self.got_apps:
 			self.CHOSEN_CHARACTER_MAP = fpsys.config.app_char_map
 			rb = wx.RadioBox(
