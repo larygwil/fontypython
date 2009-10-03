@@ -204,6 +204,7 @@ class FontViewPanel(wx.Panel):
 		
 		self.buttMain.SetFocus()
 		evt.Skip()
+
 	# When the user selects something in the combo pull-down area, we go here.
 	def EvtComboBox(self, evt):
 		cb = evt.GetEventObject()
@@ -589,7 +590,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 	def OnPaint(self, event):
 		dc = wx.PaintDC(self)
 		w = self.width
-		w -= wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X)
+		w -= wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X) # minus width of the scrollbar
 		#Now draw the thing:
 		rect = wx.Rect(0,0, w, self.h + 10)
 		

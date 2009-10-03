@@ -69,7 +69,11 @@ class FontItem( object ):
 		## What kind of bad to the bone am I?
 		## One of FILE_NOT_FOUND, PIL_IO_ERROR, PIL_UNICODE_ERROR, PIL_CANNOT_RENDER
 		self.badstyle = "" 
-		
+	
+
+		self.total_number_of_glyphs = None
+
+
 		## We need the family name and style to be fetched
 		## because we have that filter thingy in the gui
 		## and it uses those strings to search for terms.
@@ -191,7 +195,10 @@ class FontItem( object ):
 					self.badfontmsg = _("Font causes a segfault. It cannot be drawn.")
 					self.badstyle = "PIL_SEGFAULT_ERROR"
 					break
-				
+
+			# Still in while loop	
+			self.total_number_of_glyphs = font.font.glyphs # Hope this does not crash Fonty....
+
 		self.numFaces = i
 				
 	def generatePilFont( self, enc="unicode" ):
@@ -774,7 +781,7 @@ class Pog(BasicFontList):
 			print _("%s is already installed." % self.name)
 			return
 
-		## We start thinking all is rosy:
+		## We start thinking all is rosey:
 		self.__installed = "yes"
 		## Now we make sure ...
 		if len(self) == 0: 

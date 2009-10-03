@@ -17,6 +17,8 @@
 
 import wx
 import colorsys
+import subprocess,os
+import threading
 
 import wx.lib.statbmp 
 import fontcontrol
@@ -27,6 +29,8 @@ from wxgui import ps
 ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
 black=(0,0,0)
 white=(255,255,255)
+
+
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	"""
 	This class is a bitmap of a TTF font - it detects a click and 
@@ -121,10 +125,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## init my parent class 
 		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
 
+		self.on_charmap_button = False
+
 		## Very cool event, gives us life!
 		self.Bind(wx.EVT_LEFT_UP,self.onClick) 
 		self.Bind(wx.EVT_MIDDLE_UP, self.onMiddleClick)	
-		
+		#self.Bind(wx.EVT_LEFT_DCLICK, self.onDClick)
+		self.Bind( wx.EVT_MOTION, self.onHover )
+
 		## Redraw event
 		self.Bind(wx.EVT_PAINT,  self.onPaint) 
 		
@@ -141,21 +149,82 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				if not self.fitem.inactive:
 					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
 
-	def onPaint(self, event):
-		"""
-		Dump the bitmap to the screen.
-		"""
-		if self.bitmap:
-			## Create a buffered paint DC.  It will create the real
-			## wx.PaintDC and then blit the bitmap to it when dc is
-			## deleted.  Since we don't need to draw anything else
-			## here that's all there is to it.
-			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
+
+	def openCharacterMap( self ):
+		fi=self.fitem
+		dirname = os.path.basename( fi.glyphpaf )
+		dest = os.path.join(fpsys.iPC.userFontPath(), dirname )
+
+		## I don't want to hold an fitem in the thread to come, so I will
+		## take the essential info out and make a tuple instead:
+		## (This is mere superstition and ignorance, I fear threads :) )
+		argstup=(fi.glyphpaf, dest, self.fitem.family[0],fpsys.config.points )
+
+		## Never done threading before. Not really sure if this is kosher...
+		thread = threading.Thread(target=self.run, args=argstup)
+		thread.setDaemon(True)
+		thread.start()
+
+	def run(self, *args):
+		src=args[0]
+		dest=args[1]
+		fam=args[2]
+		sz=args[3]
+
+		if fpsys.config.app_char_map is "gucharmap":
+			makelink=True
+			cmd = ['gucharmap', u'--font=%s, %s' % (fam, sz)]
+
+		elif fpsys.config.app_char_map is "kfontview":
+			makelink=False
+			url = src
+			cmd = ['kfontview', u'%s' % url]
+		else:
+			return
+
+		if makelink:
+			fail=False
+			try:
+				os.symlink( src, dest )
+			except OSError, detail:
+				if detail.errno != 17:
+					# Not 17 means the link failed, don't open the charmap
+					# (17 is file exists. That's fine.)
+					fail = True
+			if fail: return
+
+		proc = subprocess.Popen( cmd, shell=False )
+		## gucharmap: app actually holds still and waits here until gucharmap is closed.
+		## kfontview: app just runs-through. kfontview is a different beast.
+		## Both still work and Fonty stays active.
+		proc.wait()
+
+		if makelink:
+			try:
+				os.unlink( dest )
+			except:
+				# What to do? Start yelling? Nah...
+				pass
+		#print "END ",fam
 
 	def onMiddleClick(self, event):
 		ps.pub( menu_settings, None )
 
+	def onHover( self, e ):
+		self.on_charmap_button = False
+		#self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+		if wx.Rect(0,0,50,50).Contains( e.GetPositionTuple() ):	
+			self.on_charmap_button = True
+			#self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+
 	def onClick(self, event) :
+		if self.on_charmap_button:
+			#fpsys.config.app_char_map = "kfontview"
+			fpsys.config.app_char_map = "gucharmap"
+			if fpsys.config.app_char_map:
+				self.openCharacterMap()
+			return
+
 		if fpsys.state.cantick and not self.fitem.inactive:
 			self.fitem.ticked = not(self.fitem.ticked)
 			self.prepareBitmap() # This only redraws a single font item.
@@ -165,7 +234,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			if self.fitem.ticked: fpsys.state.numticks += 1
 			if not self.fitem.ticked: fpsys.state.numticks -= 1
 			ps.pub(toggle_main_button)
-		event.Skip()	
+		#event.Skip()	
 
 
 	def CalculateTopLeftAdjustments(self, image, i, pilimage):
@@ -212,6 +281,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			fx,fy = (self.fitem.fx[i], self.fitem.fy[i])
 		wx.EndBusyCursor()
 		return fx,fy
+
+	def onPaint(self, event):
+		"""
+		Dump the bitmap to the screen.
+		"""
+		if self.bitmap:
+			## Create a buffered paint DC.  It will create the real
+			## wx.PaintDC and then blit the bitmap to it when dc is
+			## deleted.  Since we don't need to draw anything else
+			## here that's all there is to it.
+			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
 	def prepareBitmap( self ):
 		"""
@@ -446,6 +526,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 	#def DoGetBestSize(self):
 		#DOES NOT RUN
-		#print "             FITMAP ?"
+		#print "			 FITMAP ?"
 
 
