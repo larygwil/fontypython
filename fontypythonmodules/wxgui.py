@@ -295,7 +295,10 @@ class MainFrame(wx.Frame):
 				fpsys.config.numinpage = int(num)
 				fpsys.config.points = int(points)
 				if len(txt) > 0: fpsys.config.text =  txt
+			
 			fpsys.config.ignore_adjustments = ignoreAdjust #Sept 2009
+			fpsys.config.app_char_map = dlg.CHOSEN_CHARACTER_MAP # Oct 2009
+			print fpsys.config.app_char_map
 			## Now to refresh things:
 			## Sept 2009 : size change means we need new values for fitmaps
 			ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
@@ -376,11 +379,11 @@ class MainFrame(wx.Frame):
 
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-#import wx.lib.mixins.inspection
+import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App):#, wx.lib.mixins.inspection.InspectionMixin) :
+class App(wx.App, wx.lib.mixins.inspection.InspectionMixin) :
 	def OnInit(self):
-		#self.Init()  # initialize the inspection tool
+		self.Init()  # initialize the inspection tool
 		
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:

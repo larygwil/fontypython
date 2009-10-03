@@ -171,11 +171,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		fam=args[2]
 		sz=args[3]
 
-		if fpsys.config.app_char_map is "gucharmap":
+		if fpsys.config.app_char_map == "gucharmap":
 			makelink=True
 			cmd = ['gucharmap', u'--font=%s, %s' % (fam, sz)]
-
-		elif fpsys.config.app_char_map is "kfontview":
+		elif fpsys.config.app_char_map == "kfontview":
 			makelink=False
 			url = src
 			cmd = ['kfontview', u'%s' % url]
@@ -220,7 +219,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	def onClick(self, event) :
 		if self.on_charmap_button:
 			#fpsys.config.app_char_map = "kfontview"
-			fpsys.config.app_char_map = "gucharmap"
+			#fpsys.config.app_char_map = "gucharmap"
 			if fpsys.config.app_char_map:
 				self.openCharacterMap()
 			return
