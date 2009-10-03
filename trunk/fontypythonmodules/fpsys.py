@@ -50,6 +50,13 @@ mythingsdir = os.path.join(fontyroot,"things/")
 
 ## OCt 2009
 ##  Determine whether gucharmap or kfontview are installed.
+def does_charmap_exist(program):
+	for path in os.environ.get('PATH', '').split(':'):
+		if os.path.exists(os.path.join(path, program)) and \
+		   not os.path.isdir(os.path.join(path, program)):
+			#return os.path.join(path, program)
+			return program
+	return None
 
 
 ## Sept 2009
@@ -377,7 +384,6 @@ class Configure:
 ## Our config instance - it will have one instance across
 ## all the modules that use it.
 config = Configure()
-
 
 def instantiateViewFolder( foldername, recurse=False ):
 	"""

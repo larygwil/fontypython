@@ -167,5 +167,9 @@ Strings changed -- PO files will be broken :(
 
 2 Oct
 1. Spot changes. Made label above font views look better.
+2. Started adding threading so that Fonty can spawn gucharmap or kfontview on a given fitmap in the view.
 
-
+3 Oct
+1. Fixed a bug in Delete Pogs -- reported by Michael Hoeft. Backported to 0.4.2.2 as well.
+2. Adding an 'Voodoo' tab to Settings dialogue to house the charmap choice and the font adjustment checkbox. Wired it all up and it works!
+3. (TO DO) Build some kind of button to spawn the character-map app.

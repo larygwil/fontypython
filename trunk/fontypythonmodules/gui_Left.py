@@ -58,7 +58,7 @@ class NoteBook(wx.Notebook):
 	THIS IS THE VIEW or SOURCE of fonts.	
 	"""
 	def __init__(self, parent):
-		wx.Notebook.__init__(self, parent)
+		wx.Notebook.__init__(self, parent, style=wx.NB_BOTTOM)
 		self.imlist = wx.ImageList(16, 16)
 		
 		pan1 = wx.Panel(self)
@@ -73,8 +73,8 @@ class NoteBook(wx.Notebook):
 
 		## Add them to a sizer
 		box = wx.BoxSizer(wx.VERTICAL) 
-		box.Add( self.recurseFolders,0,wx.EXPAND )
 		box.Add( self.dircontrol,1, wx.EXPAND ) 
+		box.Add( self.recurseFolders,0,wx.EXPAND )
 		pan1.SetSizer(box) 
 		box.Layout() 
 
