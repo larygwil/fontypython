@@ -33,6 +33,9 @@ import wx
 
 import subprocess
 
+## Oct 2009
+DFAM=None
+
 ## Ensure we have a .fontypython folder and a .fonts folder.
 iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
 

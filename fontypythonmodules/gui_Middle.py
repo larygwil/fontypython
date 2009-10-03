@@ -555,7 +555,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 	def __init__(self, parent):
 		self.FVP = parent
 		self.lab = u" " 
-		self.infoFont = wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		self.infoFont = wx.Font(11, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.light = (255,255,255)#wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
 		self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
 		self.back = parent.GetBackgroundColour()

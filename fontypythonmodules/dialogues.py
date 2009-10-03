@@ -203,7 +203,7 @@ class DialogSettings(wx.Dialog):
 		PANE2 = wx.Panel(nb, -1)
 
 		## The layout of PANE1 begins:
-		font = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(16, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		labelHeading = wx.StaticText(self, -1, _("Settings"))
 		labelHeading.SetFont(font)
 
@@ -296,7 +296,7 @@ class DialogSettings(wx.Dialog):
 		buffer.Add( verticalSizer, 1,wx.EXPAND | wx.ALL,  border=10 )
 
 		self.SetSizer( buffer )
-		buffer.Fit(self) # This triggers the sizers to do their thing.
+		buffer.Fit(self)
 		self.Layout()
 
 	def EvtRadioBox(self, event):
@@ -312,18 +312,18 @@ class SegfaultDialog(wx.Dialog):
 		wx.Dialog.__init__(self, parent, -1, _("Oh boy..."), pos = wx.DefaultPosition )
 		
 		## The layout begins:
-		font = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(16, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.labelHeading = wx.StaticText(self, -1, _("Fonty Python, um ... crashed."))
 		self.labelHeading.SetFont(font)
 		
-		font = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(12, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.ohDear = wx.StaticText( self, -1, _("Oh dear,"))
 		self.ohDear.SetFont( font )
 		
 
 		self.sadStory = wx.StaticText( self, -1, _("There's some problem with the font named below. Please use the Check Fonts tool in Fonty\n(from the command-line or the Tools menu) to go through this directory and mark all the dangerous fonts.\n(You could simply move this font elsewhere, but others may remain to cause trouble.)\n" ))
 
-		font = wx.Font(11, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(11, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.culprit = wx.StaticText( self, -1, culprit ) 
 		self.culprit.SetFont( font )
 		
@@ -345,8 +345,7 @@ class SegfaultDialog(wx.Dialog):
 		buffer=wx.BoxSizer( wx.HORIZONTAL )
 		buffer.Add( verticalSizer, 1, border=10 )
 
-		self.SetSizer( buffer )#box)
-		#box.Fit(self) # This triggers the sizers to do their thing.
+		self.SetSizer( buffer )
 		buffer.Fit(self) # This triggers the sizers to do their thing.	
 		self.SetSizer(box)
 		box.Fit(self)
@@ -396,7 +395,7 @@ class DialogCheckFonts( wx.Dialog ):
 		## LEFT
 		leftsz = wx.BoxSizer(wx.VERTICAL)
 
-		font = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(12, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		title = wx.StaticText( self,-1,  _("Choose a directory and double click it to start"))
 		title.SetFont( font )
 		leftsz.Add(title,0,wx.EXPAND | wx.ALL, border=4 )

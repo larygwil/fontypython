@@ -27,6 +27,7 @@ from pubsub import *
 from wxgui import ps
 
 ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
+ndi=(227,226,219) # No Draw Inactive.
 black=(0,0,0)
 white=(255,255,255)
 
@@ -39,7 +40,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	
 	## This class-level dict is a kind of "style sheet" to use in fitmap drawing.
 	styles={
-			'FILE_NOT_FOUND':
+			'FILE_NOT_FOUND': #Needs purging
 				{
 					'backcol': (255,214,57),
 					'fcol'   : black,
@@ -48,10 +49,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					},
 			'PIL_SEGFAULT_ERROR':
 				{
-					'backcol': (183,200,190),
+					'backcol': (152,147,157), #255,140,20),
 					'fcol'   : black,
 					'bcol'   : white,
-					'icon'	 : "SEGFAULT" ,
+					'icon'	 : "SEGFAULT",
+					'ndi'	 : (216,193,193)
 					},
 			'PIL_IO_ERROR':
 				{
@@ -59,6 +61,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					'fcol'   : black,
 					'bcol'   : white,
 					'icon'	 : "NO_DRAW",
+					'ndi'	 : ndi
 					},
 			'PIL_UNICODE_ERROR':
 				{
@@ -66,6 +69,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					'fcol'   : black,
 					'bcol'   : white,
 					'icon'	 : "NO_DRAW",
+					'ndi'	 : ndi
 					},
 			'PIL_CANNOT_RENDER':
 				{
@@ -73,6 +77,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					'fcol'   : black,
 					'bcol'   : white,
 					'icon'	 : "NO_DRAW",
+					'ndi'	 : ndi
 					},
 			'ACTIVE':
 				{
@@ -175,36 +180,41 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			makelink=True
 			cmd = ['gucharmap', u'--font=%s, %s' % (fam, sz)]
 		elif fpsys.config.app_char_map == "kfontview":
-			makelink=False
+			makelink=False # kfontview only needs a url to a font file. It rules.
 			url = src
 			cmd = ['kfontview', u'%s' % url]
 		else:
 			return
 
 		if makelink:
+			## gucharmap requires the font to be installed already, so fake it:
 			fail=False
+			already_installed = False
 			try:
 				os.symlink( src, dest )
 			except OSError, detail:
 				if detail.errno != 17:
 					# Not 17 means the link failed, don't open the charmap
-					# (17 is file exists. That's fine.)
 					fail = True
+				else:
+					# Error 17: file exists.
+					# User may have installed it previously (or something).
+					already_installed = True
 			if fail: return
 
 		proc = subprocess.Popen( cmd, shell=False )
-		## gucharmap: app actually holds still and waits here until gucharmap is closed.
-		## kfontview: app just runs-through. kfontview is a different beast.
-		## Both still work and Fonty stays active.
+		## gucharmap: Fonty actually holds still and waits here until gucharmap is closed.
+		## kfontview: Fonty just runs-through. kfontview is a different beast.
+		## Both still work and Fonty stays active. Multiple instances if the viewers can be opened!
 		proc.wait()
 
-		if makelink:
+		# Remove the fake installed font -- if it's a candidate:
+		if makelink and not already_installed:
 			try:
 				os.unlink( dest )
 			except:
 				# What to do? Start yelling? Nah...
 				pass
-		#print "END ",fam
 
 	def onMiddleClick(self, event):
 		ps.pub( menu_settings, None )
@@ -217,9 +227,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			#self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
 
 	def onClick(self, event) :
-		if self.on_charmap_button:
-			#fpsys.config.app_char_map = "kfontview"
-			#fpsys.config.app_char_map = "gucharmap"
+		if self.on_charmap_button and self.fitem.badstyle != "FILE_NOT_FOUND":
 			if fpsys.config.app_char_map:
 				self.openCharacterMap()
 			return
@@ -368,7 +376,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## Draw error message into the memDc
 					memDc.SetTextForeground( fcol )
 					txt=_("This text cannot be drawn. Hey, it happens...")
-					memDc.SetFont( wx.Font( fpsys.config.points, family=wx.SWISS, style=wx.ITALIC, weight=wx.NORMAL))
+					memDc.SetFont( wx.Font( fpsys.config.points, fpsys.DFAM, style=wx.ITALIC, weight=wx.NORMAL))
 					memDc.DrawText( txt, 10, y+2)
 				else: #no error happened, we carry on.
 					## Place it into the main image, down a tad so it looks better.
@@ -389,7 +397,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
 				memDc.SetTextForeground( fcol )
 				## Sep 2009: Trying to draw foreign chars via DrawText
-				memDc.SetFont( wx.Font( 8, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL,encoding=wx.FONTENCODING_DEFAULT))
+				memDc.SetFont( wx.Font( 8,fpsys.DFAM , style=wx.NORMAL, weight=wx.NORMAL,encoding=wx.FONTENCODING_DEFAULT))
 				memDc.DrawText( txt, 16, texty)
 				
 				## Move TOP down to next BOTTOM (for next sub-face)
@@ -406,7 +414,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			mx,my=(27,self.height-20) if self.fitem.badfont else (27,self.height-26)
 			memDc.DrawBitmap( self.TICKSMALL, mx-20, my, True )
 			memDc.SetTextForeground( black )
-			memDc.SetFont( wx.Font(11,family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
+			memDc.SetFont( wx.Font(11,fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
 			memDc.DrawText( self.fitem.activeInactiveMsg, mx, my )
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
@@ -416,7 +424,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				memDc.DrawBitmap(self.TICKMAP, 20, 5, True)
 			
 		## Now a dividing line
-		memDc.SetPen( wx.Pen( (200,200,200),1 ) )#black, 1 ) ) 
+		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
 		memDc.DrawLine( 0, self.height-1, maxwidth, self.height-1 )
 
 
@@ -427,14 +435,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.style=Fitmap.styles[self.fitem.badstyle].copy() #damn! this was tricky!
 			if self.fitem.inactive:
 				self.style['fcol'] = Fitmap.styles['INACTIVE']['fcol']
-				# Dim the colour of the badfont to match look of other inactive fitems
-				bg=self.style['backcol']
-				hsv=self.rgb_to_hsv(bg)
-				sat=self.clamp(hsv[1]/2.5)
-				bright=self.clamp(hsv[2]*5.0)
-				nbg=self.hsv_to_rgb((hsv[0],sat,bright))
-				self.style['backcol'] = nbg
+				self.style['backcol'] = Fitmap.styles[self.fitem.badstyle]['ndi']
 			return
+
 		# Not bad font, just get vals from style sheet.
 		if self.fitem.inactive:
 			self.style = Fitmap.styles['INACTIVE']
@@ -474,7 +477,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		sb = int(rgb[2]*255.0)
 		return ( sr,sg,sb )
 
-	def bottomFadeEffect( self, dc, height, width, step=1.12):
+	def bottomFadeEffect( self, dc, height, width, step=1.13):
 		"""
 		Baptiste's idea! New implementation : June 2009
 		 "Now a dividing gradient, you can say "wow" ;-)"
@@ -506,18 +509,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		icon = self.style['icon']
 		if icon:
 			Icon = self.FVP.__dict__[icon]
-			ix,iy = (6,15) if isinfo else (2,3)
+			ix,iy = (6,10) if isinfo else (2,3)
 			memDc.DrawBitmap(Icon,ix,iy,True)
 
 		textTup = self.fitem.InfoOrErrorText()
 		
 		memDc.SetTextForeground( self.style['fcol'])
 		
-		memDc.SetFont( wx.Font(12, family=wx.SWISS, style=wx.NORMAL, weight=wx.BOLD))
-		tx,ty = (46,15) if isinfo else (33 ,13)
+		memDc.SetFont( wx.Font(12,fpsys.DFAM , style=wx.NORMAL, weight=wx.BOLD))
+		tx,ty = (46,15) if isinfo else (38 ,13)
 		memDc.DrawText( textTup[0], tx, ty)
 		
-		memDc.SetFont( wx.Font(7, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL))
+		memDc.SetFont( wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
 		tx,ty = (46,38) if isinfo else (8 ,38)
 		memDc.DrawText( textTup[1], tx, ty)
 
