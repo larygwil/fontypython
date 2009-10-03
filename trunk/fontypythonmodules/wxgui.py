@@ -154,7 +154,7 @@ class MainFrame(wx.Frame):
 		## Notebook label and icon
 		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))		
 		self.viewLabel = wx.StaticText( self.panelNotebook, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
-		self.viewLabel.SetFont( wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
+		self.viewLabel.SetFont( wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
 		
 		## A horiz sizer to hold the icon and text
 		self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
@@ -392,12 +392,17 @@ class App(wx.App, wx.lib.mixins.inspection.InspectionMixin) :
 		bmp=wx.Image(fpsys.mythingsdir + "splash.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
 		ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
 
+		## Oct 2009
+		##  this is the only plac I can get the system font family
+		fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
+
 		frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
-		
 		self.SetTopWindow(frame) 
 		
 		frame.Show(True) 
 		ss.Close()
+
+
 
 		return True
 		

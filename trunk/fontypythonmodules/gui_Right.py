@@ -43,7 +43,7 @@ class TargetPogChooser(wx.Panel):
 		self.icon = wx.StaticBitmap\
 		(self, -1, wx.Bitmap(fpsys.mythingsdir + 'icon_target_16x16.png', wx.BITMAP_TYPE_PNG))
 		self.textInfo = wx.StaticText(self, -1, _("Target Pogs"), style = wx.ALIGN_LEFT)
-		self.textInfo.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD))
+		self.textInfo.SetFont(wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD))
 		
 		s = None
 		if fpsys.state.targetpattern == "P":
