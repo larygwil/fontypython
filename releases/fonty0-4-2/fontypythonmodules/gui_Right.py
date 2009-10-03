@@ -184,12 +184,10 @@ class TargetPogChooser(wx.Panel):
 									  )
 				if dlg.ShowModal() == wx.ID_YES:
 					## Let's do them in:
-					for victim in iPogsToKill: #tokill:
-						#fpsys.instantiateTargetPog(victim) #Makes the fpsys.state.targetobject
+					for victim in iPogsToKill: 
 						## Now kill the file on disk:
 						try:
 							victim.delete()
-							#fpsys.state.targetobject.delete()
 						except fontybugs.PogCannotDelete, e:
 							ps.pub(show_error, unicode( e ))
 							return
