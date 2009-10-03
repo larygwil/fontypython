@@ -161,3 +161,4 @@ Strings changed -- PO files will be broken :(
 
 3 Oct
 1. Michael Hoeft reported a bug in Delete Pogs. I have fixed it now. Thanks Mike.
+2. Bumped version to 0.4.2.3
