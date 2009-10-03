@@ -298,7 +298,6 @@ class MainFrame(wx.Frame):
 			
 			fpsys.config.ignore_adjustments = ignoreAdjust #Sept 2009
 			fpsys.config.app_char_map = dlg.CHOSEN_CHARACTER_MAP # Oct 2009
-			print "FUCK",fpsys.config.app_char_map 
 			## Now to refresh things:
 			## Sept 2009 : size change means we need new values for fitmaps
 			ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
