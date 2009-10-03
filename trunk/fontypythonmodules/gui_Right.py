@@ -163,7 +163,7 @@ class TargetPogChooser(wx.Panel):
 				## Fixed Oct 2009
 				iPog = fontcontrol.Pog(p)
 				if iPog.isInstalled():
-					ps.pub( show_error, _("One or more selected fonts is installed, fix your selection and try again.") )
+					ps.pub( show_error, _("One or more selected Pogs is installed, fix your selection and try again.") )
 					allok=False
 					break
 				iPogsToKill.append( iPog )
