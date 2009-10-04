@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-04 16:10+0200\n"
+"POT-Creation-Date: 2009-10-04 20:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -466,124 +466,124 @@ msgstr ""
 msgid "Pogs"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:111
+#: fontypythonmodules/gui_Middle.py:112
 msgid "Clear filter"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:115
+#: fontypythonmodules/gui_Middle.py:116
 msgid "Filter:"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:327
+#: fontypythonmodules/gui_Middle.py:375
 msgid "Selected fonts have been removed."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:329
+#: fontypythonmodules/gui_Middle.py:377
 msgid "There was an error writing the pog to disk. Nothing has been done."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:336
+#: fontypythonmodules/gui_Middle.py:384
 #, python-format
 msgid "Copying fonts from %(source)s to %(target)s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:354
+#: fontypythonmodules/gui_Middle.py:402
 #, python-format
 msgid "Selected fonts are now in %s."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:356
+#: fontypythonmodules/gui_Middle.py:404
 msgid "There was an error writing the pog to disk. Nothing has been done"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:424
+#: fontypythonmodules/gui_Middle.py:472
 msgid "Choose some fonts"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:457
+#: fontypythonmodules/gui_Middle.py:505
 #, python-format
 msgid "Your active Target is %s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:458
+#: fontypythonmodules/gui_Middle.py:506
 msgid "Please choose a Source."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:460
+#: fontypythonmodules/gui_Middle.py:508
 msgid "There are no fonts in here."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:461
+#: fontypythonmodules/gui_Middle.py:509
 msgid "Please choose a Pog or a Font folder on the left."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:462 fontypythonmodules/gui_Middle.py:470
-#: fontypythonmodules/gui_Middle.py:478 fontypythonmodules/gui_Middle.py:494
-#: fontypythonmodules/gui_Middle.py:510 fontypythonmodules/gui_Middle.py:519
+#: fontypythonmodules/gui_Middle.py:510 fontypythonmodules/gui_Middle.py:518
+#: fontypythonmodules/gui_Middle.py:526 fontypythonmodules/gui_Middle.py:542
+#: fontypythonmodules/gui_Middle.py:558 fontypythonmodules/gui_Middle.py:567
 msgid "Nothing to do"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:468 fontypythonmodules/gui_Middle.py:493
+#: fontypythonmodules/gui_Middle.py:516 fontypythonmodules/gui_Middle.py:541
 #, python-format
 msgid "Viewing Folder %s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:472
+#: fontypythonmodules/gui_Middle.py:520
 msgid "Viewing a folder."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:477
+#: fontypythonmodules/gui_Middle.py:525
 #, python-format
 msgid "Viewing (installed Pog)  %s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:481 fontypythonmodules/gui_Middle.py:497
-#: fontypythonmodules/gui_Middle.py:513
+#: fontypythonmodules/gui_Middle.py:529 fontypythonmodules/gui_Middle.py:545
+#: fontypythonmodules/gui_Middle.py:561
 msgid "You cannot change an installed Pog."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:483
+#: fontypythonmodules/gui_Middle.py:531
 #, python-format
 msgid "Viewing (editable Pog)  %s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:485
+#: fontypythonmodules/gui_Middle.py:533
 #, python-format
 msgid "Remove fonts from %s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:488
+#: fontypythonmodules/gui_Middle.py:536
 msgid "You can remove fonts from the selected Target Pog."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:499
+#: fontypythonmodules/gui_Middle.py:547
 #, python-format
 msgid "Append from %(source)s to %(target)s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:500 fontypythonmodules/gui_Middle.py:524
+#: fontypythonmodules/gui_Middle.py:548 fontypythonmodules/gui_Middle.py:572
 #, python-format
 msgid "Put fonts into %s"
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:504 fontypythonmodules/gui_Middle.py:528
+#: fontypythonmodules/gui_Middle.py:552 fontypythonmodules/gui_Middle.py:576
 msgid "You can append fonts to your target Pog."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:509
+#: fontypythonmodules/gui_Middle.py:557
 #, python-format
 msgid "Viewing %(source)s, but Pog %(target)s is installed."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:517
+#: fontypythonmodules/gui_Middle.py:565
 msgid "These two are the same Pog."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:521
+#: fontypythonmodules/gui_Middle.py:569
 msgid "Your Source and Target are the same Pog."
 msgstr ""
 
-#: fontypythonmodules/gui_Middle.py:523
+#: fontypythonmodules/gui_Middle.py:571
 #, python-format
 msgid "Append from %(source)s into %(target)s"
 msgstr ""
