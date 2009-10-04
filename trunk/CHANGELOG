@@ -176,5 +176,5 @@ Strings changed -- PO files will be broken :(
 4 Oct
 1. Built a button to spawn the character-map app. Nice rollover and all.
 2. Updated the help.
-
+3. Created three buttons Bold, Italic and Regular for quick filtering.
 
