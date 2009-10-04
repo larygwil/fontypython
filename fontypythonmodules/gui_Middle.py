@@ -17,6 +17,7 @@
 
 import wx
 import wx.lib.stattext
+import  wx.lib.buttons  as  buttons
 
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
@@ -110,7 +111,7 @@ class FontViewPanel(wx.Panel):
 		self.clearButton = wx.BitmapButton(self, -1, bmp, style = wx.NO_BORDER)
 		self.clearButton.SetToolTipString( _("Clear filter") )
 		self.clearButton.Bind( wx.EVT_BUTTON, self.OnClearClick )
-		
+
 		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
 		self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN )
@@ -127,7 +128,28 @@ class FontViewPanel(wx.Panel):
 
 		## put them into the sizer
 		sizerOtherControls.Add(self.textFilter, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+		
+		
+		## Quick search Bold Italic Regular buttons
+		self.BIR = { wx.NewId(): ["bold",False], wx.NewId(): ["italic",False], wx.NewId(): ["regular",False] }
+		for id, lst in self.BIR.iteritems():
+			bmp = wx.Bitmap(fpsys.mythingsdir + "button_%s.png" % lst[0], type=wx.BITMAP_TYPE_PNG)
+			bBIR = buttons.GenBitmapToggleButton(self, id, None, style=wx.BORDER_NONE ) #border looks crap, not native gtk.
+			self.BIR[id].append( bBIR )
+			bBIR.SetBitmapLabel(bmp)
+			bmp = wx.Bitmap(fpsys.mythingsdir + "button_%s_down.png" % lst[0], type=wx.BITMAP_TYPE_PNG)
+			## Kubuntu Jaunty KDE 4.ish : No amount of voodoo can get the background of the toggle buttons to
+			##  stop drawing in white. ThemedGenBitmapToggleButton does not work either.
+			##  c = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE) -> returns a nice gray. Using it does not help.
+			##  Setting backdrop to 'red' works fine.... Gray is the problem. Anyway, I am giving up. Perhaps
+			##  it will look better in pure Gnome.
+			bBIR.SetBitmapSelected(bmp)
+			bBIR.SetInitialSize()
+			sizerOtherControls.Add( bBIR, 0, wx.ALIGN_LEFT| wx.ALIGN_CENTER_VERTICAL )
+			bBIR.Bind( wx.EVT_BUTTON, self.onBIR )
+
 		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT| wx.ALIGN_CENTER_VERTICAL ) # Clear button
+
 		sizerOtherControls.Add(self.inputFilter, 1, wx.ALIGN_LEFT | wx.EXPAND)
 		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
 		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
@@ -188,12 +210,38 @@ class FontViewPanel(wx.Panel):
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
 		self.filter = ""
+		
+		# Clear the BIR toggle buttons
+		self.setBIRFalse()
+
 		## Now command a change of the view.
 		## First, return user to page 1:
 		self.pageindex = 1
 		self.filterAndPageThenCallCreateFitmaps()
 		self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 
+	def setBIRFalse( self ):
+		for id in self.BIR.keys():
+			self.BIR[id][1] = False
+			self.BIR[id][2].SetToggle( False )
+
+	def onBIR( self, e ):
+		id=e.GetId()
+		self.BIR[id][1]=e.GetIsDown()
+		if self.BIR[id][0] == "regular":
+			# can't have regular with bold/italic
+			self.setBIRFalse() # switch all off
+			self.BIR[id][1]=True #switch regular back on
+			ss = "regular|normal"
+		else:
+			ss=""
+			for id, lst in self.BIR.iteritems():
+				if lst[1]: ss += "%s%s" % (lst[0]," ") # Builds AND regex (space is and)
+			ss = ss[:-1]
+	
+		self.inputFilter.SetValue( ss )
+		self.startSearch( ss )
+		
 	# Capture events when the user types something into the control then
 	# hits ENTER.
 	def EvtTextEnter(self, evt):
