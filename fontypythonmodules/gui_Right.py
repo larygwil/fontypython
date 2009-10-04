@@ -16,7 +16,7 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
-#from wx.lib.buttons import ThemedGenBitmapTextButton
+
 ## Setup wxPython to access translations : enables the stock buttons.
 langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 mylocale = wx.Locale( langid )
@@ -40,8 +40,7 @@ class TargetPogChooser(wx.Panel):
 	def __init__(self, parent):
 		wx.Panel.__init__(self, parent, id = -1)	
 		
-		self.icon = wx.StaticBitmap\
-		(self, -1, wx.Bitmap(fpsys.mythingsdir + 'icon_target_16x16.png', wx.BITMAP_TYPE_PNG))
+		self.icon = wx.StaticBitmap( self, -1, wx.Bitmap(fpsys.mythingsdir + 'icon_target_16x16.png', wx.BITMAP_TYPE_PNG) )
 		self.textInfo = wx.StaticText(self, -1, _("Target Pogs"), style = wx.ALIGN_LEFT)
 		self.textInfo.SetFont(wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD))
 		
@@ -59,10 +58,8 @@ class TargetPogChooser(wx.Panel):
 		## The "no pog" button
 		self.idnone = wx.NewId()
 		self.buttNoPog = wx.Button(self, label = _("Clear selection"), id = self.idnone)
-		#bmp=wx.Bitmap(fpsys.mythingsdir + 'font_segfault.png', wx.BITMAP_TYPE_PNG)
-		#self.buttNoPog = ThemedGenBitmapTextButton( self, -1, bmp, "XXXXXXXXXFind")
 
-		self.buttNoPog.SetToolTipString(_("Deselects any chosen pogs."))
+		self.buttNoPog.SetToolTipString(_("Deselects any chosen Pogs."))
 		## The buttons under the pog list
 		## Giving them all id numbers so my single handler can tell them apart.
 		self.idnew = wx.NewId()
@@ -91,10 +88,8 @@ class TargetPogChooser(wx.Panel):
 		self.sizer = wx.BoxSizer(wx.VERTICAL)		 
 		self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
 		self.iconandtext.Add(self.icon, 0, wx.TOP | wx.BOTTOM, border = 4)
-		#self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
 		self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.ALL, border = 4)
 		self.sizer.Add(self.iconandtext, 0, wx.EXPAND)
-		#self.sizer.Add(self.buttNoPog, 0, wx.EXPAND)	  
 		self.sizer.Add(self.pogTargetlist, 1, wx.EXPAND)
 		self.sizer.Add(self.buttNoPog, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, border=5)	  
 		self.sizer.Add(self.buttInstall, 0, wx.EXPAND) 
@@ -121,7 +116,7 @@ class TargetPogChooser(wx.Panel):
 		if e.GetId() == self.idnew: 
 			## New Pog button pressed
 			dlg = wx.TextEntryDialog(
-					self, _("Enter a name for the new pog"),
+					self, _("Enter a name for the new Pog"),
 					_("New Pog"), _("Fonty Python"))
 			dlg.SetValue("")
 			if dlg.ShowModal() == wx.ID_OK:
@@ -297,7 +292,7 @@ class TargetPogChooser(wx.Panel):
 
 				wx.EndBusyCursor()	
 				extra=""
-				if bugs: extra=_("Some fonts were skipped, try purging the pog(s) involved.")
+				if bugs: extra=_("Some fonts were skipped, try purging the Pog(s) involved.")
 				ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
 			else:
 				ps.pub(print_to_status_bar,_("Zip cancelled."))

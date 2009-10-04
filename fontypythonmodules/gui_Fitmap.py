@@ -32,8 +32,9 @@ black=(0,0,0)
 white=(255,255,255)
 
 class OverOutSignal(object):
-	'''Signal an external function when a state has CHANGED from 
-	   True to False or vice-vera
+	'''
+	Signal an external function when a state has CHANGED from 
+	True to False or vice-vera
 	'''
 	def __init__( self, func_to_signal ):
 		self.announce = func_to_signal
@@ -157,7 +158,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.prepareBitmap()
 		sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
 
-		## I don't know the y value of the button yet. Set in prepareBitmap.
+		## Now I can calc the y value of the button.
 		self.cmb_rect=wx.Rect(0,sz[1]-40,19,32)
 		self.height =  0
 
@@ -308,12 +309,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.bitmap:
 			## Create a buffered paint DC.  It will create the real
 			## wx.PaintDC and then blit the bitmap to it when dc is
-			## deleted.  Since we don't need to draw anything else
-			## here that's all there is to it.
+			## deleted.  
 			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 			
 			if not self.can_have_button(): return
 
+			# Draw the charmap button
 			x,y = self.cmb_rect[0],self.cmb_rect[1]
 			if self.cmb_overout.state:
 				dc.DrawBitmap( self.CHARMAP_BUTTON_OVER, x, y, True )
@@ -407,7 +408,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.badfont:
 			## We have a badstyle to help us differentiate these.
 			totheight = self.minHeight
-			#if self.fitem.inactive: totheight += 10 #Need more space
+			if self.fitem.inactive: totheight += 5 #Need more space
 			memDc=self.drawInfoOrError(  self.width, totheight )
 			
 		## It's *not* a badfont
@@ -472,19 +473,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					
 				## Goto next face, if any.
 				i += 1			
-				
-				## Set the charmap button's y value
-				#self.cmb_rect[1]=texty - 2	
 
 		## Record the calculated height
 		self.height = totheight
 
 
-
 		## Special message
 		if self.fitem.inactive:
-			mx,my=(27,self.height-20) if self.fitem.badfont else (27,self.height-26)
-			memDc.DrawBitmap( self.TICKSMALL, mx-20, my, True )
+			mx,my=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
+			memDc.DrawBitmap( self.TICKSMALL, mx-16, my-1, True )
 			memDc.SetTextForeground( black )
 			memDc.SetFont( wx.Font(11,fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
 			memDc.DrawText( self.fitem.activeInactiveMsg, mx, my )
@@ -596,8 +593,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		tx,ty = (46,40) if isinfo else (5 ,40)
 		memDc.DrawText( textTup[1], tx, ty)
 
-		## Set the charmap button's y value
-		#self.cmb_rect[1]=ty - 4	
 
 		return memDc
 

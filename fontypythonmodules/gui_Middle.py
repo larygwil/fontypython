@@ -581,13 +581,9 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		self.Refresh()
 
 	def DoGetBestSize(self):
-		dc = wx.ClientDC(self)
-		dc.SetFont(self.infoFont)
-		bestw,besth = dc.GetTextExtent(self.lab) or (100,100)
-		besth += 8
-		best = wx.Size(bestw,besth)
+		bestw,self.h = (100,26)
+		best = wx.Size(bestw,self.h) 
 		self.CacheBestSize(best)
-		self.h=besth
 		return best
 
 	def OnPaint(self, event):
@@ -607,6 +603,22 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		dc.DrawText(self.lab, 27,5)
 
 		dc.DrawBitmap( self.VIEWICON, 6,5, True)
+
+
+
+	# Old code -- keep for ref....
+
+	def OLD_DoGetBestSize(self):
+		dc = wx.ClientDC(self)
+		dc.SetFont(self.infoFont)
+		# How big is the text?
+		bestw,besth = dc.GetTextExtent(self.lab) or (100,100)
+		besth += 8
+		best = wx.Size(bestw,besth) 
+		self.CacheBestSize(best)
+		self.h=besth
+		return best
+
 
 	def OnPaintFakeTab(self, event):
 		'''Old fake tab look. Keep for future ref.'''

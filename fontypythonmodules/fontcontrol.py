@@ -69,10 +69,6 @@ class FontItem( object ):
 		## What kind of bad to the bone am I?
 		## One of FILE_NOT_FOUND, PIL_IO_ERROR, PIL_UNICODE_ERROR, PIL_CANNOT_RENDER
 		self.badstyle = "" 
-	
-
-		self.total_number_of_glyphs = None
-
 
 		## We need the family name and style to be fetched
 		## because we have that filter thingy in the gui
@@ -196,9 +192,6 @@ class FontItem( object ):
 					self.badstyle = "PIL_SEGFAULT_ERROR"
 					break
 
-			# Still in while loop	
-			self.total_number_of_glyphs = font.font.glyphs # Hope this does not crash Fonty....
-
 		self.numFaces = i
 				
 	def generatePilFont( self, enc="unicode" ):
@@ -229,12 +222,6 @@ class FontItem( object ):
 					w = 1
 				pilheight = int(h)
 				pilwidth = int(w)
-
-				#gh=[]
-				#for c in text:
-				#	glyph = font.getmask(c)
-				#	glyph_width, glyph_height = glyph.size 
-				#	gh.append(glyph_height)
 
 				pilheight += 10
 
