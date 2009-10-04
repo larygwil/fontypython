@@ -172,4 +172,6 @@ Strings changed -- PO files will be broken :(
 3 Oct
 1. Fixed a bug in Delete Pogs -- reported by Michael Hoeft. Backported to 0.4.2.2 as well.
 2. Adding an 'Voodoo' tab to Settings dialogue to house the charmap choice and the font adjustment checkbox. Wired it all up and it works!
-3. (TO DO) Build some kind of button to spawn the character-map app.
+
+4 Oct
+1. Built a button to spawn the character-map app. Nice rollover and all.

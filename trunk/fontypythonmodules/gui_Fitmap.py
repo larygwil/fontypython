@@ -31,11 +31,34 @@ ndi=(227,226,219) # No Draw Inactive.
 black=(0,0,0)
 white=(255,255,255)
 
+class OverOutSignal(object):
+	'''Signal an external function when a state has CHANGED from 
+	   True to False or vice-vera
+	'''
+	def __init__( self, func_to_signal ):
+		self.announce = func_to_signal
+		self.state = False 
+		self.last_state = False
+	def __changed( self ):
+		if self.state != self.last_state: 
+			self.last_state = self.state
+			return True
+		return False
+	def set( self, truth ):
+		if self.state == truth:	return
+		self.state = truth
+		if self.__changed(): self.announce()
 
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	"""
-	This class is a bitmap of a TTF font - it detects a click and 
-	also displays itself with other information below it.
+	This class is a bitmap of a TTF font - it detects events and 
+	displays itself.
+
+	Sept 2009
+	Added code to adjust top-left of displayed sample text.
+	
+	Oct 2009
+	Added a 'button' to open a character map viewer.
 	"""
 	
 	## This class-level dict is a kind of "style sheet" to use in fitmap drawing.
@@ -105,13 +128,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.name = fitem.name
 		
 		self.fitem = fitem
-		#self.parent = parent
 
 		Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
 		self.FVP = parent.parent #The Font View Panel
 		self.TICKMAP = parent.parent.TICKMAP 
 		self.TICKSMALL = parent.parent.TICKSMALL
-		self.height =  0
+
 	
 		self.style = {} #Temporary space for style of fitem while drawing. It's a copy of one key from Fitem.styles
 		
@@ -122,15 +144,28 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		
 		self.width = parent.width # Get it from the scrollFontViewPanel.
 
+
+		## The charmap button
+		self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
+		self.CHARMAP_BUTTON_OUT = self.FVP.BUTTON_CHARMAP
+		## Point to the handler for the signal re charmap button
+		self.cmb_overout = OverOutSignal( self.charmap_button_signal )
+
+
+		## Go draw the fitmap into a memory dc
 		self.bitmap = None
 		self.prepareBitmap()
-		
 		sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
+
+		## I don't know the y value of the button yet. Set in prepareBitmap.
+		self.cmb_rect=wx.Rect(0,sz[1]-40,19,32)
+		self.height =  0
 
 		## init my parent class 
 		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
 
-		self.on_charmap_button = False
+		## Fitmap's over out signal
+		self.overout = OverOutSignal( self.overout_signal )
 
 		## Very cool event, gives us life!
 		self.Bind(wx.EVT_LEFT_UP,self.onClick) 
@@ -141,18 +176,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Redraw event
 		self.Bind(wx.EVT_PAINT,  self.onPaint) 
 		
-		## Very cool,sets the icon for font items.
-		self.SetCursor( wx.StockCursor( wx.CURSOR_ARROW ) )
-		
-		## If this is *not* a FILE_NOT_FOUND then allow the cursor to change
-		## FILE_NOT_FOUND means we have a glyphpaf but no match on the drive.
-		## This means the Pog should be purged.
-		if self.fitem.badstyle != "FILE_NOT_FOUND":
-			if fpsys.state.action == "REMOVE":
-				self.SetCursor( wx.StockCursor( wx.CURSOR_PENCIL ) )
-			elif fpsys.state.action == "APPEND":
-				if not self.fitem.inactive:
-					self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+		## Get cursors setup
+		self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+		if fpsys.state.action in ("REMOVE", "APPEND"):
+			self.CURSOR = wx.StockCursor( wx.CURSOR_HAND )
+		if self.fitem.badstyle == "FILE_NOT_FOUND":
+			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+		if self.fitem.inactive:
+			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 
 
 	def openCharacterMap( self ):
@@ -163,6 +194,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## I don't want to hold an fitem in the thread to come, so I will
 		## take the essential info out and make a tuple instead:
 		## (This is mere superstition and ignorance, I fear threads :) )
+
 		argstup=(fi.glyphpaf, dest, self.fitem.family[0],fpsys.config.points )
 
 		## Never done threading before. Not really sure if this is kosher...
@@ -219,17 +251,44 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	def onMiddleClick(self, event):
 		ps.pub( menu_settings, None )
 
-	def onHover( self, e ):
-		self.on_charmap_button = False
-		#self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
-		if wx.Rect(0,0,50,50).Contains( e.GetPositionTuple() ):	
-			self.on_charmap_button = True
-			#self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+	def can_have_button( self ):
+		'''
+		Because I just can't guarantee that there is a family name
+		and because bad fonts that can't draw (but do not segfault)
+		are so rare that I can't bloody find any to test with (grrr)
+		I make the sweeping fiat that no badfonts will get a button.
 
+		Other fitems like info and FILE_NOT_FOUND don't get buttons.
+		'''
+		if not fpsys.config.app_char_map: return False
+		if isinstance( self.fitem, fontcontrol.InfoFontItem ): return False
+		if self.fitem.badstyle == "FILE_NOT_FOUND": return False
+		if not self.fitem.family: return False
+		return True
+
+	def onHover( self, e ):
+		if not self.can_have_button():
+			self.overout.set ( True )
+			return
+		if self.cmb_rect.Contains( e.GetPositionTuple() ):	
+			self.cmb_overout.set( True )
+			self.overout.set( False ) #Not 'on' fitmap
+		else:
+			self.cmb_overout.set ( False )
+			self.overout.set( True )
+	
+	def charmap_button_signal( self ):
+		if self.cmb_overout.state:
+			self.SetCursor(wx.StockCursor(wx.CURSOR_MAGNIFIER))
+		self.Refresh() # Force onPaint()
+
+	def overout_signal( self ):
+		if self.overout.state:
+			self.SetCursor( self.CURSOR )
+			
 	def onClick(self, event) :
-		if self.on_charmap_button and self.fitem.badstyle != "FILE_NOT_FOUND":
-			if fpsys.config.app_char_map:
-				self.openCharacterMap()
+		if self.cmb_overout.state and self.can_have_button():
+			self.openCharacterMap()
 			return
 
 		if fpsys.state.cantick and not self.fitem.inactive:
@@ -241,8 +300,25 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			if self.fitem.ticked: fpsys.state.numticks += 1
 			if not self.fitem.ticked: fpsys.state.numticks -= 1
 			ps.pub(toggle_main_button)
-		#event.Skip()	
 
+	def onPaint(self, event):
+		"""
+		Dump the bitmap to the screen.
+		"""
+		if self.bitmap:
+			## Create a buffered paint DC.  It will create the real
+			## wx.PaintDC and then blit the bitmap to it when dc is
+			## deleted.  Since we don't need to draw anything else
+			## here that's all there is to it.
+			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
+			
+			if not self.can_have_button(): return
+
+			x,y = self.cmb_rect[0],self.cmb_rect[1]
+			if self.cmb_overout.state:
+				dc.DrawBitmap( self.CHARMAP_BUTTON_OVER, x, y, True )
+			else:
+				dc.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, True )
 
 	def CalculateTopLeftAdjustments(self, image, i, pilimage):
 		## Sept 2009
@@ -289,16 +365,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		wx.EndBusyCursor()
 		return fx,fy
 
-	def onPaint(self, event):
-		"""
-		Dump the bitmap to the screen.
-		"""
-		if self.bitmap:
-			## Create a buffered paint DC.  It will create the real
-			## wx.PaintDC and then blit the bitmap to it when dc is
-			## deleted.  Since we don't need to draw anything else
-			## here that's all there is to it.
-			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
 	def prepareBitmap( self ):
 		"""
@@ -341,7 +407,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.badfont:
 			## We have a badstyle to help us differentiate these.
 			totheight = self.minHeight
-			memDc=self.drawInfoOrError(  self.width, totheight)#self.minHeight )
+			#if self.fitem.inactive: totheight += 10 #Need more space
+			memDc=self.drawInfoOrError(  self.width, totheight )
 			
 		## It's *not* a badfont
 		else:
@@ -398,16 +465,21 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				memDc.SetTextForeground( fcol )
 				## Sep 2009: Trying to draw foreign chars via DrawText
 				memDc.SetFont( wx.Font( 8,fpsys.DFAM , style=wx.NORMAL, weight=wx.NORMAL,encoding=wx.FONTENCODING_DEFAULT))
-				memDc.DrawText( txt, 16, texty)
+				memDc.DrawText( txt, 28, texty)
 				
 				## Move TOP down to next BOTTOM (for next sub-face)
 				y = y + glyphHeight +  self.spacer
 					
 				## Goto next face, if any.
 				i += 1			
-		
+				
+				## Set the charmap button's y value
+				#self.cmb_rect[1]=texty - 2	
+
 		## Record the calculated height
 		self.height = totheight
+
+
 
 		## Special message
 		if self.fitem.inactive:
@@ -521,8 +593,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		memDc.DrawText( textTup[0], tx, ty)
 		
 		memDc.SetFont( wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
-		tx,ty = (46,38) if isinfo else (8 ,38)
+		tx,ty = (46,40) if isinfo else (5 ,40)
 		memDc.DrawText( textTup[1], tx, ty)
+
+		## Set the charmap button's y value
+		#self.cmb_rect[1]=ty - 4	
 
 		return memDc
 

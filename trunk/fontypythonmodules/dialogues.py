@@ -244,7 +244,7 @@ class DialogSettings(wx.Dialog):
 		PANE2sizer.Add(self.chkAdjust, 0, wx.ALIGN_LEFT | wx.BOTTOM, border=10 )
 
 		# The Character map choice
-		self.got_apps=fpsys.GOT_APPS
+		self.got_apps=fpsys.config.GOT_APPS
 		if self.got_apps:
 			self.CHOSEN_CHARACTER_MAP = fpsys.config.app_char_map
 			rb = wx.RadioBox(

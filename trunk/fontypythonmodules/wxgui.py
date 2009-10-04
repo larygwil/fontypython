@@ -393,7 +393,7 @@ class App(wx.App, wx.lib.mixins.inspection.InspectionMixin) :
 		ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
 
 		## Oct 2009
-		##  this is the only plac I can get the system font family
+		##  this is the only place I can get the system font family
 		fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
 
 		frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))

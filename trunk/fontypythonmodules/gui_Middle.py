@@ -94,6 +94,9 @@ class FontViewPanel(wx.Panel):
 		self.INFO_ITEM = wx.Bitmap(fpsys.mythingsdir + 'font_info_item.png', wx.BITMAP_TYPE_PNG)
 		self.TICKSMALL = wx.Bitmap(fpsys.mythingsdir + "ticksmall.png", type=wx.BITMAP_TYPE_PNG)
 
+		self.BUTTON_CHARMAP = wx.Bitmap(fpsys.mythingsdir + 'button_charmap.png', wx.BITMAP_TYPE_PNG)
+		self.BUTTON_CHARMAP_OVER = wx.Bitmap(fpsys.mythingsdir + 'button_charmap_over.png', wx.BITMAP_TYPE_PNG)
+
 		## Main Label on top
 		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL) 
 		self.textMainInfo = MyLabel(self)
