@@ -138,6 +138,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			self.mySizer.Add( fm, 0, wx.GROW ) 
 		else:
 			for fitem in viewobject:
+				#test if not fitem.badfont: continue
 				## Create a Fitmap out of the FontItem we have at hand.
 				fm = Fitmap( self, (0,0),fitem)# i * h), fitem )
 				self.fitmaps.append(fm) 

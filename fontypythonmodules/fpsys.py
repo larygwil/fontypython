@@ -33,8 +33,8 @@ import wx
 
 import subprocess
 
-## Oct 2009
-DFAM=None
+## Oct 2009 Default Font Family (System font)
+DFAM=None # Set in wxgui.py in class App()
 
 ## Ensure we have a .fontypython folder and a .fonts folder.
 iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
@@ -51,22 +51,6 @@ fontyroot = os.path.dirname(os.path.abspath(root))
 ## Where my images and things are.
 mythingsdir = os.path.join(fontyroot,"things/")
 
-## OCt 2009
-##  Determine whether gucharmap or kfontview are installed.
-def does_app_exist(program):
-	for path in os.environ.get('PATH', '').split(':'):
-		if os.path.exists(os.path.join(path, program)) and \
-		   not os.path.isdir(os.path.join(path, program)):
-			#return os.path.join(path, program)
-			return program
-	return None
-def make_apps_list():
-	apps=[]
-	apps.append( does_app_exist('gucharmap') )
-	apps.append( does_app_exist('kfontview') )
-	got_apps=[str(t) for t in apps if t is not None]
-	return got_apps
-GOT_APPS = make_apps_list()
 
 ## Sept 2009
 class Overlaperize(object):
@@ -314,7 +298,7 @@ class Configure:
 		## Added Sept 2009
 		self.ignore_adjustments = False
 		## Added 3 Oct 2009
-		self.app_char_map = None
+		self.app_char_map = None # A string of an app name.
 
 		self.__setData()
 		
@@ -357,6 +341,27 @@ class Configure:
 				print _("The fontypython config file is damaged.\nPlease remove it and start again")
 				raise SystemExit
 			self.Save()
+		
+		## Oct 2009 -- The Character Map Viewer external app.
+		## See also: dialogues.py
+		self.GOT_APPS = self.make_apps_list()
+		if self.GOT_APPS is None: self.app_char_map = None
+
+	def make_apps_list( self ):
+		'''Return a list of a choice of installed charmap viewers, or []'''
+		def does_app_exist( program ):
+			for path in os.environ.get('PATH', '').split(':'):
+				if os.path.exists(os.path.join(path, program)) and \
+				   not os.path.isdir(os.path.join(path, program)):
+					#return os.path.join(path, program)
+					return program
+			return None
+		apps=[]
+		apps.append( does_app_exist('gucharmap') )
+		apps.append( does_app_exist('kfontview') )
+		got_apps=[str(t) for t in apps if t is not None]
+		return got_apps
+
 	def dontSaveNumInPage(self, flag):
 		self.__dontSaveNumInPage = flag
 	def __setData(self):
@@ -393,7 +398,6 @@ class Configure:
 ## Our config instance - it will have one instance across
 ## all the modules that use it.
 config = Configure()
-if not GOT_APPS: config.app_char_map = None
 
 def instantiateViewFolder( foldername, recurse=False ):
 	"""
