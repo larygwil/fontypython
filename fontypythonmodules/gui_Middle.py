@@ -131,7 +131,10 @@ class FontViewPanel(wx.Panel):
 		
 		
 		## Quick search Bold Italic Regular buttons
-		self.BIR = { wx.NewId(): ["bold",False], wx.NewId(): ["italic",False], wx.NewId(): ["regular",False] }
+		idBold = wx.NewId()
+		idItalic = wx.NewId()
+		self.idRegular = wx.NewId()
+		self.BIR = { idBold: ["bold",False], idItalic: ["italic",False], self.idRegular: ["regular",False] }
 		for id, lst in self.BIR.iteritems():
 			bmp = wx.Bitmap(fpsys.mythingsdir + "button_%s.png" % lst[0], type=wx.BITMAP_TYPE_PNG)
 			bBIR = buttons.GenBitmapToggleButton(self, id, None, style=wx.BORDER_NONE ) #border looks crap, not native gtk.
@@ -212,7 +215,7 @@ class FontViewPanel(wx.Panel):
 		self.filter = ""
 		
 		# Clear the BIR toggle buttons
-		self.setBIRFalse()
+		self.setAllBIRFalse()
 
 		## Now command a change of the view.
 		## First, return user to page 1:
@@ -220,20 +223,24 @@ class FontViewPanel(wx.Panel):
 		self.filterAndPageThenCallCreateFitmaps()
 		self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 
-	def setBIRFalse( self ):
+	def setOneBIR( self, id, truth ):
+		self.BIR[id][1] = truth
+		self.BIR[id][2].SetToggle( truth )
+
+	def setAllBIRFalse( self ):
 		for id in self.BIR.keys():
-			self.BIR[id][1] = False
-			self.BIR[id][2].SetToggle( False )
+			self.setOneBIR( id, False )
 
 	def onBIR( self, e ):
 		id=e.GetId()
 		self.BIR[id][1]=e.GetIsDown()
 		if self.BIR[id][0] == "regular":
 			# can't have regular with bold/italic
-			self.setBIRFalse() # switch all off
-			self.BIR[id][1]=True #switch regular back on
+			self.setAllBIRFalse() # switch all off
+			self.setOneBIR( id, True )
 			ss = "regular|normal"
 		else:
+			self.setOneBIR( self.idRegular, False )
 			ss=""
 			for id, lst in self.BIR.iteritems():
 				if lst[1]: ss += "%s%s" % (lst[0]," ") # Builds AND regex (space is and)
