@@ -345,7 +345,7 @@ class Configure:
 		## Oct 2009 -- The Character Map Viewer external app.
 		## See also: dialogues.py
 		self.GOT_APPS = self.make_apps_list()
-		if self.GOT_APPS is None: self.app_char_map = None
+		if self.GOT_APPS is []: self.app_char_map = None
 
 	def make_apps_list( self ):
 		'''Return a list of a choice of installed charmap viewers, or []'''
@@ -356,10 +356,12 @@ class Configure:
 					#return os.path.join(path, program)
 					return program
 			return None
+		validapps = ['gucharmap','kfontview']
 		apps=[]
-		apps.append( does_app_exist('gucharmap') )
-		apps.append( does_app_exist('kfontview') )
+		apps.append( does_app_exist(validapps[0]) )
+		apps.append( does_app_exist(validapps[1]) )
 		got_apps=[str(t) for t in apps if t is not None]
+		if self.app_char_map not in validapps: self.app_char_map = None
 		return got_apps
 
 	def dontSaveNumInPage(self, flag):

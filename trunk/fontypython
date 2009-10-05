@@ -95,6 +95,7 @@ else: # err code -11
 	class App(wx.App) :
 		def OnInit(self) :
 			culprit = getSegfaulter()
+			#print culprit
 			dlg = D.SegfaultDialog(None, culprit)
 			val = dlg.ShowModal()
 			if val == wx.ID_OK:

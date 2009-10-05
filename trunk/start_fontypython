@@ -15,12 +15,10 @@
 ##
 ##    You should have received a copy of the GNU General Public License
 ##    along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
-
 import fontypythonmodules.i18n
 
 import os
 ## Just clear up some sad facts:
 if os.name != "posix": sys.exit(_("Sorry, only Gnu/Linux is supported at the moment."))
-
 ## start the show!
 import fontypythonmodules.start

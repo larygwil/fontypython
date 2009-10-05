@@ -247,6 +247,7 @@ class DialogSettings(wx.Dialog):
 		self.got_apps=fpsys.config.GOT_APPS
 		if self.got_apps:
 			self.CHOSEN_CHARACTER_MAP = fpsys.config.app_char_map
+			print self.CHOSEN_CHARACTER_MAP
 			rb = wx.RadioBox(
 					PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
 					self.got_apps, 1, wx.RA_SPECIFY_COLS
@@ -310,26 +311,24 @@ class SegfaultDialog(wx.Dialog):
 	"""
 	def __init__(self, parent, culprit):
 		wx.Dialog.__init__(self, parent, -1, _("Oh boy..."), pos = wx.DefaultPosition )
-		
+		#DF = wx.DEFAULT#"Sans"#wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
 		## The layout begins:
-		font = wx.Font(16, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.labelHeading = wx.StaticText(self, -1, _("Fonty Python, um ... crashed."))
 		self.labelHeading.SetFont(font)
 		
-		font = wx.Font(12, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.ohDear = wx.StaticText( self, -1, _("Oh dear,"))
 		self.ohDear.SetFont( font )
 		
 
 		self.sadStory = wx.StaticText( self, -1, _("There's some problem with the font named below. Please use the Check Fonts tool in Fonty\n(from the command-line or the Tools menu) to go through this directory and mark all the dangerous fonts.\n(You could simply move this font elsewhere, but others may remain to cause trouble.)\n" ))
 
-		font = wx.Font(11, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+		font = wx.Font(11, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.culprit = wx.StaticText( self, -1, culprit ) 
 		self.culprit.SetFont( font )
 		
-		box = wx.BoxSizer(wx.HORIZONTAL)
 		verticalSizer = wx.BoxSizer(wx.VERTICAL)
-		box.Add(verticalSizer, 1, flag = wx.ALL, border = 10)
 		verticalSizer.Add(self.labelHeading, 0, 0, 0)
 		verticalSizer.Add(self.ohDear, 0, 0, 0)
 		verticalSizer.Add(self.sadStory, 1, wx.EXPAND, 0)
@@ -343,12 +342,12 @@ class SegfaultDialog(wx.Dialog):
 				
 		verticalSizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT, border = 15)
 		buffer=wx.BoxSizer( wx.HORIZONTAL )
-		buffer.Add( verticalSizer, 1, border=10 )
+		buffer.Add( verticalSizer, 1, wx.ALL, border=10 )
 
 		self.SetSizer( buffer )
-		buffer.Fit(self) # This triggers the sizers to do their thing.	
-		self.SetSizer(box)
-		box.Fit(self)
+		buffer.Fit(self) 
+		self.SetSizer( buffer )
+
 		self.Layout()
 		
 class LocateDirectory(wx.Dialog):

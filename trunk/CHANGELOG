@@ -177,4 +177,9 @@ Strings changed -- PO files will be broken :(
 1. Built a button to spawn the character-map app. Nice rollover and all.
 2. Updated the help.
 3. Created three buttons Bold, Italic and Regular for quick filtering.
+4. Updated man page
+
+5 Oct
+1. Segfault dialogue suddenly started causing segfaults of its own... Sheesh. I had to remove a box sizer to get it to work.
+2. Fixed bug in character map viewer code.
 
