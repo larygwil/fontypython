@@ -311,7 +311,6 @@ class SegfaultDialog(wx.Dialog):
 	"""
 	def __init__(self, parent, culprit):
 		wx.Dialog.__init__(self, parent, -1, _("Oh boy..."), pos = wx.DefaultPosition )
-		#DF = wx.DEFAULT#"Sans"#wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
 		## The layout begins:
 		font = wx.Font(16, wx.DEFAULT, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.labelHeading = wx.StaticText(self, -1, _("Fonty Python, um ... crashed."))

@@ -64,7 +64,7 @@ options=_("""Options:
 				"This is an ex-parrot!", say. 
 				Be sure to use the quotes.
   -p Pog --purge=Pog
-				Purge the Pog of ttf files that are no
+				Purge the Pog of font files that are no
 				longer really there.
   -c folder --check=folder
 				Check for bad fonts that crash Fonty.
@@ -131,7 +131,7 @@ No copies of your fonts are made, only links to the
 original files are used to install the fonts.
 
 For example, you might have a Pog called "logos"
-into which you place all the ttfs you have of
+into which you place all the fonts you have of
 company logos. After that, when you need to work
 with those logos, you simply install the 'logos' Pog
 and start your design app!
@@ -262,7 +262,7 @@ No copies of your fonts are made, only links to the
 original files are used to install the fonts.
 
 For example, you might have a Pog called "logos"
-into which you place all the ttfs you have of
+into which you place all the fonts you have of
 company logos. After that, when you need to work
 with those logos, you simply install the 'logos' Pog
 and start your design app!
