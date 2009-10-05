@@ -87,7 +87,11 @@ try:
 	print "MANIFEST removed"
 except: 
 	print "No MANIFEST to remove."
-	
+try:
+	os.remove("PKG-INFO")
+except:
+	pass
+
 ## This is a list of files to install, and where:
 ## Make sure the MANIFEST.in file points to all the right 
 ## directories too.
