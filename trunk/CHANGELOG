@@ -183,3 +183,8 @@ Strings changed -- PO files will be broken :(
 1. Segfault dialogue suddenly started causing segfaults of its own... Sheesh. I had to remove a box sizer to get it to work.
 2. Fixed bug in character map viewer code.
 3. Small repair to BIR toggles.
+
+
+11 Oct
+1. Fixed a config startup bug - whatever charmaps are found, the first in the list is now taken as the default else None.
+

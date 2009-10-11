@@ -298,7 +298,7 @@ class Configure:
 		## Added Sept 2009
 		self.ignore_adjustments = False
 		## Added 3 Oct 2009
-		self.app_char_map = None # A string of an app name.
+		self.app_char_map = "UNSET" # A string of an app name.
 
 		self.__setData()
 		
@@ -361,6 +361,7 @@ class Configure:
 		apps.append( does_app_exist(validapps[0]) )
 		apps.append( does_app_exist(validapps[1]) )
 		got_apps=[str(t) for t in apps if t is not None]
+		if got_apps and self.app_char_map == "UNSET": self.app_char_map=got_apps[0] # cover intial start when no fp.conf is there.
 		if self.app_char_map not in validapps: self.app_char_map = None
 		return got_apps
 
