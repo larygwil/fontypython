@@ -189,3 +189,6 @@ Strings changed -- PO files will be broken :(
 1. Fixed a config startup bug - whatever charmaps are found, the first in the list is now taken as the default else None.
 2. Made the default size 800x600 with left sash 200.
 3. Made custom icons for the dir control.
+4. New screenshot for the help file.
+5. Tweaked zip name to xxxx.fonts.zip so it's obvious what it contains.
+6. Adding the design files (Inkscape stuff) to the trunk so that others can use them.
