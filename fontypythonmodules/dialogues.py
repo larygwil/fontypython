@@ -247,7 +247,6 @@ class DialogSettings(wx.Dialog):
 		self.got_apps=fpsys.config.GOT_APPS
 		if self.got_apps:
 			self.CHOSEN_CHARACTER_MAP = fpsys.config.app_char_map
-			print self.CHOSEN_CHARACTER_MAP
 			rb = wx.RadioBox(
 					PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
 					self.got_apps, 1, wx.RA_SPECIFY_COLS
