@@ -281,7 +281,7 @@ class Configure:
 		self.__dontSaveNumInPage = False
 		
 		## PUBLIC vars :  Set some defaults:
-		self.size = (400,600) 
+		self.size = (800,600) 
 		self.pos = (10, 10)
 		self.numinpage = 10
 		self.text = _("Jump the lazy dog fox")
@@ -291,7 +291,7 @@ class Configure:
 		self.max = True
 		self.lastdir = iPC.home()
 		## Added Dec 2007
-		self.leftSash = 128
+		self.leftSash = 200 
 		self.rightSash = 128
 		## Added June 2009
 		self.recurseFolders = False 

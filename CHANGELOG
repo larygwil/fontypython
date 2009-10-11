@@ -187,4 +187,4 @@ Strings changed -- PO files will be broken :(
 
 11 Oct
 1. Fixed a config startup bug - whatever charmaps are found, the first in the list is now taken as the default else None.
-
+2. Made the default size 800x600 with left sash 200.
