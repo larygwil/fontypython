@@ -210,7 +210,7 @@ if options.zip:
 		todir="." #always where we run this
 		ipog = fontcontrol.Pog( options.pog )
 		ipog.zip( todir )
-		print _("Zipped as %s.zip in this directory.") % options.pog
+		print _("Zipped as %s.fonts.zip in this directory.") % options.pog
 	else:
 		print _("I can't find a pog named %s") % options.pog
 	raise SystemExit
