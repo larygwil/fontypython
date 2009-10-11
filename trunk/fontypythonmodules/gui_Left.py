@@ -49,6 +49,38 @@ class DirControl(wx.GenericDirCtrl) :
 				startdir = os.environ['HOME']
 		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY)
 
+		# create the image list:
+		isz = (16,16)
+		il = wx.ImageList(isz[0], isz[1])
+
+		# Add images to list. You need to keep the same order in order for
+		# this to work!
+
+		# closed folder:
+		il.Add( wx.Bitmap( fpsys.mythingsdir + "/icon_closed_folder.png",wx.BITMAP_TYPE_PNG) )
+
+		# open folder:
+		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_open_folder.png",wx.BITMAP_TYPE_PNG))
+
+		# root of filesystem (linux):
+		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_root.png",wx.BITMAP_TYPE_PNG))
+
+		# drive letter (windows):
+		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+
+		# cdrom drive:
+		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_cdrom.png",wx.BITMAP_TYPE_PNG))
+
+		# removable drive on win98:
+		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+
+		# removable drive (floppy, flash, etc) Does not seem to work on Kubuntu Jaunty (2009)
+		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+
+		# assign image list:
+		self.il = il
+		self.GetTreeCtrl().SetImageList(il)
+
 		## NOTE: The click event is bound in the Notebook.
 
 class NoteBook(wx.Notebook):
@@ -119,11 +151,9 @@ class NoteBook(wx.Notebook):
 		self.AddPage(pan1, _("Folders"))
 		self.AddPage(pan2, _("Pogs")) 
 		
-		source_pog_icon = self.imlist.Add\
-		(wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG))
+		source_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
 
-		target_pog_icon = self.imlist.Add\
-		(wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG))
+		target_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
 		
 		self.AssignImageList(self.imlist)
 		self.SetPageImage(1, source_pog_icon)
