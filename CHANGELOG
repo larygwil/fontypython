@@ -193,3 +193,6 @@ Strings changed -- PO files will be broken :(
 5. Tweaked zip name to xxxx.fonts.zip so it's obvious what it contains.
 6. Adding the design files (Inkscape stuff) to the trunk so that others can use them.
 7. "fixed" another wee bug in charmap default choice.I hope...
+
+12 Oct
+1. Made a new module to better deal with the charmap viewer wiring.

@@ -28,6 +28,7 @@ LSP = linux_safe_path_library.linuxSafePath()
 import pathcontrol
 import strings
 import fontcontrol
+import charmaps
 
 import wx
 
@@ -270,7 +271,7 @@ class FPState:
 		
 state = FPState() #The only instance of the state object -- app-wide
 
-
+		
 ####
 ## Save and Load the conf file
 class Configure:
@@ -302,6 +303,10 @@ class Configure:
 
 		self.__setData()
 		
+		## Oct 2009 -- The Character Map Viewer external app.
+		self.CMC = charmaps.CharMapController(  self.app_char_map_set )
+
+		
 		if os.path.exists(iPC.appConf()):
 			try:
 				pf = open(iPC.appConf(), "rb" ) # Binary for new pickle protocol.
@@ -315,6 +320,7 @@ class Configure:
 			print _("No config file found, creating it with defaults.")
 			self.Save() 
 			
+
 		## Now get them into the instance vars:
 		try:
 			self.size = self.__data['size']
@@ -331,7 +337,8 @@ class Configure:
 			self.recurseFolders = self.__data['recurseFolders']
 			self.ignore_adjustments = self.__data['ignore_adjustments']
 			self.app_char_map = self.__data['app_char_map']
-			
+			self.CMC.SET_CURRENT_APPNAME(self.app_char_map)
+
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
 			## Let's delete and re-make it.
@@ -342,28 +349,6 @@ class Configure:
 				raise SystemExit
 			self.Save()
 		
-		## Oct 2009 -- The Character Map Viewer external app.
-		## See also: dialogues.py
-		self.GOT_APPS = self.make_apps_list()
-
-	def make_apps_list( self ):
-		'''Return a list of a choice of installed charmap viewers, or []'''
-		def does_app_exist( program ):
-			for path in os.environ.get('PATH', '').split(':'):
-				if os.path.exists(os.path.join(path, program)) and \
-				   not os.path.isdir(os.path.join(path, program)):
-					#return os.path.join(path, program)
-					return program
-			return None
-		validapps = ['gucharmap','kfontview']
-		apps=[]
-		
-		apps.append( does_app_exist(validapps[0]) )
-		apps.append( does_app_exist(validapps[1]) )
-		got_apps=[str(t) for t in apps if t is not None]
-		if got_apps and self.app_char_map == "UNSET": self.app_char_map=got_apps[0] # cover intial start when no fp.conf is there.
-		if self.app_char_map not in validapps: self.app_char_map = None
-		return got_apps
 
 	def dontSaveNumInPage(self, flag):
 		self.__dontSaveNumInPage = flag
@@ -383,7 +368,12 @@ class Configure:
 								"ignore_adjustments": self.ignore_adjustments,
 								"app_char_map" : self.app_char_map
 								}
+	def app_char_map_set( self, x ):
+		self.app_char_map = x
+		
 	def Save(self) :
+
+		print "SAVING:",self.app_char_map
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
 		if self.__dontSaveNumInPage:
 			self.numinpage = self.__data["numinpage"]
