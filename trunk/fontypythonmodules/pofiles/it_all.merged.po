@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Fontypython 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-04 20:41+0200\n"
+"POT-Creation-Date: 2009-10-12 16:44+0200\n"
 "PO-Revision-Date: 2009-07-07 12:35+0100\n"
 "Last-Translator: Pietro Battiston <toobaz@email.it>\n"
 "Language-Team: Italian Translation Project <tp@lists.linux.it>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
-#: start_fontypython:23
+#: start_fontypython:22
 msgid "Sorry, only Gnu/Linux is supported at the moment."
 msgstr "Spiacente, al momento sono supportati solo sistemi Gnu/Linux."
 
-#: fontypython:101
+#: fontypython:102
 #, python-format
 msgid ""
 "Please restart Fonty Python after you have moved:\"%s\" to some other place."
@@ -77,7 +77,7 @@ msgstr "Impossibile aprire (%s)."
 
 #: fontypythonmodules/cli.py:213
 #, python-format
-msgid "Zipped as %s.zip in this directory."
+msgid "Zipped as %s.fonts.zip in this directory."
 msgstr ""
 
 #: fontypythonmodules/cli.py:215
@@ -251,25 +251,23 @@ msgid "Choose which app to use as a character map viewer."
 msgstr ""
 
 #: fontypythonmodules/dialogues.py:262
-msgid ""
-"Could not find a character viewer.\n"
-"(Install gucharmap or kfontview.)"
+msgid "Could not find a supported character viewer."
 msgstr ""
 
-#: fontypythonmodules/dialogues.py:270
+#: fontypythonmodules/dialogues.py:271
 #: fontypythonmodules/dialogues_settings_test.py:62
 #: fontypythonmodules/dialogues_settings_test.py:197
 #, fuzzy
 msgid "Quick settings"
 msgstr "Impostazioni"
 
-#: fontypythonmodules/dialogues.py:271
+#: fontypythonmodules/dialogues.py:272
 #: fontypythonmodules/dialogues_settings_test.py:63
 #: fontypythonmodules/dialogues_settings_test.py:198
 msgid "Voodoo"
 msgstr ""
 
-#: fontypythonmodules/dialogues.py:312
+#: fontypythonmodules/dialogues.py:313
 msgid "Oh boy..."
 msgstr "O cribbio..."
 
@@ -298,15 +296,15 @@ msgstr ""
 "(In alternativa, è possibile semplicemente spostare altrove il font, ma ne "
 "potrebbero rimanere altri problematici.)\n"
 
-#: fontypythonmodules/dialogues.py:360
+#: fontypythonmodules/dialogues.py:358
 msgid "Locate a directory for the zip file(s)."
 msgstr ""
 
-#: fontypythonmodules/dialogues.py:392
+#: fontypythonmodules/dialogues.py:390
 msgid "Check for dangerous fonts."
 msgstr "Controllo font dannosi."
 
-#: fontypythonmodules/dialogues.py:399
+#: fontypythonmodules/dialogues.py:397
 msgid "Choose a directory and double click it to start"
 msgstr "Doppio click su una cartella per avviare il controllo"
 
@@ -448,41 +446,41 @@ msgstr ""
 msgid "This folder has no fonts in it."
 msgstr "Questa cartella non contiene alcun font."
 
-#: fontypythonmodules/fpsys.py:180
+#: fontypythonmodules/fpsys.py:181
 msgid "Checking fonts, this could take some time."
 msgstr "Sto controllando i font: potrebbe prendere un po' di tempo."
 
-#: fontypythonmodules/fpsys.py:181
+#: fontypythonmodules/fpsys.py:182
 #, python-format
 msgid "Starting in %s:"
 msgstr "Parto in %s:"
 
-#: fontypythonmodules/fpsys.py:188
+#: fontypythonmodules/fpsys.py:189
 #, python-format
 msgid "Looking in %s..."
 msgstr "Controllo in %s..."
 
-#: fontypythonmodules/fpsys.py:192
+#: fontypythonmodules/fpsys.py:193
 msgid "No supported fonts found there..."
 msgstr "Nessun font supportato qui..."
 
-#: fontypythonmodules/fpsys.py:203
+#: fontypythonmodules/fpsys.py:204
 msgid "I could not find any bad fonts."
 msgstr "Non ho trovato alcun font dannoso."
 
-#: fontypythonmodules/fpsys.py:224
+#: fontypythonmodules/fpsys.py:225
 msgid "The process is complete."
 msgstr "Il processo è completo."
 
-#: fontypythonmodules/fpsys.py:287
+#: fontypythonmodules/fpsys.py:288
 msgid "Jump the lazy dog fox"
 msgstr "Ma la volpe col suo balzo ha raggiunto il quieto fido"
 
-#: fontypythonmodules/fpsys.py:315
+#: fontypythonmodules/fpsys.py:320
 msgid "No config file found, creating it with defaults."
 msgstr "Non ho trovato il file di configurazione, ne ricreo uno standard."
 
-#: fontypythonmodules/fpsys.py:341
+#: fontypythonmodules/fpsys.py:348
 msgid ""
 "The fontypython config file is damaged.\n"
 "Please remove it and start again"
@@ -490,28 +488,28 @@ msgstr ""
 "Il file di configurazione fontypython è danneggiato.\n"
 "Per favore rimuovilo e riprova."
 
-#: fontypythonmodules/fpsys.py:393
+#: fontypythonmodules/fpsys.py:386
 msgid "Could not write to the config file."
 msgstr "Impossibile modificare il file di configurazione."
 
-#: fontypythonmodules/fpsys.py:528
+#: fontypythonmodules/fpsys.py:521
 #, python-format
 msgid "This font is in %s"
 msgstr "Questo font è in %s"
 
-#: fontypythonmodules/gui_Fitmap.py:446
+#: fontypythonmodules/gui_Fitmap.py:405
 msgid "This text cannot be drawn. Hey, it happens..."
 msgstr "Impossibile raffigurare questo testo. Oh, capita..."
 
-#: fontypythonmodules/gui_Left.py:70
+#: fontypythonmodules/gui_Left.py:102
 msgid "Include sub-folders."
 msgstr "Includi sottocartelle."
 
-#: fontypythonmodules/gui_Left.py:119
+#: fontypythonmodules/gui_Left.py:151
 msgid "Folders"
 msgstr "Cartelle"
 
-#: fontypythonmodules/gui_Left.py:120
+#: fontypythonmodules/gui_Left.py:152
 msgid "Pogs"
 msgstr "Pog"
 
@@ -523,119 +521,119 @@ msgstr "Ripulisci filtro"
 msgid "Filter:"
 msgstr "Filtro:"
 
-#: fontypythonmodules/gui_Middle.py:375
+#: fontypythonmodules/gui_Middle.py:382
 msgid "Selected fonts have been removed."
 msgstr "I font selezionati sono stati rimossi."
 
-#: fontypythonmodules/gui_Middle.py:377
+#: fontypythonmodules/gui_Middle.py:384
 #, fuzzy
 msgid "There was an error writing the pog to disk. Nothing has been done."
 msgstr ""
 "C'è stato un errore nella memorizzazione del file. Non è stato fatto nulla."
 
-#: fontypythonmodules/gui_Middle.py:384
+#: fontypythonmodules/gui_Middle.py:391
 #, python-format
 msgid "Copying fonts from %(source)s to %(target)s"
 msgstr "Copia di font da %(source)s a %(target)s"
 
-#: fontypythonmodules/gui_Middle.py:402
+#: fontypythonmodules/gui_Middle.py:409
 #, python-format
 msgid "Selected fonts are now in %s."
 msgstr "I font selezionati sono ora in %s."
 
-#: fontypythonmodules/gui_Middle.py:404
+#: fontypythonmodules/gui_Middle.py:411
 msgid "There was an error writing the pog to disk. Nothing has been done"
 msgstr ""
 "C'è stato un errore nella memorizzazione del file. Non è stato fatto nulla."
 
-#: fontypythonmodules/gui_Middle.py:472
+#: fontypythonmodules/gui_Middle.py:479
 msgid "Choose some fonts"
 msgstr "Scegli i font"
 
-#: fontypythonmodules/gui_Middle.py:505
+#: fontypythonmodules/gui_Middle.py:512
 #, fuzzy, python-format
 msgid "Your active Target is %s"
 msgstr "Il tuo attuale pog destinazione è:%s"
 
-#: fontypythonmodules/gui_Middle.py:506
+#: fontypythonmodules/gui_Middle.py:513
 msgid "Please choose a Source."
 msgstr "Per favore scegli una sorgente."
 
-#: fontypythonmodules/gui_Middle.py:508
+#: fontypythonmodules/gui_Middle.py:515
 msgid "There are no fonts in here."
 msgstr "Non ci sono font qui."
 
-#: fontypythonmodules/gui_Middle.py:509
+#: fontypythonmodules/gui_Middle.py:516
 msgid "Please choose a Pog or a Font folder on the left."
 msgstr "Per favore scegli un pog o una cartella di font sulla sinistra."
 
-#: fontypythonmodules/gui_Middle.py:510 fontypythonmodules/gui_Middle.py:518
-#: fontypythonmodules/gui_Middle.py:526 fontypythonmodules/gui_Middle.py:542
-#: fontypythonmodules/gui_Middle.py:558 fontypythonmodules/gui_Middle.py:567
+#: fontypythonmodules/gui_Middle.py:517 fontypythonmodules/gui_Middle.py:525
+#: fontypythonmodules/gui_Middle.py:533 fontypythonmodules/gui_Middle.py:549
+#: fontypythonmodules/gui_Middle.py:565 fontypythonmodules/gui_Middle.py:574
 msgid "Nothing to do"
 msgstr "Niente da fare"
 
-#: fontypythonmodules/gui_Middle.py:516 fontypythonmodules/gui_Middle.py:541
+#: fontypythonmodules/gui_Middle.py:523 fontypythonmodules/gui_Middle.py:548
 #, fuzzy, python-format
 msgid "Viewing Folder %s"
 msgstr "Visualizzazione della cartella:%s"
 
-#: fontypythonmodules/gui_Middle.py:520
+#: fontypythonmodules/gui_Middle.py:527
 msgid "Viewing a folder."
 msgstr "Visualizzazione di una cartella."
 
-#: fontypythonmodules/gui_Middle.py:525
+#: fontypythonmodules/gui_Middle.py:532
 #, fuzzy, python-format
 msgid "Viewing (installed Pog)  %s"
 msgstr "Visualizzazione del pog (installato): %s"
 
-#: fontypythonmodules/gui_Middle.py:529 fontypythonmodules/gui_Middle.py:545
-#: fontypythonmodules/gui_Middle.py:561
+#: fontypythonmodules/gui_Middle.py:536 fontypythonmodules/gui_Middle.py:552
+#: fontypythonmodules/gui_Middle.py:568
 msgid "You cannot change an installed Pog."
 msgstr "Non puoi modificare un pog installato."
 
-#: fontypythonmodules/gui_Middle.py:531
+#: fontypythonmodules/gui_Middle.py:538
 #, fuzzy, python-format
 msgid "Viewing (editable Pog)  %s"
 msgstr "Visualizzazione del pog (modificabile): %s"
 
-#: fontypythonmodules/gui_Middle.py:533
+#: fontypythonmodules/gui_Middle.py:540
 #, python-format
 msgid "Remove fonts from %s"
 msgstr "Rimuovi i font da %s"
 
-#: fontypythonmodules/gui_Middle.py:536
+#: fontypythonmodules/gui_Middle.py:543
 msgid "You can remove fonts from the selected Target Pog."
 msgstr "Puoi rimuovere dei font dal pog destinazione."
 
-#: fontypythonmodules/gui_Middle.py:547
+#: fontypythonmodules/gui_Middle.py:554
 #, fuzzy, python-format
 msgid "Append from %(source)s to %(target)s"
 msgstr "Aggiungi i font da: %(source)s a:%(target)s"
 
-#: fontypythonmodules/gui_Middle.py:548 fontypythonmodules/gui_Middle.py:572
+#: fontypythonmodules/gui_Middle.py:555 fontypythonmodules/gui_Middle.py:579
 #, python-format
 msgid "Put fonts into %s"
 msgstr "Metti i font in %s"
 
-#: fontypythonmodules/gui_Middle.py:552 fontypythonmodules/gui_Middle.py:576
+#: fontypythonmodules/gui_Middle.py:559 fontypythonmodules/gui_Middle.py:583
 msgid "You can append fonts to your target Pog."
 msgstr "Puoi aggiungere font al tuo pog destinazione."
 
-#: fontypythonmodules/gui_Middle.py:557
+#: fontypythonmodules/gui_Middle.py:564
 #, fuzzy, python-format
 msgid "Viewing %(source)s, but Pog %(target)s is installed."
 msgstr "Visualizzando il pog:%(source)s, ma il pog:%(target)s è installato."
 
-#: fontypythonmodules/gui_Middle.py:565
+#: fontypythonmodules/gui_Middle.py:572
 msgid "These two are the same Pog."
 msgstr "Questi due pog sono lo stesso."
 
-#: fontypythonmodules/gui_Middle.py:569
+#: fontypythonmodules/gui_Middle.py:576
 msgid "Your Source and Target are the same Pog."
 msgstr "Il tuo pog origine e quello destinazione sono lo stesso."
 
-#: fontypythonmodules/gui_Middle.py:571
+#: fontypythonmodules/gui_Middle.py:578
 #, fuzzy, python-format
 msgid "Append from %(source)s into %(target)s"
 msgstr "Aggiungi i font da: %(source)s a:%(target)s"
@@ -813,7 +811,7 @@ msgid ""
 "\t\t\t\t\"This is an ex-parrot!\", say. \n"
 "\t\t\t\tBe sure to use the quotes.\n"
 "  -p Pog --purge=Pog\n"
-"\t\t\t\tPurge the Pog of ttf files that are no\n"
+"\t\t\t\tPurge the Pog of font files that are no\n"
 "\t\t\t\tlonger really there.\n"
 "  -c folder --check=folder\n"
 "\t\t\t\tCheck for bad fonts that crash Fonty.\n"
@@ -931,7 +929,7 @@ msgid ""
 "original files are used to install the fonts.\n"
 "\n"
 "For example, you might have a Pog called \"logos\"\n"
-"into which you place all the ttfs you have of\n"
+"into which you place all the fonts you have of\n"
 "company logos. After that, when you need to work\n"
 "with those logos, you simply install the 'logos' Pog\n"
 "and start your design app!\n"
@@ -1188,7 +1186,7 @@ msgid "Fonty Python - view and manage all kinds of fonts on Gnu/Linux"
 msgstr "Fonty Python - visualizza e gestisci ogni tipo di font in Gnu/Linux"
 
 #: fontypythonmodules/strings.py:247
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Manage your fonts on Gnu/Linux.\n"
 "NEWS : We now support TTF, OTF, Type1 (PFB, PFA) \n"
@@ -1208,7 +1206,7 @@ msgid ""
 "original files are used to install the fonts.\n"
 "\n"
 "For example, you might have a Pog called \"logos\"\n"
-"into which you place all the ttfs you have of\n"
+"into which you place all the fonts you have of\n"
 "company logos. After that, when you need to work\n"
 "with those logos, you simply install the 'logos' Pog\n"
 "and start your design app!\n"
@@ -1457,7 +1455,7 @@ msgstr "Attenzione"
 msgid "Error"
 msgstr "Errore"
 
-#: fontypythonmodules/wxgui.py:362
+#: fontypythonmodules/wxgui.py:363
 #, python-format
 msgid ""
 "Do you want to purge %s?\n"
@@ -1472,21 +1470,21 @@ msgstr ""
 "pog che non puntano a file effettivi\n"
 "saranno rimossi dal pog."
 
-#: fontypythonmodules/wxgui.py:362
+#: fontypythonmodules/wxgui.py:363
 msgid "Purge font?"
 msgstr "Epurare font?"
 
-#: fontypythonmodules/wxgui.py:371
+#: fontypythonmodules/wxgui.py:372
 #, python-format
 msgid "%s has not been purged."
 msgstr "%s non è stato epurato."
 
-#: fontypythonmodules/wxgui.py:375
+#: fontypythonmodules/wxgui.py:376
 #, python-format
 msgid "%s has been purged."
 msgstr "%s è stato epurato."
 
-#: fontypythonmodules/wxgui.py:389
+#: fontypythonmodules/wxgui.py:390
 msgid ""
 "I am sorry, but Unicode is not supported by this installation of wxPython. "
 "Fonty Python relies on Unicode and will simply not work without it.\n"
@@ -1498,11 +1496,11 @@ msgstr ""
 "\n"
 "Per favore procurati ed installa la versione Unicode di python-wxgtk."
 
-#: fontypythonmodules/wxgui.py:389
+#: fontypythonmodules/wxgui.py:390
 msgid "SORRY: UNICODE MUST BE SUPPORTED"
 msgstr "SPIACENTE: L'UNICODE DEVE ESSERE SUPPORTATO"
 
-#: fontypythonmodules/wxgui.py:399
+#: fontypythonmodules/wxgui.py:400
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python: porta i tuoi font allo scoperto!"
 

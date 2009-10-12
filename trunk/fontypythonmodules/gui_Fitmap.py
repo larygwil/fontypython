@@ -204,50 +204,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		thread.start()
 
 	def run(self, *args):
-		src=args[0]
-		dest=args[1]
-		fam=args[2]
-		sz=args[3]
-
-		if fpsys.config.app_char_map == "gucharmap":
-			makelink=True
-			cmd = ['gucharmap', u'--font=%s, %s' % (fam, sz)]
-		elif fpsys.config.app_char_map == "kfontview":
-			makelink=False # kfontview only needs a url to a font file. It rules.
-			url = src
-			cmd = ['kfontview', u'%s' % url]
-		else:
-			return
-
-		if makelink:
-			## gucharmap requires the font to be installed already, so fake it:
-			fail=False
-			already_installed = False
-			try:
-				os.symlink( src, dest )
-			except OSError, detail:
-				if detail.errno != 17:
-					# Not 17 means the link failed, don't open the charmap
-					fail = True
-				else:
-					# Error 17: file exists.
-					# User may have installed it previously (or something).
-					already_installed = True
-			if fail: return
-
-		proc = subprocess.Popen( cmd, shell=False )
-		## gucharmap: Fonty actually holds still and waits here until gucharmap is closed.
-		## kfontview: Fonty just runs-through. kfontview is a different beast.
-		## Both still work and Fonty stays active. Multiple instances if the viewers can be opened!
-		proc.wait()
-
-		# Remove the fake installed font -- if it's a candidate:
-		if makelink and not already_installed:
-			try:
-				os.unlink( dest )
-			except:
-				# What to do? Start yelling? Nah...
-				pass
+		iCM = fpsys.config.CMC.GetInstance()
+		iCM.OpenApp( *args )
+		iCM.Cleanup( )
 
 	def onMiddleClick(self, event):
 		ps.pub( menu_settings, None )
@@ -261,7 +220,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		Other fitems like info and FILE_NOT_FOUND don't get buttons.
 		'''
-		if not fpsys.config.app_char_map: return False
+		if not fpsys.config.CMC.APPS_ARE_AVAILABLE: return False
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ): return False
 		if self.fitem.badstyle == "FILE_NOT_FOUND": return False
 		if not self.fitem.family: return False

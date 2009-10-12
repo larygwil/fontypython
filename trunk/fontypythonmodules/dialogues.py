@@ -244,28 +244,29 @@ class DialogSettings(wx.Dialog):
 		PANE2sizer.Add(self.chkAdjust, 0, wx.ALIGN_LEFT | wx.BOTTOM, border=10 )
 
 		# The Character map choice
-		self.got_apps=fpsys.config.GOT_APPS
-		if self.got_apps:
-			self.CHOSEN_CHARACTER_MAP = fpsys.config.app_char_map
+		self.CMC = fpsys.config.CMC
+		if self.CMC.APPS_ARE_AVAILABLE:
+			self.CHOSEN_CHARACTER_MAP = self.CMC.CURRENT_APPNAME()
 			rb = wx.RadioBox(
 					PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
-					self.got_apps, 1, wx.RA_SPECIFY_COLS
+					self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS
 					)
-			if self.CHOSEN_CHARACTER_MAP is None:
-				self.CHOSEN_CHARACTER_MAP = "gucharmap"
-			rb.SetSelection( self.got_apps.index( self.CHOSEN_CHARACTER_MAP ))
+			
+			rb.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
+
 			self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb)
 			rb.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
 			PANE2sizer.Add( rb, 0, wx.ALIGN_LEFT )
 		else:
 			self.CHOSEN_CHARACTER_MAP = None
-			no_app = wx.StaticText(PANE2, -1, _("Could not find a character viewer.\n(Install gucharmap or kfontview.)"))
+			no_app = wx.StaticText(PANE2, -1, _("Could not find a supported character viewer."))
 			PANE2sizer.Add( no_app, 0, wx.ALIGN_LEFT )
+
 
 		PANE2_buffer = wx.BoxSizer( wx.HORIZONTAL )
 		PANE2_buffer.Add( PANE2sizer, 1, wx.EXPAND | wx.ALL, border=10 )
 		PANE2.SetSizer( PANE2_buffer )
-		
+
 		## Add the panels to the notebook
 		nb.AddPage( PANE1, _("Quick settings") )
 		nb.AddPage( PANE2, _("Voodoo") )
@@ -300,7 +301,7 @@ class DialogSettings(wx.Dialog):
 		self.Layout()
 
 	def EvtRadioBox(self, event):
-		self.CHOSEN_CHARACTER_MAP = self.got_apps[event.GetInt()]
+		self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
 
 class SegfaultDialog(wx.Dialog):
 	"""
