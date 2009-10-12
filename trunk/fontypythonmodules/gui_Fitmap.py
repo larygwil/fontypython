@@ -204,6 +204,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		thread.start()
 
 	def run(self, *args):
+		'''
+		Uses the instance (held in fpsys.config) of the classes in charmaps.py.
+		'''
 		iCM = fpsys.config.CMC.GetInstance()
 		iCM.OpenApp( *args )
 		iCM.Cleanup( )
