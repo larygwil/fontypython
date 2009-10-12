@@ -303,7 +303,7 @@ class Configure:
 
 		self.__setData()
 		
-		## Oct 2009 -- The Character Map Viewer external app.
+		## Oct 2009 -- The Character Map Viewer controller.
 		self.CMC = charmaps.CharMapController(  self.app_char_map_set )
 
 		
@@ -337,6 +337,9 @@ class Configure:
 			self.recurseFolders = self.__data['recurseFolders']
 			self.ignore_adjustments = self.__data['ignore_adjustments']
 			self.app_char_map = self.__data['app_char_map']
+			## We must also set our instance of the Char Map Controller:
+			##  This can be "UNSET" (default first run) or an appname
+			##  That appname may be valid or not (it may have been uninstalled...)
 			self.CMC.SET_CURRENT_APPNAME(self.app_char_map)
 
 		except KeyError:
@@ -369,11 +372,13 @@ class Configure:
 								"app_char_map" : self.app_char_map
 								}
 	def app_char_map_set( self, x ):
+		'''
+		A callback from the CharMapController: when the CURRENT_APPNAME is set,
+		this gets called to keep the config version of the appname current.
+		'''
 		self.app_char_map = x
 		
 	def Save(self) :
-
-		print "SAVING:",self.app_char_map
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
 		if self.__dontSaveNumInPage:
 			self.numinpage = self.__data["numinpage"]

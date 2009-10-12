@@ -45,12 +45,6 @@ class CharMapApp(object):
 		## Both still work and Fonty stays active. Multiple instances of the viewers can be opened!
 		proc.wait()
 
-class UnsetCharMap( CharMapApp ):
-	'''
-	A dud app -- this is here for convenience.
-	'''
-	def do_i_exist( self ):
-		return True
 
 class Gucharmap( CharMapApp ):
 	'''
@@ -96,9 +90,6 @@ class Kfontview( CharMapApp ):
 	'''
 	def OpenApp( self, *args ):
 		url=args[0]
-		dest=args[1]
-		fam=args[2]
-		sz=args[3]
 
 		cmd = [ self.appname, u'%s' % url]
 		self.Run( cmd )
@@ -113,30 +104,34 @@ class CharMapController(object):
 	def __init__( self, config_callback ):
 		self.config_callback = config_callback
 		
-		SUPPORTED_CHAR_MAP_APPS = { "UNSET": UnsetCharMap, "gucharmap":Gucharmap, "kfontview":Kfontview }
+		SUPPORTED_CHAR_MAP_APPS = { "gucharmap":Gucharmap, "kfontview":Kfontview }
 		## Which of the supported apps are actually available?
 		self.AVAILABLE_APP_DICT = {}
 		for appname, klass in SUPPORTED_CHAR_MAP_APPS.iteritems():
 			## Instantiate an app class:
 			i = klass( appname )
-			## At minimum UnsetCharMap will be in there. len(dict) == 1
 			if i.is_installed: self.AVAILABLE_APP_DICT[appname] = i
 
-		## If len is 1 then *only* UnsetCharMap is in there.
-		## This means there are no available apps to use.
-		self.APPS_ARE_AVAILABLE = False if len(self.AVAILABLE_APP_DICT) == 1 else True
+		## Flag to signify if there are available apps to use.
+		self.APPS_ARE_AVAILABLE = False if len(self.AVAILABLE_APP_DICT) == 0 else True
 
 		self.__CURRENT_APPNAME = "UNSET"
 		self.QUICK_APPNAME_LIST = self.AVAILABLE_APP_DICT.keys()
-		self.QUICK_APPNAME_LIST.remove("UNSET")
 
 	def SET_CURRENT_APPNAME(self, x):
-		if x == "UNSET" and self.APPS_ARE_AVAILABLE:
-			x = self.QUICK_APPNAME_LIST[0]
-		self.__CURRENT_APPNAME = x
+		## If the new name (x) is UNSET or some appname that is not available
+		## then give x a new value of the first thing in the list of what is
+		## actually available.
+		if x not in self.QUICK_APPNAME_LIST and self.APPS_ARE_AVAILABLE:
+				x = self.QUICK_APPNAME_LIST[0]
+				
+		self.__CURRENT_APPNAME = x ## It's possible that x is "UNSET" 
 		self.config_callback( x ) ## go set the config's app_char_map var too.
 
 	def CURRENT_APPNAME( self ):
+		'''
+		This is only called when APPS_ARE_AVAILABLE is True: See dialogues.py
+		'''
 		if self.__CURRENT_APPNAME == "UNSET":
 			x = self.QUICK_APPNAME_LIST[0]
 			return x
@@ -144,6 +139,10 @@ class CharMapController(object):
 			return self.__CURRENT_APPNAME
 
 	def GetInstance( self ):
+		'''
+		This is only called when APPS_ARE_AVAILABLE is True: See gui_Fitmap.py
+		in can_have_button method.
+		'''
 		## Fetch an instance from my dict 
 		return self.AVAILABLE_APP_DICT[ self.__CURRENT_APPNAME ]
 
