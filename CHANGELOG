@@ -196,3 +196,4 @@ Strings changed -- PO files will be broken :(
 
 12 Oct
 1. Made a new module to better deal with the charmap viewer wiring.
+2. Removed the bitmap toggle buttons for B I R : they sucked. Normal toggle buttons will be used until wxpython can get bitmap buttons right.

@@ -105,6 +105,7 @@ class CharMapController(object):
 		self.config_callback = config_callback
 		
 		SUPPORTED_CHAR_MAP_APPS = { "gucharmap":Gucharmap, "kfontview":Kfontview }
+
 		## Which of the supported apps are actually available?
 		self.AVAILABLE_APP_DICT = {}
 		for appname, klass in SUPPORTED_CHAR_MAP_APPS.iteritems():
@@ -128,9 +129,10 @@ class CharMapController(object):
 		self.__CURRENT_APPNAME = x ## It's possible that x is "UNSET" 
 		self.config_callback( x ) ## go set the config's app_char_map var too.
 
-	def CURRENT_APPNAME( self ):
+	def GET_CURRENT_APPNAME( self ):
 		'''
 		This is only called when APPS_ARE_AVAILABLE is True: See dialogues.py
+		Think of this as raising an error if APPS_ARE_AVAILABLE is False!
 		'''
 		if self.__CURRENT_APPNAME == "UNSET":
 			x = self.QUICK_APPNAME_LIST[0]
@@ -142,6 +144,7 @@ class CharMapController(object):
 		'''
 		This is only called when APPS_ARE_AVAILABLE is True: See gui_Fitmap.py
 		in can_have_button method.
+		Think of this as raising an error if APPS_ARE_AVAILABLE is False!
 		'''
 		## Fetch an instance from my dict 
 		return self.AVAILABLE_APP_DICT[ self.__CURRENT_APPNAME ]
