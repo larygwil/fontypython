@@ -134,29 +134,21 @@ class FontViewPanel(wx.Panel):
 		idBold = wx.NewId()
 		idItalic = wx.NewId()
 		self.idRegular = wx.NewId()
-		self.BIR = { idBold: ["bold",False], idItalic: ["italic",False], self.idRegular: ["regular",False] }
-		for id, lst in self.BIR.iteritems():
-			bmp = wx.Bitmap(fpsys.mythingsdir + "button_%s.png" % lst[0], type=wx.BITMAP_TYPE_PNG)
-			bBIR = buttons.GenBitmapToggleButton(self, id, None, style=wx.BORDER_NONE ) #border looks crap, not native gtk.
-			self.BIR[id].append( bBIR )
-			bBIR.SetBitmapLabel(bmp)
-			bmp = wx.Bitmap(fpsys.mythingsdir + "button_%s_down.png" % lst[0], type=wx.BITMAP_TYPE_PNG)
-			## Kubuntu Jaunty KDE 4.ish : No amount of voodoo can get the background of the toggle buttons to
-			##  stop drawing in white. ThemedGenBitmapToggleButton does not work either.
-			##  c = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE) -> returns a nice gray. Using it does not help.
-			##  Setting backdrop to 'red' works fine.... Gray is the problem. Anyway, I am giving up. Perhaps
-			##  it will look better in pure Gnome.
-			bBIR.SetBitmapSelected(bmp)
-			bBIR.SetInitialSize()
-			sizerOtherControls.Add( bBIR, 0, wx.ALIGN_LEFT| wx.ALIGN_CENTER_VERTICAL )
-			bBIR.Bind( wx.EVT_BUTTON, self.onBIR )
+		self.BIR = {
+				idBold:			{'style': "bold", 	'label': _("b"), 'truth': False, 'instance': None},
+				idItalic:		{'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
+				self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
+				}
+		for id, dic in self.BIR.iteritems():
+			bBIR = wx.ToggleButton(self, id=id, label=dic['label'])
+			self.BIR[id]['instance'] =  bBIR
+			sizerOtherControls.Add( bBIR, 1, wx.BU_EXACTFIT )
+			bBIR.Bind( wx.EVT_TOGGLEBUTTON, self.onBIR )
 
-		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT| wx.ALIGN_CENTER_VERTICAL ) # Clear button
+		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
 
-		sizerOtherControls.Add(self.inputFilter, 1, wx.ALIGN_LEFT | wx.EXPAND)
-		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
-		sizerOtherControls.Add(( 4,-1), 0, wx.EXPAND)
-		sizerOtherControls.Add(self.choicePage, 0 ,wx.EXPAND | wx.ALIGN_RIGHT)  #Added it to the sizer
+		sizerOtherControls.Add(self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND)
+		sizerOtherControls.Add(self.choicePage, 0 , wx.ALIGN_RIGHT)  #Added it to the sizer
 		
 		## The SCROLLED FONT VIEW panel:
 		self.scrolledFontView = ScrolledFontView(self) 
@@ -164,7 +156,7 @@ class FontViewPanel(wx.Panel):
 		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL) 
 		self.buttPrev = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
 
-		self.buttMain = wx.Button(self, label=" ")#, id = 3) 
+		self.buttMain = wx.Button(self, label=" ")
 		self.buttMainLastLabel=" "
 		## This stock button has not been translated into Afrikaans yet. (Dec 2007)
 		## I can't tell you how this fkuced me around!
@@ -224,8 +216,8 @@ class FontViewPanel(wx.Panel):
 		self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 
 	def setOneBIR( self, id, truth ):
-		self.BIR[id][1] = truth
-		self.BIR[id][2].SetToggle( truth )
+		self.BIR[id]['truth'] = truth
+		self.BIR[id]['instance'].SetValue( truth )
 
 	def setAllBIRFalse( self ):
 		for id in self.BIR.keys():
@@ -233,8 +225,8 @@ class FontViewPanel(wx.Panel):
 
 	def onBIR( self, e ):
 		id=e.GetId()
-		self.BIR[id][1]=e.GetIsDown()
-		if self.BIR[id][0] == "regular":
+		self.BIR[id]['truth']=self.BIR[id]['instance'].GetValue()
+		if self.BIR[id]['style'] == "regular":
 			# can't have regular with bold/italic
 			self.setAllBIRFalse() # switch all off
 			self.setOneBIR( id, True )
@@ -242,8 +234,8 @@ class FontViewPanel(wx.Panel):
 		else:
 			self.setOneBIR( self.idRegular, False )
 			ss=""
-			for id, lst in self.BIR.iteritems():
-				if lst[1]: ss += "%s%s" % (lst[0]," ") # Builds AND regex (space is and)
+			for id, dic in self.BIR.iteritems():
+				if dic['truth']: ss += "%s%s" % (dic['style']," ") # Builds AND regex (space is and)
 			ss = ss[:-1]
 	
 		self.inputFilter.SetValue( ss )

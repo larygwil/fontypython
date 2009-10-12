@@ -246,7 +246,7 @@ class DialogSettings(wx.Dialog):
 		# The Character map choice
 		self.CMC = fpsys.config.CMC
 		if self.CMC.APPS_ARE_AVAILABLE:
-			self.CHOSEN_CHARACTER_MAP = self.CMC.CURRENT_APPNAME()
+			self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
 			rb = wx.RadioBox(
 					PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
 					self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS

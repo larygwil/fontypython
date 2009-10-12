@@ -303,7 +303,7 @@ class Configure:
 
 		self.__setData()
 		
-		## Oct 2009 -- The Character Map Viewer controller.
+		## Oct 2009 -- The Character Map Controller.
 		self.CMC = charmaps.CharMapController(  self.app_char_map_set )
 
 		
