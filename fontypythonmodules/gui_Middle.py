@@ -140,15 +140,15 @@ class FontViewPanel(wx.Panel):
 				self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
 				}
 		for id, dic in self.BIR.iteritems():
-			bBIR = wx.ToggleButton(self, id=id, label=dic['label'])
+			bBIR = wx.ToggleButton( self, id=id, label=dic['label'] )
 			self.BIR[id]['instance'] =  bBIR
 			sizerOtherControls.Add( bBIR, 1, wx.BU_EXACTFIT )
 			bBIR.Bind( wx.EVT_TOGGLEBUTTON, self.onBIR )
 
 		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
 
-		sizerOtherControls.Add(self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND)
-		sizerOtherControls.Add(self.choicePage, 0 , wx.ALIGN_RIGHT)  #Added it to the sizer
+		sizerOtherControls.Add( self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND )
+		sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
 		
 		## The SCROLLED FONT VIEW panel:
 		self.scrolledFontView = ScrolledFontView(self) 
