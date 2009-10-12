@@ -294,7 +294,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		wx.BeginBusyCursor()
 		if not self.fitem.top_left_adjust_completed:
 			W,H = pilimage.size
-			#if  not self.fitem.fx[i] and not self.fitem.fy[i]:
 			fx=fy=0
 			esc = False
 			# Scan ACROSS WIDTH and repeatedly DOWN looking for a pixel.
