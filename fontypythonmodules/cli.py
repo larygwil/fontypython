@@ -69,6 +69,7 @@ try:
 	["help", "version", "list", "check=","examples","install=",\
 	"uninstall=","size=","number=","purge=","all=","all-recurse=","zip="])
 except getopt.GetoptError, err:
+	print _("Your arguments amuse me :) Please read the help.")
 	print str(err) # will print something like "option -a not recognized"
 	raise SystemExit
 
@@ -147,7 +148,6 @@ for o, a in opts:
 
 	else:
 		## We should not reach here at all.
-		print "Your arguments amuse me :) Please read the help."
 		raise SystemExit
 
 ####
