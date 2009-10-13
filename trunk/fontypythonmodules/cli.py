@@ -65,9 +65,9 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:t:p:a:A:z:",\
+	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:p:a:A:z:",\
 	["help", "version", "list", "check=","examples","install=",\
-	"uninstall=","size=","number=","text=","purge=","all=","all-recurse=","zip="])
+	"uninstall=","size=","number=","purge=","all=","all-recurse=","zip="])
 except getopt.GetoptError, err:
 	print str(err) # will print something like "option -a not recognized"
 	raise SystemExit
@@ -125,13 +125,6 @@ for o, a in opts:
 			print _("Please use a number for %s") % o
 			raise SystemExit			
 		options.numinpage = n
-
-	elif o in ("-t", "--text"):
-		## The quotes gets stripped out, so I can't tell the
-		## end of the text param and the start of other params
-		## therefore I stick to the 'report and restart' idea.
-		options.text = a
-		fpsys.config.text = a
 
 	elif o in ("-a", "--all", "-A","--all-recurse"):
 		## var a is whatever comes after the -a flag.
@@ -229,18 +222,7 @@ if options.numinpage > 1:
 
 ####
 ## Text
-## This one has potential to screw-up badly
-## if the user forgets the quotes.
-## For now, I will exit app.
-if options.text:
-	fpsys.config.text = options.text
-	fpsys.config.Save()		
-	print _("""Your text has been set to "%s"
-Tip: Did you use quotes to surround your text?
-
-Please start FontyPython again to see the result.""") % options.text
-	raise SystemExit
-
+## Removed Oct 2009 : It was useless.
 
 
 ####

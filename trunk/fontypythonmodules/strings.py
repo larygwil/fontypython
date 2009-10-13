@@ -53,16 +53,13 @@ options=_("""Options:
 				fonts folder.
   -u Pog --uninstall=Pog
 				Uninstall the fonts in this Pog.
-  -l --list	 List the names of all the Pogs.
+  -l --list	
+				List the names of all the Pogs.
   -s num --size=num
 				Set a new default point size.
   -n num --number=num
 				Set a new default for how many fonts 
 				to view at one go. Don't overdo this.
-  -t "text" --text="text"
-				Set a new default sample text.  
-				"This is an ex-parrot!", say. 
-				Be sure to use the quotes.
   -p Pog --purge=Pog
 				Purge the Pog of font files that are no
 				longer really there.
@@ -81,17 +78,14 @@ options=_("""Options:
 				simply a bug in the library we use to
 				access fonts that chokes things. This
 				will (hopefully) improve in the future.
-  -a folder Pog
-  --all folder Pog
+  -a folder Pog --all folder Pog
 				Puts all fonts in this folder into the Pog.
 				If the Pog already exists, it will add
 				only *new* fonts, this means fonts are not
 				repeated in that Pog.
-  -A folder Pog
-  --all-recurse folder Pog
+  -A folder Pog --all-recurse folder Pog
 				Puts all fonts in this folder and *all*
 				sub-folders into the Pog. Rest same as -a.
-
   -z Pog --zip=Pog
 				All the fonts inside Pog will be zipped
 				and the zipfile will be named after the Pog.
@@ -130,7 +124,7 @@ then you install or uninstall Pogs as you need them.
 No copies of your fonts are made, only links to the
 original files are used to install the fonts.
 
-For example, you might have a Pog called "logos"
+For example, you might have a Pog called 'logos'
 into which you place all the fonts you have of
 company logos. After that, when you need to work
 with those logos, you simply install the 'logos' Pog
@@ -196,17 +190,11 @@ Examples: All using short options, see -h
 %(c)s -u Trouser
   Will uninstall the fonts listed in Pog Trouser,
   so you can't use 'em anymore.( You Naughty thing) 
-
-%(c)s -t "Pigs on the wing"
-  Will set the text and exit. It's odd that way.
-  Restart Fonty again to see the change.
-  * You can also do this from the gui, without a
-  restart.
   
 %(c)s -s 128 
   Will set the point size to 128 - Crazy man!
 
-%(c)s -v 25
+%(c)s -n 25
   Will show 25 fonts at a time. Beware large numbers!
 	
 %(c)s -s 64 -v 10 Pimple
