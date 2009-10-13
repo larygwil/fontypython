@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-12 20:24+0200\n"
+"POT-Creation-Date: 2009-10-13 08:20+0200\n"
 "PO-Revision-Date: 2009-09-28 10:11+0200\n"
 "Last-Translator: Donn <donn.ingle@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,12 +40,12 @@ msgstr ""
 msgid "Please use a number for %s"
 msgstr "Bitte verwenden Sie eine Zahl für %s"
 
-#: fontypythonmodules/cli.py:145
+#: fontypythonmodules/cli.py:138
 #, python-format
 msgid "%s takes two arguments: SOURCE(folder) TARGET(pog)"
 msgstr "%s nimmt zwei Argumente: QUELLE(Ordner) ZIEL(Pog)"
 
-#: fontypythonmodules/cli.py:146
+#: fontypythonmodules/cli.py:139
 msgid ""
 "NB: If you wanted to use spaces in a pogname or folder then please put "
 "\"quotes around them.\"  "
@@ -53,91 +53,78 @@ msgstr ""
 "NB: Wenn Leerzeichen in Pognamen oder Ordnern verwendet werden sollen  "
 "\"setze sie  in Anführungszeichen.\"  "
 
-#: fontypythonmodules/cli.py:171
+#: fontypythonmodules/cli.py:164
 #, python-format
 msgid "I can't find %s"
 msgstr "Kann %s nicht finden"
 
-#: fontypythonmodules/cli.py:189
+#: fontypythonmodules/cli.py:182
 msgid "There are no pogs available."
 msgstr "Keine Pogs verfügbar."
 
-#: fontypythonmodules/cli.py:191
+#: fontypythonmodules/cli.py:184
 #, python-format
 msgid "Listing %d pog(s)"
 msgstr "Liste %d Pog(s) auf"
 
-#: fontypythonmodules/cli.py:192
+#: fontypythonmodules/cli.py:185
 msgid " * indicates installed pogs"
 msgstr " (* kennzeichnet installiert Pogs)"
 
-#: fontypythonmodules/cli.py:200
+#: fontypythonmodules/cli.py:193
 #, python-format
 msgid "Could not open (%s)."
 msgstr "Kann \"%s\" nicht öffnen."
 
-#: fontypythonmodules/cli.py:213
+#: fontypythonmodules/cli.py:206
 #, python-format
 msgid "Zipped as %s.fonts.zip in this directory."
 msgstr ""
 
-#: fontypythonmodules/cli.py:215
+#: fontypythonmodules/cli.py:208
 #, python-format
 msgid "I can't find a pog named %s"
 msgstr "Kann %s nicht finden"
 
-#: fontypythonmodules/cli.py:238
-#, python-format
-msgid ""
-"Your text has been set to \"%s\"\n"
-"Tip: Did you use quotes to surround your text?\n"
-"\n"
-"Please start FontyPython again to see the result."
-msgstr ""
-"Der Beispieltext lautet jetzt \"%s\"\n"
-"Tipp : Wurden Anführungszeichen gesetzt?\n"
-"\n"
-"Fonty Python erneut starten, um das Ergebnis zu prüfen."
-
-#: fontypythonmodules/cli.py:266 fontypythonmodules/cli.py:295
+#: fontypythonmodules/cli.py:248 fontypythonmodules/cli.py:277
 #, python-format
 msgid "(%s) cannot be found. Try -l to see the names."
 msgstr ""
 "\"%s\" nicht gefunden. Versuchen Sie -l zum Anzeigen aller Namen der Pogs."
 
-#: fontypythonmodules/cli.py:287
+#: fontypythonmodules/cli.py:269
 #, python-format
 msgid "Installing (%s)"
 msgstr "Installiere \"%s\""
 
-#: fontypythonmodules/cli.py:316
+#: fontypythonmodules/cli.py:298
 #, python-format
 msgid "Removing (%s)"
 msgstr "Entferne \"%s\""
 
-#: fontypythonmodules/cli.py:323
+#: fontypythonmodules/cli.py:305
 #, python-format
 msgid "Sorry, can't find (%s). Try -l to see the names."
 msgstr ""
 "Entschuldigung,\"%s\" nicht gefunden. Versuche -l für die Anzeige aller "
 "Namen."
 
-#: fontypythonmodules/cli.py:345
+#: fontypythonmodules/cli.py:327
 #, python-format
 msgid "Creating a new pog: %s"
 msgstr "Erstellt ein neues Pog: %s"
 
-#: fontypythonmodules/cli.py:368
+#: fontypythonmodules/cli.py:350
 #, python-format
 msgid "I have placed %(count)s fonts from %(folder)s into %(pog)s."
 msgstr "%(count)s Schriften aus %(folder)s nach %(pog)s kopiert."
 
-#: fontypythonmodules/cli.py:370
+#: fontypythonmodules/cli.py:352
 #, python-format
 msgid "The fonts from %(folder)s are *already* in %(pog)s."
 msgstr "Die Schriften aus %(folder)s sind  *bereits* in %(pog)s."
 
-#: fontypythonmodules/cli.py:377
+#: fontypythonmodules/cli.py:359
 msgid ""
 "Please check your arguments, there seem to be too many.\n"
 "(Remember: it's one pound for a five-minute argument, but only eight pounds "
@@ -151,17 +138,17 @@ msgstr ""
 "TIPP : Wenn Sie Leerzeichen in Pog-Namen oder Ordnern verwenden,\n"
 "setzen Sie \"Anführungszeichen darum\"."
 
-#: fontypythonmodules/cli.py:404
+#: fontypythonmodules/cli.py:386
 #, python-format
 msgid "Sorry, (%s) does not exist. Try --list"
 msgstr "\"%s\" existiert nicht. Versuche -l oder --list"
 
-#: fontypythonmodules/cli.py:409
+#: fontypythonmodules/cli.py:391
 msgid "You cannot use a folder as the target argument. Try --help"
 msgstr ""
 "Ein Ordner kann nicht als Ziel-Argument verwendet werden. Versuche --help"
 
-#: fontypythonmodules/cli.py:459 fontypythonmodules/cli.py:480
+#: fontypythonmodules/cli.py:441 fontypythonmodules/cli.py:462
 #, python-format
 msgid ""
 "The target pog (%s) is currently installed, you can't use it as a target."
@@ -169,11 +156,11 @@ msgstr ""
 "Das Pog \"%s\" ist im Moment installiert und kann daher nicht als Ziel "
 "verwendet werden."
 
-#: fontypythonmodules/cli.py:465
+#: fontypythonmodules/cli.py:447
 msgid "Your pogs are the same! Try -e"
 msgstr "Quell- und Zielpog sind gleich! Versuche -e"
 
-#: fontypythonmodules/cli.py:472
+#: fontypythonmodules/cli.py:454
 msgid "This pog is empty"
 msgstr "Das Pog ist leer."
 
@@ -822,16 +809,13 @@ msgid ""
 "\t\t\t\tfonts folder.\n"
 "  -u Pog --uninstall=Pog\n"
 "\t\t\t\tUninstall the fonts in this Pog.\n"
-"  -l --list\t List the names of all the Pogs.\n"
+"  -l --list\t\n"
+"\t\t\t\tList the names of all the Pogs.\n"
 "  -s num --size=num\n"
 "\t\t\t\tSet a new default point size.\n"
 "  -n num --number=num\n"
 "\t\t\t\tSet a new default for how many fonts \n"
 "\t\t\t\tto view at one go. Don't overdo this.\n"
-"  -t \"text\" --text=\"text\"\n"
-"\t\t\t\tSet a new default sample text.  \n"
-"\t\t\t\t\"This is an ex-parrot!\", say. \n"
-"\t\t\t\tBe sure to use the quotes.\n"
 "  -p Pog --purge=Pog\n"
 "\t\t\t\tPurge the Pog of font files that are no\n"
 "\t\t\t\tlonger really there.\n"
@@ -850,17 +834,14 @@ msgid ""
 "\t\t\t\tsimply a bug in the library we use to\n"
 "\t\t\t\taccess fonts that chokes things. This\n"
 "\t\t\t\twill (hopefully) improve in the future.\n"
-"  -a folder Pog\n"
-"  --all folder Pog\n"
+"  -a folder Pog --all folder Pog\n"
 "\t\t\t\tPuts all fonts in this folder into the Pog.\n"
 "\t\t\t\tIf the Pog already exists, it will add\n"
 "\t\t\t\tonly *new* fonts, this means fonts are not\n"
 "\t\t\t\trepeated in that Pog.\n"
-"  -A folder Pog\n"
-"  --all-recurse folder Pog\n"
+"  -A folder Pog --all-recurse folder Pog\n"
 "\t\t\t\tPuts all fonts in this folder and *all*\n"
 "\t\t\t\tsub-folders into the Pog. Rest same as -a.\n"
-"\n"
 "  -z Pog --zip=Pog\n"
 "\t\t\t\tAll the fonts inside Pog will be zipped\n"
 "\t\t\t\tand the zipfile will be named after the Pog.\n"
@@ -905,7 +886,7 @@ msgstr ""
 "Es ist ein Fehler in der Bibliothek,\n"
 "den wir (hoffentlich) bald beheben werden."
 
-#: fontypythonmodules/strings.py:102
+#: fontypythonmodules/strings.py:96
 #, fuzzy, python-format
 msgid ""
 "%(c)s [OPTIONS] [VIEW] [TARGET]\n"
@@ -939,7 +920,7 @@ msgid ""
 "No copies of your fonts are made, only links to the\n"
 "original files are used to install the fonts.\n"
 "\n"
-"For example, you might have a Pog called \"logos\"\n"
+"For example, you might have a Pog called 'logos'\n"
 "into which you place all the fonts you have of\n"
 "company logos. After that, when you need to work\n"
 "with those logos, you simply install the 'logos' Pog\n"
@@ -1007,7 +988,7 @@ msgstr ""
 "\n"
 "%(contact)s\n"
 
-#: fontypythonmodules/strings.py:153
+#: fontypythonmodules/strings.py:147
 #, fuzzy, python-format
 msgid ""
 "The basic format is:\n"
@@ -1056,17 +1037,11 @@ msgid ""
 "%(c)s -u Trouser\n"
 "  Will uninstall the fonts listed in Pog Trouser,\n"
 "  so you can't use 'em anymore.( You Naughty thing) \n"
-"\n"
-"%(c)s -t \"Pigs on the wing\"\n"
-"  Will set the text and exit. It's odd that way.\n"
-"  Restart Fonty again to see the change.\n"
-"  * You can also do this from the gui, without a\n"
-"  restart.\n"
 "  \n"
 "%(c)s -s 128 \n"
 "  Will set the point size to 128 - Crazy man!\n"
 "\n"
-"%(c)s -v 25\n"
+"%(c)s -n 25\n"
 "  Will show 25 fonts at a time. Beware large numbers!\n"
 "\t\n"
 "%(c)s -s 64 -v 10 Pimple\n"
@@ -1183,12 +1158,12 @@ msgstr ""
 "\n"
 "%(copy)s"
 
-#: fontypythonmodules/strings.py:246
+#: fontypythonmodules/strings.py:234
 msgid "Fonty Python - view and manage all kinds of fonts on Gnu/Linux"
 msgstr ""
 "Fonty Python - betrachten und verwalten aller Schriftarten mit GNU/Linux"
 
-#: fontypythonmodules/strings.py:247
+#: fontypythonmodules/strings.py:235
 #, fuzzy, python-format
 msgid ""
 "Manage your fonts on Gnu/Linux.\n"
@@ -1255,7 +1230,7 @@ msgstr ""
 "  "
 
 # a comment
-#: fontypythonmodules/strings.py:280
+#: fontypythonmodules/strings.py:268
 #, fuzzy, python-format
 msgid ""
 "I cannot find \"python-wxversion\"\n"
@@ -1298,7 +1273,7 @@ msgstr ""
 "Die neueste Version kann ebenso von hier heruntergeladen werden:\n"
 "http://wxpython.org/download.php\n"
 
-#: fontypythonmodules/strings.py:301
+#: fontypythonmodules/strings.py:289
 #, fuzzy, python-format
 msgid ""
 "I cannot find \"python-wxgtkX.Y\"\n"
@@ -1337,7 +1312,7 @@ msgstr ""
 "Die neueste Version kann ebenso von hier heruntergeladen werden:\n"
 "http://wxpython.org/download.php\n"
 
-#: fontypythonmodules/strings.py:321
+#: fontypythonmodules/strings.py:309
 msgid ""
 "I cannot find \"python-imaging\"\n"
 "Please install this package.\n"
@@ -1507,6 +1482,17 @@ msgstr "ENTSCHULDIGUNG, ABER UNICODE MUSS UNTERSTÜTZT WERDEN"
 #: fontypythonmodules/wxgui.py:400
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python : hole mehr aus Deinen Schriften!"
+
+#~ msgid ""
+#~ "Your text has been set to \"%s\"\n"
+#~ "Tip: Did you use quotes to surround your text?\n"
+#~ "\n"
+#~ "Please start FontyPython again to see the result."
+#~ msgstr ""
+#~ "Der Beispieltext lautet jetzt \"%s\"\n"
+#~ "Tipp : Wurden Anführungszeichen gesetzt?\n"
+#~ "\n"
+#~ "Fonty Python erneut starten, um das Ergebnis zu prüfen."
 
 #, fuzzy
 #~ msgid "Append from Pog %(source)s into Pog %(target)s"
