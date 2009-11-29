@@ -134,7 +134,7 @@ class FontViewPanel(wx.Panel):
 		idBold = wx.NewId()
 		idItalic = wx.NewId()
 		self.idRegular = wx.NewId()
-        ## Michael: Removed key ´truth´, it is identic with [´instance´].GetValue()
+        ## Michael: Removed key 'truth', it is identic with ['instance'].GetValue()
 		self.BIR = {
 				idBold:			{'style': "bold", 	'label': _("b"), 'instance': None},
 				idItalic:		{'style': "italic", 'label': _("i"), 'instance': None},
