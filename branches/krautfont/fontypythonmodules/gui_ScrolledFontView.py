@@ -51,7 +51,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		self.firstrun =True 
 
 		## Michael: Perhaps scroll x and y? If we have a long sample text, the last words couldn't be seen.
-		self.SetupScrolling(rate_y=5)#, scroll_x=False)
+		self.SetupScrolling(rate_y=5, scroll_x=False)
 		
 		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
 
