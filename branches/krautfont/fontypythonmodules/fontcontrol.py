@@ -222,11 +222,14 @@ class FontItem( object ):
 					w = 1
 				pilheight = int(h)
 				pilwidth = int(w)
+				self.pilheight = pilheight
+				self.pilwidth = pilwidth
 
 				pilheight += 10
 
 				## Sept 2009 : Fiddled this to produce alpha (ish) images.
 				pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))#(255,255,255,255)) 
+				self.pilimage = pilimage
 				
 				if self.inactive:
 					col = (0,0,0,64) #alpha makes it gray

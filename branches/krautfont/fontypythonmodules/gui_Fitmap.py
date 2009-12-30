@@ -31,6 +31,36 @@ ndi=(227,226,219) # No Draw Inactive.
 black=(0,0,0)
 white=(255,255,255)
 
+class Popup(wx.PopupWindow):
+	"""This window pops up, if the fitem doesn't fits the fontviewpanel."""
+	def __init__(self, parent):
+		wx.PopupWindow.__init__(self, parent)
+		self.Bind(wx.EVT_LEAVE_WINDOW, lambda e: self.Hide())
+	
+	def __onButton(self, event):
+		if self.GetParent().cmb_rect.Contains(event.GetPositionTuple()):
+			self.Hide()
+			self.GetParent().onHover(event)
+	
+	def __onMouse(self, event):
+		if event.Moving():
+			event.Skip()
+			return
+		self.Hide()
+		
+	def Pop(self, event):
+		parent = self.GetParent()
+		parent.timer.Stop()
+		x,y,w,h = parent.GetScreenRect()
+		w = parent.fitem.pilwidth
+		bmp = wx.StaticBitmap(self, -1, parent.GetBitmap(), (1, 1))
+		bmp.Bind(wx.EVT_MOUSE_EVENTS, self.__onMouse)
+		bmp.Bind(wx.EVT_MOTION, self.__onButton)
+		if parent.fitem.ticked:
+			wx.StaticBitmap(self, -1, parent.TICKMAP, (21,6))
+		self.SetRect((x-1, y-1, w+2, h+2))
+		self.Show()
+
 class OverOutSignal(object):
 	'''
 	Signal an external function when a state has CHANGED from 
@@ -127,7 +157,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 	def __init__( self, parent, pos, fitem ) :
 		self.name = fitem.name
-		
 		self.fitem = fitem
 
 		Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
@@ -163,8 +192,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.height =  0
 
 		## init my parent class 
-		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
-
+		#~ self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
+		wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
+		
 		## Fitmap's over out signal
 		self.overout = OverOutSignal( self.overout_signal )
 
@@ -173,9 +203,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.Bind(wx.EVT_MIDDLE_UP, self.onMiddleClick)	
 		#self.Bind(wx.EVT_LEFT_DCLICK, self.onDClick)
 		self.Bind( wx.EVT_MOTION, self.onHover )
+		self.Bind( wx.EVT_LEAVE_WINDOW, self.onLeave)
 
 		## Redraw event
 		self.Bind(wx.EVT_PAINT,  self.onPaint) 
+		self.timer = wx.Timer(self)
 		
 		## Get cursors setup
 		self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
@@ -230,10 +262,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return True
 
 	def onHover( self, e ):
+		if self.__need_popup:
+			self.timer.Start(1000, True)
 		if not self.can_have_button():
 			self.overout.set ( True )
 			return
 		if self.cmb_rect.Contains( e.GetPositionTuple() ):	
+			self.timer.Stop()
 			self.cmb_overout.set( True )
 			self.overout.set( False ) #Not 'on' fitmap
 		else:
@@ -248,7 +283,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	def overout_signal( self ):
 		if self.overout.state:
 			self.SetCursor( self.CURSOR )
-			
+	
+	def onLeave(self, event):
+		if event.ButtonIsDown(1): return
+		self.timer.Stop()
+		self.cmb_overout.set ( False )
+		self.overout.set( True )
+		self.Refresh()
+		
 	def onClick(self, event) :
 		if self.cmb_overout.state and self.can_have_button():
 			self.openCharacterMap()
@@ -268,6 +310,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		Dump the bitmap to the screen.
 		"""
+		self.__need_popup = self.fitem.pilwidth > (self.FVP.GetClientSize()[0] 
+				- (0,30)[bool(self.GetParent().GetScrollPageSize(wx.VERTICAL))])
+		## Popup only for items greater the Fontviewpanel and 'normal', no InfoItem or BadItem
+		if self.__need_popup and not self.style["icon"]:
+			self.__popup = Popup(self)
+			self.Bind(wx.EVT_TIMER, self.__popup.Pop)
+		else:
+			self.Unbind(wx.EVT_TIMER)
+			try:
+				del self.__popup
+			except:
+				pass
+
 		if self.bitmap:
 			## Create a buffered paint DC.  It will create the real
 			## wx.PaintDC and then blit the bitmap to it when dc is
@@ -277,7 +332,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			if not self.can_have_button(): return
 
 			# Draw the charmap button
-			x,y = self.cmb_rect[0],self.cmb_rect[1]
+			x,y = self.cmb_rect[0:2]
 			if self.cmb_overout.state:
 				dc.DrawBitmap( self.CHARMAP_BUTTON_OVER, x, y, True )
 			else:
@@ -488,9 +543,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	#TODO : Pre-calc all these colours.
 
 	def clamp(self,v):
-		if v > 1.0: v=1.0
-		if v < 0.0: v=0.0
-		return v
+		return float(int(v))
 
 	def rgb_to_hsv(self,rgb):
 		#Go from int colour to float colour (0 to 1 range)
