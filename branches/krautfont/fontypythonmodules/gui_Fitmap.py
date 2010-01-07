@@ -185,7 +185,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Go draw the fitmap into a memory dc
 		self.bitmap = None
 		self.prepareBitmap()
-		sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
+		sz = self.bitmap.GetSize()
 
 		## Now I can calc the y value of the button.
 		self.cmb_rect=wx.Rect(0,sz[1]-40,19,32)
@@ -310,14 +310,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		Dump the bitmap to the screen.
 		"""
-		self.__need_popup = self.fitem.pilwidth > (self.FVP.GetClientSize()[0] 
-				- (0,30)[bool(self.GetParent().GetScrollPageSize(wx.VERTICAL))])
+		## calc scrollbar width, 0 if there is none, 30 otherwise.
+		## couldn't find any way to get the real scrollbar width.
+		self.__scroll_width = (0,30)[bool(self.GetParent().GetScrollPageSize(wx.VERTICAL))]
+		## is the item greater?
+		self.__need_popup = self.fitem.pilwidth > (self.FVP.GetClientSize()[0] -  self.__scroll_width)
 		## Popup only for items greater the Fontviewpanel and 'normal', no InfoItem or BadItem
 		if self.__need_popup and not self.style["icon"]:
 			self.__popup = Popup(self)
 			self.Bind(wx.EVT_TIMER, self.__popup.Pop)
 		else:
 			self.Unbind(wx.EVT_TIMER)
+			self.__need_popup = False
 			try:
 				del self.__popup
 			except:
