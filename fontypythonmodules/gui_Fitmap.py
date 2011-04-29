@@ -173,6 +173,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.Bind(wx.EVT_MIDDLE_UP, self.onMiddleClick)	
 		#self.Bind(wx.EVT_LEFT_DCLICK, self.onDClick)
 		self.Bind( wx.EVT_MOTION, self.onHover )
+		self.Bind( wx.EVT_LEAVE_WINDOW, self.onLeave)
 
 		## Redraw event
 		self.Bind(wx.EVT_PAINT,  self.onPaint) 
@@ -199,9 +200,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		argstup=(fi.glyphpaf, dest, self.fitem.family[0],fpsys.config.points )
 
 		## Never done threading before. Not really sure if this is kosher...
-		thread = threading.Thread(target=self.run, args=argstup)
-		thread.setDaemon(True)
-		thread.start()
+
+		#~ MICHAEL 4.2011:
+		#~ I tried threading myself, too. But I don't really understand it
+		#~ down to the present day. As I see "Popen" in charmaps.py/Run
+		#~ starts his own thread, so we don`t need to make assurance double sure.
+		#~ By the way, this push gucharmap to work as we want.
+		
+		self.run(*argstup)
+
+		#~ thread = threading.Thread(target=self.run, args=argstup)
+		#~ thread.setDaemon(True)
+		#~ thread.start()
 
 	def run(self, *args):
 		'''
@@ -248,6 +258,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	def overout_signal( self ):
 		if self.overout.state:
 			self.SetCursor( self.CURSOR )
+
+	def onLeave(self, event):
+		'''
+		Catch the leave event for set the charmap button off,
+		if the pointer goes out on the left edge.
+		'''
+		self.onHover(event)
 			
 	def onClick(self, event) :
 		if self.cmb_overout.state and self.can_have_button():
