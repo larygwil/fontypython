@@ -1,8 +1,10 @@
 [Desktop Entry]
 Name=Fonty Python Font Manager
+GenericName=Font Manager
 Comment=View and temporarily install all kinds of fonts.
-Comment[fr]=Fonty Python est aussi approprié pour visionner vos fichiers TTF où qu'ils soient sur votre ordinateur.
-Comment[it]=
+
+Comment[fr]=Fonty Python est aussi appropriÃ© pour visionner vos fichiers TTF oÃ¹ qu'ils soient sur votre ordinateur
+Comment[it]=Vedi e installa temporaneamente tutti i tipi di font
 
 Type=Application
 Categories=Graphics;
