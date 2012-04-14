@@ -15,4 +15,4 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
-version = "0.4.3"
+version = "TRUNK" #0.4.3 <-- I am going to alter this in releases/ dir only. After a branch has been made etc.
