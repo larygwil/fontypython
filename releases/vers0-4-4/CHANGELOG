@@ -1,0 +1,204 @@
+Changelist
+==========
+11 June 2009
+1. Changed many button events to wx.EVT_BUTTON for better behaviour )
+2. Fixed Bug 2 (wxgui) -- The Tab->Folder->Last Directory->Show Fonts bug.
+3. Changed cli, fontcontrol, strings and wxgui to allow recursive folders. 
+
+12 June 2009
+1. Adding a Search Assistant panel. It's full of junk from the wxDemo at the moment.
+2. Added/Edited ROADMAP after reading email from Michael.
+3. Removed Select All button. RIP bad idea :)
+4. Added Selection menu and it's sub-items. Wired-them up to the remains of the Select Button code.
+5. Fixed the PogChooser issue betwixt source and target. 
+6. Split-off most of wxgui.py classes into their own gui_xxx.py modules. 
+   Trying to make it simpler. We now have gui_Left, gui_Middle and gui_Right for the main sections.
+
+13 June 2009
+1. Continued the refactoring. Moved functions to where they made more sense. Cut down on chains of calls.
+2. Got rid of shadow functions. At last!
+3. Put refs to locale stuff into the new modules, BUT HAVE NOT TESTED i18n yet. HELP!
+4. Improved the pubsub a tiny little bit. Also removed the return value -- it was not being used.
+5. Fixed strings GPL message. It loads it from the COPYING file.
+6. Hacking a search bar together from a combo box and some spare bits :)
+
+14 June
+1. Got the search combo box working a little. History is added etc.
+
+16 June
+1. Fixed the bug where the first fitmap in the fontview would draw at an odd y value.
+2. Fixed the persistent InfoFontItem issue. Now it goes away when it should.
+
+18 June
+1. Many visual fixes. Re-factored the drawing code in Fitmap.
+2. Many little fixes like toggle selection menu and multi-selection on/off in the lists.
+
+19 June
+1. Gave up on the fancy search dream. FontTools and Panose confuse me horribly. 
+   Michael can't help dev at the moment, so it's all back to square one.
+   I remarked-out the assistant panel.
+2. I got the left and right arrow keys to step through the list - like the buttons do.
+3. I (think I) fixed the ESC key to work from anywhere.
+
+20 June
+1. Cleaning-up files etc. Lot's of little zipzap commits. Yesterday I merged the branch
+   back into the trunk.
+2. Caught an encode and decode problem in Folder.__init__. Had to jump through the usual
+   unicode hoops to fix it. Hope it is fixed now...
+3. Added the licence header to a bunch of files it was missing from.
+4. Small fixes to README regarding i18n.
+5. Fixing some unicode errors and error dialog boxes.
+6. Trying to repair the "lost focus" bug when the main button is clicked -- so far no dice.
+
+22 June
+1. Rigged the main button so that focus is not lost on click. It's a hack, but what the heck.
+
+26 June
+1. Main button focus issue has a hack-fix
+2. Delete multiple pogs at once from the gui.
+3. Fixed the help text. Changed the app screenshot.
+4. Moved the Purge function out to the File menu. It now applies to the VIEW POG selected.
+26 June 
+1. Added a test to prevent fonts re-drawing when a new target Pog is clicked.
+2. Added help about the Purge menu item.
+26 June 
+1. Reversed decision to not redraw the target Pog. There are too many subtleties involved for the hammer-and-nail approach I took and I just don't have time to be subtle now. So, it will redraw when you choose another target Pog. Tough.
+
+27 June
+1. Changed left/right arrow to pageup/pagedown. Michael Hoeft warned of the damage to editing the search term.
+2. Improving the splash image.
+27 June
+1. Fixed ref to page up/down keys in help.
+
+28 June
+1. Upon reflection, the arrow keys are easier than page up/down. So, I added CTRL as a modifier. Now it's ctrl+left/right to step through the pages. (Help updated too.)
+
+29 June
+1. Repaired the .desktop file to comply with HIG.
+
+30 June
+1. Changed selection menu item toggling system. Recently read a little Gnome HIG :)
+
+1 July
+1. Changed logo in help, about and splash.
+2. Altered setup.py to remove MANIFEST file if it's there. Unless it's removed, setup.py sdist will potentially miss new files.
+
+6 July 2009
+1. Fixed a problem with setup.py that was making ~/.fontypython folder (and as root too). That folder now only gets made when the app is run for the first time, not during setup. Thanks to Pietro for catching this one.
+
+7 July
+1. Pietro sent us an Italian .po file. I did "make mos" and I hope that was right.
+2. Removed some _() stuff from CORNER CASE error messages.
+3. Redacted pofiles/README file somewhat.
+
+24 July
+1. A bug was caught by Michael Hoeft - the combo box (for search field) requires wxPython 2.8 -- So we had to shift a few things around. After a false start, I have created version 0.4.1 and am about to upload to the ftp site.
+
+15 Sept 2009
+1. Fixed a bug where fonts that are already installed would refuse to install again. It ignores OSError 17 now.
+2. Added zip function -- zip all fonts in a pog(s) for easy distribution.
+3. Moved to vers 0.4.2
+
+16 Sept
+1. Removed irritating message dialogs from zip function.
+2. Removed pofiles directory from MANIFEST.in so they do not go into the tarball
+3. There is a weird bug in the zip files -- when you unzip one there are odd files that want renaming... Not sure what this is yet.
+4. Changed File menu to Tools menu.
+5. Added error catch and report to zip.
+6. Improved directory dialogue for zip.
+7. Fixed help file and image.
+
+18 Sept
+Added reference counting to fonts that are shared/common among pogs: When a pog is uninstalled *and* another installed pog has the same font(s), those fonts are left installed.
+
+19 Sept
+1. A long day of tidying-up and abstracting the unicode/str stuff.
+2. Gone a long way to a standard error approach. Still have some loose ends.
+
+21 Sept
+1. Adding icons for the various font items that are bad in some way.
+2. Tweaking colours and effects to look better
+3. Trying to get the widths of fitems to fit the middle panel. Kind of working, but not on first run.
+
+22 Sept
+1. Got a workaround for fitem widths going.
+2. Improved the rendering of fitems under various conditions.
+3. Removed fatfont.
+
+22 Sept
+1. Changed button on Check fonts form to 'Close' -- makes more sense now.
+
+24 Sept
+1. Major update of help file and graphics.
+2. Trying to fancy-up the info label in the font-view. So far no luck.
+3. Got the label going! Made a custom control.
+
+25 Sept
+1. Improved the drawing of fitmaps and gradients. Still have some precalcing of colours to do.
+2. Tweaked the images and icons.
+
+26 Sept
+1. Added a sunken border to font view -- better visual containment I think.
+
+27 Sept
+More gui polishing done.
+Strings changed -- PO files will be broken :(
+
+28 Sept
+1. Seems PO files are quite robust -- the strings are marked as 'fuzzy' and should still translate fairly well.
+2. Today I will make a 'release' branch on the SVN and get the tarball for 0.4.2 going.
+
+28 Sept : Feedback from Kartik
+1. Removed the Version tag from .desktop file -- it's not required.
+2. Removed the .png from the icon key in .desktop file -- it's not wanted.
+3. Some confusion as to whether fonty will run 100% on Python 2.5, I developed this year on 2.6
+4. Version bumped to 0.4.2.1
+
+29 Sept
+1. Working on a way to scan the font images and remove that leading blank space on certain fonts. Done, and included an override in settings dialog.
+
+30 Sept
+1. Spent the *ENTIRE* day fighting the damn splitter and sizers. Not really sure why or how, but I got it working okay. I also don't really know what broke from last version! 
+
+1 Oct 2009
+1. Renamed 'fp' script to 'start_fontypython' - had to edit a bunch of files. 
+1.1 It turns out that fonty has been running without the segfault catcher all along. This should be remedied as of now. Backported fix to 0.4.2.x as well.
+2. Taking-over the maintenance of the man page. I will leave it in the root of the tarball and Kartik will deal with it from there. Backported to 0.4.2.x
+
+2 Oct
+1. Spot changes. Made label above font views look better.
+2. Started adding threading so that Fonty can spawn gucharmap or kfontview on a given fitmap in the view.
+
+3 Oct
+1. Fixed a bug in Delete Pogs -- reported by Michael Hoeft. Backported to 0.4.2.2 as well.
+2. Adding an 'Voodoo' tab to Settings dialogue to house the charmap choice and the font adjustment checkbox. Wired it all up and it works!
+
+4 Oct
+1. Built a button to spawn the character-map app. Nice rollover and all.
+2. Updated the help.
+3. Created three buttons Bold, Italic and Regular for quick filtering.
+4. Updated man page
+
+5 Oct
+1. Segfault dialogue suddenly started causing segfaults of its own... Sheesh. I had to remove a box sizer to get it to work.
+2. Fixed bug in character map viewer code.
+3. Small repair to BIR toggles.
+
+
+11 Oct
+1. Fixed a config startup bug - whatever charmaps are found, the first in the list is now taken as the default else None.
+2. Made the default size 800x600 with left sash 200.
+3. Made custom icons for the dir control.
+4. New screenshot for the help file.
+5. Tweaked zip name to xxxx.fonts.zip so it's obvious what it contains.
+6. Adding the design files (Inkscape stuff) to the trunk so that others can use them.
+7. "fixed" another wee bug in charmap default choice.I hope...
+
+12 Oct
+1. Made a new module to better deal with the charmap viewer wiring.
+2. Removed the bitmap toggle buttons for B I R : they sucked. Normal toggle buttons will be used until wxpython can get bitmap buttons right.
+
+13 Oct
+1. Removed the -t --text= comand-line option. It was totally useless.
+2. Fixed the strings.py file to reflect 1.
+3. Fixed the man page too.
