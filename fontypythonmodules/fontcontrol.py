@@ -15,7 +15,7 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, sys, locale, glob
+import os, sys, locale, glob, errno
 import Image, ImageFont, ImageDraw 
 import fontybugs, fpsys
 from pathcontrol import *
@@ -757,7 +757,7 @@ class Pog(BasicFontList):
 				os.symlink(frompaf, topaf)  #Should do the trick.
 				return True
 			except OSError, detail:
-				if detail.errno != 17: raise # File exists -- this font is already installed, we can ignore 17.
+				if detail.errno != errno.EEXIST: raise # File exists -- this font is already installed, we can ignore EEXIST.
 				## This font has been linked before.
 				fpsys.Overlap.inc(fi.name) # Use the class in fpsys to manage overlaps.
 				
@@ -909,7 +909,7 @@ class Pog(BasicFontList):
 				file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
 			except OSError,e:
 				bugs=True
-				# e.errno == 2: # 2 is No such file or directory
+				# e.errno == errno.ENOENT: # No such file or directory
 				print e # whatever is wrong, print the message and continue
 
 		file.close()		

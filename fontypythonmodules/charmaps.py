@@ -20,7 +20,7 @@
 ## This is a common-ground for variables and defs that will be used from
 ## other modules - so they are global to everything.
 
-import os,  subprocess
+import os,  subprocess, errno
 
 class CharMapApp(object):
 	'''
@@ -67,11 +67,11 @@ class Gucharmap( CharMapApp ):
 		try:
 			os.symlink( src, dest )
 		except OSError, detail:
-			if detail.errno != 17:
-				# Not 17 means the link failed, don't open the charmap
+			if detail.errno != errno.EEXIST:
+				# Not EEXIST means the link failed, don't open the charmap
 				return False
 			else:
-				# Error 17: file exists.
+				# Error EEXIST: file exists.
 				# User may have installed it previously (or something).
 				self.already_installed = True
 		self.Run( cmd )
