@@ -251,6 +251,9 @@ class TargetPogChooser(wx.Panel):
 					## It has already been flagged as NOT INSTALLED
 					ps.pub( show_error, unicode(er) )
 					ok=False
+				except (fontybugs.NoFontsDir), er:
+					ps.pub( show_error, unicode(er) )
+					ok=False
 
 				if ok:
 					## Update GUI
