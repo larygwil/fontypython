@@ -1,0 +1,13 @@
+echo "Looking for dist - if it's there kill it."
+[ -e dist ] && exit 1
+
+python setup.py sdist
+cd dist
+gpg -b --use-agent fontypython*
+
+chmod 644 fontypython*
+
+if [ -n "$1" ]; then
+        #There was an argument - this signals an upload to savanah
+        scp fontypython* donningle@dl.sv.nongnu.org:/releases/fontypython/
+fi
