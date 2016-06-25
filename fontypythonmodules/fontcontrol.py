@@ -753,11 +753,6 @@ class Pog(BasicFontList):
 			NoFontsDir
 		"""	
 		if not os.path.exists(self.__pc.userFontPath()):
-			print _("""Your distro does not have a dot fonts directory. 
-Please make ".fonts" in your home directory and run fonty again.
-Example:
-$ cd ~
-$ mkdir .fonts""")
 			raise fontybugs.NoFontsDir("Missing .fonts dir")
 
 		def linkfont(fi, frompaf, topaf):
