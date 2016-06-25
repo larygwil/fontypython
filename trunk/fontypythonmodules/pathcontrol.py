@@ -50,9 +50,9 @@ class PathControl:
 		#		os.mkdir(self.__HOME + "/.fonts")
 		#	except:
 		#		print _("""
-#Couldn't make the .fonts folder in %s
-#Please check your write permissions and try again.""") % self.__HOME
-		#		raise SystemExit
+		# Couldn't make the .fonts folder in %s
+		# Please check your write permissions and try again.""") % self.__HOME
+		#	raise SystemExit
 		
 		## EDIT
 		## August 2012
@@ -68,9 +68,11 @@ Please create it manually to be able to install your fonts with FontyPython.""")
 		## end of michael edit.
 		
 		self.__userfontpath = self.__HOME + "/.fonts"
-		
 
-
+		## June 25, 2016
+		## Some distros do not have the .fonts directory by default. :( :O
+		## This is a disaster. 
+		## I have shifted the test for this into fontcontrol install()
 
 		## Make ~/.fontypython
 		if makeFolder:

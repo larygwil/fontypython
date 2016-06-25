@@ -15,11 +15,6 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
-## fpsys : fonty python system.
-## I debated calling it fpglobals.
-## This is a common-ground for variables and defs that will be used from
-## other modules - so they are global to everything.
-
 import os,  subprocess, errno
 
 class CharMapApp(object):

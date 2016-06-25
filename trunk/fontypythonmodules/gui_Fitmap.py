@@ -396,7 +396,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			## Make one big bitmap to house one or more faces (subfaces)
 			memDc=self.makeBlankDC( maxwidth, totheight, white )
 			fcol = self.style['fcol']
-			bcol = self.style['bcol']		
+			bcol = self.style['bcol']
 			#Draw the gradient. The fonts will render in alpha over that.
 			self.bottomFadeEffect( memDc, totheight, maxwidth )
 			y = i = 0
@@ -410,19 +410,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## http://wiki.wxpython.org/WorkingWithImages
 					image=None
 					image = apply( wx.EmptyImage, pilimage.size )
-                                        ## June 25, 2016
-                                        ## PIL has changed. It now requires tobytes()
-                                        ## not tostring(). 
-                                        ## Since I don't want to break on older installs of PIL,
-                                        ## I will use a try block here. 
-                                        try:
-                                            #Old style:
-					    image.SetData( pilimage.convert( "RGB").tostring() )
-					    image.SetAlphaData(pilimage.convert("RGBA").tostring()[3::4])
-                                        except:
-                                            #New style
-                			    image.SetData( pilimage.convert( "RGB").tobytes() )
-		                	    image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
+
+					## June 25, 2016
+					## PIL has changed. It now requires tobytes()
+					## not tostring(). 
+					## Since I don't want to break on older installs of PIL,
+					## I will use a try block here. 
+					try:
+						#Old style:
+						image.SetData( pilimage.convert( "RGB").tostring() )
+						image.SetAlphaData(pilimage.convert("RGBA").tostring()[3::4])
+					except:
+						#New style
+						image.SetData( pilimage.convert( "RGB").tobytes() )
+					image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
 
 					fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
 
