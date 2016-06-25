@@ -19,9 +19,18 @@ import wx
 import wx.lib.stattext
 import  wx.lib.buttons  as  buttons
 
+## June 25th 2016
+## Remarking these two lines because they are causing a segfault:
+##  ../src/common/stdpbase.cpp(62): assert "traits" failed in Get(): 
+##  create wxApp before calling this
+##  Segmentation fault (core dumped)
+##
+##  I do not know how to test or fix this, hence simply removing it.
+##  AFAICT, stock buttons will be in the system language.
+##
 ## Setup wxPython to access translations : enables the stock buttons.
-langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
-mylocale = wx.Locale( langid )
+##langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
+##mylocale = wx.Locale( langid )
 
 
 from pubsub import *
