@@ -410,8 +410,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## http://wiki.wxpython.org/WorkingWithImages
 					image=None
 					image = apply( wx.EmptyImage, pilimage.size )
-					image.SetData( pilimage.convert( "RGB").tostring() )
-					image.SetAlphaData(pilimage.convert("RGBA").tostring()[3::4])
+                                        ## June 25, 2016
+                                        ## PIL has changed. It now requires tobytes()
+                                        ## not tostring(). 
+                                        ## Since I don't want to break on older installs of PIL,
+                                        ## I will use a try block here. 
+                                        try:
+                                            #Old style:
+					    image.SetData( pilimage.convert( "RGB").tostring() )
+					    image.SetAlphaData(pilimage.convert("RGBA").tostring()[3::4])
+                                        except:
+                                            #New style
+                			    image.SetData( pilimage.convert( "RGB").tobytes() )
+		                	    image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
 
 					fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
 
