@@ -59,13 +59,17 @@ class PathControl:
 		## If there is no .fonts dir, install pog fails. The cursor keeps busy and nothing
 		## further happens. Here my suggestion: only perform a test, without creating the dir.
 		
-		if not os.path.exists(self.__HOME + "/.fonts"):
-			print _("""
-It seems there is no %s/.fonts folder or there are wrong permissions.
-Please create it manually to be able to install your fonts with FontyPython.""") % self.__HOME
-			raise SystemExit
+		#if not os.path.exists(self.__HOME + "/.fonts"):
+		#	print _("""
+		#It seems there is no %s/.fonts folder or there are wrong permissions.
+		#Please create it manually to be able to install your fonts with FontyPython.""") % self.__HOME
+			#raise SystemExit
 		
 		## end of michael edit.
+
+		##Edit Donn June 25, 2016
+		## Remarked Michael's edit. Moved the test for missing .fonts dir to
+		## fontcontrol.py in the install() function
 		
 		self.__userfontpath = self.__HOME + "/.fonts"
 
