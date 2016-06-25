@@ -266,11 +266,13 @@ if options.install:
 			##		  PogEmpty
 			##		  PogAllFontsFailedToInstall
 			##		  PogSomeFontsDidNotInstall			
+			##		  NoFontsDir
 				print _("Installing (%s)") % pogtoinstall
 				pog.install()
 			except (fontybugs.PogEmpty, 
 					fontybugs.PogAllFontsFailedToInstall,
 					fontybugs.PogSomeFontsDidNotInstall,
+					fontybugs.NoFontsDir
 				   ), e:
 				e.print_error()
 		else: # not a pogname
