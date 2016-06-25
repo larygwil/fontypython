@@ -212,6 +212,10 @@ class PogChooser(wx.ListCtrl) :
 			li = wx.ListItem() 
 			li.SetImage(i) 
 			li.SetText(p) 
+                        
+                        ## June 25, 2016: Something in wxPython changed and li now needs an Id>0
+                        li.Id = 1
+
 			id = wx.NewId()
 			PogChooser.__poglistCopy[id] = p # record the pog name
 			row = self.InsertItem( li ) 
