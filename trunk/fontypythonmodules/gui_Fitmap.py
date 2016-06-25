@@ -423,7 +423,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					except:
 						#New style
 						image.SetData( pilimage.convert( "RGB").tobytes() )
-					image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
+						image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
 
 					fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
 
