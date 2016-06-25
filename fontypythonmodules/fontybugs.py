@@ -45,7 +45,8 @@ class Errors ( Exception ):
 	1000 : _("Cannot delete the Pog.%s") % checkperms,
 	1010 : _("Not a single font in this pog could be installed.\nThe original font folder has probably moved or been renamed."),
 	1020 : _("Not a single font in this pog could be uninstalled.\nNone of the fonts were in your fonts folder, please check your home .fonts (with a dot in front) folder for broken links.\nThe pog has been marked as \"not installed\"."),
-	1030 : _("This folder has no fonts in it.")
+	1030 : _("This folder has no fonts in it."),
+	1040 : _("Please create the ~/.fonts directory (in your home directory) so that you can install fonts.\n\nExample:\ncd ~\nmkdir .fonts\n\n")
 	}
 
 	def __unicode__( self ):
@@ -132,5 +133,9 @@ class FolderHasNoFonts ( Errors ):
 		self._item = item
 		self._id = 1030			
 
-		
+#June 25, 2016
+class NoFontsDir ( Errors ):
+	def __init__ (self, item = None ):
+		self._item = item
+		self._id=1040
 		
