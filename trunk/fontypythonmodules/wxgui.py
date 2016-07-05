@@ -399,8 +399,8 @@ class App(wx.App ):#, wx.lib.mixins.inspection.InspectionMixin) :
 			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )
 			raise SystemExit
 
-		bmp=wx.Image(fpsys.mythingsdir + "splash.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-		ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
+		#bmp=wx.Image(fpsys.mythingsdir + "splash.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+		#ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
 
 		## Oct 2009
 		##  this is the only place I can get the system font family
@@ -410,7 +410,7 @@ class App(wx.App ):#, wx.lib.mixins.inspection.InspectionMixin) :
 		self.SetTopWindow(frame) 
 		
 		frame.Show(True) 
-		ss.Close()
+		#ss.Close()
 
 		return True
 ## app
