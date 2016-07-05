@@ -123,7 +123,8 @@ class FontViewPanel(wx.Panel):
 
 		## The filter text box
 		self.textFilter = wx.StaticText(self, -1, _("Filter:"))
-		self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN )
+		#July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's EVT_TEXT_ENTER event to work. Go figure.
+		self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
 		self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
 		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
 
@@ -144,7 +145,7 @@ class FontViewPanel(wx.Panel):
 		idItalic = wx.NewId()
 		self.idRegular = wx.NewId()
 		self.BIR = {
-				idBold:			{'style': "bold", 	'label': _("b"), 'truth': False, 'instance': None},
+				idBold:			{'style': "bold",   'label': _("b"), 'truth': False, 'instance': None},
 				idItalic:		{'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
 				self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
 				}
@@ -208,7 +209,7 @@ class FontViewPanel(wx.Panel):
 		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
 		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
 	
-	#def DoGetBestSize(self):
+		#def DoGetBestSize(self):
 		# DOES NOT RUN FOR A wx.Panel
 
 	def OnClearClick( self, event ):
@@ -254,6 +255,7 @@ class FontViewPanel(wx.Panel):
 	# hits ENTER.
 	def EvtTextEnter(self, evt):
 		o=evt.GetEventObject()
+		print dir(o)
 		termsstring = evt.GetString()
 		history=o.GetItems()
 		if termsstring not in history:
