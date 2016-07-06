@@ -320,7 +320,11 @@ class MainFrame(wx.Frame):
 		dlg.Destroy()
 		
 	def menuHelp(self, e):
-		dlg = dialogues.DialogHelp(self, size=(800, 600))
+		# July 2016
+		# =========
+		# Made the initial size of the help dialog smaller
+		# Was requested by a user who has a small screen
+		dlg = dialogues.DialogHelp(self, size=(400, 400))
 		val = dlg.ShowModal()
 		dlg.Destroy()
 
