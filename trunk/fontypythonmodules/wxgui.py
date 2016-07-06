@@ -386,35 +386,68 @@ class MainFrame(wx.Frame):
 
 			ps.pub(update_font_view)
 
+
+
+
+# Code for debugging:
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
 #import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
 class App(wx.App ):#, wx.lib.mixins.inspection.InspectionMixin) :
+	"""
+	The main wxPython app starts here
+	"""
 	def OnInit(self):
 		#self.Init()  # initialize the inspection tool
-		
+
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:
 			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )
 			raise SystemExit
 
-		#bmp=wx.Image(fpsys.mythingsdir + "splash.png",wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-		#ss=wx.SplashScreen( bmp, wx.SPLASH_CENTRE_ON_SCREEN, 1, None, -1)
-
-		## Oct 2009
-		##  this is the only place I can get the system font family
-		fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
-
-		frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
-		self.SetTopWindow(frame) 
-		
-		frame.Show(True) 
-		#ss.Close()
+		# Start a splash screen - which then starts the main frame
+		MySplash = FontySplash()
+		MySplash.Show()
 
 		return True
-## app
-app = App(0) 
-		
-## start 
-app.MainLoop() 
+
+class FontySplash(wx.SplashScreen):
+		"""
+		2016 July
+		=========
+			Trying a diff way to show the splash screen.
+			It's not great, but a little better. Least it
+			shows the image for a while.
+			Borrowing from this recipe: https://wiki.wxpython.org/SplashScreen
+		"""
+		def __init__(self, parent=None):
+				aBitmap = wx.Bitmap( fpsys.mythingsdir + "splash.png", wx.BITMAP_TYPE_PNG )
+				splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
+				splashDuration = 2000 # milliseconds
+				# Call the constructor with the above arguments in exactly the
+				# following order.
+				wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
+				self.Bind(wx.EVT_CLOSE, self.OnExit)
+
+				wx.Yield()
+
+		def OnExit(self, evt):
+
+				## Oct 2009
+				##  this is the only place I can get the system font family
+				fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
+
+				frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
+				app.SetTopWindow(frame)
+
+				frame.Show(True)
+
+				self.Hide()
+
+				# The program will freeze without this line.
+				evt.Skip()	# Make sure the default handler runs too...
+
+#Start the app!
+app = App(0)
+app.MainLoop()
