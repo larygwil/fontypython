@@ -417,36 +417,45 @@ class FontySplash(wx.SplashScreen):
 		2016 July
 		=========
 			Trying a diff way to show the splash screen.
-			It's not great, but a little better. Least it
-			shows the image for a while.
-			Borrowing from this recipe: https://wiki.wxpython.org/SplashScreen
+			It's a little better. It shows fast and
+			remains there while the frame loads behind it.
+
+			Borrowing from the wxPython demo's code.
 		"""
 		def __init__(self, parent=None):
-				aBitmap = wx.Bitmap( fpsys.mythingsdir + "splash.png", wx.BITMAP_TYPE_PNG )
-				splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
-				splashDuration = 2000 # milliseconds
-				# Call the constructor with the above arguments in exactly the
-				# following order.
-				wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
-				self.Bind(wx.EVT_CLOSE, self.OnExit)
+			aBitmap = wx.Bitmap( fpsys.mythingsdir + "splash.png", wx.BITMAP_TYPE_PNG )
+			splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
+			splashDuration = 3000 # milliseconds
 
-				wx.Yield()
+			wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
+			self.Bind(wx.EVT_CLOSE, self.OnExit)
+
+			# Nice! Kick the show off in 1 second's time
+			self.fc = wx.FutureCall(1000,self.showMain)
 
 		def OnExit(self, evt):
+			# The program will freeze without this line.
+			evt.Skip()	# Make sure the default handler runs too...
+			self.Hide()
 
-				## Oct 2009
-				##  this is the only place I can get the system font family
-				fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
+			# if the timer is still running, force the main frame to start
+			if self.fc.IsRunning():
+				self.fc.Stop()
+				self.showMain()
 
-				frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
-				app.SetTopWindow(frame)
+		def showMain(self):
+			## Oct 2009
+			##  this is the only place I can get the system font family
+			fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
 
-				frame.Show(True)
+			frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
+			app.SetTopWindow(frame)
 
-				self.Hide()
+			frame.Show(True)
 
-				# The program will freeze without this line.
-				evt.Skip()	# Make sure the default handler runs too...
+			if self.fc.IsRunning():
+				self.Raise()
+
 
 #Start the app!
 app = App(0)
