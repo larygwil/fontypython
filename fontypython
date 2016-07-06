@@ -19,6 +19,8 @@
 """
 Dec 2007
 This wraps start_fontypython and catches the segfaults that kill it.
+These segfaults happen in PIL when certain bad fonts just break stuff;
+I can't catch them or stop them in any way - hence this wrapper.
 A window displays the situation and gives the user some hope.
 """
 
