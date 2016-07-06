@@ -21,7 +21,7 @@ import pathcontrol
 import fpversion
 import os
 
-copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle"
+copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016 Donn.C.Ingle"
 contact = "email: donn.ingle@gmail.com"
 done = "Done."
 
