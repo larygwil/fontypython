@@ -70,12 +70,13 @@ else: # err code -11
 	import fontypythonmodules.pathcontrol as PC
 	import wx, fontypythonmodules.dialogues as D
 
+	## July 2016 - Removed as causing a segfault in wxPython.
 	## Setup wxPython to access translations : enables the stock buttons.
-	localedir = "fontypythonmodules/locales"
-	langid = wx.LANGUAGE_DEFAULT
-	mylocale = wx.Locale( langid )
+	## localedir = "fontypythonmodules/locales"
+	## langid = wx.LANGUAGE_DEFAULT
+	## mylocale = wx.Locale( langid )
 
-	iPC = PC.PathControl() 
+	iPC = PC.PathControl()
 
 	def getSegfaulter():
 		"""
@@ -90,7 +91,7 @@ else: # err code -11
 		except:
 			raise
 		return culprit
-		
+
 	## Start the App and then show the Segfault dialog.
 	class App(wx.App) :
 		def OnInit(self) :
@@ -102,6 +103,5 @@ else: # err code -11
 				print _("Please restart Fonty Python after you have moved:\"%s\" to some other place.") % culprit
 			dlg.Destroy()
 			return True
-	app = App(0) 
-	app.MainLoop() 
-
+	app = App(0)
+	app.MainLoop()
