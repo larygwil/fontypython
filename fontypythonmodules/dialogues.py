@@ -46,7 +46,7 @@ else:
  
 class DialogHelp(wx.Dialog):
 	def __init__(self, *args, **kwds):
-		kwds["style"] = wx.DEFAULT_DIALOG_STYLE
+		kwds["style"] = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
 		wx.Dialog.__init__(self, *args, **kwds)
 		
 		ID_ESC = 1001
@@ -104,7 +104,7 @@ class TestHtmlPanel(wx.Panel):
 class MyHtmlWindow(html.HtmlWindow):
 	def __init__(self, parent, id, size):
 		html.HtmlWindow.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE, size = size)
-		if "gtk2" in wx.PlatformInfo:
+		if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
 			self.SetStandardFonts()
 
 
