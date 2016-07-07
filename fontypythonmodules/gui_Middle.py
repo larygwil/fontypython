@@ -263,12 +263,12 @@ class FontViewPanel(wx.Panel):
 	# hits ENTER.
 	def EvtTextEnter(self, evt):
 		o=evt.GetEventObject()
-		print dir(o)
+		#print dir(o)
 		termsstring = evt.GetString()
 		history=o.GetItems()
 		if termsstring not in history:
 			o.Insert( termsstring,0 ) #record this search in the top of the 'history'
-		
+		print termsstring
 		self.startSearch(termsstring)
 		
 		self.buttMain.SetFocus()
