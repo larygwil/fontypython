@@ -435,7 +435,6 @@ class FontViewPanel(wx.Panel):
 		
 	def navClick(self,event) :
 		wx.BeginBusyCursor()
-		print event.GetId()
 		if event.GetId()  == wx.ID_FORWARD: 
 			self.pageindex += 1
 		else: #wx.ID_BACKWARD
