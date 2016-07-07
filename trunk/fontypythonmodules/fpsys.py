@@ -397,7 +397,7 @@ class Configure:
 ## all the modules that use it.
 config = Configure()
 
-def instantiateViewFolder( foldername, recurse=False ):
+def instantiateViewFolder( foldername, recurse=None ):
 	"""
 	Creates a Folder object and fills it with FontItem objects
 	according to what's in the folder's path.
@@ -407,7 +407,23 @@ def instantiateViewFolder( foldername, recurse=False ):
 	if state.viewobject: del state.viewobject
 	## Default assumptions in case of raised error.
 	state.viewobject = fontcontrol.EmptyView()
-	state.viewpattern = "E" 
+	state.viewpattern = "E"
+
+	#July 2016
+	#=========
+	# Made recurse default to None in the def sig.
+	# This has the effect of allowing THREE states to enter:
+	# None, True, False
+	# None means the call came from cli.py
+	#  If so, we want to fetch the recurse from config -  
+	#  so it becomes either T or F, depending on last state.
+	#  This has stopped that initial Schroedinger's Cat state
+	#  of the recurse setting.
+	if recurse is None:
+		recurse=config.recurseFolders
+	else:
+		config.recurseFolders = recurse
+	#print "recurse:", recurse
 	ifolder = fontcontrol.Folder(foldername, recurse) #raises : fontybugs.FolderHasNoFonts : BENIGN ERROR.
 	## Only continues if there is no problem.
 	state.viewobject = ifolder
