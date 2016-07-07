@@ -927,6 +927,12 @@ class Pog(BasicFontList):
 				bugs=True
 				# e.errno == errno.ENOENT: # No such file or directory
 				print e # whatever is wrong, print the message and continue
-
+			## July 2016
+			## =========
+			## Randomly saw this error: ValueError('ZIP does not support timestamps before 1980')
+			## HAND. Added this new except with a message.
+			except ValueError,e:
+				bugs=True
+				print _("%s failed to zip because %s" % (fi.glyphpaf, e))
 		file.close()		
 		return bugs # a flag for later.
