@@ -324,7 +324,8 @@ class MainFrame(wx.Frame):
 		# =========
 		# Made the initial size of the help dialog smaller
 		# Was requested by a user who has a small screen
-		dlg = dialogues.DialogHelp(self, size=(400, 400))
+		# 600px wide is about as narrow as I can get it...
+		dlg = dialogues.DialogHelp(self, size=(600, 400))
 		val = dlg.ShowModal()
 		dlg.Destroy()
 
