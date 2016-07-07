@@ -180,9 +180,21 @@ class FontItem( object ):
 					#self.family.append( font.getname()[0] ) # old code
 
 					## No point Try-ing here, this segfaults when style/family is Null.
-					self.family.append( fpsys.LSP.ensure_unicode( font.getname()[0] ) )
 
-					self.style.append( font.getname()[1] )
+					## July 2016
+					## =========
+					## Font caused an error. Here it is:
+					##  chinese_rocks_rg-webfont.ttf [None] ['\x7f']
+					## The None is the problem.
+					n = fpsys.LSP.ensure_unicode( font.getname()[0] )
+					if n is None: n=""
+					self.family.append( n )
+
+					## July 2016: Let's assure no None in the style too
+					n = font.getname()[1]
+					if n is None: n=""
+					self.style.append( n )
+
 					i += 1
 				else:
 					## It WAS in the list! So, we can flag it and get on with life :)
