@@ -164,13 +164,21 @@ class FontViewPanel(wx.Panel):
 		self.scrolledFontView = ScrolledFontView(self) 
 		
 		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL) 
-		self.buttPrev = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
+
+		#July 2016
+		#=========
+		#The stock icon on the button was not showing under gtk3.
+		#I have switched to a bitmapbutton. I hope this works...
+		#self.buttPrev = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
+		self.buttPrev = wx.BitmapButton( self, wx.ID_BACKWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
 
 		self.buttMain = wx.Button(self, label=" ")
 		self.buttMainLastLabel=" "
+
 		## This stock button has not been translated into Afrikaans yet. (Dec 2007)
 		## I can't tell you how this fkuced me around!
-		self.buttNext = wx.Button(self, wx.ID_FORWARD)  
+		# July 2016 - remarked : self.buttNext = wx.Button(self, wx.ID_FORWARD)  
+		self.buttNext = wx.BitmapButton( self, wx.ID_FORWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
 		self.buttPrev.Enable(False)  #Starts out disabled
 		
 		buttonsSizer.Add(self.buttPrev,0,wx.EXPAND) 
@@ -427,6 +435,7 @@ class FontViewPanel(wx.Panel):
 		
 	def navClick(self,event) :
 		wx.BeginBusyCursor()
+		print event.GetId()
 		if event.GetId()  == wx.ID_FORWARD: 
 			self.pageindex += 1
 		else: #wx.ID_BACKWARD
