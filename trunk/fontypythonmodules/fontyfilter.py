@@ -27,6 +27,12 @@ def doFilter( filter_string ):
 		## the regex against certain fields.
 		## EXTEND THIS TO PANOSE AND other fontTools criteria.
 		for fi in fpsys.state.viewobject:
+			## July 2016
+			## =========
+			## There was a None slipping in via fi.style!
+			## Fixed this up-stream in fontcontrol.py
+			##  print fi.name, fi.family, fi.style
+
 			## Make sure we don't try fetch info from a bad font.
 			if not fi.badfont:
 				if test.search( fi.name + fi.family[0] + fi.style[0] ):
