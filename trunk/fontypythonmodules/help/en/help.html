@@ -3,14 +3,12 @@
 <table cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF">
 	<TR><TD bgcolor="#91a2a9">
 		<img src="../common/fphelplogo.png">
-	</TD></TR><TR><TD>
-	<div align=right><font size=-1 color="#CCCCCC">Updated September 2009</font></div>
-	</TD></TR><TR><TD>
-
+	</TD></TR><TR><TD align="right"><font size=-2 color="#aaaaaa">Updated July 2016 </font></TD></TR>
+	<TR>
+	<TD>
 	<TABLE cellpadding="25">
-		
-	<TR><TD>
-
+	<TR>
+	<TD>
 		<p><i>FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.</i></p>
 		
 		<A NAME="TOP"></A>
@@ -20,14 +18,16 @@
 
 		<h3><font color="#758B94">Ye olde Basic Idea</font></h3>
 		<p>You visually gather fonts into <b>"Pogs"</b>. You then install the Pog, and all its fonts will be available to other apps. When you finish your work, uninstall the Pog.</p>
-		<p>I just tumbled onto the	word "Pog", it comes from the middle of "typography". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.</p>
+		<p>I just stumbled onto the	word "Pog", it comes from the middle of "typography". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.</p>
 		<p>Your fonts never move from where they live, neither are copies made; <i>only links to the original files are used</i> to install the fonts into your home <i>.fonts</i> directory.</p>
-		<p>For example, you might have a Pog called "Zoo Logo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you need to work with them, you simply install the "Zoo Logo" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp and other apps. Do your work as normal, and forget about fonts. When you are done designing, you uninstall "Zoo Logo" and all those fonts go away. (The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.)</p>
+		<p>For example, you might have a Pog called "Zoo Logo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you need to work with them, you simply install the "Zoo Logo" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp and other apps. When you are done designing, you uninstall "Zoo Logo" and all those fonts go away. (The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.)</p>
 		<p>Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.</p>
 		<h3><font color="#758B94">Home dot fonts</font></h3>
 		<p>In your home directory there is a hidden directory named ".fonts". The dot makes it hidden. In there you will find font files of various kinds. Whatever is listed in that directory is a font that your system can use. It's not as simple as this because on GNU/Linux there are other places where fonts are also installed, but it's a handy place to work. You should never need to go into this directory so there's no reason to worry about it.</p>
+		<p><b>NB:</b> If the .fonts directorydoes not exist, please create it in your home directory.<br><b>For example</b><pre>$ cd ~<br>$ mkdir .fonts</pre></p>
 		<h3><font color="#758B94">Latest News</font></h3>
 		<ol>	
+			<li>(July 2016) Many fixes due to changes in PIL and GTK versions.</li>
 			<li>(Sept 2009) You can now zip Pog(s). This puts all those fonts into a zip file for convenient distribution.</li>
 			<li>(June 2009) There is an "Include sub-folders" check box now. See also the command-line option "-A"</li>
 			<li>(June 2009) New keyboard shortcuts. Ctrl+LeftArrow and Ctrl+RightArrow will step through your fonts.</li>
@@ -39,7 +39,7 @@
 		<A NAME="LAYOUT"></A>
 		<h3><font color="#758B94">Layout</font></h3>
 		<CENTER><IMG src="fp_1to8-nq8.png" border="0">
-		<p><font size=1>The interface works from left to right. You select a Source on the far left, then you  select fonts from the middle section and finally you choose a Target "Pog" where you want to store them.</font></p></CENTER>
+		<p><font size=1>The interface works from left to right. You select a Source on the far left, then you select fonts from the middle section, and finally you choose a Target "Pog" where you want to store them.</font></p></CENTER>
 
 
 	<table cellspacing="10">
@@ -186,7 +186,7 @@
 		<li>Pog files are merely text files. They are very, very simple and this was intentional. Here are some things you can do with them:
 		<ul>
 			<li>Open and edit them in any text editor.</li>
-			<li>Append fonts to the end of them, just include the entire path and the font name.<strong>Note for Type1 fonts:</strong>Only include the PFA/B file types, not the various metric files that follow them.</li>
+			<li>Append fonts to the end of them, just include the entire path and the font name.<br><strong>Note for Type1 fonts: </strong>Only include the PFA/B file types, not the various metric files that follow them.</li>
 			<li>If your paths change (say you renamed your folders, or re-installed your O/S) then you can use search/replace to update all the paths to all the fonts in your Pogs. You could do this from the command-line using GNU tools, but any text editor will help you here too.</li>
 			<li>You can backup your Pogs by simply copying them to another folder.</li>
 			<li>One last trick, for those proficient with the Gnu tools, you can do things like this:<pre>find /home/you/somepath/TTFS/F -iname "Fu*" >> Futura.Pog</pre></li>
