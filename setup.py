@@ -123,14 +123,15 @@ setup(name = "fontypython",
 	scripts = ["fontypython", "start_fontypython"],
 long_description = fontypythonmodules.strings.long_description,
 	classifiers=[
-	  'Development Status :: 4 - Beta',
-	  'Environment :: X11 Applications :: GTK',
+	  'Development Status :: 6 - Mature',
+	  'Environment :: X11 Applications',
 	  'Intended Audience :: End Users/Desktop',
-	  'Intended Audience :: Developers',
 	  'License :: OSI Approved :: GNU General Public License (GPL)',
 	  'Operating System :: POSIX :: Linux',
 	  'Programming Language :: Python',
 	  'Topic :: Desktop Environment',
-	  'Topic :: Text Processing :: Fonts'
+	  'Topic :: Text Processing :: Fonts',
+		'Topic :: Multimedia :: Graphics',
+		'Topic :: Utilities',
 	  ]	
 )
