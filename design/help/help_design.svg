@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -13,8 +14,7 @@
    height="877.5484"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docbase="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="help_design.svg"
    version="1.0"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
@@ -988,22 +988,23 @@
      objecttolerance="10"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="607.55337"
-     inkscape:cy="485.25007"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="389.20778"
+     inkscape:cy="591.96518"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      inkscape:window-width="1676"
      inkscape:window-height="977"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="24"
      showguides="true"
      inkscape:guide-bbox="true"
      showgrid="true"
      inkscape:snap-bbox="true"
      inkscape:object-nodes="true"
      inkscape:bbox-paths="true"
-     inkscape:bbox-nodes="true">
+     inkscape:bbox-nodes="true"
+     inkscape:window-maximized="0">
     <sodipodi:guide
        orientation="vertical"
        position="-63.657407"
@@ -1045,13 +1046,6 @@
      inkscape:label="vecs"
      style="opacity:1;display:inline"
      transform="translate(-10.57351,-16.80289)">
-    <image
-       id="image2658"
-       height="475"
-       width="698"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/fp_screenshot.png"
-       xlink:href="fp_screenshot.png"
-       transform="translate(74.57351,53.351291)" />
     <g
        style="opacity:1;display:inline"
        id="g3996"
@@ -1418,7 +1412,7 @@
        transform="matrix(1.0164978,0,0,1.0034684,17.409847,-0.1968371)">
       <path
          transform="matrix(0.2805726,0,0,0.6576618,-1008.8152,-6.3649166)"
-         d="M -25.372185,65.666374 A 70.125877,30.305656 0 1 1 -165.62394,65.666374 A 70.125877,30.305656 0 1 1 -25.372185,65.666374 z"
+         d="M -25.372185,65.666374 A 70.125877,30.305656 0 0 1 -95.498062,95.972031 70.125877,30.305656 0 0 1 -165.62394,65.666374 70.125877,30.305656 0 0 1 -95.498062,35.360718 70.125877,30.305656 0 0 1 -25.372185,65.666374 Z"
          sodipodi:ry="30.305656"
          sodipodi:rx="70.125877"
          sodipodi:cy="65.666374"
@@ -1434,7 +1428,7 @@
          sodipodi:cy="65.666374"
          sodipodi:rx="70.125877"
          sodipodi:ry="30.305656"
-         d="M -25.372185,65.666374 A 70.125877,30.305656 0 1 1 -165.62394,65.666374 A 70.125877,30.305656 0 1 1 -25.372185,65.666374 z"
+         d="M -25.372185,65.666374 A 70.125877,30.305656 0 0 1 -95.498062,95.972031 70.125877,30.305656 0 0 1 -165.62394,65.666374 70.125877,30.305656 0 0 1 -95.498062,35.360718 70.125877,30.305656 0 0 1 -25.372185,65.666374 Z"
          transform="matrix(0.2510709,0,0,0.5885099,-1011.6325,-1.8239562)" />
     </g>
     <use
@@ -1514,70 +1508,81 @@
        inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fp8.png.cr.png"
        inkscape:export-xdpi="89.985931"
        inkscape:export-ydpi="89.985931" />
-    <use
-       x="0"
-       y="0"
-       xlink:href="#g2420"
-       id="use2733"
-       transform="translate(1147.6593,139.48839)"
-       width="824"
-       height="877.5484" />
-    <use
-       x="0"
-       y="0"
-       xlink:href="#g2425"
-       id="use2735"
-       transform="translate(1538.5677,11.122577)"
-       width="824"
-       height="877.5484" />
-    <use
-       height="877.5484"
-       width="824"
-       transform="translate(1573.1688,120.73442)"
-       id="use2480"
-       xlink:href="#g2435"
-       y="0"
-       x="0" />
-    <use
-       height="877.5484"
-       width="824"
-       transform="translate(1311.1594,344.42462)"
-       id="use2482"
-       xlink:href="#g2445"
-       y="0"
-       x="0" />
-    <use
-       height="877.5484"
-       width="824"
-       transform="translate(1362.8339,329.50135)"
-       id="use2484"
-       xlink:href="#g2440"
-       y="0"
-       x="0" />
-    <use
-       height="877.5484"
-       width="824"
-       transform="translate(1409.4912,441.73911)"
-       id="use2486"
-       xlink:href="#g2450"
-       y="0"
-       x="0" />
-    <use
-       height="877.5484"
-       width="824"
-       transform="translate(1494.2733,296.434)"
-       id="use2488"
-       xlink:href="#g2455"
-       y="0"
-       x="0" />
-    <use
-       x="0"
-       y="0"
-       xlink:href="#g2430"
-       id="use2737"
-       transform="translate(1540.912,42.655943)"
-       width="824"
-       height="877.5484" />
+    <g
+       id="g3592"
+       transform="matrix(0.83094556,0,0,0.83094556,46.606983,65.570132)">
+      <image
+         sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/fp_screenshot.png"
+         xlink:href="fp_screenshot.png"
+         id="image2658"
+         height="475"
+         width="698"
+         transform="translate(74.57351,53.351291)" />
+      <use
+         height="877.5484"
+         width="824"
+         transform="translate(1147.6593,139.48839)"
+         id="use2733"
+         xlink:href="#g2420"
+         y="0"
+         x="0" />
+      <use
+         height="877.5484"
+         width="824"
+         transform="translate(1538.5677,11.122577)"
+         id="use2735"
+         xlink:href="#g2425"
+         y="0"
+         x="0" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g2435"
+         id="use2480"
+         transform="translate(1573.1688,120.73442)"
+         width="824"
+         height="877.5484" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g2445"
+         id="use2482"
+         transform="translate(1311.1594,344.42462)"
+         width="824"
+         height="877.5484" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g2440"
+         id="use2484"
+         transform="translate(1362.8339,329.50135)"
+         width="824"
+         height="877.5484" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g2450"
+         id="use2486"
+         transform="translate(1409.4912,441.73911)"
+         width="824"
+         height="877.5484" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g2455"
+         id="use2488"
+         transform="translate(1494.2733,296.434)"
+         width="824"
+         height="877.5484" />
+      <use
+         height="877.5484"
+         width="824"
+         transform="translate(1540.912,42.655943)"
+         id="use2737"
+         xlink:href="#g2430"
+         y="0"
+         x="0" />
+    </g>
     <use
        x="0"
        y="0"
@@ -1800,47 +1805,47 @@
       </g>
     </g>
     <image
-       id="image2632"
-       height="151"
-       width="444"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/bad_fonts.png"
+       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/bad_fonts.png"
        xlink:href="bad_fonts.png"
-       transform="translate(865.6935,820.29129)" />
+       transform="translate(865.6935,820.29129)"
+       width="444"
+       height="151"
+       id="image2632" />
     <image
-       id="image2645"
-       height="117"
-       width="378"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/crossed_font.png"
+       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/crossed_font.png"
        xlink:href="crossed_font.png"
-       transform="translate(294.5735,696.17129)" />
-    <image
-       id="image2671"
-       height="141"
+       transform="translate(294.5735,696.17129)"
        width="378"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/inactive_font_item.png"
+       height="117"
+       id="image2645" />
+    <image
+       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/inactive_font_item.png"
        xlink:href="inactive_font_item.png"
-       transform="translate(291.57351,945.35129)" />
+       transform="translate(291.57351,945.35129)"
+       width="378"
+       height="141"
+       id="image2671" />
     <image
-       id="image2684"
-       height="115"
-       width="380"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/normal_font_item.png"
+       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/normal_font_item.png"
        xlink:href="normal_font_item.png"
-       transform="translate(296.57351,821.35129)" />
+       transform="translate(296.57351,821.35129)"
+       width="380"
+       height="115"
+       id="image2684" />
     <image
-       id="image2697"
-       height="81"
-       width="489"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/purge_font.png"
+       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/purge_font.png"
        xlink:href="purge_font.png"
-       transform="translate(863.3535,982.01129)" />
+       transform="translate(863.3535,982.01129)"
+       width="489"
+       height="81"
+       id="image2697" />
     <image
-       id="image2710"
-       height="116"
-       width="377"
-       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/graphic_design/helpfile_origs/ticked_font_item.png"
+       sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/ticked_font_item.png"
        xlink:href="ticked_font_item.png"
-       transform="translate(294.57351,564.35129)" />
+       transform="translate(294.57351,564.35129)"
+       width="377"
+       height="116"
+       id="image2710" />
     <use
        height="877.5484"
        width="824"
@@ -1872,7 +1877,7 @@
      inkscape:label="CUT"
      style="display:none">
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp1.png.cr"
        width="40"
        height="40"
@@ -1881,7 +1886,7 @@
        transform="translate(-112.28348,8.0513721)"
        inkscape:label="#rect3603" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp2.png.cr"
        width="40"
        height="40"
@@ -1890,7 +1895,7 @@
        transform="translate(-112.28348,51.185382)"
        inkscape:label="#rect3607" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp3.png.cr"
        width="40"
        height="40"
@@ -1905,10 +1910,10 @@
        height="40"
        width="40"
        id="fp4.png.cr"
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        inkscape:label="#rect3599" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp5.png.cr"
        width="40"
        height="40"
@@ -1917,7 +1922,7 @@
        transform="translate(-67.168378,8.0513724)"
        inkscape:label="#rect3605" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp6.png.cr"
        width="40"
        height="40"
@@ -1926,7 +1931,7 @@
        transform="translate(-67.168378,51.185382)"
        inkscape:label="#rect3609" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp7.png.cr"
        width="40"
        height="40"
@@ -1941,10 +1946,10 @@
        height="40"
        width="40"
        id="fp8.png.cr"
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        inkscape:label="#rect3601" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp_pog_icons.cr"
        width="113"
        height="87"
@@ -1960,9 +1965,9 @@
        height="87"
        width="113"
        id="fp_already_in_x"
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp_normal_item"
        width="113"
        height="87"
@@ -1978,9 +1983,9 @@
        height="87"
        width="113"
        id="fp_removing_a_font"
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate" />
     <rect
-       style="opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#d45500;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp_ticking"
        width="113"
        height="87"
@@ -1989,13 +1994,12 @@
        transform="matrix(3.0884956,0,0,1.1494252,309.53097,-101.55316)"
        inkscape:label="#rect3615" />
     <rect
-       style="opacity:0.8;fill:#dbdee3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#dbdee3;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
        id="fp_1to8"
-       width="122.91666"
-       height="86.111115"
-       x="38.194443"
-       y="78.242844"
-       transform="matrix(5.6461022,0,0,5.1677418,-150.64973,-344.79042)"
+       width="580"
+       height="370"
+       x="98"
+       y="117.5484"
        inkscape:label="#rect3593"
        inkscape:export-xdpi="89.985931"
        inkscape:export-ydpi="89.985931" />
