@@ -225,6 +225,7 @@ class TargetPogChooser(wx.Panel):
 			return #No need to tell mainframe about this.
 			
 
+
 		## Prepare for Install/Uninstall POG
 
 		## install or uninstall all selected pogs - caters for multiple pog selections
@@ -257,6 +258,15 @@ class TargetPogChooser(wx.Panel):
 
 				if ok:
 					## Update GUI
+
+					## July 2016
+					## =========
+					## Added this test to sync view and target
+					## objects IF they happen to be the samePog
+					if fpsys.state.samepogs:
+						# We installed RHS, so need to set that in RHS
+						# which is a sep object.
+						fpsys.state.viewobject.setInstalledFlag(True)
 					ps.pub( change_pog_icon )
 					self.toggleButtons()
 					ps.pub( update_font_view )
@@ -281,6 +291,15 @@ class TargetPogChooser(wx.Panel):
 					ok=False
 				if ok:
 					## Update GUI
+
+					## July 2016
+					## =========
+					## Added this test to sync view and target
+					## objects IF they happen to be the samePog
+					if fpsys.state.samepogs:
+						# We uninstalled RHS, so need to set that in RHS
+						# which is a sep object.
+						fpsys.state.viewobject.setInstalledFlag(False)
 					ps.pub( change_pog_icon )
 					self.toggleButtons()
 					ps.pub( update_font_view )
