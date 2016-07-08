@@ -70,6 +70,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					'fcol'   : black,
 					'bcol'   : white,
 					'icon'	 : "NOT_FOUND",
+					'ndi'    : ndi
 					},
 			'PIL_SEGFAULT_ERROR':
 				{
@@ -116,6 +117,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					'fcol'   : (128,128,128), 
 					'bcol'   : white,
 					'icon'	 : None,
+					'ndi'    : ndi
 				},
 			'INFO_FONT_ITEM':
 				{
@@ -493,8 +495,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.badfont:
 			self.style=Fitmap.styles[self.fitem.badstyle].copy() #damn! this was tricky!
 			if self.fitem.inactive:
+				## July 2016
+				## =========
+				## Happened on cases where 'ndi' key was not in styles dict. 
+				## Added them in.
+				#print "bad:", self.fitem.name
+				#print "style:", self.fitem.badstyle
 				self.style['fcol'] = Fitmap.styles['INACTIVE']['fcol']
-				self.style['backcol'] = Fitmap.styles[self.fitem.badstyle]['ndi']
+				self.style['backcol'] = Fitmap.styles[self.fitem.badstyle]['ndi'] #ndi = No Draw Inactive
 			return
 
 		# Not bad font, just get vals from style sheet.
