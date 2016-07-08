@@ -673,6 +673,16 @@ class Pog(BasicFontList):
 		if self.__installed == "yes": return True
 		if self.__installed == "no": return False		
 		
+	def setInstalledFlag(self, TF):
+		"""
+		JULY 2016
+		=========
+		In a situation where we have two objects of the same Pog, and one is installed
+		we need to set the other one to installed too.
+		See gui_Right multiClick
+		"""
+		self.__installed = TF
+
 	def __renameBadPog(self):
 		"""
 		This is a bad pog, My plan is to rename it out of the .pog namespace.
@@ -763,7 +773,8 @@ class Pog(BasicFontList):
 			PogAllFontsFailedToInstall
 			PogSomeFontsDidNotInstall
 			NoFontsDir
-		"""	
+		"""
+		print "Install begins"
 		if not os.path.exists(self.__pc.userFontPath()):
 			raise fontybugs.NoFontsDir("Missing .fonts dir")
 
@@ -819,9 +830,11 @@ class Pog(BasicFontList):
 		elif bugs > 0: 
 			## Some fonts did get installed, but not all. so, we are INSTALLED
 			self.write()
+			print "   semi [INSTALL COMPLETE]"
+			print self.__installed
 			raise fontybugs.PogSomeFontsDidNotInstall(self.name) # RAISED :: PogSomeFontsDidNotInstall
+
 		self.write()
-		#print "    [INSTALL COMPLETE]"
 
 		
 	def uninstall(self):
