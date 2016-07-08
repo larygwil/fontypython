@@ -368,6 +368,7 @@ class MainFrame(wx.Frame):
 
 	def TogglePurgeMenuItem(self, vis):
 		vis=vis[0]
+		#print vis
 		self.MENUPURGE.Enable(103,vis)
 	
 	def menuPurgePog(self,e):
