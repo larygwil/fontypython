@@ -988,9 +988,9 @@
      objecttolerance="10"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="389.20778"
-     inkscape:cy="591.96518"
+     inkscape:zoom="0.7071068"
+     inkscape:cx="332.55454"
+     inkscape:cy="296.19547"
      inkscape:document-units="px"
      inkscape:current-layer="layer3"
      inkscape:window-width="1676"
@@ -1514,10 +1514,10 @@
       <image
          sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/fp_screenshot.png"
          xlink:href="fp_screenshot.png"
-         id="image2658"
-         height="475"
+         transform="translate(74.57351,53.351291)"
          width="698"
-         transform="translate(74.57351,53.351291)" />
+         height="475"
+         id="image2658" />
       <use
          height="877.5484"
          width="824"
@@ -1623,7 +1623,7 @@
       <text
          transform="translate(0.5739365,-1.9290123)"
          xml:space="preserve"
-         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Bitstream Vera Sans"
+         style="font-size:13.99999976px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:'Blue Highway';-inkscape-font-specification:'Blue Highway, Normal';"
          x="92.720734"
          y="765.63257"
          id="text2701"
@@ -1685,7 +1685,7 @@
        transform="translate(1.3963497,65.289012)">
       <text
          xml:space="preserve"
-         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:13.99999976px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:'Blue Highway';-inkscape-font-specification:'Blue Highway, Normal';"
          x="91.879631"
          y="647.66357"
          id="text4061"
@@ -1764,7 +1764,7 @@
          id="text4065"
          y="703.7995"
          x="92.036858"
-         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         style="font-size:13.99999976px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:'Blue Highway';-inkscape-font-specification:'Blue Highway, Normal';"
          xml:space="preserve"><tspan
            y="703.7995"
            x="92.036858"
@@ -1807,45 +1807,45 @@
     <image
        sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/bad_fonts.png"
        xlink:href="bad_fonts.png"
-       transform="translate(865.6935,820.29129)"
-       width="444"
+       id="image2632"
        height="151"
-       id="image2632" />
+       width="444"
+       transform="translate(865.6935,820.29129)" />
     <image
        sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/crossed_font.png"
        xlink:href="crossed_font.png"
-       transform="translate(294.5735,696.17129)"
-       width="378"
+       id="image2645"
        height="117"
-       id="image2645" />
+       width="378"
+       transform="translate(294.5735,696.17129)" />
     <image
        sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/inactive_font_item.png"
        xlink:href="inactive_font_item.png"
-       transform="translate(291.57351,945.35129)"
-       width="378"
+       id="image2671"
        height="141"
-       id="image2671" />
+       width="378"
+       transform="translate(291.57351,945.35129)" />
     <image
        sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/normal_font_item.png"
        xlink:href="normal_font_item.png"
-       transform="translate(296.57351,821.35129)"
-       width="380"
+       id="image2684"
        height="115"
-       id="image2684" />
+       width="380"
+       transform="translate(296.57351,821.35129)" />
     <image
        sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/purge_font.png"
        xlink:href="purge_font.png"
-       transform="translate(863.3535,982.01129)"
-       width="489"
+       id="image2697"
        height="81"
-       id="image2697" />
+       width="489"
+       transform="translate(863.3535,982.01129)" />
     <image
        sodipodi:absref="/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk/design/help/ticked_font_item.png"
        xlink:href="ticked_font_item.png"
-       transform="translate(294.57351,564.35129)"
-       width="377"
+       id="image2710"
        height="116"
-       id="image2710" />
+       width="377"
+       transform="translate(294.57351,564.35129)" />
     <use
        height="877.5484"
        width="824"
@@ -1956,7 +1956,10 @@
        x="-6"
        y="572.5484"
        transform="matrix(1.1150442,0,0,1.8390805,27.015883,-443.50678)"
-       inkscape:label="#rect3615" />
+       inkscape:label="#rect3615"
+       inkscape:export-filename="fp_pog_icons.cr.png"
+       inkscape:export-xdpi="89.985901"
+       inkscape:export-ydpi="89.985901" />
     <rect
        inkscape:label="#rect3615"
        transform="matrix(3.0884955,0,0,1.3218389,309.53098,182.73167)"
