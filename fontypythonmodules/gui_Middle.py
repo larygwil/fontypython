@@ -268,7 +268,7 @@ class FontViewPanel(wx.Panel):
 		history=o.GetItems()
 		if termsstring not in history:
 			o.Insert( termsstring,0 ) #record this search in the top of the 'history'
-		print termsstring
+		#print termsstring
 		self.startSearch(termsstring)
 		
 		self.buttMain.SetFocus()
