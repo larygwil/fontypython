@@ -369,7 +369,18 @@ class MainFrame(wx.Frame):
 	def TogglePurgeMenuItem(self, vis):
 		vis=vis[0]
 		#print vis
+		#print fpsys.state.viewobject.name
 		self.MENUPURGE.Enable(103,vis)
+
+		## July 2016
+		## =========
+		## Make the label of the menu reflect the view Pog's name
+		## so it's clear which selection counts for purging.
+		if vis:
+			self.MENUPURGE.SetLabel(103, _("&Purge \"%s\"" % fpsys.state.viewobject.name ) )
+		else:
+			self.MENUPURGE.SetLabel(103, _("&Purge Pog")) #Reflect original string, as it's got translations already.
+			
 	
 	def menuPurgePog(self,e):
 		##The menu item only becomes active for Pogs that are not installed,
