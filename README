@@ -1,5 +1,5 @@
 Fonty Python
-Copyright (C) 2006,2007,2008,2009 Donn.C.Ingle
+Copyright (C) 2006,2007,2008,2009,2016 Donn.C.Ingle
 donn.ingle@gmail.com
 
 Fonty Python comes with ABSOLUTELY NO WARRANTY; for details
@@ -139,6 +139,8 @@ I have included the pot files that I have. Look at fontypythonmodules/pofiles/RE
 
 CHANGELOG
 ================
+June/July 2016 : FP version 0.
+* 
 Jan 22 2008 : FP version 0.3.6
 * Fixed another font bug (0 width).
 * Bad wxImage badfont catch - draws a yellow block like a segfont.
