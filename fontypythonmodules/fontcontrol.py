@@ -774,7 +774,6 @@ class Pog(BasicFontList):
 			PogSomeFontsDidNotInstall
 			NoFontsDir
 		"""
-		print "Install begins"
 		if not os.path.exists(self.__pc.userFontPath()):
 			raise fontybugs.NoFontsDir("Missing .fonts dir")
 
@@ -827,11 +826,11 @@ class Pog(BasicFontList):
 			self.__installed = "no"
 			self.write()
 			raise fontybugs.PogAllFontsFailedToInstall(self.name) # RAISED :: PogAllFontsFailedToInstall
-		elif bugs > 0: 
+		elif bugs > 0:
 			## Some fonts did get installed, but not all. so, we are INSTALLED
 			self.write()
-			print "   semi [INSTALL COMPLETE]"
-			print self.__installed
+			#print "   semi [INSTALL COMPLETE]"
+			#print self.__installed
 			raise fontybugs.PogSomeFontsDidNotInstall(self.name) # RAISED :: PogSomeFontsDidNotInstall
 
 		self.write()
