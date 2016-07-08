@@ -9,17 +9,6 @@ This is a conservative approach. It assumes few resources are available to
 run Fonty. It tries to prioritize speed of start-up and lightness of footprint.
 
 
-wxgui Bugs
-==========
-Bug 1
-Notebook focus bug:
-1. Click Folder tab. 
-2. Click a folder in DirCtrl. 
-3. Click Pog Tab. Notice it takes 2 clicks to go there.
-Best fix : Keep old notebook control and have it function properly. 
-Next best: Replace with aui notebook.
-
-
 wxgui Tasks
 ===========
 A) Pager
