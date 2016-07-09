@@ -1,0 +1,13 @@
+FUTURE IDEAS
+============
+Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
+
+Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
+
+Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
+
+A font inspector - open a dialogue showing all the glyphs at each
+character position. This has been asked for, but may not make it into 
+Fonty soon.
+
+
