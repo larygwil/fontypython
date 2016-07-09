@@ -1,5 +1,36 @@
 Changelist
 ==========
+Latest entries at the bottom.
+
+Jan 4 2008 : FP version 0.3.1
+* Fixed img height/width bugs in help file. It scrolls smoothly now.
+* Fixed startup bug when last folder viewed no longer has any fonts.
+* Fixed some text in strings.
+* Improved the setup.py system to use i18n, strings and fpversion modules.
+* Added Italian translation (Thanks to Pietro Battiston)
+
+Jan 10 2008 : FP version 0.3.3
+* Fixed setup.py bug - should install properly now.
+* Tweaked some gui things - like spacing.
+* Added a clear button for the filter.
+* Major overhaul of the Type1 code in fontcontrol.
+
+Jan 18 2008 : FP version 0.3.4
+* Did a lot of locale/unicode work to support LANG=C
+* Added a tool to 'check' fonts - marks segfaulters
+* Added long command-line options
+* Repairs to help file
+* Many bugs fixed, new ones created :)
+
+Jan 20 2008 : FP version 0.3.5
+* Added a .desktop file and an icon - changes to setup.py
+
+Jan 22 2008 : FP version 0.3.6
+* Fixed another font bug (0 width).
+* Bad wxImage badfont catch - draws a yellow block like a segfont.
+* Made the Check Font dialog work a lot better. feedback & better layout.
+* Updated the po/mo files, but no new translating has been done.
+
 11 June 2009
 1. Changed many button events to wx.EVT_BUTTON for better behaviour )
 2. Fixed Bug 2 (wxgui) -- The Tab->Folder->Last Directory->Show Fonts bug.
@@ -202,3 +233,34 @@ Strings changed -- PO files will be broken :(
 1. Removed the -t --text= comand-line option. It was totally useless.
 2. Fixed the strings.py file to reflect 1.
 3. Fixed the man page too.
+
+2016
+====
+June and July
+-------------
+Had issues with new versions of wxPython and PIL. These reflected in various bugs and some code had to be removed, while other parts had to be altered.
+
+1. Removing langid & mylocale from all gui files. This has caused a break (I think) in the stock buttons (e.g. GO_FORWARDS) which no longer display their icons.
+2. Bumped minimal version of wxPython test to 3.0
+3. Added an "Id" to the all wx list items to keep up with changes in wx.
+4. Added a try block to handle changes to new PIL. Old PIL uses tostring, new PIL wants tobytes.
+5. Added a new exception for missing ~/.fonts dir.
+6. In install(), added a test for missing ~/.fonts dir.
+7. ~/.fonts tests in cli.py
+8. Fixed the search filter. Bold, Italic, Regular as well as (partial) Family name!
+9. Changed the splash screen to appear early and stay for a few seconds.
+10. Adjusted help screen's width to be more narrow. Also allow the help window to be resized.
+11. Various changes to art (svg, png) as well as help text.
+12. Replaced next/prev buttons with bitmapbuttons because stock icons are not working on gtk3. (Could be related to item 1 in this list.)
+13. Added test for None where font's name/fam/style are pulled from PIL.
+14. Caught a weird exception in zip concerning files older than 1980.
+15. Sync installed state between view & target objects IF they are the same Pog: on install and uninstall.
+16. Altered the purge menu's label to include the selected Pog name.
+17. Edits in README and this file, the CHANGELOG
+
+
+
+
+
+
+

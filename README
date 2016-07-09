@@ -137,39 +137,3 @@ fontypython list: fontypython@googlegroups.com
 I have included the pot files that I have. Look at fontypythonmodules/pofiles/README
 (Translation stuff is messy. Headers are all wrong and versions all over the place.)
 
-CHANGELOG
-================
-June/July 2016 : FP version 0.
-* 
-Jan 22 2008 : FP version 0.3.6
-* Fixed another font bug (0 width).
-* Bad wxImage badfont catch - draws a yellow block like a segfont.
-* Made the Check Font dialog work a lot better. feedback & better layout.
-* Updated the po/mo files, but no new translating has been done.
-
-Jan 20 2008 : FP version 0.3.5
-* Added a .desktop file and an icon - changes to setup.py
-
-Jan 18 2008 : FP version 0.3.4
-* Did a lot of locale/unicode work to support LANG=C
-* Added a tool to 'check' fonts - marks segfaulters
-* Added long command-line options
-* Repairs to help file
-* Many bugs fixed, new ones created :)
-
-Jan 10 2008 : FP version 0.3.3
-* Fixed setup.py bug - should install properly now.
-* Tweaked some gui things - like spacing.
-* Added a clear button for the filter.
-* Major overhaul of the Type1 code in fontcontrol.
-
-Jan 4 2008 : FP version 0.3.1
-* Fixed img height/width bugs in help file. It scrolls smoothly now.
-* Fixed startup bug when last folder viewed no longer has any fonts.
-* Fixed some text in strings.
-* Improved the setup.py system to use i18n, strings and fpversion modules.
-* Added Italian translation (Thanks to Pietro Battiston)
-
-Please send me reports about your experiences with Fonty Python.
-Donn,2007,2008,2009.
-
