@@ -1,0 +1,91 @@
+.TH "FONTYPYTHON" 1 "2009-09-28" "" ""
+.SH NAME
+fontypython \- Find, view and manage font files of all kinds.
+.SH SYNOPSIS
+.B fontypython
+[\fIOPTIONS\fR]... [\fIVIEW\fR]... [\fITARGET\fR]...
+.SH DESCRIPTION
+.B fontypython
+is a GUI utility written in Python and WxPython that will help you do font stuff on GNU/Linux system. 
+You can quickly view and filter arbitrary* TTF, TTC, OTF or Type1 font files and then gather them together into 'Pogs' which can be
+.B installed or removed
+as needed. In this way you control which fonts are installed on a per-project basis.
+
+If you have 
+.B gucharmap
+or
+.B kfontview
+installed, (there is an option in Settings to choose which one) you can view any font's character maps etc.
+
+*Arbitrary means you can 
+.B see
+and/or use 
+.B any fonts
+in a local directory (or a mount). They 
+.B do not need
+to be installed on your system.
+.PP
+.SH OPTIONS
+.TP
+\fB VIEW
+A place where fonts are. A Pog or a folder someplace.
+.TP
+\fB TARGET
+A "Pog". A place to keep those fonts (just references to them).
+.TP
+\fB OPTIONS
+Below are the various command-line options. You don't need to use them, but they are handy. The program will run as a GUI if you only invoke 'fontypython'. 
+.TP
+\fB\-e\fR, \fB\-\-examples\fR
+Show some %$@#$ examples!
+.TP
+\fB\-l\fR, \fB\-\-list\fR
+List the names of all the Pogs.
+.TP
+\fB\-i\fR Pog, \fB\-\-install\fR=\fIPog\fR
+Install the fonts in this Pog to your fonts folder.
+.TP
+\fB\-u\fR Pog, \fB\-\-uninstall\fR=\fIPog\fR
+Uninstall the fonts in this Pog.
+.TP
+\fB\-p\fR Pog, \fB\-\-purge\fR=\fIPog\fR
+Purge the Pog of font files that are no longer really there.
+.TP
+\fB\-s\fR num, \fB\-\-size\fR=\fInum\fR
+Set a new default point size.
+.TP
+\fB\-n\fR num, \fB\-\-number\fR=\fInum\fR
+Set a new default for how many fonts to view at one go. Don't overdo this.
+.TP
+\fB\-c\fR folder \fB\-\-check\fR=\fIfolder\fR
+Check for bad fonts that crash the program. It will recurse through sub-folders. This will build a file: ~/.fontypython/segfonts After using this tool you should be able to browse safely. (The reason it's not done by default is that it's very slow.)
+NOTE: The fonts that crash the program are probably still perfectly good and can be used in other apps.
+.TP
+\fB\-a\fR folder Pog, \fB\-\-all\fR=\fIfolder Pog\fR
+Puts all fonts in this folder into the Pog. If the Pog already exists, it will
+add only *new* fonts, this means fonts are not repeated in that Pog.
+.TP
+\fB\-A\fR folder Pog, \fB\-\-all\-recurse=\fIfolder Pog\fR
+Puts all fonts in this folder and *all* sub-folders into the Pog. Rest same as
+\-a.
+.TP
+\fB\-z\fR Pog, \fB\-\-zip=\fIPog\fR
+All the fonts inside Pog will be zipped and the zipfile will be named after the
+Pog. The file will be placed in the current directory.
+.TP
+\fB\-\-version\fR
+Show program's version number and exit.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Show help message and exit.
+
+.SH SEE ALSO
+.BR Homepage:
+<https://savannah.nongnu.org/projects/fontypython>
+
+.SH AUTHOR
+fontypython was written by Donn.C.Ingle <donn.ingle@gmail.com>.
+.PP
+This manual page was updated by Donn Ingle in October 2009.
+It was originally written by Kartik Mistry <kartik@debian.org>, for the
+Debian project (but may be used by others).
