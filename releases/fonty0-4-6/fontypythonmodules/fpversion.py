@@ -19,4 +19,4 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 ##I am going to alter this in releases/ dir only. After a branch has been made etc.
-version="TRUNK"
+version="0.4.6"
