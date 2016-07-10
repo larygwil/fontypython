@@ -39,7 +39,7 @@ from gui_Fitmap import * #Also brings in 'ps' variable
 
 class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 	"""
-	This is the main font control, the child of CLASS FontViewPanel.
+	This is the main font control, the child of CLASS FontViewPanel (in gui_Middle.py)
 	Draw a list of fitmaps from a font list object (derived from BasicFontList)
 	"""
 	def __init__(self, parent):
@@ -54,6 +54,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		
 		## Make the sizer to hold the fitmaps
 		self.mySizer = wx.BoxSizer(wx.VERTICAL)
+		#self.mySizer = wx.GridBagSizer(0,0)
+		#self.mySizer = wx.WrapSizer() # Is very nice, but kinda nervous; skittish. V sensitive to widths.
+		
 		self.SetSizer(self.mySizer)
 
 		self.firstrun =True 
@@ -121,6 +124,10 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 	def CreateFitmaps(self, viewobject) :
 		"""
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
+		
+		viewobject: is a sub-list of fitems to display - i.e. after the page number math.
+
+		** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
 		"""
 		#self.InvalidateBestSize() # Reset the cache (seems uneccessary)
 		self.DoGetBestSize() # Force re-call
@@ -144,16 +151,53 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			empty_fitem = fontcontrol.InfoFontItem()
 			fm = Fitmap( self, (0, 0), empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
-			self.mySizer.Add( fm, 0, wx.GROW ) 
+			self.mySizer.Add( fm, pos=(0,0))# 0, wx.GROW ) 
 		else:
+			i=0
+			#halfway=0
+			#print dir(viewobject)
+			#import pdb; pdb.set_trace()
+			#gbs = wx.GridBagSizer(0,0)
+			L = len(viewobject)
+			rows = (int(L)/2)	 + L%2
+			#rows = rows if (rows>0) else 1
+			print L, rows
+			gs = wx.GridSizer(rows=rows, cols=2, hgap=0, vgap=0)
+			#row=col=0
 			for fitem in viewobject:
+
+				#NOTES
+				#1. Build all the fitmaps - keep widths in a list
+				#2. Get max width
+				#3. cmp to parent width etc.
+				#4. make the sizer
+				#5. reloop and add to sizer
+
+				#halfway = self.width
+				#col = 0 if (i%2==0) else 1
+				#i+=1
 				#test if not fitem.badfont: continue
 				## Create a Fitmap out of the FontItem we have at hand.
 				fm = Fitmap( self, (0,0),fitem)# i * h), fitem )
 				self.fitmaps.append(fm) 
-				self.mySizer.Add(fm, 0, wx.GROW) 
-				if fpsys.config.numinpage > 20: wx.Yield() #Added Oct 2009 to let app live on loooong lists.
+				#problem is the sizer
+				#if leftcol:
+					#print "make h box"
+					#hz = wx.BoxSizer(wx.HORIZONTAL)
+					#print "add left:", fm.name
+					#hz.Add(fm,1,wx.GROW)
+				#if not leftcol:
+					#print "add right:", fm.name
+					#hz.Add(fm,1,wx.GROW)
+					#self.mySizer.Add(fm, 0, wx.GROW) 
+					#print "add hz to vert"
+				print "%s" % fm.name
+				#self.mySizer.Add(fm, 0, wx.ALL,0) #pos=(row,col))#, wx.GROW) 
+				gs.Add(fm,0,0)
+				#row += col
 
+				if fpsys.config.numinpage > 20: wx.Yield() #Added Oct 2009 to let app live on loooong lists.
+		self.mySizer.Add(gs)
 		# Layout should be called after adding items.
 		self.mySizer.Layout()
 

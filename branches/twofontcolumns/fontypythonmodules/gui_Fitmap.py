@@ -128,7 +128,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			}
 
 	def __init__( self, parent, pos, fitem ) :
+		#print pos
 		self.name = fitem.name
+		#print self.name
 		
 		self.fitem = fitem
 
@@ -145,7 +147,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.spacer = 35 # Gap below each font bitmap
 		self.gradientheight = 50
 		
-		self.width = parent.width # Get it from the scrollFontViewPanel.
+		#self.width = parent.width # Get it from the scrollFontViewPanel.
+		self.width = parent.width/2 # Get it from the scrollFontViewPanel.
 
 
 		## The charmap button
@@ -362,13 +365,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		
 		## Get a list of pilimages, for each subface: Some fonts 
 		## have multiple faces, and their heights.
+		## (For example TTC files.)
 		## REMEMBER: This loop is all FOR THIS ONE FONT ITEM.
 		## It only supplies pilimages for fonts it could open and
 		## render. So this font may indeed have nothing in the pilList[]
 		## after this loop.
 		pilList=[]
 		totheight = 0
-		maxwidth = [self.width] # to figure-out the biggest width
+		maxwidth = [] #[self.width] # to figure-out the biggest width
 
 		for pilimage in self.fitem.generatePilFont( ):
 			pilList.append( pilimage )
@@ -377,7 +381,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Limit the minimum we allow.
 		if totheight < self.minHeight:
 			totheight = self.minHeight		
+		
 		maxwidth = max(maxwidth) # find it.
+		#maxwidth = self.width
+
+		# NOTE
+		## At this point, we have drawn the string BEFORE we go make
+		## the blankDc -- which means we have the opp to change the width
+		## according to the font size ..... um brb...
+
+		## if we have a max of all the fontitems - then we can use that
+		## to cmp to width parent. If < half - we can set width to parent/2
+		## if < third etc ....
+		## BUT we don't know now - cos we are in this loop....
+
 		
 		## BADFONT cases
 		##  Badfonts are still available for installation, it's just that I can't
@@ -396,6 +413,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			if self.fitem.inactive:
 				totheight += (self.spacer-20) #want room for 'is in pog' message.
 			## Make one big bitmap to house one or more faces (subfaces)
+			##
+			## NOTE: By drawing into memDc, we are drawing into self.bitmap
+			##
 			memDc=self.makeBlankDC( maxwidth, totheight, white )
 			fcol = self.style['fcol']
 			bcol = self.style['bcol']
@@ -537,7 +557,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return colorsys.rgb_to_hsv(sr,sg,sb)
 
 	def hsv_to_rgb(self,hsv):
-		rgb = colorsys.hsv_to_rgb( hsv[0],hsv[1],hsv[2] ) 
+		rgb = colorsys.hsv_to_rgb( hsv[0],hsv[1],hsv[2] )
 		# back to int
 		sr = int(rgb[0]*255.0)
 		sg = int(rgb[1]*255.0)
@@ -545,15 +565,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return ( sr,sg,sb )
 
 	def bottomFadeEffect( self, dc, height, width, step=1.13):
+		#TODO
+		return
 		"""
 		Baptiste's idea! New implementation : June 2009
 		 "Now a dividing gradient, you can say "wow" ;-)"
-		 Donn says, "..Wow!" :-D   
+		 Donn says, "..Wow!" :-D
 		
 		It goes from backcol and darkens it a little as it draws downwards.
 		"""
 
-		if self.fitem.inactive: 
+		if self.fitem.inactive:
 			return
 			#step=1.08 #inactive fonts get a lighter colour.
 		
