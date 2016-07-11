@@ -56,7 +56,7 @@ class Splitter(wx.SplitterWindow):
 	The splitter used twice in mainframe.
 	"""
 	def __init__(self, parent) :
-		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D) 
+		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D)
 
 class StatusBar(wx.StatusBar):
 	"""
@@ -76,22 +76,22 @@ class MainFrame(wx.Frame):
 	def __init__(self,parent,title) :
 		## Draw the frame
 		title = title + "   -   " + locale.getpreferredencoding()
-		wx.Frame.__init__(self,parent,-1,title,fpsys.config.pos,fpsys.config.size) 
-		
+		wx.Frame.__init__(self,parent,-1,title,fpsys.config.pos,fpsys.config.size)
+
 		## Try to show an icon
 		try:
-			image = wx.Image(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_PNG) 
-			image = image.ConvertToBitmap() 
-			icon = wx.EmptyIcon() 
-			icon.CopyFromBitmap(image) 
-			self.SetIcon(icon) 
+			image = wx.Image(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_PNG)
+			image = image.ConvertToBitmap()
+			icon = wx.EmptyIcon()
+			icon.CopyFromBitmap(image)
+			self.SetIcon(icon)
 		except:
 			pass
 
 		## STATUS BAR
 		self.sb = StatusBar(self)
 		self.SetStatusBar(self.sb)
-		
+
 		## Prepare the menu bar
 		self.menuBar = wx.MenuBar()
 
@@ -102,7 +102,7 @@ class MainFrame(wx.Frame):
 		## Jan 18 2008
 		menu1.Append( 102, _("&Check fonts"), _("Find those fonts that crash Fonty.") )
 		menu1.Append( 103, _("&Purge Pog"), _("Remove all ghost fonts from the selected Pog.") )
-		
+
 		self.MENUPURGE = menu1
 
 		self.exit = menu1.Append(104, _("&Exit"), _("Close the app"))
@@ -119,7 +119,7 @@ class MainFrame(wx.Frame):
 		self.MENUSELECTION = menu3
 
 		## HELP MENU
-		menu2 = wx.Menu() 
+		menu2 = wx.Menu()
 		menu2.Append(201, _("H&elp\tF1"))
 		menu2.Append(202, _("&About"))
 		## Append 2nd menu
@@ -142,7 +142,7 @@ class MainFrame(wx.Frame):
 
 		## The X close window button.
 		self.Bind( wx.EVT_CLOSE, self.onHandleESC )
-	
+
 		## Bind events for the menu items
 		self.Bind(wx.EVT_MENU, self.onHandleESC, self.exit)
 		self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
@@ -153,48 +153,48 @@ class MainFrame(wx.Frame):
 		# June 2009
 		self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
 		self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
-		
+
 		## Create a splitter 
-		self.splitter = Splitter(self) 
-	
+		self.splitter = Splitter(self)
+
 		## The notebook
-		self.panelNotebook = wx.Panel(self.splitter) 
-		
+		self.panelNotebook = wx.Panel(self.splitter)
+
 		## Notebook label and icon
-		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))		
+		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
 		self.viewLabel = wx.StaticText( self.panelNotebook, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
 		self.viewLabel.SetFont( wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
-		
+
 		## A horiz sizer to hold the icon and text
 		self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
 		self.sizer_iconandtext.Add( (4, 1), 0 )
 		self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4 )
 		self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
-		
+
 		## Now the actual notebook
 		self.nb = NoteBook(self.panelNotebook)
 
 		## Make a Vertical sizer to hold them.
 		self.sizerNotebook = wx.BoxSizer(wx.VERTICAL)
-		
+
 		## Add them to the sizer.
 		self.sizerNotebook.Add(self.sizer_iconandtext, 0, wx.EXPAND)
-		self.sizerNotebook.Add(self.nb,1,wx.EXPAND) 
-		
-		self.panelNotebook.SetSizer(self.sizerNotebook) 
-		self.sizerNotebook.Layout() 
-		
+		self.sizerNotebook.Add(self.nb,1,wx.EXPAND)
+
+		self.panelNotebook.SetSizer(self.sizerNotebook)
+		self.sizerNotebook.Layout()
+
 		## dec 2007 : Added a second splitter. It was a bitch!
 		self.splitter2 = Splitter(self.splitter) # gets the second slot of splitter
-		
+
 		## Font View Panel Control:
 		self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
-		
-		self.sizerFontView  = wx.BoxSizer(wx.VERTICAL) 
+
+		self.sizerFontView  = wx.BoxSizer(wx.VERTICAL)
 		self.sizerFontView.Add(self.fontViewPanel, 1, wx.EXPAND)
 		self.sizerFontView.SetDimension( 0, 0, 1024, 0)
 		#self.fontViewPanel.Layout()
-	   
+
 		## THE FAR RIGHT HAND SIDE
 		## The TargetPogChooser
 		self.panelTargetPogChooser = TargetPogChooser(self.splitter2) # last slot of splitter2
@@ -202,15 +202,15 @@ class MainFrame(wx.Frame):
 		self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
 		self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
 		self.panelTargetPogChooser.Layout()
-		
-		self.splitter.SetMinimumPaneSize(64) 
+
+		self.splitter.SetMinimumPaneSize(64)
 		self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
-		
+
 		self.splitter2.SetMinimumPaneSize(128)
 		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser) #Don't suggest a size here.
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
-		
+
 		## Now to subscribe to have my various def called from other places:
 		ps.sub(show_error, self.ErrorBox) ##DND: class MainFrame
 		ps.sub(show_error_and_abort, self.ErrorAbort) ##DND: class MainFrame
@@ -225,9 +225,9 @@ class MainFrame(wx.Frame):
 		## call the big one - the big chief, the big cheese:
 		## This eventually draws all the Fitmaps - giving the middle have a width.
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
-	
+
 		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
-		#self.splitter2.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize) #Jul8 2016 - Added this event too.
+		self.splitter2.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize) #July 2016 - Added this event too.
 
 		# Force splitter2 to the correct position. 
 		self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )
@@ -257,11 +257,11 @@ class MainFrame(wx.Frame):
 		This changed. I added the bind to splitter2 as well. Actually works better for sizes in fontViewPanel
 		"""
 		ps.pub( update_font_view ) # starts a chain of calls.
-		
+
 	def GetSashesPos( self, args=None ):
 		## For saving/restoring the sashes to where we bloody left them :\
 		return ( self.splitter.GetSashPosition(), self.panelTargetPogChooser.GetClientSize()[0])
-		
+
 	def StatusbarPrint(self, args):
 		self.sb.Report(args[0])
 
@@ -276,25 +276,25 @@ class MainFrame(wx.Frame):
 	def ErrorAbort(self, args):
 		self.ErrorBox(args) #Pass it along to be displayed
 		self.endApp()
-		
+
 	def onHandleESC(self, e) :
 		print strings.done
-		self.endApp() 
+		self.endApp()
 
 	def endApp(self) :
 		"""
 		Save app's vital statistics and exit.
 		See the end of start.py where it's actually saved.
 		"""
-		fpsys.config.pos = self.GetPositionTuple() 
+		fpsys.config.pos = self.GetPositionTuple()
 		## Dec 2007 - I was using the wrong func and the
 		## main window kept getting smaller!
 		fpsys.config.size = self.GetSizeTuple()
 		fpsys.config.leftSash, fpsys.config.rightSash = self.GetSashesPos()
 		##June 2009 - fetch and record the value of the recurse folders checkbox.
 		fpsys.config.recurseFolders = app.GetTopWindow().nb.recurseFolders.GetValue()
-		self.Destroy() 
-   
+		self.Destroy()
+
 	def menuSettings(self, e):
 		lastnuminpage, lastpoints, lasttext = fpsys.config.numinpage ,fpsys.config.text, fpsys.config.points
 		dlg = dialogues.DialogSettings(self)
@@ -309,10 +309,10 @@ class MainFrame(wx.Frame):
 				fpsys.config.numinpage = int(num)
 				fpsys.config.points = int(points)
 				if len(txt) > 0: fpsys.config.text =  txt
-			
+
 			fpsys.config.ignore_adjustments = ignoreAdjust #Sept 2009
 			fpsys.config.CMC.SET_CURRENT_APPNAME( dlg.CHOSEN_CHARACTER_MAP) # Oct 2009
-			
+
 			## Now to refresh things:
 			## Sept 2009 : size change means we need new values for fitmaps
 			ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
@@ -323,7 +323,7 @@ class MainFrame(wx.Frame):
 		dlg =dialogues.DialogAbout(self)
 		val = dlg.ShowModal()
 		dlg.Destroy()
-		
+
 	def menuHelp(self, e):
 		# July 2016
 		# =========
@@ -342,9 +342,9 @@ class MainFrame(wx.Frame):
 		marked as such and hereafter be safe to use.
 		"""
 		## Set startdir to the one our own dircontrol is in
-		if fpsys.state.viewpattern == "F": 
+		if fpsys.state.viewpattern == "F":
 			startdir = fpsys.state.viewobject.path
-		else: 
+		else:
 			##Let's get it from the config object
 			startdir = fpsys.config.lastdir
 		dlg = dialogues.DialogCheckFonts( self, startdir )
@@ -360,7 +360,7 @@ class MainFrame(wx.Frame):
 				fi.ticked=True
 				fpsys.state.numticks += 1
 		## Now update the view
-		ps.pub( update_font_view )	
+		ps.pub( update_font_view )
 
 	def menuSelectionNONE(self,e):
 		fpsys.state.numticks=0
@@ -369,7 +369,7 @@ class MainFrame(wx.Frame):
 			if not fi.inactive:
 				fi.ticked=False
 		## Now update the view
-		ps.pub( update_font_view )	
+		ps.pub( update_font_view )
 
 	def TogglePurgeMenuItem(self, vis):
 		vis=vis[0]
@@ -385,8 +385,8 @@ class MainFrame(wx.Frame):
 			self.MENUPURGE.SetLabel(103, _("&Purge \"%s\"" % fpsys.state.viewobject.name ) )
 		else:
 			self.MENUPURGE.SetLabel(103, _("&Purge Pog")) #Reflect original string, as it's got translations already.
-			
-	
+
+
 	def menuPurgePog(self,e):
 		##The menu item only becomes active for Pogs that are not installed,
 		##so we can purge without further tests:
@@ -401,7 +401,7 @@ class MainFrame(wx.Frame):
 			except(fontybugs.PogEmpty, fontybugs.PogInstalled),e:
 				ps.pub(show_error, unicode( e ))
 				ps.pub(print_to_status_bar, _("%s has not been purged.") % pogname)
-				return 
+				return
 
 			## Update GUI
 			ps.pub(print_to_status_bar, _("%s has been purged.") % pogname)
