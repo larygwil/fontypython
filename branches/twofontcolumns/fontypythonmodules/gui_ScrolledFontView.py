@@ -47,8 +47,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
 
 		self.SetBackgroundColour('white')
-		self.dobestsizeonlyonce = True
-		#self.initialCalculatedWidth = 0
 
 		
 		self.fitmaps = []
@@ -65,7 +63,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		self.SetSizer(self.mySizer)
 
 		self.firstrun =True 
-
+		self.SetAutoLayout(1)
 		self.SetupScrolling(rate_y=5, scroll_x=False)
 		
 		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
@@ -101,47 +99,28 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 
 	def DoGetBestSize(self):
-		#import pdb; pdb.set_trace()
-		# This is actually called BEFORE the __init__ to this object!
-		#  What calls this function and when is a dark art. It's related to splitter events (at least)
-		#  In my big 30 Sept 2009 fix I just ended-up with this solution -- it's not really something I am savvy about :(
+		"""
+		Very strange behaviour. AFAICT this is called automatically, sometimes, before
+		__init__ of this class! :O
 
+		Anyway: July 2016
+		I noticed that on first run the width if the parent panel is 128
+		So, I am gonna look for that rubbish and replace it with a size calculated from
+		the stuff recorded in the config. (These, too, have defaults that work.)
+		"""
 
-		#if self.dobestsizeonlyonce:
+		# Go get the size of the parent panel.
 		ps = self.parent.GetSize()
-		print "DoGetBestSize runs:",ps.width, ps.height
 
-		if ps.width <=128: #self.parent.doInitialCalcOfScrolledFontViewBestSize:
+		if ps.width <=128:
+			# Yeah, override this damn width.
 			w = fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
 			wl = fpsys.config.leftSash
 			wr = fpsys.config.rightSash
 			ps.width = w-wl-wr
-			#import pdb; pdb.set_trace()
 
-			print " override width to:", ps.width
-			#self.parent.doInitialCalcOfScrolledFontViewBestSize = False
-			#self.initialCalculatedWidth = w
-		#else:
-			#w = self.initialCalculatedWidth
-			## This try block is to get-around the odd fact that DoGetBestSize is called prior to __init__
-			#try:
-				## If this succeeds then we have the width of the parent panel.
-			#	w2=self.parent.GetSize()[0]
-			#	print "self.parent.GetSize()[0] runs:", w2
-				## This is not always sensible, esp. on first run. So, fake it if it's too small.
-			#	if w2 < w: w2=w
-			#except:
-				## __init__ not run yet, we need a value. Use the default.
-			#	w2=w
-			#	print "!!!!! except runs:", w2
-			#w=w2
-			#self.initialCalculatedWidth = w
-			#self.width=w # This property is helpful
-
-		#best = wx.Size(w,0)
-		#self.CacheBestSize(best) #Prevent this def running too often.
-		#print "best is:", best.width, best.height
-		return ps #best
+		self.CacheBestSize(ps) #Prevent this def running too often.
+		return ps
 
 
 	def CreateFitmaps(self, viewobject) :
@@ -152,19 +131,17 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 		** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
 		"""
-		#self.InvalidateBestSize() # Reset the cache (seems uneccessary)
-		#self.DoGetBestSize() # Force re-call
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
 		for f in self.fitmaps:
-		   f.Destroy()  #Ah, nailed ya! You bastard! I fart in your general direction!
+			f.Destroy()  #Ah, nailed ya! You bastard! I fart in your general direction!
 
 		del self.fitmaps
 		self.fitmaps = []
-		
+
 		## It's NB to notice that the fitems being put into self.fitmaps are
 		## the SAME items that are in the viewobject.
-		
+
 
 		## If our viewobject has NO FONTS inside it (i.e. it's an EmptyView object)
 		## then setup a fake FontItem so we can have a dud Fitmap to show.
@@ -172,82 +149,57 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			empty_fitem = fontcontrol.InfoFontItem()
 			fm = Fitmap( self, (0, 0), empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
-			self.mySizer.Add( fm,0,0)# pos=(0,0))# 0, wx.GROW ) 
+			self.mySizer.Add( fm,0,0 )
 		else:
-			i=0
-			#halfway=0
-			#print dir(viewobject)
-			#import pdb; pdb.set_trace()
-			#gbs = wx.GridBagSizer(0,0)
-			#print L, rows
-			#row=col=0
+
+			## Okay - let's make fonts!
+
+			## 1. Build all the fitmaps - keep widths in a list
 			widths=[]
 			for fitem in viewobject:
-				#1. Build all the fitmaps - keep widths in a list
 
 				## Create a Fitmap out of the FontItem we have at hand.
-				fm = Fitmap( self, (0,0),fitem)# i * h), fitem )
-				self.fitmaps.append(fm) 
-				widths.append(fm.totwidth)
-				print "Fitmap made: %s" % fm.name
-				if fpsys.config.numinpage > 20: wx.Yield() #Added Oct 2009 to let app live on loooong lists.
+				fm = Fitmap( self, (0,0), fitem )
+				self.fitmaps.append( fm )
+				widths.append( fm.totwidth )
+				#print "Fitmap made: %s" % fm.name
 
-			#2. Get max width
-			#3. cmp to parent width etc.
+				## Added Oct 2009 to let app live on loooong lists.
+				if fpsys.config.numinpage > 20: wx.Yield() 
 
-			#print "widths:", widths
+			## 2. Get max width
 			columnwidth = max(widths)
 
-			#s=self.DoGetBestSize()
-			#print "s.wdth:",s.width
-			#ww = s.width#[0]
-			#ww = self.DoGetSize()[0]
-			#vs = wx.Size(*self.DoGetSize())
-			vs= self.DoGetVirtualSize()
-			#
-			vs= self.DoGetBestSize()
-			print "vs w,h:", vs.width, vs.height
-			ww = vs.width
-
-			print "columnwidth, ww:", columnwidth, ww
+			## 3. cmp to parent width to calc number of columns
+			self.InvalidateBestSize() # Reset the cache
+			s = self.DoGetBestSize() # Force re-call
+			#print "s w,h:", s.width, s.height
+			ww = s.width
+			#print "columnwidth, ww:", columnwidth, ww
 			cols=1
 			if columnwidth < ww:
-				#The fitems are smaller than the panel
-				#How small? Can we fit two columns, three?
-				#import pdb; pdb.set_trace()
+				## The fitems are smaller than the panel
+				## How many columns can we squeeze in?
 				cols = int(ww / columnwidth)
 				exactcolwidth = (ww / cols) # for drawing an underline.. maybe
 
-			L = len(self.fitmaps)
-			rows = (int(L)/cols)	 + L%cols
-			rows = rows if (rows>0) else 1
+			## We don't need to calc rows - the GridSizer can do that.
+			#L = len(self.fitmaps)
+			#rows = (int(L)/cols)	 + L%cols
+			#rows = rows if (rows>0) else 1
 
+			## 4. make the sizer
+			gs = wx.GridSizer( cols=cols, hgap=0, vgap=0 )
 
-			#4. make the sizer
-			print cols, rows
-			gs = wx.GridSizer(cols=cols)#rows=rows, cols=cols, hgap=0, vgap=0)
-
-			#5. reloop and add to sizer
+			## 5. Reloop and add to GridSizer
 			for fm in self.fitmaps:
-				#self.mySizer.Add(fm, 0, wx.ALL,0) #pos=(row,col))#, wx.GROW) 
 				gs.Add(fm,0,0)
-				#row += col
-
-
 
 			self.mySizer.Clear() # Wipe all items out of the sizer.
 			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
-		
 			self.mySizer.Add(gs)
 
-	
 		# Layout should be called after adding items.
 		self.mySizer.Layout()
-		#self.Fit()
-
-		#self.SetBestSize(vs)#wx.Size(
 		# This gets the sizer to resize in harmony with the virtual (scrolling) nature of its parent (self).
-		self.mySizer.FitInside(self)	
-		#self.mySizer.Fit(self)	
-	
-
+		self.mySizer.FitInside(self)
