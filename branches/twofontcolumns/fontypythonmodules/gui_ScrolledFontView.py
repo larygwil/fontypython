@@ -189,11 +189,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 			#rows = rows if (rows>0) else 1
 
 			## 4. make the sizer
-			gs = wx.GridSizer( cols=cols, hgap=0, vgap=0 )
+			#gs = wx.GridSizer( cols=cols, hgap=0, vgap=0 )
+			gs = wx.FlexGridSizer( cols=cols, hgap=0, vgap=0 )
 
 			## 5. Reloop and add to GridSizer
 			for fm in self.fitmaps:
-				gs.Add(fm,0,0)
+				gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_TOP)
 
 			self.mySizer.Clear() # Wipe all items out of the sizer.
 			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.

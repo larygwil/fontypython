@@ -132,17 +132,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		#print pos
 		self.name = fitem.name
 		#print self.name
-		
+
 		self.fitem = fitem
 
 		Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
 		self.FVP = parent.parent #The Font View Panel
-		self.TICKMAP = parent.parent.TICKMAP 
+		self.TICKMAP = parent.parent.TICKMAP
 		self.TICKSMALL = parent.parent.TICKSMALL
 
-	
+
 		self.style = {} #Temporary space for style of fitem while drawing. It's a copy of one key from Fitem.styles
-		
+
 		# Some values for drawing
 		self.minHeight = 70
 		self.spacer = 35 # Gap below each font bitmap
@@ -176,15 +176,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.overout = OverOutSignal( self.overout_signal )
 
 		## Very cool event, gives us life!
-		self.Bind(wx.EVT_LEFT_UP,self.onClick) 
-		self.Bind(wx.EVT_MIDDLE_UP, self.onMiddleClick)	
+		self.Bind(wx.EVT_LEFT_UP,self.onClick)
+		self.Bind(wx.EVT_MIDDLE_UP, self.onMiddleClick)
 		#self.Bind(wx.EVT_LEFT_DCLICK, self.onDClick)
 		self.Bind( wx.EVT_MOTION, self.onHover )
 		self.Bind( wx.EVT_LEAVE_WINDOW, self.onLeave)
 
 		## Redraw event
-		self.Bind(wx.EVT_PAINT,  self.onPaint) 
-		
+		self.Bind(wx.EVT_PAINT,  self.onPaint)
+
 		## Get cursors setup
 		self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 		if fpsys.state.action in ("REMOVE", "APPEND"):
@@ -464,7 +464,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					psx = facex-fx# if (facex-fx) < 0 else psx = facex-fx
 					psy = y-fy
 					memDc.DrawBitmap( faceBitmap, psx, psy + 10, True )
-				
+
 				## Postion 
 				texty = y + glyphHeight + 8
 
@@ -477,12 +477,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				## Sep 2009: Trying to draw foreign chars via DrawText
 				memDc.SetFont( wx.Font( 8,fpsys.DFAM , style=wx.NORMAL, weight=wx.NORMAL,encoding=wx.FONTENCODING_DEFAULT))
 				memDc.DrawText( txt, 28, texty)
-				
+
 				## Move TOP down to next BOTTOM (for next sub-face)
 				y = y + glyphHeight +  self.spacer
-					
+
 				## Goto next face, if any.
-				i += 1			
+				i += 1
 
 		## Record the calculated height
 		self.height = totheight
@@ -501,10 +501,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
 			if self.fitem.ticked:
 				memDc.DrawBitmap(self.TICKMAP, 20, 5, True)
-			
+
 		## Now a dividing line
-		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-		memDc.DrawLine( 0, self.height-1, self.totwidth, self.height-1 )
+		#memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
+		#memDc.DrawLine( 0, self.height-1, self.totwidth, self.height-1 )
 
 
 	def setStyle( self ):
