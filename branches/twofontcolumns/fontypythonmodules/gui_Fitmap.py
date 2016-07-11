@@ -128,6 +128,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			}
 
 	def __init__( self, parent, pos, fitem ) :
+
 		#print pos
 		self.name = fitem.name
 		#print self.name
@@ -146,10 +147,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.minHeight = 70
 		self.spacer = 35 # Gap below each font bitmap
 		self.gradientheight = 50
-		
-		#self.width = parent.width # Get it from the scrollFontViewPanel.
-		self.width = parent.width/2 # Get it from the scrollFontViewPanel.
 
+		#self.width = parent.width # Get it from the scrollFontViewPanel.
+		#self.width = parent.width/2 # Get it from the scrollFontViewPanel.
+
+		self.totwidth = 0 # July 2016: The final, drawn, width of this fitem.
 
 		## The charmap button
 		self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
@@ -290,6 +292,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		Dump the bitmap to the screen.
 		"""
+		#sz = self.GetClientSize()
+		#dc = wx.PaintDC(self)
+
 		if self.bitmap:
 			## Create a buffered paint DC.  It will create the real
 			## wx.PaintDC and then blit the bitmap to it when dc is
@@ -355,12 +360,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		This is where all the drawing code goes. It gets the font rendered
 		from the FontItems (via PIL) and then draws a single Fitmap.
 		"""
+		MIN_FITEM_WIDTH = 400 
+
 		## Is this a normal FontItem, or an InfoFontItem?
 		## InfoFontItem is a fake font item for the purposes
 		## of saying "There are no fonts to see here."
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ):
+			self.totwidth = MIN_FITEM_WIDTH
 			self.style=Fitmap.styles['INFO_FONT_ITEM']
-			self.drawInfoOrError(  self.width, self.minHeight, isinfo=True )
+			self.drawInfoOrError(  self.totwidth, self.minHeight, isinfo=True )
 			return # Just get out.
 		
 		## Get a list of pilimages, for each subface: Some fonts 
@@ -372,7 +380,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## after this loop.
 		pilList=[]
 		totheight = 0
-		maxwidth = [] #[self.width] # to figure-out the biggest width
+		maxwidth = [MIN_FITEM_WIDTH]
 
 		for pilimage in self.fitem.generatePilFont( ):
 			pilList.append( pilimage )
@@ -380,34 +388,24 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			maxwidth.append(pilimage.size[0])
 		## Limit the minimum we allow.
 		if totheight < self.minHeight:
-			totheight = self.minHeight		
-		
-		maxwidth = max(maxwidth) # find it.
-		#maxwidth = self.width
+			totheight = self.minHeight
 
-		# NOTE
-		## At this point, we have drawn the string BEFORE we go make
-		## the blankDc -- which means we have the opp to change the width
-		## according to the font size ..... um brb...
+		self.totwidth = max(maxwidth) # find it.
+		#print "max list:", maxwidth
+		#print "totwidth=", self.totwidth
 
-		## if we have a max of all the fontitems - then we can use that
-		## to cmp to width parent. If < half - we can set width to parent/2
-		## if < third etc ....
-		## BUT we don't know now - cos we are in this loop....
-
-		
 		## BADFONT cases
 		##  Badfonts are still available for installation, it's just that I can't
 		##  display their glyph or fam/style info (until PIL is patched).
-		
+
 		self.setStyle() #Go set the self.style
 
 		if self.fitem.badfont:
 			## We have a badstyle to help us differentiate these.
 			totheight = self.minHeight
 			if self.fitem.inactive: totheight += 5 #Need more space
-			memDc=self.drawInfoOrError(  self.width, totheight )
-			
+			memDc=self.drawInfoOrError(  self.totwidth, totheight )
+
 		## It's *not* a badfont
 		else:
 			if self.fitem.inactive:
@@ -416,11 +414,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			##
 			## NOTE: By drawing into memDc, we are drawing into self.bitmap
 			##
-			memDc=self.makeBlankDC( maxwidth, totheight, white )
+			memDc=self.makeBlankDC( self.totwidth, totheight, white )
 			fcol = self.style['fcol']
 			bcol = self.style['bcol']
 			#Draw the gradient. The fonts will render in alpha over that.
-			self.bottomFadeEffect( memDc, totheight, maxwidth )
+			#TODO self.bottomFadeEffect( memDc, totheight, maxwidth )
 			y = i = 0
 
 			for pilimage in pilList:
@@ -506,7 +504,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			
 		## Now a dividing line
 		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-		memDc.DrawLine( 0, self.height-1, maxwidth, self.height-1 )
+		memDc.DrawLine( 0, self.height-1, self.totwidth, self.height-1 )
 
 
 	def setStyle( self ):
@@ -528,7 +526,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		# Not bad font, just get vals from style sheet.
 		if self.fitem.inactive:
 			self.style = Fitmap.styles['INACTIVE']
-		else: 
+		else:
 			self.style = Fitmap.styles['ACTIVE']
 
 
@@ -537,7 +535,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		memDc = wx.MemoryDC()
 		memDc.SelectObject( bitmap )
 		memDc.SetBackground( wx.Brush( backcol, wx.SOLID) )
-		memDc.Clear()		
+		memDc.Clear()
 		self.bitmap = bitmap #record this for the init
 		return memDc
 
@@ -591,10 +589,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		Draw the Info Font block, or an Error message block. Much clearer than it was before.
 		"""
+		#import pdb; pdb.set_trace()
 		memDc=self.makeBlankDC( w, h, self.style['backcol'])
 		if not isinfo:
-			self.bottomFadeEffect( memDc, self.minHeight, self.width )
-	
+			self.bottomFadeEffect( memDc, h,w) #self.minHeight, w )
+
 		icon = self.style['icon']
 		if icon:
 			Icon = self.FVP.__dict__[icon]

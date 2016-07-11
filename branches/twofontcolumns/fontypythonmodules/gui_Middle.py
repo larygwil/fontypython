@@ -161,6 +161,7 @@ class FontViewPanel(wx.Panel):
 		sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
 		
 		## The SCROLLED FONT VIEW panel:
+		self.doInitialCalcOfScrolledFontViewBestSize = True # Used in scrolledFontView
 		self.scrolledFontView = ScrolledFontView(self) 
 		
 		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL) 
