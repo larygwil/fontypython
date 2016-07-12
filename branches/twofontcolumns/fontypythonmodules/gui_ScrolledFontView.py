@@ -57,11 +57,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel): #wx.ScrolledWindow):
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 		
 		## Make the sizer to hold the fitmaps
-		self.mySizer = wx.BoxSizer(wx.VERTICAL)
+		#self.mySizer = wx.BoxSizer(wx.VERTICAL)
 		#self.mySizer = wx.GridBagSizer(0,0)
-		#self.mySizer = wx.WrapSizer() # Is very nice, but kinda nervous; skittish. V sensitive to widths.
+		self.mySizer = wx.WrapSizer() # Is very nice, but kinda nervous; skittish. V sensitive to widths.
 		
 		self.SetSizer(self.mySizer)
+		self.Bind(wx.EVT_SIZE, self.onSize)
 
 		self.firstrun =True 
 		self.SetAutoLayout(1)
@@ -69,6 +70,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel): #wx.ScrolledWindow):
 		#self.EnableScrolling(True,True)
 		
 		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
+
+	def onSize(self, evt):
+		size = self.GetSize()
+		vsize = self.GetVirtualSize()
+		self.SetVirtualSize((size[0], vsize[1]))
+		evt.Skip()
 
 	def onWheel( self, evt ):
 		"""
@@ -82,12 +89,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel): #wx.ScrolledWindow):
 			if self.wheelValue < 10: self.wheelValue = 10
 			if self.wheelValue > 200: self.wheelValue = 200
 			fpsys.config.points = int(self.wheelValue)
-			
+
 			## Tried to restore the scrollbar, but it crashes the app
 			##xPos, yPos = self.GetViewStart()
 			self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
 			ps.pub( update_font_view ) # starts a chain of calls.
-			
+
 			##self.Scroll(xPos, yPos)
 			return
 		## Keep the wheel event going
@@ -195,17 +202,20 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel): #wx.ScrolledWindow):
 			## 4. make the sizer
 			#gs = wx.GridSizer( cols=cols, hgap=0, vgap=0 )
 			## FlexGridSizer adapts each cell to size of contents.
-			gs = wx.FlexGridSizer( cols=cols, hgap=4, vgap=0 )
-
-			## 5. Reloop and add to GridSizer
-			for fm in self.fitmaps:
-				gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+			#gs = wx.FlexGridSizer( cols=cols, hgap=4, vgap=0 )
 
 			self.mySizer.Clear() # Wipe all items out of the sizer.
 			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
-			self.mySizer.Add(gs)
+
+			## 5. Reloop and add to GridSizer
+			for fm in self.fitmaps:
+				#gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+				self.mySizer.Add(fm,0,wx.ALL)
+
+
+			#self.mySizer.Add(gs)
 
 		# Layout should be called after adding items.
 		self.mySizer.Layout()
 		# This gets the sizer to resize in harmony with the virtual (scrolling) nature of its parent (self).
-		self.mySizer.FitInside(self)
+		#self.mySizer.FitInside(self)
