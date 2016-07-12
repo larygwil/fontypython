@@ -37,7 +37,7 @@ import fpsys # Global objects
 
 from gui_Fitmap import * #Also brings in 'ps' variable
 
-class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
+class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel): #wx.ScrolledWindow): #wx.lib.scrolledpanel.ScrolledPanel) :
 	"""
 	This is the main font control, the child of CLASS FontViewPanel (in gui_Middle.py)
 	Draw a list of fitmaps from a font list object (derived from BasicFontList)
@@ -45,6 +45,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 	def __init__(self, parent):
 		self.parent = parent
 		wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
+		#wx.ScrolledWindow.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
 
 		self.SetBackgroundColour('white')
 
@@ -65,6 +66,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 		self.firstrun =True 
 		self.SetAutoLayout(1)
 		self.SetupScrolling(rate_y=5, scroll_x=False)
+		#self.EnableScrolling(True,True)
 		
 		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
 
@@ -111,6 +113,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 		# Go get the size of the parent panel.
 		ps = self.parent.GetSize()
+		print "ps:", ps, ps.width
 
 		if ps.width <=128:
 			# Yeah, override this damn width.
@@ -160,6 +163,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 				## Create a Fitmap out of the FontItem we have at hand.
 				fm = Fitmap( self, (0,0), fitem )
+				print "fm:",fm.DoGetBestSize()
 				self.fitmaps.append( fm )
 				widths.append( fm.totwidth )
 				#print "Fitmap made: %s" % fm.name
@@ -190,11 +194,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel) :
 
 			## 4. make the sizer
 			#gs = wx.GridSizer( cols=cols, hgap=0, vgap=0 )
-			gs = wx.FlexGridSizer( cols=cols, hgap=0, vgap=0 )
+			## FlexGridSizer adapts each cell to size of contents.
+			gs = wx.FlexGridSizer( cols=cols, hgap=4, vgap=0 )
 
 			## 5. Reloop and add to GridSizer
 			for fm in self.fitmaps:
-				gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_TOP)
+				gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
 
 			self.mySizer.Clear() # Wipe all items out of the sizer.
 			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.

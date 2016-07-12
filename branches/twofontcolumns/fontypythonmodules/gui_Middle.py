@@ -204,6 +204,7 @@ class FontViewPanel(wx.Panel):
 		self.sizerScrolledFontView.Add(buttonsSizer,0,wx.EXPAND)	
 
 		self.SetSizer(self.sizerScrolledFontView)
+		self.Fit()
 	
 		e = wx.EVT_BUTTON #was wx.EVT_LEFT_UP
 		self.buttPrev.Bind(e,self.navClick) 

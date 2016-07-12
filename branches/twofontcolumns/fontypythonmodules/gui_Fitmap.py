@@ -20,7 +20,7 @@ import colorsys
 import subprocess,os
 import threading
 
-import wx.lib.statbmp 
+import wx.lib.statbmp
 import fontcontrol
 import fpsys # Global objects
 from pubsub import *
@@ -33,15 +33,15 @@ white=(255,255,255)
 
 class OverOutSignal(object):
 	'''
-	Signal an external function when a state has CHANGED from 
+	Signal an external function when a state has CHANGED from
 	True to False or vice-vera
 	'''
 	def __init__( self, func_to_signal ):
 		self.announce = func_to_signal
-		self.state = False 
+		self.state = False
 		self.last_state = False
 	def __changed( self ):
-		if self.state != self.last_state: 
+		if self.state != self.last_state:
 			self.last_state = self.state
 			return True
 		return False
@@ -52,16 +52,16 @@ class OverOutSignal(object):
 
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	"""
-	This class is a bitmap of a TTF font - it detects events and 
+	This class is a bitmap of a TTF font - it detects events and
 	displays itself.
 
 	Sept 2009
 	Added code to adjust top-left of displayed sample text.
-	
+
 	Oct 2009
 	Added a 'button' to open a character map viewer.
 	"""
-	
+
 	## This class-level dict is a kind of "style sheet" to use in fitmap drawing.
 	styles={
 			'FILE_NOT_FOUND': #Needs purging
@@ -170,6 +170,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.height =  0
 
 		## init my parent class 
+		## This also sets the SIZE of the fitmap widget.
+		## Calling DoGetBestSize on it will return that size.
 		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, pos, sz)
 
 		## Fitmap's over out signal
@@ -213,7 +215,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		#~ down to the present day. As I see "Popen" in charmaps.py/Run
 		#~ starts his own thread, so we don`t need to make assurance double sure.
 		#~ By the way, this push gucharmap to work as we want.
-		
+
 		self.run(*argstup)
 
 		#~ thread = threading.Thread(target=self.run, args=argstup)
@@ -250,13 +252,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if not self.can_have_button():
 			self.overout.set ( True )
 			return
-		if self.cmb_rect.Contains( e.GetPositionTuple() ):	
+		if self.cmb_rect.Contains( e.GetPositionTuple() ):
 			self.cmb_overout.set( True )
 			self.overout.set( False ) #Not 'on' fitmap
 		else:
 			self.cmb_overout.set ( False )
 			self.overout.set( True )
-	
+
 	def charmap_button_signal( self ):
 		if self.cmb_overout.state:
 			self.SetCursor(wx.StockCursor(wx.CURSOR_MAGNIFIER))
@@ -272,7 +274,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if the pointer goes out on the left edge.
 		'''
 		self.onHover(event)
-			
+
 	def onClick(self, event) :
 		if self.cmb_overout.state and self.can_have_button():
 			self.openCharacterMap()
@@ -282,7 +284,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.fitem.ticked = not(self.fitem.ticked)
 			self.prepareBitmap() # This only redraws a single font item.
 			self.Refresh()  #forces a redraw.
-			 
+ 
 			## Inc or dec a counter depending on the tickedness of this item
 			if self.fitem.ticked: fpsys.state.numticks += 1
 			if not self.fitem.ticked: fpsys.state.numticks -= 1
@@ -300,7 +302,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			## wx.PaintDC and then blit the bitmap to it when dc is
 			## deleted.  
 			dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
-			
+
 			if not self.can_have_button(): return
 
 			# Draw the charmap button
@@ -316,7 +318,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Using this pixel as the x,y I can draw fonts from where their actual data
 		## begins and not where the pilimage *thinks* it does (leaving big white spaces
 		## to the left of many fonts.)
-		
+
 		if fpsys.config.ignore_adjustments: return 0,0
 		wx.BeginBusyCursor()
 		if not self.fitem.top_left_adjust_completed:
@@ -355,6 +357,31 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return fx,fy
 
 
+
+	def measureStrings( self ):
+		"""
+	import wx
+
+	app = wx.PySimpleApp()
+
+	font = wx.Font(pointSize = 10, family = wx.DEFAULT,
+								 style = wx.NORMAL, weight = wx.NORMAL,
+								 faceName = 'Consolas')
+
+	dc = wx.ScreenDC()
+	dc.SetFont(font)
+
+	text = 'text to test'
+
+	# (width, height) in pixels
+	print '%r: %s' % (text, dc.GetTextExtent(text))
+
+
+
+		"""
+		pass
+
+
 	def prepareBitmap( self ):
 		"""
 		This is where all the drawing code goes. It gets the font rendered
@@ -370,7 +397,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.style=Fitmap.styles['INFO_FONT_ITEM']
 			self.drawInfoOrError(  self.totwidth, self.minHeight, isinfo=True )
 			return # Just get out.
-		
+
 		## Get a list of pilimages, for each subface: Some fonts 
 		## have multiple faces, and their heights.
 		## (For example TTC files.)
@@ -447,7 +474,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 					fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
 
-					faceBitmap = image.ConvertToBitmap() 
+					faceBitmap = image.ConvertToBitmap()
 				except:
 					## Some new error that I have not caught before has happened.
 					## It may also be a bad sub-face from a ttc font.
@@ -503,8 +530,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				memDc.DrawBitmap(self.TICKMAP, 20, 5, True)
 
 		## Now a dividing line
-		#memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-		#memDc.DrawLine( 0, self.height-1, self.totwidth, self.height-1 )
+		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
+		memDc.DrawLine( 0, self.height-1, self.totwidth, self.height-1 )
 
 
 	def setStyle( self ):
@@ -576,7 +603,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.inactive:
 			return
 			#step=1.08 #inactive fonts get a lighter colour.
-		
+
 		col = self.style["backcol"] #from
 		hsv = self.rgb_to_hsv(col)
 		tob=self.hsv_to_rgb((hsv[0],hsv[1],hsv[2]/step)) #to a darker brightness.
@@ -601,13 +628,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			memDc.DrawBitmap(Icon,ix,iy,True)
 
 		textTup = self.fitem.InfoOrErrorText()
-		
+
 		memDc.SetTextForeground( self.style['fcol'])
-		
+
 		memDc.SetFont( wx.Font(12,fpsys.DFAM , style=wx.NORMAL, weight=wx.BOLD))
 		tx,ty = (46,15) if isinfo else (38 ,13)
 		memDc.DrawText( textTup[0], tx, ty)
-		
+
 		memDc.SetFont( wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
 		tx,ty = (46,40) if isinfo else (5 ,40)
 		memDc.DrawText( textTup[1], tx, ty)
@@ -616,7 +643,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return memDc
 
 	#def DoGetBestSize(self):
-		#DOES NOT RUN
-		#print "			 FITMAP ?"
+		# Is not run unless you call it on purpose.
+		#	print "DoGetBestSize			 FITMAP ?"
 
 
