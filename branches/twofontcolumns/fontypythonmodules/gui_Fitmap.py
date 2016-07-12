@@ -365,22 +365,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 	def __mf( self, wxfont, txt ):
 		"""
-	import wx
-
-	app = wx.PySimpleApp()
-
-	font = wx.Font(pointSize = 10, family = wx.DEFAULT,
-								 style = wx.NORMAL, weight = wx.NORMAL,
-								 faceName = 'Consolas')
-
-	dc = wx.ScreenDC()
-	dc.SetFont(font)
-
-	text = 'text to test'
-
-	# (width, height) in pixels
-	print '%r: %s' % (text, dc.GetTextExtent(text))
-
+		Measure a line of text in a given font. Return a wx.Size
 		"""
 		dc = wx.ScreenDC()
 		dc.SetFont(wxfont)
@@ -404,7 +389,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ):
 			self.totwidth = self.MIN_FITEM_WIDTH
 			self.style=Fitmap.styles['INFO_FONT_ITEM']
-			self.drawInfoOrError(  self.totwidth, self.minHeight, isinfo=True )
+			self.drawInfoOrError( isinfo=True )
 			return # Just get out.
 
 		## Get a list of pilimages, for each subface: Some fonts 
@@ -440,7 +425,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			## We have a badstyle to help us differentiate these.
 			totheight = self.minHeight
 			if self.fitem.inactive: totheight += 5 #Need more space
-			memDc=self.drawInfoOrError(  self.totwidth, totheight )
+			memDc=self.drawInfoOrError(  totheight )
 
 		## It's *not* a badfont
 		else:
@@ -490,6 +475,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## Draw error message into the memDc
 					memDc.SetTextForeground( fcol )
 					txt=_("This text cannot be drawn. Hey, it happens...")
+					f = self.__aFont(fpsys.config.points, style=wx.ITALIC)
+
 					memDc.SetFont( wx.Font( fpsys.config.points, fpsys.DFAM, style=wx.ITALIC, weight=wx.NORMAL))
 					memDc.DrawText( txt, 10, y+2)
 				else: #no error happened, we carry on.
@@ -603,9 +590,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return
 		"""
 		Baptiste's idea! New implementation : June 2009
-		 "Now a dividing gradient, you can say "wow" ;-)"
-		 Donn says, "..Wow!" :-D
-		
+		"Now a dividing gradient, you can say "wow" ;-)"
+		Donn says, "..Wow!" :-D
+
 		It goes from backcol and darkens it a little as it draws downwards.
 		"""
 
@@ -621,22 +608,24 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		dc.GradientFillLinear( rect, col, tob, nDirection=wx.SOUTH )
 
 
-	def drawInfoOrError( self, w,h, isinfo=False ):
+	def drawInfoOrError( self, isinfo=False ):
 		"""
 		Draw the Info Font block, or an Error message block. Much clearer than it was before.
 		"""
 		#import pdb; pdb.set_trace()
 		f1 = self.__aFont(12,weight=wx.BOLD)
 		f2 = self.__aFont(7)
-		
+
 		textTup = self.fitem.InfoOrErrorText()
 
-		widths =[ self.__mf(f1, textTup[0]), self.__mf(f2, textTup[1]) ]
-		
-		x=46
-		memDc=self.makeBlankDC( x + max(widths)[0], h, self.style['backcol'])
-		if not isinfo:
-			self.bottomFadeEffect( memDc, h,w) #self.minHeight, w )
+		## max returns a tuple, we want index 0 which is the width.
+		w = max([ self.__mf(f1, textTup[0]), self.__mf(f2, textTup[1]) ])[0]
+
+		x=46 ## Common x coord used below. Width needs to include this.
+		memDc=self.makeBlankDC( x + w + x, self.minHeight, 'white') #, self.style['backcol'])
+
+		#if not isinfo:
+		#	self.bottomFadeEffect( memDc, h,w) #self.minHeight, w )
 
 		icon = self.style['icon']
 		if icon:
@@ -644,27 +633,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			ix,iy = (6,10) if isinfo else (2,3)
 			memDc.DrawBitmap(Icon,ix,iy,True)
 
-		#textTup = self.fitem.InfoOrErrorText()
-
 		memDc.SetTextForeground( self.style['fcol'])
 
-		#memDc.SetFont( self.__aFont('INFO_OR_ERROR_TUP1')) #wx.Font(12,fpsys.DFAM , style=wx.NORMAL, weight=wx.BOLD))
-		memDc.SetFont( wx.Font(12,fpsys.DFAM , style=wx.NORMAL, weight=wx.BOLD))
+		memDc.SetFont( f1 )
 		tx,ty = (x,15) if isinfo else (38 ,13)
-		#memDc.DrawText( self.txts['INFO_OR_ERROR_TUP1']['txt'],tx,ty)#textTup[0], tx, ty)
 		memDc.DrawText( textTup[0], tx, ty)
 
-		#memDc.SetFont( self.__aFont('INFO_OR_ERROR_TUP2')) #wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
-		memDc.SetFont( wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
+		memDc.SetFont( f2 )
 		tx,ty = (x,40) if isinfo else (5 ,40)
-		#memDc.DrawText( self.txts['INFO_OR_ERROR_TUP2']['txt'],tx,ty) #textTup[1], tx, ty)
 		memDc.DrawText( textTup[1], tx, ty)
 
-
 		return memDc
-
-	#def DoGetBestSize(self):
-		# Is not run unless you call it on purpose.
-		#	print "DoGetBestSize			 FITMAP ?"
-
 
