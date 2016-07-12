@@ -60,11 +60,14 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		self.wheelValue = fpsys.config.points
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
-		## Make the sizer to hold the fitmaps
+		## Make the sizer to hold the fitmaps: July 2016
 		self.mySizer = wx.WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
 
 		self.SetSizer(self.mySizer)
+
+		## July 2016
 		self.Bind(wx.EVT_SIZE, self.onSize)
+
 		## July 2016
 		## =========
 		## Added this here too. There's some voodoo with a first run of Fonty.
@@ -73,7 +76,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		## Not 100% sure if this is kosher. Fuck it, I can't burn more time on it.
 		self.mySizer.FitInside(self)
 
-		#self.SetAutoLayout(1)
+		#self.SetAutoLayout(1) #Iterative hacking says remark this. Go figure.
 		self.SetupScrolling(rate_y=5, scroll_x=False)
 
 		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
@@ -102,7 +105,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
 			ps.pub( update_font_view ) # starts a chain of calls.
 
-			##self.Scroll(xPos, yPos)
 			return
 		## Keep the wheel event going
 		evt.Skip()
@@ -110,9 +112,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 	# Sept 2009
 	def ResetTopLeftAdjustFlag( self ):
 		'''
-			Each fitem has a top_left_adjust_completed flag. 
-			False forces the fitmaps to re-calculate the adjustment for top-left.
-			(Only when a call to update_font_view happens, of course.)
+		Each fitem has a top_left_adjust_completed flag.
+		False forces the fitmaps to re-calculate the adjustment for top-left.
+		(Only when a call to update_font_view happens, of course.)
 		'''
 		for fi in fpsys.state.viewobject:
 			fi.top_left_adjust_completed = False
@@ -121,10 +123,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 	def CreateFitmaps(self, viewobject) :
 		"""
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
-
 		viewobject: is a sub-list of fitems to display - i.e. after the page number math.
-
-		** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
+			** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
 		"""
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
@@ -141,7 +141,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			empty_fitem = fontcontrol.InfoFontItem()
 			fm = Fitmap( self, (0, 0), empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
-			self.mySizer.Add( fm,0,0 )
+			self.mySizer.Add( fm )
 		else:
 
 			## Okay - let's make fonts!

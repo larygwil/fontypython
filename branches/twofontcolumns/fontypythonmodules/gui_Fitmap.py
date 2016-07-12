@@ -127,6 +127,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				}
 			}
 
+
 	def __init__( self, parent, pos, fitem ) :
 
 		#print pos
@@ -196,6 +197,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.inactive:
 			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 
+
+
+	def __aFont( self, points, style=wx.NORMAL, weight=wx.NORMAL ):
+		return wx.Font( points, fpsys.DFAM, style, weight )
 
 	def openCharacterMap( self ):
 		fi=self.fitem
@@ -358,7 +363,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 
-	def measureStrings( self ):
+	def __mf( self, wxfont, txt ):
 		"""
 	import wx
 
@@ -376,10 +381,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	# (width, height) in pixels
 	print '%r: %s' % (text, dc.GetTextExtent(text))
 
-
-
 		"""
-		pass
+		dc = wx.ScreenDC()
+		dc.SetFont(wxfont)
+		try:
+			w = dc.GetTextExtent(txt)
+		except:
+			w = self.MIN_FITEM_WIDTH
+		return w
 
 
 	def prepareBitmap( self ):
@@ -387,13 +396,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		This is where all the drawing code goes. It gets the font rendered
 		from the FontItems (via PIL) and then draws a single Fitmap.
 		"""
-		MIN_FITEM_WIDTH = 400 
+		self.MIN_FITEM_WIDTH = 450 
 
 		## Is this a normal FontItem, or an InfoFontItem?
 		## InfoFontItem is a fake font item for the purposes
 		## of saying "There are no fonts to see here."
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ):
-			self.totwidth = MIN_FITEM_WIDTH
+			self.totwidth = self.MIN_FITEM_WIDTH
 			self.style=Fitmap.styles['INFO_FONT_ITEM']
 			self.drawInfoOrError(  self.totwidth, self.minHeight, isinfo=True )
 			return # Just get out.
@@ -407,7 +416,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## after this loop.
 		pilList=[]
 		totheight = 0
-		maxwidth = [MIN_FITEM_WIDTH]
+		maxwidth = [self.MIN_FITEM_WIDTH]
 
 		for pilimage in self.fitem.generatePilFont( ):
 			pilList.append( pilimage )
@@ -617,7 +626,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		Draw the Info Font block, or an Error message block. Much clearer than it was before.
 		"""
 		#import pdb; pdb.set_trace()
-		memDc=self.makeBlankDC( w, h, self.style['backcol'])
+		f1 = self.__aFont(12,weight=wx.BOLD)
+		f2 = self.__aFont(7)
+		
+		textTup = self.fitem.InfoOrErrorText()
+
+		widths =[ self.__mf(f1, textTup[0]), self.__mf(f2, textTup[1]) ]
+		
+		x=46
+		memDc=self.makeBlankDC( x + max(widths)[0], h, self.style['backcol'])
 		if not isinfo:
 			self.bottomFadeEffect( memDc, h,w) #self.minHeight, w )
 
@@ -627,16 +644,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			ix,iy = (6,10) if isinfo else (2,3)
 			memDc.DrawBitmap(Icon,ix,iy,True)
 
-		textTup = self.fitem.InfoOrErrorText()
+		#textTup = self.fitem.InfoOrErrorText()
 
 		memDc.SetTextForeground( self.style['fcol'])
 
+		#memDc.SetFont( self.__aFont('INFO_OR_ERROR_TUP1')) #wx.Font(12,fpsys.DFAM , style=wx.NORMAL, weight=wx.BOLD))
 		memDc.SetFont( wx.Font(12,fpsys.DFAM , style=wx.NORMAL, weight=wx.BOLD))
-		tx,ty = (46,15) if isinfo else (38 ,13)
+		tx,ty = (x,15) if isinfo else (38 ,13)
+		#memDc.DrawText( self.txts['INFO_OR_ERROR_TUP1']['txt'],tx,ty)#textTup[0], tx, ty)
 		memDc.DrawText( textTup[0], tx, ty)
 
+		#memDc.SetFont( self.__aFont('INFO_OR_ERROR_TUP2')) #wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
 		memDc.SetFont( wx.Font(7, fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
-		tx,ty = (46,40) if isinfo else (5 ,40)
+		tx,ty = (x,40) if isinfo else (5 ,40)
+		#memDc.DrawText( self.txts['INFO_OR_ERROR_TUP2']['txt'],tx,ty) #textTup[1], tx, ty)
 		memDc.DrawText( textTup[1], tx, ty)
 
 
