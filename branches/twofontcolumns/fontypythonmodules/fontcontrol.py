@@ -70,6 +70,9 @@ class FontItem( object ):
 		## One of FILE_NOT_FOUND, PIL_IO_ERROR, PIL_UNICODE_ERROR, PIL_CANNOT_RENDER
 		self.badstyle = "" 
 
+		## July 2016 - Used in gui_Fitmap.py
+		self.textExtentsDict = {}
+		
 		## We need the family name and style to be fetched
 		## because we have that filter thingy in the gui
 		## and it uses those strings to search for terms.
@@ -223,14 +226,17 @@ class FontItem( object ):
 		## text gets extra spaces at the end to cater for cut-off characters.
 		paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
 		i = 0
-		while (True):
+		generatorgo=True
+		while (generatorgo):
 			try:
-				font = ImageFont.truetype(paf, points,index=i, encoding=enc) 
+				## This access by i can cause an error. This is what ends the generator.
+				font = ImageFont.truetype(paf, points,index=i, encoding=enc)
+
 				w,h = font.getsize( text )
 				## Some fonts (50SDINGS.ttf) return a 0 width.
 				## I don't know exactly why, it could be it could not render
 				## any of the chars in text.
-				if int(w) == 0: 
+				if int(w) == 0:
 					w = 1
 				pilheight = int(h)
 				pilwidth = int(w)
@@ -238,18 +244,18 @@ class FontItem( object ):
 				pilheight += 10
 
 				## Sept 2009 : Fiddled this to produce alpha (ish) images.
-				pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))#(255,255,255,255)) 
-				
+				pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))
+
 				if self.inactive:
 					col = (0,0,0,64) #alpha makes it gray
 				else:
 					col = (0,0,0,255)
-				
+
 				## Well, I have since discovered that some fonts
 				## cause a MemoryError on the next command:
 				drawnFont = ImageDraw.Draw( pilimage ) # Draws INTO pilimage
-				drawnFont.text((0,0) , text, font=font, fill=col) 
-				
+				drawnFont.text((0,0) , text, font=font, fill=col)
+
 				## All is well, so we step ahead to the next *potential* sub-face
 				## and return the font image data.
 				i += 1
@@ -263,6 +269,8 @@ class FontItem( object ):
 				**IDEALLY**, it should have been caught in __queryFontFamilyStyleFlagBad
 				but for reasons explained below, it cannot.
 				So, we have a badfont flag being set here too :(
+
+				This ends the generator.
 				"""
 				## I found a font throwing a MemoryError (Onsoku Seinen Plane.ttf)
 				## that only happens upon the .text() command.
@@ -274,24 +282,23 @@ class FontItem( object ):
 				self.badfontmsg = _("Font causes a memory error, it can't be drawn.")
 				self.badstyle = "PIL_CANNOT_RENDER"
 				self.badfont = True
-				break
-			## These two must be caught, but are already known about 
-			## from the exact same test in __queryFontFamilyStyleFlagBad
-			except IOError: 
-				## The font at index (i==0) cannot be opened.
-				break				
-			except UnicodeEncodeError:
-				## Already handled in __queryFontFamilyStyleFlagBad
-				break
-				
+				#break
+				generatorgo = False
+
+			## On any kind of error, end the generator.
+			## One of these errors is an IOError when i is out of bounds
+			except:
+				generatorgo = False
+
+
 	def __str__( self ):
 		return self.glyphpaf
-	
+
 	def InfoOrErrorText(self):
 		"""Used in Fitmap code to draw strings and things."""
 		if self.badfont:
 			l1 = self.badfontmsg
-			l2 = self.glyphpaf_unicode 
+			l2 = self.glyphpaf_unicode
 		return ( l1, l2 )
 
 

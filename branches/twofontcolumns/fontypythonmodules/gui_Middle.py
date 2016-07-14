@@ -131,8 +131,12 @@ class FontViewPanel(wx.Panel):
 		self.last_filter_string = ""
 		
 		## The pager pulldown
-		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
-		self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
+		#self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
+		#self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
+
+		self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
+		self.choiceSlider.SetTickFreq(1,1)
+		self.choiceSlider.Bind(wx.EVT_SCROLL, self.OnSliderScroll)
 
 		#self.SA=SearchAssistant(self)
 
@@ -158,7 +162,9 @@ class FontViewPanel(wx.Panel):
 		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
 
 		sizerOtherControls.Add( self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND )
-		sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
+		#sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
+		sizerOtherControls.Add( self.choiceSlider, 1 , wx.ALIGN_RIGHT )
+
 		
 		## The SCROLLED FONT VIEW panel:
 		self.scrolledFontView = ScrolledFontView(self) 
@@ -339,18 +345,23 @@ class FontViewPanel(wx.Panel):
 			sublist = fpsys.state.filteredViewObject[start:fin] 
 			
 			## Empty the choice control.
-			self.choicePage.Clear() 
+			#self.choicePage.Clear() 
+			
 			## Now refill it
-			[self.choicePage.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)] 
-			self.choicePage.SetSelection(self.pageindex-1)
+			#[self.choicePage.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)] 
+			#self.choicePage.SetSelection(self.pageindex-1)
+			self.choiceSlider.SetRange(1,self.total_number_of_pages+1)
+
 		## The viewobject is empty anyway.
 		else: 
 			sublist = []
 
 		if self.total_number_of_pages == 1: 
-			self.choicePage.Enable(False) #I tried to hide/show the choice, but it would not redraw properly.
+			#self.choicePage.Enable(False) #I tried to hide/show the choice, but it would not redraw properly.
+			self.choiceSlider.Enable(False)
 		else:
-			self.choicePage.Enable(True)
+			#self.choicePage.Enable(True)
+			self.choiceSlider.Enable(True)
 			
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
 		self.EnableDisablePrevNext()
@@ -433,7 +444,17 @@ class FontViewPanel(wx.Panel):
 			self.pageindex =  int(event.GetString() ) 
 			self.filterAndPageThenCallCreateFitmaps() 
 		wx.EndBusyCursor()
-		
+
+	def OnSliderScroll(self, event):
+		obj = event.GetEventObject()
+		val = obj.GetValue()
+		wx.BeginBusyCursor()
+		if self.pageindex != val: #Only redraw if actually onto another page.
+			self.pageindex = val
+			self.filterAndPageThenCallCreateFitmaps()
+		wx.EndBusyCursor()
+
+
 	def navClick(self,event) :
 		wx.BeginBusyCursor()
 		if event.GetId()  == wx.ID_FORWARD: 

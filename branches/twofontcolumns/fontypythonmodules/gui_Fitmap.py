@@ -50,6 +50,35 @@ class OverOutSignal(object):
 		self.state = truth
 		if self.__changed(): self.announce()
 
+
+class Pencil(object):
+	def __init__( self, x, y ):
+		self.memdc = None
+		self.x = x; self.y = y
+	def setDc(self, memdc):
+		self.memdc = memdc
+	def Draw(self):
+		pass
+
+class FontPencil(Pencil):
+	def __init__( self, x, y, font, txt, fcol ):
+		Pencil.__init__(self, x, y)
+		self.font = font
+		self.txt = txt
+		self.fcol = fcol
+	def Draw(self):
+		self.memdc.SetTextForeground( self.fcol )
+		self.memdc.SetFont( self.font )
+		self.memdc.DrawText( self.txt, self.x, self.y )
+
+class BitmapPencil(Pencil):
+	def __init__( self, x, y, bitmap ):
+		Pencil.__init__(self, x, y)
+		self.bitmap = bitmap
+	def Draw(self):
+		self.memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
+
+
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	"""
 	This class is a bitmap of a TTF font - it detects events and
@@ -152,7 +181,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		#self.width = parent.width # Get it from the scrollFontViewPanel.
 		#self.width = parent.width/2 # Get it from the scrollFontViewPanel.
 
-		self.totwidth = 0 # July 2016: The final, drawn, width of this fitem.
+		self.widestpilimage = 0 # July 2016: The final, drawn, width of this fitem.
 
 		## The charmap button
 		self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
@@ -199,8 +228,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 
-	def __aFont( self, points, style=wx.NORMAL, weight=wx.NORMAL ):
-		return wx.Font( points, fpsys.DFAM, style, weight )
+	def __aFont( self, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
+		return wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
 
 	def openCharacterMap( self ):
 		fi=self.fitem
@@ -367,13 +396,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		Measure a line of text in a given font. Return a wx.Size
 		"""
+		## Do we have a cached size for this txt?
+		if txt in self.fitem.textExtentsDict:
+			return self.fitem.textExtentsDict[txt] #yep!
+
 		dc = wx.ScreenDC()
 		dc.SetFont(wxfont)
 		try:
-			w = dc.GetTextExtent(txt)
+			sz = dc.GetTextExtent(txt)
 		except:
-			w = self.MIN_FITEM_WIDTH
-		return w
+			sz = (self.MIN_FITEM_WIDTH,self.minHeight)
+		self.fitem.textExtentsDict[txt] = sz # cache it in my parent
+		return sz
 
 
 	def prepareBitmap( self ):
@@ -387,7 +421,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## InfoFontItem is a fake font item for the purposes
 		## of saying "There are no fonts to see here."
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ):
-			self.totwidth = self.MIN_FITEM_WIDTH
+			#self.widestpilimage = self.MIN_FITEM_WIDTH
 			self.style=Fitmap.styles['INFO_FONT_ITEM']
 			self.drawInfoOrError( isinfo=True )
 			return # Just get out.
@@ -411,9 +445,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if totheight < self.minHeight:
 			totheight = self.minHeight
 
-		self.totwidth = max(maxwidth) # find it.
+		self.widestpilimage = max(maxwidth) # find it.
 		#print "max list:", maxwidth
-		#print "totwidth=", self.totwidth
+		#print "totwidth=", self.widestpilimage
 
 		## BADFONT cases
 		##  Badfonts are still available for installation, it's just that I can't
@@ -435,28 +469,36 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			##
 			## NOTE: By drawing into memDc, we are drawing into self.bitmap
 			##
-			memDc=self.makeBlankDC( self.totwidth, totheight, white )
-			fcol = self.style['fcol']
-			bcol = self.style['bcol']
+			#memDc=self.makeBlankDC( self.widestpilimage, totheight, white )
+			#fcol = self.style['fcol']
+			#bcol = self.style['bcol']
 			#Draw the gradient. The fonts will render in alpha over that.
 			#TODO self.bottomFadeEffect( memDc, totheight, maxwidth )
-			y = i = 0
 
+			mainy = i = 0
+			fcol = self.style['fcol']
+			bcol = self.style['bcol']
+
+			drawList = []
+			dcw = []
 			for pilimage in pilList:
 				pilwidth, glyphHeight = pilimage.size
+				state = 0
 				try:
 					## Get the data from PIL into wx.
 					## Now with alpha! Thanks to:
 					## http://nedbatchelder.com/blog/200801/truly_transparent_text_with_pil.html
 					## http://wiki.wxpython.org/WorkingWithImages
 					image=None
-					image = apply( wx.EmptyImage, pilimage.size )
+					#image = apply( wx.EmptyImage, pilimage.size )
+					image = wx.EmptyImage(*pilimage.size)
 
 					## June 25, 2016
 					## PIL has changed. It now requires tobytes()
 					## not tostring(). 
 					## Since I don't want to break on older installs of PIL,
 					## I will use a try block here. 
+					## TODO: Test for a new min PIL version and kill this try:
 					try:
 						#Old style:
 						image.SetData( pilimage.convert( "RGB").tostring() )
@@ -470,39 +512,41 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 					faceBitmap = image.ConvertToBitmap()
 				except:
+					#debug: raise
 					## Some new error that I have not caught before has happened.
 					## It may also be a bad sub-face from a ttc font.
-					## Draw error message into the memDc
-					memDc.SetTextForeground( fcol )
+					state = 1
 					txt=_("This text cannot be drawn. Hey, it happens...")
 					f = self.__aFont(fpsys.config.points, style=wx.ITALIC)
-
-					memDc.SetFont( wx.Font( fpsys.config.points, fpsys.DFAM, style=wx.ITALIC, weight=wx.NORMAL))
-					memDc.DrawText( txt, 10, y+2)
-				else: #no error happened, we carry on.
+					w = self.__mf(f, txt)[0]
+					x = 10 #error x coord
+					y = mainy+2 # y coord
+					dcw.append( w + (2*x)) #x across and a gap on end
+					drawList.append( FontPencil(x, y, f, txt, fcol))
+				else:
 					## Place it into the main image, down a tad so it looks better.
-					facex = 10
-					if i > 0: facex *= 2 # Shift sub-faces over a little
+					x = 10
+					if i > 0: x *= 2 # Shift sub-faces over a little
 					## Draw the face into the memDc
-					psx = facex-fx# if (facex-fx) < 0 else psx = facex-fx
-					psy = y-fy
-					memDc.DrawBitmap( faceBitmap, psx, psy + 10, True )
+					x = x-fx
+					y = mainy-fy
+					dcw.append( 2*x + self.widestpilimage )
+					drawList.append( BitmapPencil(x,y,faceBitmap))
 
-				## Postion 
-				texty = y + glyphHeight + 8
-
-				## Now draw the text showing the font name/family/style.
-				## -- suggested by Chris Mohler.
-				## Prep the text to show "font family name (font file name)"
-				## Added Style info 3 Dec 2006:			
+				## The font name/fam/style : fnfs
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
-				memDc.SetTextForeground( fcol )
-				## Sep 2009: Trying to draw foreign chars via DrawText
-				memDc.SetFont( wx.Font( 8,fpsys.DFAM , style=wx.NORMAL, weight=wx.NORMAL,encoding=wx.FONTENCODING_DEFAULT))
-				memDc.DrawText( txt, 28, texty)
+				f = self.__aFont( 8, encoding=wx.FONTENCODING_DEFAULT)
+				w = self.__mf( f, txt )[0]
+				## Postion 
+				x = 28
+				y = mainy + glyphHeight + 8
+				dcw.append( w + 2*x )
+				drawList.append( FontPencil( x, y, f, txt, fcol ) )
+
+
 
 				## Move TOP down to next BOTTOM (for next sub-face)
-				y = y + glyphHeight +  self.spacer
+				mainy += glyphHeight +  self.spacer
 
 				## Goto next face, if any.
 				i += 1
@@ -510,25 +554,34 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Record the calculated height
 		self.height = totheight
 
-
 		## Special message
 		if self.fitem.inactive:
-			mx,my=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-			memDc.DrawBitmap( self.TICKSMALL, mx-16, my-1, True )
-			memDc.SetTextForeground( black )
-			memDc.SetFont( wx.Font(11,fpsys.DFAM, style=wx.NORMAL, weight=wx.NORMAL))
-			memDc.DrawText( self.fitem.activeInactiveMsg, mx, my )
+			x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
+			drawList.append( BitmapPencil( x-16, y-1, self.TICKSMALL ) )
+
+			txt = self.fitem.activeInactiveMsg
+			f = self.__aFont( 11 )
+			w = self.__mf(f,txt)[0]
+			dcw.append( w + x*2 )
+			drawList.append(FontPencil(x,y,f,txt,fcol))
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
 			if self.fitem.ticked:
-				memDc.DrawBitmap(self.TICKMAP, 20, 5, True)
+				drawList.append( BitmapPencil( 20, 5, self.TICKMAP ) )
+
+		## Draw it all
+		## Make the DC
+		W = max(dcw)
+		memDc=self.makeBlankDC( W, totheight, white )
+		for pencil in drawList:
+			pencil.setDc(memDc)
+			pencil.Draw()
 
 		## Now a dividing line
 		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-		memDc.DrawLine( 0, self.height-1, self.totwidth, self.height-1 )
-
+		memDc.DrawLine( 0, self.height-1, self.widestpilimage, self.height-1 )
 
 	def setStyle( self ):
 		'''Set a copy of the styles key and alter colours as needed.'''
@@ -557,6 +610,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
 		memDc = wx.MemoryDC()
 		memDc.SelectObject( bitmap )
+		backcol="red"
 		memDc.SetBackground( wx.Brush( backcol, wx.SOLID) )
 		memDc.Clear()
 		self.bitmap = bitmap #record this for the init
