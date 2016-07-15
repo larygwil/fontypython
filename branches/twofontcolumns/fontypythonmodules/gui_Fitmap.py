@@ -290,7 +290,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		2 times the x coord added to the width)
 		"""
 		if pencil.width > 0:
-			self.dcw.append( pencil.width + 2*pencil.x )
+			self.dcw.append( pencil.width + int(1.5 * pencil.x) )
 		self.drawlist.append( pencil )
 
 
@@ -554,7 +554,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 				else:
 					## Place it into the main image, down a tad so it looks better.
-					x = 10
+					x = 16
 					if i > 0: x *= 3 # Shift sub-faces over a little
 					self.prepDraw( BitmapPencil( x-fx, mainy-fy, faceBitmap, width=self.widestpilimage) )
 
@@ -670,7 +670,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		icon = self.style['icon']
 		if icon:
 			Icon = self.FVP.__dict__[icon] #See gui_Middle.py ~line 97
-			ix,iy = (6,10) if isinfo else (2,8)
+			ix,iy = (6,10) if isinfo else (2,6)
 			self.prepDraw( BitmapPencil( ix, iy, Icon) )
 
 		## Prep and measure the texts to be drawn. Add them to drawlist.

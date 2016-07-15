@@ -108,10 +108,10 @@ class FontViewPanel(wx.Panel):
 		self.BUTTON_CHARMAP_OVER = wx.Bitmap(fpsys.mythingsdir + 'button_charmap_over.png', wx.BITMAP_TYPE_PNG)
 
 		## Main Label on top
-		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL) 
+		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
 		self.textMainInfo = MyLabel(self)
 		sizerMainLabel.Add(self.textMainInfo,1,wx.ALIGN_LEFT)
-		
+	
 		## Page choice and Filter controls
 		sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -129,7 +129,7 @@ class FontViewPanel(wx.Panel):
 		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
 
 		self.last_filter_string = ""
-		
+	
 		## The pager pulldown
 		#self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
 		#self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
@@ -364,6 +364,8 @@ class FontViewPanel(wx.Panel):
 			self.choiceSlider.Enable(True)
 			
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
+		#self.sizerScrolledFontView.Fit(self)
+
 		self.EnableDisablePrevNext()
 
 		#self.firstrun = False # After all the fitmaps are drawn, the sizer knows how wide it is, so we trip this flag (see getWidthOfMiddle)

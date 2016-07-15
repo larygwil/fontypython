@@ -61,7 +61,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
 		## Make the sizer to hold the fitmaps: July 2016
-		self.mySizer = wx.WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
+		#self.mySizer = wx.WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
+		self.mySizer = wx.BoxSizer(wx.VERTICAL) #WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
 
 		self.SetSizer(self.mySizer)
 
@@ -82,9 +83,16 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
 
 	def onSize(self, evt):
+	
 		size = self.GetSize()
+		w = size[0]
+		print "onSize:", size
+		#if w < 200: #128?
+			#w = self.parent.Parent.Parent.Parent.Size[0] #panelTargetPogChooser.Position[0] - 6
+			#import pdb; pdb.set_trace()
+		#print "onSize w:", w
 		vsize = self.GetVirtualSize()
-		self.SetVirtualSize((size[0], vsize[1]))
+		self.SetVirtualSize((w, vsize[1]))
 		evt.Skip()
 
 	def onWheel( self, evt ):
@@ -120,7 +128,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			fi.top_left_adjust_completed = False
 
 
-	def CreateFitmaps(self, viewobject) :
+	def CreateFitmaps2(self, viewobject) :
 		"""
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
 		viewobject: is a sub-list of fitems to display - i.e. after the page number math.
@@ -176,3 +184,71 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		# Layout should be called after adding items.
 		self.mySizer.Layout()
 		self.mySizer.FitInside(self) # Iterative hacking leaves this one standing. self.Fit(), not so much.
+
+
+	def CreateFitmaps(self, viewobject) :
+		"""
+		"""
+
+		## Ensure we destroy all old fitmaps -- and I mean it.
+		for f in self.fitmaps:
+			f.Destroy()  #Ah, nailed ya! You bastard! I fart in your general direction!
+
+		## Yes, die. Die!
+		del self.fitmaps
+		self.fitmaps = []
+
+		## If our viewobject has NO FONTS inside it (i.e. it's an EmptyView object)
+		## then setup a fake FontItem so we can have a dud Fitmap to show.
+		if len(viewobject) == 0:
+			empty_fitem = fontcontrol.InfoFontItem()
+			fm = Fitmap( self, empty_fitem )
+			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
+			self.mySizer.Add( fm )
+		else:
+
+			## Okay - let's make fonts!
+			self.mySizer.Clear() # Wipe all items out of the sizer.
+			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
+
+			w = []
+
+			yld = fpsys.config.numinpage > 20
+			for fitem in viewobject:
+				## Create a Fitmap out of the FontItem we have at hand.
+				fm = Fitmap( self, fitem )
+				self.fitmaps.append( fm )
+				w.append(fm.DoGetBestSize()[0])
+				## July 2016: Add it to the amazing WrapSizer
+				## wx.RIGHT specifies we want border on the right!
+				#self.mySizer.Add( fm, 0, wx.ALIGN_LEFT|wx.ALIGN_BOTTOM|wx.RIGHT, border=10)
+
+				## Added Oct 2009 to let app live on loooong lists.
+				if yld: wx.Yield()
+
+			colw = max(w)
+			#print w
+			#print mw
+			cols = 1
+			ww = self.GetVirtualSize()[0]
+			if ww <= 128:
+				ww = self.parent.Parent.Parent.Parent.Size[0]
+				#import pdb; pdb.set_trace()
+			if colw < ww:
+				cols = int(ww / colw)
+			print ww, cols
+			#import pdb; pdb.set_trace()
+
+			gs = wx.FlexGridSizer( cols=cols, hgap=4, vgap=0 )
+
+			for fm in self.fitmaps:
+				gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+				if yld: wx.Yield()
+
+			self.mySizer.Add(gs)
+			#gs.Layout()
+			#import pdb; pdb.set_trace()
+		# Layout should be called after adding items.
+		self.mySizer.Layout()
+		self.mySizer.FitInside(self) # Iterative hacking leaves this one standing. self.Fit(), not so much.
+		#self.mySizer.Fit(self)

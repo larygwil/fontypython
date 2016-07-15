@@ -206,7 +206,7 @@ class MainFrame(wx.Frame):
 		self.splitter.SetMinimumPaneSize(64)
 		self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
 
-		self.splitter2.SetMinimumPaneSize(128)
+		#self.splitter2.SetMinimumPaneSize(128)
 		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser) #Don't suggest a size here.
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
@@ -414,14 +414,14 @@ class MainFrame(wx.Frame):
 # Code for debugging:
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-#import wx.lib.mixins.inspection
+import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App ):#, wx.lib.mixins.inspection.InspectionMixin) :
+class App(wx.App , wx.lib.mixins.inspection.InspectionMixin) :
 	"""
 	The main wxPython app starts here
 	"""
 	def OnInit(self):
-		#self.Init()  # initialize the inspection tool
+		self.Init()  # initialize the inspection tool
 
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:
