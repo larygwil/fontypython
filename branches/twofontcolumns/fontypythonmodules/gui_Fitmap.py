@@ -58,26 +58,48 @@ class Pencil(object):
 	ordering in time and overlapping too.
 	I can loop and draw them all in one go.
 	"""
+	## A class var
+	textExtentsDict = {}
+
 	def __init__( self, x, y ):
 		self.x = x; self.y = y
 	def Draw(self, memdc):
 		pass
 
+
 class FontPencil(Pencil):
-	def __init__( self, x, y, font, txt, fcol ):
+	def __init__( self, x, y, txt, fcol, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
 		Pencil.__init__(self, x, y)
-		self.font = font
 		self.txt = txt
 		self.fcol = fcol
+		self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
+		self.width = self.__mf()[0]
+	def __mf(self):
+		"""
+		Measure a line of text in my font. Return a wx.Size
+		Attempt to cache these widths in Pencil class variable.
+		"""
+		## Do we have a cached size for this txt?
+		if self.txt in Pencil.textExtentsDict:
+			return Pencil.textExtentsDict[self.txt] #yep!
+		dc = wx.ScreenDC()
+		dc.SetFont( self.font )
+		try:
+			sz = dc.GetTextExtent( self.txt )
+		except:
+			sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
+		Pencil.textExtentsDict[self.txt] = sz # cache it in my parent
+		return sz
 	def Draw(self, memdc):
 		memdc.SetTextForeground( self.fcol )
 		memdc.SetFont( self.font )
 		memdc.DrawText( self.txt, self.x, self.y )
 
 class BitmapPencil(Pencil):
-	def __init__( self, x, y, bitmap ):
+	def __init__( self, x, y, bitmap, width=0 ):
 		Pencil.__init__(self, x, y)
 		self.bitmap = bitmap
+		self.width = width
 	def Draw(self, memdc):
 		memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
@@ -233,14 +255,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 
-	def __aFont( self, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
-		return wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
+	#def __aFont( self, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
+	#	return wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
 
 
 	def usePencils(self, h):
+		"""
+		Makes a new mem dc with the best size.
+		Loops the drawlist and uses the Pencils to draw text and bitmaps
+		Clears the drawlist.
+		Clears the dcw (dc width list)
+		Returns a memdc for sundry use.
+		"""
 		w = max(self.dcw)
-		## Make the DC- now that we have all the widths!
-		#memDc=self.makeBlankDC( W, h, white )
 
 		bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
 		memDc = wx.MemoryDC()
@@ -255,13 +282,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		## Now empty the drawlist
 		del self.drawlist[:]
+		## Also empty the dcw list
+		del self.dcw[:]
 
 		return memDc
 
-	def prepDraw(self, pencil, width=0 ):
-		if width > 0:
-			x = pencil.x
-			self.dcw.append( width + 2*x )
+	def prepDraw(self, pencil):
+		"""
+		Given a pencil, this will append it to the drawlist.
+		If there's a width in the pencil, that goes into the
+		dcw list (a space on the right-hand side is calculated by
+		2 times the x coord added to the width)
+		"""
+		if pencil.width > 0:
+			self.dcw.append( pencil.width + 2*pencil.x )
 		self.drawlist.append( pencil )
 
 	def openCharacterMap( self ):
@@ -425,7 +459,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 
-	def __mf( self, wxfont, txt ):
+	def xxx__mf( self, wxfont, txt ):
 		"""
 		Measure a line of text in a given font. Return a wx.Size
 		"""
@@ -532,38 +566,23 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
 
 					faceBitmap = image.ConvertToBitmap()
+					#forcederror() #to test the except
 				except:
 					#debug: raise
 					## Some new error that I have not caught before has happened.
 					## It may also be a bad sub-face from a ttc font.
 					txt=_("This text cannot be drawn. Hey, it happens...")
-					f = self.__aFont(fpsys.config.points, style=wx.ITALIC)
-					w = self.__mf(f, txt)[0]
-					x = 10 #error x coord
-					y = mainy+2 # y coord
-					#self.dcw.append( w + (2*x)) #x across and a gap on end
-					#self.drawlist.append( FontPencil(x, y, f, txt, fcol))
-					self.todraw( w, x, FontPencil(x, y, f, txt, fcol) )
+					self.prepDraw( FontPencil( 10, mainy+2, txt, fcol, fpsys.config.points, style=wx.ITALIC) )
+
 				else:
 					## Place it into the main image, down a tad so it looks better.
 					x = 10
-					if i > 0: x *= 2 # Shift sub-faces over a little
-					## Draw the face into the memDc
-					x = x-fx
-					y = mainy-fy
-					#self.dcw.append( 2*x + self.widestpilimage )
-					#self.drawlist.append( BitmapPencil(x,y,faceBitmap))
-					self.prepDraw(BitmapPencil(x,y,faceBitmap), self.widestpilimage)
+					if i > 0: x *= 3 # Shift sub-faces over a little
+					self.prepDraw( BitmapPencil( x-fx, mainy-fy, faceBitmap, width=self.widestpilimage) )
 
 				## The font name/fam/style : fnfs
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
-				f = self.__aFont( 8, encoding=wx.FONTENCODING_DEFAULT)
-				w = self.__mf( f, txt )[0]
-				## Postion 
-				x = 28
-				y = mainy + glyphHeight + 8
-				#self.dcw.append( w + 2*x )
-				self.prepDraw(FontPencil( x, y, f, txt, fcol ), w)
+				self.prepDraw( FontPencil( 28, mainy + glyphHeight + 8, txt, fcol, points=8 ) )
 
 				## Move TOP down to next BOTTOM (for next sub-face)
 				mainy += glyphHeight +  Fitmap.SPACER
@@ -577,29 +596,21 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Special message
 		if self.fitem.inactive:
 			x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-			#self.drawlist.append( BitmapPencil( x-16, y-1, self.TICKSMALL ) )
-			self.prepDraw(BitmapPencil( x-16, y-1, self.TICKSMALL))
+			self.prepDraw( BitmapPencil( x-16, y-1, self.TICKSMALL) )
 
 			txt = self.fitem.activeInactiveMsg
-			f = self.__aFont( 11 )
-			w = self.__mf(f,txt)[0]
-			#self.dcw.append( w + x*2 )
-			#self.drawlist.append(FontPencil(x,y,f,txt,fcol))
-			self.prepDraw(FontPencil(x,y,f,txt,fcol),w)
+			self.prepDraw( FontPencil(x, y, txt, fcol, points=11) )
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
 			if self.fitem.ticked:
-				#self.drawlist.append( BitmapPencil( 20, 5, self.TICKMAP ) )
-				self.prepDraw(BitmapPencil( 20, 5, self.TICKMAP))
+				self.prepDraw( BitmapPencil( 20, 5, self.TICKMAP) )
 
 		## Make one big bitmap to house one or more faces (subfaces)
-		##
-		## NOTE: By drawing into memDc, we are drawing into self.bitmap
-		##
 		## Draw it all - via the pencils. Also makes the memDc and returns
 		## it so we can do some last-minute stuff later.
+		## NOTE: By drawing into memDc, we are drawing into self.bitmap
 		memDc = self.usePencils( totheight )
 
 		## Now a dividing line
@@ -680,32 +691,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		#import pdb; pdb.set_trace()
 
-		## This icon is not as wide as the text. I don't need to put it into dcw
 		icon = self.style['icon']
 		if icon:
 			Icon = self.FVP.__dict__[icon]
 			ix,iy = (6,10) if isinfo else (2,3)
-			#self.drawlist.append( BitmapPencil( ix, iy, Icon ) )
-			self.prepDraw(BitmapPencil( ix, iy, Icon))
+			self.prepDraw( BitmapPencil( ix, iy, Icon) )
 
 		## Prep and measure the texts to be drawn. Add them to drawlist.
 		fcol = self.style['fcol']
 
-		f1 = self.__aFont(12,weight=wx.BOLD)
-		f2 = self.__aFont(7)
-
 		textTup = self.fitem.InfoOrErrorText()
 
-		## Measure text 1
+		## prep the two lines of text
 		tx,ty = (46,15) if isinfo else (38 ,13)
-		w = self.__mf(f1, textTup[0])[0]
-		#self.dcw.append(w + 2*tx)
-		#self.drawlist.append( FontPencil( tx, ty, f1, textTup[0], fcol ) )
-		self.prepDraw(FontPencil( tx, ty, f1, textTup[0], fcol), w)
+		self.prepDraw( FontPencil( tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
 
-		## Measure text 2
 		tx,ty = (46,40) if isinfo else (5 ,40)
-		w = self.__mf(f2, textTup[1])[0]
-		#self.dcw.append(w + 2*tx)
-		#self.drawlist.append( FontPencil( tx, ty, f2, textTup[1], fcol ) )
-		self.prepDraw( FontPencil( tx, ty, f2, textTup[1], fcol ), w )
+		self.prepDraw( FontPencil( tx, ty, textTup[1], fcol, points=7 ) )
