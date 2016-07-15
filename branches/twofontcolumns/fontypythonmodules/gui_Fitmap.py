@@ -238,14 +238,31 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 	def usePencils(self, h):
-		W = max(self.dcw)
+		w = max(self.dcw)
 		## Make the DC- now that we have all the widths!
-		memDc=self.makeBlankDC( W, h, white )
+		#memDc=self.makeBlankDC( W, h, white )
+
+		bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
+		memDc = wx.MemoryDC()
+		memDc.SelectObject( bitmap )
+		memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
+		memDc.Clear()
+		self.bitmap = bitmap #record this for the init
+
 		## Draw it all - via the pencils
 		for pencil in self.drawlist:
 			pencil.Draw(memDc)
+
+		## Now empty the drawlist
+		del self.drawlist[:]
+
 		return memDc
 
+	def prepDraw(self, pencil, width=0 ):
+		if width > 0:
+			x = pencil.x
+			self.dcw.append( width + 2*x )
+		self.drawlist.append( pencil )
 
 	def openCharacterMap( self ):
 		fi=self.fitem
@@ -524,8 +541,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					w = self.__mf(f, txt)[0]
 					x = 10 #error x coord
 					y = mainy+2 # y coord
-					self.dcw.append( w + (2*x)) #x across and a gap on end
-					self.drawlist.append( FontPencil(x, y, f, txt, fcol))
+					#self.dcw.append( w + (2*x)) #x across and a gap on end
+					#self.drawlist.append( FontPencil(x, y, f, txt, fcol))
+					self.todraw( w, x, FontPencil(x, y, f, txt, fcol) )
 				else:
 					## Place it into the main image, down a tad so it looks better.
 					x = 10
@@ -533,8 +551,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## Draw the face into the memDc
 					x = x-fx
 					y = mainy-fy
-					self.dcw.append( 2*x + self.widestpilimage )
-					self.drawlist.append( BitmapPencil(x,y,faceBitmap))
+					#self.dcw.append( 2*x + self.widestpilimage )
+					#self.drawlist.append( BitmapPencil(x,y,faceBitmap))
+					self.prepDraw(BitmapPencil(x,y,faceBitmap), self.widestpilimage)
 
 				## The font name/fam/style : fnfs
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
@@ -543,8 +562,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				## Postion 
 				x = 28
 				y = mainy + glyphHeight + 8
-				self.dcw.append( w + 2*x )
-				self.drawlist.append( FontPencil( x, y, f, txt, fcol ) )
+				#self.dcw.append( w + 2*x )
+				self.prepDraw(FontPencil( x, y, f, txt, fcol ), w)
 
 				## Move TOP down to next BOTTOM (for next sub-face)
 				mainy += glyphHeight +  Fitmap.SPACER
@@ -558,33 +577,30 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Special message
 		if self.fitem.inactive:
 			x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-			self.drawlist.append( BitmapPencil( x-16, y-1, self.TICKSMALL ) )
+			#self.drawlist.append( BitmapPencil( x-16, y-1, self.TICKSMALL ) )
+			self.prepDraw(BitmapPencil( x-16, y-1, self.TICKSMALL))
 
 			txt = self.fitem.activeInactiveMsg
 			f = self.__aFont( 11 )
 			w = self.__mf(f,txt)[0]
-			self.dcw.append( w + x*2 )
-			self.drawlist.append(FontPencil(x,y,f,txt,fcol))
+			#self.dcw.append( w + x*2 )
+			#self.drawlist.append(FontPencil(x,y,f,txt,fcol))
+			self.prepDraw(FontPencil(x,y,f,txt,fcol),w)
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
 			if self.fitem.ticked:
-				self.drawlist.append( BitmapPencil( 20, 5, self.TICKMAP ) )
+				#self.drawlist.append( BitmapPencil( 20, 5, self.TICKMAP ) )
+				self.prepDraw(BitmapPencil( 20, 5, self.TICKMAP))
 
 		## Make one big bitmap to house one or more faces (subfaces)
 		##
 		## NOTE: By drawing into memDc, we are drawing into self.bitmap
 		##
-		#W = max(self.dcw)
-
-		## Make the DC- now that we have all the widths!
-		#memDc=self.makeBlankDC( W, totheight, white )
+		## Draw it all - via the pencils. Also makes the memDc and returns
+		## it so we can do some last-minute stuff later.
 		memDc = self.usePencils( totheight )
-		## Draw it all - via the pencils
-		#for pencil in self.drawlist:
-		#	pencil.setDc(memDc)
-		#	pencil.Draw()
 
 		## Now a dividing line
 		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
@@ -611,17 +627,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.style = Fitmap.styles['INACTIVE']
 		else:
 			self.style = Fitmap.styles['ACTIVE']
-
-
-	def makeBlankDC( self, w, h, backcol ):
-		bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
-		memDc = wx.MemoryDC()
-		memDc.SelectObject( bitmap )
-		backcol="red"
-		memDc.SetBackground( wx.Brush( backcol, wx.SOLID) )
-		memDc.Clear()
-		self.bitmap = bitmap #record this for the init
-		return memDc
 
 
 	#TODO : Pre-calc all these colours.
@@ -680,7 +685,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if icon:
 			Icon = self.FVP.__dict__[icon]
 			ix,iy = (6,10) if isinfo else (2,3)
-			self.drawlist.append( BitmapPencil( ix, iy, Icon ) )
+			#self.drawlist.append( BitmapPencil( ix, iy, Icon ) )
+			self.prepDraw(BitmapPencil( ix, iy, Icon))
 
 		## Prep and measure the texts to be drawn. Add them to drawlist.
 		fcol = self.style['fcol']
@@ -693,11 +699,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Measure text 1
 		tx,ty = (46,15) if isinfo else (38 ,13)
 		w = self.__mf(f1, textTup[0])[0]
-		self.dcw.append(w + 2*tx)
-		self.drawlist.append( FontPencil( tx, ty, f1, textTup[0], fcol ) )
+		#self.dcw.append(w + 2*tx)
+		#self.drawlist.append( FontPencil( tx, ty, f1, textTup[0], fcol ) )
+		self.prepDraw(FontPencil( tx, ty, f1, textTup[0], fcol), w)
 
 		## Measure text 2
 		tx,ty = (46,40) if isinfo else (5 ,40)
 		w = self.__mf(f2, textTup[1])[0]
-		self.dcw.append(w + 2*tx)
-		self.drawlist.append( FontPencil( tx, ty, f2, textTup[1], fcol ) )
+		#self.dcw.append(w + 2*tx)
+		#self.drawlist.append( FontPencil( tx, ty, f2, textTup[1], fcol ) )
+		self.prepDraw( FontPencil( tx, ty, f2, textTup[1], fcol ), w )
