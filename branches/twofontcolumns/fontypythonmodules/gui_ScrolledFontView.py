@@ -125,6 +125,16 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
 		viewobject: is a sub-list of fitems to display - i.e. after the page number math.
 			** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
+
+		NOTE: Uses a WrapSizer which has some side-effects. Wide fitmaps, early in the
+					list tend to "shield" narrow ones under them, so the wrapping leaves them
+					inline - causing some singles and some doubles, in a line.
+
+					I tried to crop the fitmaps so they are all the same size. This is fail.
+
+					I tried a few other sizers and this WrapSizer is the easiest, really.
+					One can use a FlexGridSizer and calc the number of columns - from the max
+					of current widths - and so on. Lot's of sweat for a not so great look.
 		"""
 
 		## Ensure we destroy all old fitmaps -- and I mean it.
@@ -148,6 +158,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			self.mySizer.Clear() # Wipe all items out of the sizer.
 			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
 
+
 			yld = fpsys.config.numinpage > 20
 			for fitem in viewobject:
 				## Create a Fitmap out of the FontItem we have at hand.
@@ -155,7 +166,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 				self.fitmaps.append( fm )
 				## July 2016: Add it to the amazing WrapSizer
 				## wx.RIGHT specifies we want border on the right!
-				self.mySizer.Add( fm, 0, wx.ALIGN_LEFT|wx.ALIGN_BOTTOM|wx.RIGHT, border=5)
+				self.mySizer.Add( fm, 0, wx.ALIGN_LEFT|wx.ALIGN_BOTTOM|wx.RIGHT, border=10)
 
 				## Added Oct 2009 to let app live on loooong lists.
 				if yld: wx.Yield()

@@ -60,7 +60,6 @@ class Pencil(object):
 	"""
 	## A class var
 	textExtentsDict = {}
-
 	def __init__( self, x, y ):
 		self.x = x; self.y = y
 	def Draw(self, memdc):
@@ -77,10 +76,11 @@ class FontPencil(Pencil):
 	def __mf(self):
 		"""
 		Measure a line of text in my font. Return a wx.Size
-		Attempt to cache these widths in Pencil class variable.
+		Cache these widths in Pencil class variable.
 		"""
 		## Do we have a cached size for this txt?
 		if self.txt in Pencil.textExtentsDict:
+			#print "Got from cache:",  Pencil.textExtentsDict[self.txt]
 			return Pencil.textExtentsDict[self.txt] #yep!
 		dc = wx.ScreenDC()
 		dc.SetFont( self.font )
@@ -229,7 +229,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## init my parent class 
 		## This also sets the SIZE of the fitmap widget.
 		## Calling DoGetBestSize on it will return that size.
-		self.gsb = wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, (0,0), sz)
+		wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, (0,0), sz)
 
 		## Fitmap's over out signal
 		self.overout = OverOutSignal( self.overout_signal )
@@ -252,11 +252,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 		if self.fitem.inactive:
 			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
-
-
-
-	#def __aFont( self, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
-	#	return wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
 
 
 	def usePencils(self, h):
@@ -297,6 +292,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if pencil.width > 0:
 			self.dcw.append( pencil.width + 2*pencil.x )
 		self.drawlist.append( pencil )
+
 
 	def openCharacterMap( self ):
 		fi=self.fitem
@@ -458,25 +454,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		return fx,fy
 
 
-
-	def xxx__mf( self, wxfont, txt ):
-		"""
-		Measure a line of text in a given font. Return a wx.Size
-		"""
-		## Do we have a cached size for this txt?
-		if txt in self.fitem.textExtentsDict:
-			return self.fitem.textExtentsDict[txt] #yep!
-
-		dc = wx.ScreenDC()
-		dc.SetFont(wxfont)
-		try:
-			sz = dc.GetTextExtent(txt)
-		except:
-			sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
-		self.fitem.textExtentsDict[txt] = sz # cache it in my parent
-		return sz
-
-
 	def prepareBitmap( self ):
 		"""
 		This is where all the drawing code goes. It gets the font rendered
@@ -534,7 +511,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 			#TODO self.bottomFadeEffect( memDc, totheight, maxwidth )
 
-			mainy = i = 0
+			mainy = 10
+			i = 0
 
 			for pilimage in pilList:
 				pilwidth, glyphHeight = pilimage.size
@@ -627,8 +605,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				## =========
 				## Happened on cases where 'ndi' key was not in styles dict. 
 				## Added them in.
-				#print "bad:", self.fitem.name
-				#print "style:", self.fitem.badstyle
 				self.style['fcol'] = Fitmap.styles['INACTIVE']['fcol']
 				self.style['backcol'] = Fitmap.styles[self.fitem.badstyle]['ndi'] #ndi = No Draw Inactive
 			return
@@ -693,8 +669,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		icon = self.style['icon']
 		if icon:
-			Icon = self.FVP.__dict__[icon]
-			ix,iy = (6,10) if isinfo else (2,3)
+			Icon = self.FVP.__dict__[icon] #See gui_Middle.py ~line 97
+			ix,iy = (6,10) if isinfo else (2,8)
 			self.prepDraw( BitmapPencil( ix, iy, Icon) )
 
 		## Prep and measure the texts to be drawn. Add them to drawlist.
