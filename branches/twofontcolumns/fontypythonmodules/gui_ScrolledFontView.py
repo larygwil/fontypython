@@ -139,7 +139,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		## then setup a fake FontItem so we can have a dud Fitmap to show.
 		if len(viewobject) == 0:
 			empty_fitem = fontcontrol.InfoFontItem()
-			fm = Fitmap( self, (0, 0), empty_fitem )
+			fm = Fitmap( self, empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
 			self.mySizer.Add( fm )
 		else:
@@ -151,7 +151,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			yld = fpsys.config.numinpage > 20
 			for fitem in viewobject:
 				## Create a Fitmap out of the FontItem we have at hand.
-				fm = Fitmap( self, (0,0), fitem )
+				fm = Fitmap( self, fitem )
 				self.fitmaps.append( fm )
 				## July 2016: Add it to the amazing WrapSizer
 				## wx.RIGHT specifies we want border on the right!
