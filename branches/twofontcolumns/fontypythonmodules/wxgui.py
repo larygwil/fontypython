@@ -222,6 +222,8 @@ class MainFrame(wx.Frame):
 
 		ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
 
+		ps.sub ( get_sashes_position, self.GetSashesPos )
+
 		## call the big one - the big chief, the big cheese:
 		## This eventually draws all the Fitmaps - giving the middle have a width.
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
