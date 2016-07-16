@@ -227,7 +227,6 @@ class MainFrame(wx.Frame):
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
 		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
-		#self.splitter2.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize) #July 2016 - Added this event too. It's vague.
 
 		# Force splitter2 to the correct position. 
 		self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )
@@ -251,10 +250,6 @@ class MainFrame(wx.Frame):
 		"""
 		The splitter has been moved. Don't ask me why splitter and not splitter2
 		is the one we have to use. Go figure.
-
-		July 2016
-		=========
-		This changed. I added the bind to splitter2 as well. Actually works better for sizes in fontViewPanel
 		"""
 		ps.pub( update_font_view ) # starts a chain of calls.
 

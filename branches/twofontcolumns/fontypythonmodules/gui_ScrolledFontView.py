@@ -62,9 +62,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 		## Make the sizer to hold the fitmaps: July 2016
 		#self.mySizer = wx.WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
-		self.mySizer = wx.BoxSizer(wx.VERTICAL) #WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
+		#self.mySizer = wx.BoxSizer(wx.VERTICAL) #WrapSizer( flags=wx.EXTEND_LAST_ON_EACH_LINE )
 
-		self.SetSizer(self.mySizer)
+		#self.SetSizer(self.mySizer)
 
 		## July 2016
 		self.Bind(wx.EVT_SIZE, self.onSize)
@@ -75,7 +75,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		## If you rm the fp.conf and run, the fontview sometimes shows no 
 		## scrollbar. this FitInside is a part of the battle against that.
 		## Not 100% sure if this is kosher. Fuck it, I can't burn more time on it.
-		self.mySizer.FitInside(self)
+		#self.mySizer.FitInside(self)
 
 		#self.SetAutoLayout(1) #Iterative hacking says remark this. Go figure.
 		self.SetupScrolling(rate_y=5, scroll_x=False)
@@ -198,18 +198,35 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		del self.fitmaps
 		self.fitmaps = []
 
+
+		## Uncertain: Feel I should strive to delete previous sizers
+		sz = self.GetSizer()
+		if sz:
+			#print "Had an old sizer, destroying it...", sz
+			self.SetSizer(None)
+			#sz.Destroy() # This errors out.
+			del sz
+
 		## If our viewobject has NO FONTS inside it (i.e. it's an EmptyView object)
 		## then setup a fake FontItem so we can have a dud Fitmap to show.
 		if len(viewobject) == 0:
+
+			#gs = wx.FlexGridSizer( cols=1, hgap=4, vgap=0 )
+			bs = wx.BoxSizer(wx.VERTICAL)
+
 			empty_fitem = fontcontrol.InfoFontItem()
 			fm = Fitmap( self, empty_fitem )
 			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
-			self.mySizer.Add( fm )
+			bs.Add( fm )
+
+			self.SetSizer(bs)
+			bs.FitInside(self)
+
 		else:
 
 			## Okay - let's make fonts!
-			self.mySizer.Clear() # Wipe all items out of the sizer.
-			self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
+			#self.mySizer.Clear() # Wipe all items out of the sizer.
+			#self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
 
 			w = []
 
@@ -227,28 +244,33 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 				if yld: wx.Yield()
 
 			colw = max(w)
+			print "max:", colw
 			#print w
 			#print mw
 			cols = 1
-			ww = self.GetVirtualSize()[0]
-			if ww <= 128:
-				ww = self.parent.Parent.Parent.Parent.Size[0]
+			#ww = self.GetVirtualSize()[0]
+			ww = self.GetSize()[0]
+			#if ww <= 128:
+				#ww = self.parent.Parent.Parent.Parent.Size[0]
 				#import pdb; pdb.set_trace()
 			if colw < ww:
 				cols = int(ww / colw)
+
 			print ww, cols
 			#import pdb; pdb.set_trace()
 
-			gs = wx.FlexGridSizer( cols=cols, hgap=4, vgap=0 )
+			fgs = wx.FlexGridSizer( cols=cols, hgap=4, vgap=0 )
 
 			for fm in self.fitmaps:
-				gs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+				fgs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
 				if yld: wx.Yield()
 
-			self.mySizer.Add(gs)
+			self.SetSizer(fgs)
+			fgs.FitInside(self)
+			#self.mySizer.Add(gs)
 			#gs.Layout()
 			#import pdb; pdb.set_trace()
 		# Layout should be called after adding items.
-		self.mySizer.Layout()
-		self.mySizer.FitInside(self) # Iterative hacking leaves this one standing. self.Fit(), not so much.
+		#self.mySizer.Layout()
+		#self.mySizer.FitInside(self) # Iterative hacking leaves this one standing. self.Fit(), not so much.
 		#self.mySizer.Fit(self)
