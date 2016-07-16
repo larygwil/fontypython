@@ -253,6 +253,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if self.fitem.inactive:
 			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 
+	def xxxDoGetBestSize(self):
+		"""
+		I can't get this right. Best to leave it out.
+		xxx in front means it never gets called.
+		"""
+		try:
+			sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
+		except:
+			sz = (Fitmap.MIN_FITEM_WIDTH, Fitmap.MIN_FITEM_HEIGHT)
+		print "DoGetBestSize:", sz
+		return sz
 
 	def usePencils(self, h):
 		"""
