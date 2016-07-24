@@ -44,8 +44,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 	July 2016
 	=========
-	After much fruitless slog, I finally found a crack in the problem of multiple columns of fonts
-	at this URL: http://stackoverflow.com/questions/21431366/scrolledpanel-with-vertical-scrollbar-only-and-wrapsizer
+  Useful url: http://stackoverflow.com/questions/21431366/scrolledpanel-with-vertical-scrollbar-only-and-wrapsizer
 
 	"""
 	def __init__(self, parent):
@@ -59,13 +58,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		## At least this one works.
 		self.wheelValue = fpsys.config.points
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
-
-		#tc = wx.StaticText( self, -1, "abcdefghijklnbop"*100 )
-		#tmpsizer = wx.BoxSizer(wx.VERTICAL)
-		#tmpsizer.Add(tc,0,wx.ALL)
-		#tmpsizer.AddSpacer( 700 )
-		#self.SetSizer(tmpsizer)
-		#tmpsizer.FitInside(self)
 
 		## July 2016
 		self.Bind(wx.EVT_SIZE, self.onSize)
@@ -185,6 +177,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		=============
 		With this sizer, I get predictable columns of the same size. It forces more work - to
 		calculate the max width fitmap and thence the number of columns.
+		I also perform a crop on bitmaps over the average width.
 		"""
 		## Uncertain: Feel I should strive to delete previous sizers..
 		sz = self.GetSizer()
@@ -240,24 +233,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			## I am getting an AVERAGE of all the widths
 			## This cuts the super-long bitmaps down to
 			## a more-or-less size with the others.
-			colw = int( sum(w)/max(len(w),1) )
+			colw = int( sum(w) / max( len(w), 1) )
 			cols = 1
 
 			panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
-			print "panelwidth is:", panelwidth
-			if panelwidth < colw:
-				pass
-				## Having so much trouble with an initial size of 0.
-				## Had to resort to this old code to get the panel's fucking size:
-				#ret = ps.pub( get_sashes_position )
-				#print "I called pub:", ret
-				w = fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
-				wl = fpsys.config.leftSash
-				wr = fpsys.config.rightSash
-				panelwidth = w-wl-wr
-
-			## Now, fucking, continue as usual.
 			## Can we afford some columns?
 			if colw < panelwidth:
 				cols = int(panelwidth / colw)
@@ -272,7 +252,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			for fm in self.fitmaps:
 				## JULY 2016
 				## =========
-				## If the bitmap is wider than a column, we will resize it
+				## If the bitmap is wider than a column, we will crop it
 				##
 				if fm.bitmap.GetWidth() > colw:
 					h = fm.bitmap.GetHeight()
