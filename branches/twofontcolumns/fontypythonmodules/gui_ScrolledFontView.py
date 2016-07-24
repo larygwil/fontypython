@@ -60,6 +60,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		self.wheelValue = fpsys.config.points
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
+		#tc = wx.StaticText( self, -1, "abcdefghijklnbop"*100 )
+		#tmpsizer = wx.BoxSizer(wx.VERTICAL)
+		#tmpsizer.Add(tc,0,wx.ALL)
+		#tmpsizer.AddSpacer( 700 )
+		#self.SetSizer(tmpsizer)
+		#tmpsizer.FitInside(self)
+
 		## July 2016
 		self.Bind(wx.EVT_SIZE, self.onSize)
 
@@ -238,11 +245,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 			panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
+			print "panelwidth is:", panelwidth
 			if panelwidth < colw:
+				pass
 				## Having so much trouble with an initial size of 0.
 				## Had to resort to this old code to get the panel's fucking size:
-				ret = ps.pub( get_sashes_position )
-				print "I called pub:", ret
+				#ret = ps.pub( get_sashes_position )
+				#print "I called pub:", ret
 				w = fpsys.config.size[0]# Use the last known width of the entire window as an initial size estimate.
 				wl = fpsys.config.leftSash
 				wr = fpsys.config.rightSash

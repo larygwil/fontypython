@@ -206,8 +206,16 @@ class MainFrame(wx.Frame):
 		self.splitter.SetMinimumPaneSize(64)
 		self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
 
-		#self.splitter2.SetMinimumPaneSize(128)
-		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser) #Don't suggest a size here.
+		self.splitter2.SetMinimumPaneSize(128)
+		## July 2016
+		## =========
+		## Still struggling with this intial size of the scroll panel thing.
+		## Herewith an attempt to set a size via the SplitVertically method.
+		framewidth = self.GetSizeTuple()[0]
+		sashleft, sashright = self.GetSashesPos()
+		scrollpanelstartwidth = framewidth - sashleft - sashright
+		#print "scrollpanelstartwidth:", scrollpanelstartwidth
+		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser, scrollpanelstartwidth )
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
@@ -222,7 +230,7 @@ class MainFrame(wx.Frame):
 
 		ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
 
-		ps.sub ( get_sashes_position, self.GetSashesPos )
+		#ps.sub ( get_sashes_position, self.GetSashesPos )
 
 		## call the big one - the big chief, the big cheese:
 		## This eventually draws all the Fitmaps - giving the middle have a width.

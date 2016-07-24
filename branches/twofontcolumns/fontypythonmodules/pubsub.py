@@ -41,7 +41,7 @@ menu_settings = 190
 toggle_selection_menu_item = 200
 toggle_purge_menu_item = 210
 
-get_sashes_position = 220
+##get_sashes_position = 220
 
 left_or_right_key_pressed = 1000
 
@@ -79,22 +79,22 @@ class CPubsub:
 	def pub(self, topic, *args): #PUBLISH (was shout)
 		#global globRetVal
 		#m = CMessage(topic, messagelist)
-		print "pub called"
+		#print "pub called"
 		ret = None
 		for key, top in self.__ears.iteritems():
 			
 			if top.topic == topic:
 				function = top.function
-				print "pub to run:", topic 
+				#print "pub to run:", topic 
 				if args:
-					ret = function(args) #Pass the args only.
+					function(args) #Pass the args only.
 				else:
-					ret = function() 
-				if ret:
-					print "ret causes break."
-					break;
-		print "pub ends."
-		if ret: return ret
+					function() 
+				#if ret:
+					#print "ret causes break."
+					#break;
+		#print "pub ends."
+		#if ret: return ret
 
 ## Sample of the use of this stuff:
 if __name__ == "__main__":
