@@ -90,13 +90,13 @@ class FontViewPanel(wx.Panel):
 
 		self.pageindex = 1 # I start here
 		self.total_number_of_pages = 0
-		
+
 		self.filter = ""
-		
+
 		self.TICKMAP = None
 		self.TICK = wx.Bitmap(fpsys.mythingsdir + "tick.png", type=wx.BITMAP_TYPE_PNG)
 		self.CROSS = wx.Bitmap(fpsys.mythingsdir + "cross.png", type=wx.BITMAP_TYPE_PNG)
-	
+
 		#Sept 2009
 		self.SEGFAULT = wx.Bitmap(fpsys.mythingsdir + 'font_segfault.png', wx.BITMAP_TYPE_PNG)
 		self.NO_DRAW = wx.Bitmap(fpsys.mythingsdir + 'font_cannot_draw.png', wx.BITMAP_TYPE_PNG)
@@ -111,7 +111,7 @@ class FontViewPanel(wx.Panel):
 		sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
 		self.textMainInfo = MyLabel(self)
 		sizerMainLabel.Add(self.textMainInfo,1,wx.ALIGN_LEFT)
-	
+
 		## Page choice and Filter controls
 		sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -129,9 +129,9 @@ class FontViewPanel(wx.Panel):
 		self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
 
 		self.last_filter_string = ""
-	
+
 		## The pager pulldown
-		self.choicePage = wx.Choice(self, -1, choices = ["busy"]) 
+		self.choicePage = wx.Choice(self, -1, choices = ["busy"])
 		self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
 
 		#self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
@@ -142,8 +142,8 @@ class FontViewPanel(wx.Panel):
 
 		## put them into the sizer
 		sizerOtherControls.Add(self.textFilter, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
-		
-		
+
+
 		## Quick search Bold Italic Regular buttons
 		idBold = wx.NewId()
 		idItalic = wx.NewId()
@@ -162,15 +162,15 @@ class FontViewPanel(wx.Panel):
 		sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
 
 		sizerOtherControls.Add( self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND )
-		
+
 		sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
 		#sizerOtherControls.Add( self.choiceSlider, 1 , wx.ALIGN_RIGHT )
 
-		
+
 		## The SCROLLED FONT VIEW panel:
-		self.scrolledFontView = ScrolledFontView(self) 
-		
-		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL) 
+		self.scrolledFontView = ScrolledFontView(self)
+
+		buttonsSizer = wx.BoxSizer(wx.HORIZONTAL)
 
 		#July 2016
 		#=========
@@ -187,12 +187,12 @@ class FontViewPanel(wx.Panel):
 		# July 2016 - remarked : self.buttNext = wx.Button(self, wx.ID_FORWARD)  
 		self.buttNext = wx.BitmapButton( self, wx.ID_FORWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
 		self.buttPrev.Enable(False)  #Starts out disabled
-		
-		buttonsSizer.Add(self.buttPrev,0,wx.EXPAND) 
-		buttonsSizer.Add((10,1) ,0,wx.EXPAND) 
-		buttonsSizer.Add(self.buttMain,1,wx.EXPAND) 
-		buttonsSizer.Add((10,1) ,0,wx.EXPAND) 
-		buttonsSizer.Add(self.buttNext,0,wx.EXPAND) 
+
+		buttonsSizer.Add(self.buttPrev,0,wx.EXPAND)
+		buttonsSizer.Add((10,1) ,0,wx.EXPAND)
+		buttonsSizer.Add(self.buttMain,1,wx.EXPAND)
+		buttonsSizer.Add((10,1) ,0,wx.EXPAND)
+		buttonsSizer.Add(self.buttNext,0,wx.EXPAND)
 
 		## Now the sizer to hold all the fontview controls
 		self.sizerScrolledFontView = wx.BoxSizer( wx.VERTICAL )
@@ -208,14 +208,14 @@ class FontViewPanel(wx.Panel):
 		## Choice and Filter
 		self.sizerScrolledFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
 		## The buttons   
-		self.sizerScrolledFontView.Add(buttonsSizer,0,wx.EXPAND)	
+		self.sizerScrolledFontView.Add(buttonsSizer,0,wx.EXPAND)
 
 		self.SetSizer(self.sizerScrolledFontView)
 		self.Fit()
-	
+
 		e = wx.EVT_BUTTON #was wx.EVT_LEFT_UP
-		self.buttPrev.Bind(e,self.navClick) 
-		self.buttNext.Bind(e,self.navClick) 
+		self.buttPrev.Bind(e,self.navClick)
+		self.buttNext.Bind(e,self.navClick)
 		#self.buttMain.Bind(e,self.onMainClick) 
 		self.Bind(e,self.onMainClick,self.buttMain)#.GetId() ) 
 
@@ -224,14 +224,14 @@ class FontViewPanel(wx.Panel):
 		ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
 		ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
 		ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
-	
+
 		#def DoGetBestSize(self):
 		# DOES NOT RUN FOR A wx.Panel
 
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
 		self.filter = ""
-		
+
 		# Clear the BIR toggle buttons
 		self.setAllBIRFalse()
 
@@ -263,10 +263,10 @@ class FontViewPanel(wx.Panel):
 			for id, dic in self.BIR.iteritems():
 				if dic['truth']: ss += "%s%s" % (dic['style']," ") # Builds AND regex (space is and)
 			ss = ss[:-1]
-	
+
 		self.inputFilter.SetValue( ss )
 		self.startSearch( ss )
-		
+
 	# Capture events when the user types something into the control then
 	# hits ENTER.
 	def EvtTextEnter(self, evt):
@@ -278,7 +278,7 @@ class FontViewPanel(wx.Panel):
 			o.Insert( termsstring,0 ) #record this search in the top of the 'history'
 		#print termsstring
 		self.startSearch(termsstring)
-		
+
 		self.buttMain.SetFocus()
 		evt.Skip()
 
@@ -297,13 +297,13 @@ class FontViewPanel(wx.Panel):
 		## Now command a change of the view.
 		self.filterAndPageThenCallCreateFitmaps()
 
-		
+
 	def filterAndPageThenCallCreateFitmaps(self):
 		"""
 		Figure out what list of fonts to draw, divide them into pages,
 		then go make Fitmaps out of them.
 		"""
-		
+
 		self.total_number_of_pages = 1 # A default
 
 		## Is there anything there to view?
@@ -324,7 +324,7 @@ class FontViewPanel(wx.Panel):
 			current_page = self.pageindex - 1
 			num_in_one_page = fpsys.config.numinpage
 			total_num_fonts = len(fpsys.state.filteredViewObject)
-			
+
 			## Many thanks to Michael Hoeft for this fix! I suck at math :)
 			# I miss the right words to explain this step, therefore an example:
 			# 	23 / 10 = 2
@@ -341,29 +341,29 @@ class FontViewPanel(wx.Panel):
 			start = current_page * num_in_one_page #leaf thru the pages to the one we are on now.
 			fin = start + num_in_one_page
 			if fin > len(fpsys.state.filteredViewObject): fin = len(fpsys.state.filteredViewObject) #Make sure we don't overshoot.
-			
+
 			## Extract a single page of fonts to display
-			sublist = fpsys.state.filteredViewObject[start:fin] 
-			
+			sublist = fpsys.state.filteredViewObject[start:fin]
+
 			## Empty the choice control.
-			self.choicePage.Clear() 
-			
+			self.choicePage.Clear()
+
 			## Now refill it
-			[self.choicePage.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)] 
+			[self.choicePage.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)]
 			self.choicePage.SetSelection(self.pageindex-1)
 			#self.choiceSlider.SetRange(1,self.total_number_of_pages+1)
 
 		## The viewobject is empty anyway.
-		else: 
+		else:
 			sublist = []
 
-		if self.total_number_of_pages == 1: 
+		if self.total_number_of_pages == 1:
 			self.choicePage.Enable(False) #I tried to hide/show the choice, but it would not redraw properly.
 			#self.choiceSlider.Enable(False)
 		else:
 			self.choicePage.Enable(True)
 			#self.choiceSlider.Enable(True)
-			
+
 		self.scrolledFontView.CreateFitmaps( sublist ) # Tell my child to draw the fonts
 		#self.sizerScrolledFontView.Fit(self)
 
@@ -392,12 +392,12 @@ class FontViewPanel(wx.Panel):
 			for fi in victims:
 				vo.remove(fi) #Now remove it from the vo
 			del victims
-			
+
 			if dowrite:
 				fpsys.flushTicks()
 				bug = False
 				try:
-					vo.write()	  
+					vo.write()
 				except (fontybugs.PogWriteError), e:
 					bug = True
 					ps.pub( show_error, unicode( e ) )
@@ -408,7 +408,7 @@ class FontViewPanel(wx.Panel):
 					ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
 				else:
 					ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done."))
-		
+
 		## APPEND - Copy font to a pog.
 		if fpsys.state.action == "APPEND":
 			## We must append the fonts to the Pog
@@ -418,13 +418,13 @@ class FontViewPanel(wx.Panel):
 			dowrite = False
 			for fi in vo:
 				if fi.ticked:
-					to.append(fi) 
+					to.append(fi)
 					dowrite = True
-			if dowrite: 
+			if dowrite:
 				fpsys.flushTicks() #Ensure we have no more ticks after a succ xfer.
 				bug = False
 				try:
-					to.write()	  
+					to.write()
 				except (fontybugs.PogWriteError), e:
 					bug = True
 					ps.pub( show_error, unicode( e ) )
@@ -438,18 +438,18 @@ class FontViewPanel(wx.Panel):
 
 		wx.EndBusyCursor()
 		self.scrolledFontView.Scroll(xPos, yPos)
-		
+
 		if doupdate: self.MainFontViewUpdate()
-		
+
 	def onPagechoiceClick(self,event) :
 		wx.BeginBusyCursor()
 		if self.pageindex != int(event.GetString() ) : #Only redraw if actually onto another page.
-			self.pageindex =  int(event.GetString() ) 
-			self.filterAndPageThenCallCreateFitmaps() 
+			self.pageindex =  int(event.GetString() )
+			self.filterAndPageThenCallCreateFitmaps()
 		wx.EndBusyCursor()
 
 	def OnSliderScroll(self, event):
-		""" 
+		"""
 			July 2016: Tried a slider to move through pages. It sucked.
 			This code not in use.
 		"""
@@ -464,7 +464,7 @@ class FontViewPanel(wx.Panel):
 
 	def navClick(self,event) :
 		wx.BeginBusyCursor()
-		if event.GetId()  == wx.ID_FORWARD: 
+		if event.GetId()  == wx.ID_FORWARD:
 			self.pageindex += 1
 		else: #wx.ID_BACKWARD
 			self.pageindex -= 1
@@ -472,9 +472,9 @@ class FontViewPanel(wx.Panel):
 			self.pageindex = self.total_number_of_pages
 		if self.pageindex == 0:
 			self.pageindex = 1
-		 
+
 		self.buttMain.SetFocus()  #a GTK bug demands this move.
-		self.filterAndPageThenCallCreateFitmaps() 
+		self.filterAndPageThenCallCreateFitmaps()
 		wx.EndBusyCursor()
 
 	def OnLeftOrRightKey(self, evt):
@@ -498,13 +498,13 @@ class FontViewPanel(wx.Panel):
 		"""
 		n = True
 		p = True
-		if self.pageindex == self.total_number_of_pages: 
+		if self.pageindex == self.total_number_of_pages:
 			n = False
 		if self.pageindex == 1:
 			p = False
-		self.buttNext.Enable(n)		 
-		self.buttPrev.Enable(p) 
-		
+		self.buttNext.Enable(n)
+		self.buttPrev.Enable(p)
+
 	def ToggleMainButton(self):
 		ps.pub( toggle_selection_menu_item, True )
 		self.buttMain.SetLabel( self.buttMainLastLabel )
@@ -513,31 +513,31 @@ class FontViewPanel(wx.Panel):
 			ps.pub( toggle_selection_menu_item, False )
 			return
 
-		if fpsys.state.numticks > 0: 
+		if fpsys.state.numticks > 0:
 			self.buttMain.Enable(True)
-		else: 
+		else:
 			self.buttMain.SetLabel( _("Choose some fonts") )
 
 	def MainFontViewUpdate(self):
 		"""
-		Vital routine - the heart if the app. 
-		
+		Vital routine - the heart if the app.
+
 		This decides what to do based on what has been selected.
-		It draws the controls and the fonts as appropriate. 
+		It draws the controls and the fonts as appropriate.
 		It also sets flags in fpsys.state
 		"""
 		## Get shorter vars to use.
 		V = fpsys.state.viewobject
 		T = fpsys.state.targetobject
-			
+
 		Vpatt = fpsys.state.viewpattern # View Pattern
 		Tpatt = fpsys.state.targetpattern # Target pattern
-	
+
 		Patt = Vpatt + Tpatt # Patt = Pattern
 
 		lab = ""
 		status = ""
-		
+
 		## June 2009: A default value for this:
 		self.TICKMAP = self.TICK
 
@@ -545,7 +545,7 @@ class FontViewPanel(wx.Panel):
 		## N == Empty Target - no fonts.
 		## P is Pog
 		## F is Folder
-		
+
 		if Vpatt == "E": #NOTE : TESTING VPATT, not PATT - ergo: this covers E, EN, EP
 			## Empty "E" - when the chosen Folder or Pog has NO FONTS IN IT.
 			if Tpatt == "P":
@@ -557,7 +557,7 @@ class FontViewPanel(wx.Panel):
 			btext = _("Nothing to do")
 			fpsys.state.cantick = False
 			fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
-			
+
 		elif Patt == "FN":
 			#View a Folder, no target
 			lab = _("Viewing Folder %s") % V.label()
@@ -618,7 +618,7 @@ class FontViewPanel(wx.Panel):
 					lab = _("Append from %(source)s into %(target)s") % {"source":V.name, "target":T.name}
 					btext = _("Put fonts into %s") % T.name
 					self.TICKMAP = self.TICK
-					fpsys.state.cantick = True	 
+					fpsys.state.cantick = True
 					fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
 					status = _("You can append fonts to your target Pog.")
 		else:
@@ -630,7 +630,7 @@ class FontViewPanel(wx.Panel):
 		if Vpatt=="P":
 			if not fpsys.state.viewobject.isInstalled():
 				ps.pub( toggle_purge_menu_item, True )
-		
+
 		self.buttMainLastLabel=btext
 		self.textMainInfo.SetLabel( lab)
 		self.textMainInfo.Show()
@@ -652,7 +652,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 	"""
 	def __init__(self, parent):
 		self.FVP = parent
-		self.lab = u" " 
+		self.lab = u" "
 		self.infoFont = wx.Font(11, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
 		self.light = (255,255,255)#wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
 		self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
@@ -677,24 +677,26 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 
 	def DoGetBestSize(self):
 		bestw,self.h = (100,26)
-		best = wx.Size(bestw,self.h) 
+		best = wx.Size(bestw,self.h)
 		self.CacheBestSize(best)
 		return best
 
 	def OnPaint(self, event):
 		dc = wx.PaintDC(self)
-		w = self.width
-		w -= wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X) # minus width of the scrollbar
-		#Now draw the thing:
-		rect = wx.Rect(0,0, w, self.h + 10)
-		
-		dc.SetPen(wx.Pen(self.dark,width=1))
-		dc.SetBrush( wx.TRANSPARENT_BRUSH ) 
 
-		dc.DrawRoundedRectangleRect(rect, 5)
+		## JULY 2016
+		## =========
+		## Decided to unclutter a bit, remarked this lot.
+		#w = self.width
+		#w -= wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X) # minus width of the scrollbar
+		#Now draw the thing:
+		#rect = wx.Rect(0,0, w, self.h + 10)
+		#dc.SetPen(wx.Pen(self.dark,width=1))
+		#dc.SetBrush( wx.TRANSPARENT_BRUSH )
+		#dc.DrawRoundedRectangleRect(rect, 5)
 
 		# The text
-		dc.SetFont(self.infoFont) 
+		dc.SetFont(self.infoFont)
 		dc.DrawText(self.lab, 27,5)
 
 		dc.DrawBitmap( self.VIEWICON, 6,5, True)
@@ -709,7 +711,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		# How big is the text?
 		bestw,besth = dc.GetTextExtent(self.lab) or (100,100)
 		besth += 8
-		best = wx.Size(bestw,besth) 
+		best = wx.Size(bestw,besth)
 		self.CacheBestSize(best)
 		self.h=besth
 		return best
@@ -722,7 +724,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 			dc = wx.GCDC(pdc)
 		except:
 			dc = pdc
-		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 40 
+		w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 40
 		rect = wx.Rect(0,0, w, self.h + 10)
 		dc.SetPen(wx.Pen(self.dark,width=1))
 		dc.SetBrush(wx.Brush(self.back))
@@ -730,6 +732,6 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 		#The gradient under the text
 		dc.GradientFillLinear( wx.Rect(2, self.h-15, w-3, self.h-2), self.light, self.back, nDirection=wx.NORTH )
 		# The text
-		dc.SetFont(self.infoFont) 
+		dc.SetFont(self.infoFont)
 		dc.DrawText(self.lab, 27,5)
 		dc.DrawBitmap( self.VIEWICON, 6,5, True)
