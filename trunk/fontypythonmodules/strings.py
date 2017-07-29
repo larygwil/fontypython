@@ -306,17 +306,17 @@ http://wxpython.org/download.php
 """) % {"wxv":wxvers}
 
 
-PILError = _("""I cannot find "python-imaging"
+PILError = _("""I cannot find "python-pil"
 Please install this package.
 
 TIP
 ===
 On my distro I can search for it like this:
-aptitude search python-imag
+aptitude search python-pil
 This returns many results, one of which is:
-python-imaging
+python-pil
 I then install it like this:
-sudo aptitude install python-imaging
+sudo aptitude install python-pil
 
 Make sure it's at least version 1.1.6-1
 

@@ -159,7 +159,7 @@ def checkFonts( dirtocheck, printer ):
 	global segfonts
 	
 	code = """
-import ImageFont
+from PIL import ImageFont
 try:
 	font=ImageFont.truetype("%s", 24, 0)
 	dud=font.getname()

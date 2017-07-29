@@ -24,7 +24,7 @@ import imp
 
 ## PIL : Is it there?
 try: 
-	import Image, ImageFont, ImageDraw 
+	from PIL import Image, ImageFont, ImageDraw
 except: 
 	print strings.PILError
 	raise SystemExit
