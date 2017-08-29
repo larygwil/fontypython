@@ -56,7 +56,7 @@ class DirControl(wx.GenericDirCtrl) :
 				startdir = lastdir
 			else:
 				startdir = os.environ['HOME']
-		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY)
+		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
 
 		# create the image list:
 		isz = (16,16)
@@ -98,8 +98,8 @@ class NoteBook(wx.Notebook):
 	Has two tabs - Folders and Pogs
 	THIS IS THE VIEW or SOURCE of fonts.
 	"""
-	def __init__(self, parent):
-		wx.Notebook.__init__(self, parent, style=wx.NB_BOTTOM)
+	def __init__(self, parent, name="notebook_not_named"):
+		wx.Notebook.__init__(self, parent, style=wx.NB_BOTTOM, name = name)
 		self.imlist = wx.ImageList(16, 16)
 
 		pan1 = wx.Panel(self)

@@ -55,8 +55,8 @@ class Splitter(wx.SplitterWindow):
 	"""
 	The splitter used twice in mainframe.
 	"""
-	def __init__(self, parent) :
-		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D)
+	def __init__(self, parent, name="splitter_not_named") :
+		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D, name = name)
 
 class StatusBar(wx.StatusBar):
 	"""
@@ -158,7 +158,7 @@ class MainFrame(wx.Frame):
 		self.splitter = Splitter(self,name="splitter1")
 
 		## The notebook
-		self.panelNotebook = wx.Panel(self.splitter,name="panel_notebook")
+		self.panelNotebook = wx.Panel(self.splitter,name="panel_for_notebook")
 
 		## Notebook label and icon
 		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
@@ -172,7 +172,7 @@ class MainFrame(wx.Frame):
 		self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
 
 		## Now the actual notebook
-		self.nb = NoteBook(self.panelNotebook)
+		self.nb = NoteBook(self.panelNotebook, name="notebook")
 
 		## Make a Vertical sizer to hold them.
 		self.sizerNotebook = wx.BoxSizer(wx.VERTICAL)
@@ -185,7 +185,7 @@ class MainFrame(wx.Frame):
 		self.sizerNotebook.Layout()
 
 		## dec 2007 : Added a second splitter. It was a bitch!
-		self.splitter2 = Splitter(self.splitter, name="splitter2") # gets the second slot of splitter
+		self.splitter2 = Splitter(self.splitter, name="splitter2(parent is splitter1)") # gets the second slot of splitter
 
 		## Font View Panel Control:
 		self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
@@ -233,7 +233,7 @@ class MainFrame(wx.Frame):
 		#ps.sub ( get_sashes_position, self.GetSashesPos )
 
 		## call the big one - the big chief, the big cheese:
-		## This eventually draws all the Fitmaps - giving the middle have a width.
+		## This eventually draws all the Fitmaps - giving the middle a width.
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
 		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)

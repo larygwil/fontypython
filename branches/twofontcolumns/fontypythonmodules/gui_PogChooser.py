@@ -76,7 +76,7 @@ class PogChooser(wx.ListCtrl) :
 		png = wx.Bitmap( fpsys.mythingsdir + "/pog16x16.target.png", wx.BITMAP_TYPE_PNG )
 		il.Add( png )
 		
-		wx.ListCtrl.__init__( self,parent,-1, style=style | wx.SUNKEN_BORDER ) 
+		wx.ListCtrl.__init__( self,parent,-1, style=style | wx.SUNKEN_BORDER, name="pog_chooser" ) 
 		
 		self.AssignImageList(il, wx.IMAGE_LIST_SMALL) 
 

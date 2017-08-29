@@ -1,0 +1,41 @@
+Aug 2017
+==
+Layout:
+
+MainFrame ("frame") wxgui.py
+.StatusBar ("status_line") wxgui.py
+
+.Splitter ("splitter1") wxgui.py
+..Panel ("panel_for_notebook") wxgui.py
+   BoxSizer VERTICAL ("sizerNotebook") wxgui.py
+    BoxSizer HORIZONTAL ("sizer_iconandtext") wxgui.py
+     Spacer
+     StaticBitmap
+     StaticText
+    Notebook("notebook") wxgui.py & class in gui_Left.py
+     Panel()
+      BoxSizer VERT
+       DirControl("dircontrol")
+       CheckBox("check")
+     Panel()
+      BoxSizer HORIZ
+       PogChooser("pog_chooser") class in gui_pogChooser.py
+
+..Splitter ("splitter2. parent is splitter1") wxgui.py
+   FontViewPanel("panel") ?
+    BoxSizer VERTICAL
+     BoxSizer HORIZ
+      MyLabel (text above font panel)
+     ScrolledFontView("scrolledpanel")
+      FlexGridSizer
+       Fitmap, Fitmap, ...
+     BoxSizer HORIZ
+      Filter, b,i,r, search, combo
+     BoxSizer HORIZ
+      left, spacebar, right 
+   TargetPogChooser("panel") ? 
+    BoxSizer VERTICAL
+     BoxSizer HORIZ
+      bitmap, text
+     PogChooser("pog_chooser")
+     Button, button, button, ...
