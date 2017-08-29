@@ -263,6 +263,7 @@ class FontViewPanel(wx.Panel):
 			for id, dic in self.BIR.iteritems():
 				if dic['truth']: ss += "%s%s" % (dic['style']," ") # Builds AND regex (space is and)
 			ss = ss[:-1]
+		print ss
 
 		self.inputFilter.SetValue( ss )
 		self.startSearch( ss )

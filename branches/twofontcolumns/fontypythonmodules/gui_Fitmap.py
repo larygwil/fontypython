@@ -392,7 +392,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.fitem.ticked = not(self.fitem.ticked)
 			self.prepareBitmap() # This only redraws a single font item.
 			self.Refresh()  #forces a redraw.
- 
+
 			## Inc or dec a counter depending on the tickedness of this item
 			if self.fitem.ticked: fpsys.state.numticks += 1
 			if not self.fitem.ticked: fpsys.state.numticks -= 1

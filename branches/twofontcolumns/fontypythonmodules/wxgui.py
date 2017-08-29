@@ -155,10 +155,10 @@ class MainFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
 
 		## Create a splitter 
-		self.splitter = Splitter(self)
+		self.splitter = Splitter(self,name="splitter1")
 
 		## The notebook
-		self.panelNotebook = wx.Panel(self.splitter)
+		self.panelNotebook = wx.Panel(self.splitter,name="panel_notebook")
 
 		## Notebook label and icon
 		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
@@ -185,7 +185,7 @@ class MainFrame(wx.Frame):
 		self.sizerNotebook.Layout()
 
 		## dec 2007 : Added a second splitter. It was a bitch!
-		self.splitter2 = Splitter(self.splitter) # gets the second slot of splitter
+		self.splitter2 = Splitter(self.splitter, name="splitter2") # gets the second slot of splitter
 
 		## Font View Panel Control:
 		self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
