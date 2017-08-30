@@ -16,7 +16,7 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import os, sys, locale, glob, errno
-import Image, ImageFont, ImageDraw 
+from PIL import Image, ImageFont, ImageDraw
 import fontybugs, fpsys
 from pathcontrol import *
 

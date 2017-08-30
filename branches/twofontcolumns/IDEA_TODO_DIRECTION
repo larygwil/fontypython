@@ -10,4 +10,15 @@ A font inspector - open a dialogue showing all the glyphs at each
 character position. This has been asked for, but may not make it into 
 Fonty soon.
 
+The gradient in the font bitmaps
 
+Distinguish TTC somehow
+Perhaps - a small icon to show TTF vs Type1 vs TTC etc.
+
+Don't forget to remove the wx debug stuff on the app object
+
+SIMPLIFY THE HELP. Make the .fonts thing PRIMARY
+
+Possible: A fade-to-white on right edge of fitmaps so long text doesn't look so cut-off.
+
+A start-up initial directory for font source.
