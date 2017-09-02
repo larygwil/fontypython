@@ -1,0 +1,44 @@
+Index: pathcontrol.py
+===================================================================
+--- pathcontrol.py	(revision 167)
++++ pathcontrol.py	(revision 168)
+@@ -34,18 +34,31 @@
+ 		self.__fphomepath = self.__HOME + "/.fontypython/" # byte string
+ 		self.__fpconffile = self.__HOME + "/.fontypython/fp.conf" # byte string
+ 		
++		
+ 		## Is there a .fonts folder ?
+-		if not os.path.exists(self.__HOME + "/.fonts"):
++		##
++		## EDIT
++		##
++		## April 2012 - Kartik Mistry (kartik@debian.org)
++		## informed me there was a bug in some esoteric build
++		## of some voodoo Debian process and that I should
++		## simply skip the check and creation of .fonts directory.
++
++		#if not os.path.exists(self.__HOME + "/.fonts"):
+ 			## We gotta make it.
+-			try:
+-				os.mkdir(self.__HOME + "/.fonts")
+-			except:
+-				print _("""
+-Couldn't make the .fonts folder in %s
+-Please check your write permissions and try again.""") % self.__HOME
+-				raise SystemExit
++		#	try:
++		#		os.mkdir(self.__HOME + "/.fonts")
++		#	except:
++		#		print _("""
++#Couldn't make the .fonts folder in %s
++#Please check your write permissions and try again.""") % self.__HOME
++		#		raise SystemExit
++		
+ 		self.__userfontpath = self.__HOME + "/.fonts"
+ 		
++
++
++
+ 		## Make ~/.fontypython
+ 		if makeFolder:
+ 			if not os.path.exists(self.__fphomepath):

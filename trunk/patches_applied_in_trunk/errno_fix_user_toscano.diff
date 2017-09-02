@@ -1,0 +1,59 @@
+Index: fontypythonmodules/charmaps.py
+===================================================================
+--- fontypythonmodules/charmaps.py	(revision 167)
++++ fontypythonmodules/charmaps.py	(working copy)
+@@ -20,7 +20,7 @@
+ ## This is a common-ground for variables and defs that will be used from
+ ## other modules - so they are global to everything.
+ 
+-import os,  subprocess
++import os,  subprocess, errno
+ 
+ class CharMapApp(object):
+ 	'''
+@@ -67,11 +67,11 @@
+ 		try:
+ 			os.symlink( src, dest )
+ 		except OSError, detail:
+-			if detail.errno != 17:
+-				# Not 17 means the link failed, don't open the charmap
++			if detail.errno != errno.EEXIST:
++				# Not EEXIST means the link failed, don't open the charmap
+ 				return False
+ 			else:
+-				# Error 17: file exists.
++				# Error EEXIST: file exists.
+ 				# User may have installed it previously (or something).
+ 				self.already_installed = True
+ 		self.Run( cmd )
+Index: fontypythonmodules/fontcontrol.py
+===================================================================
+--- fontypythonmodules/fontcontrol.py	(revision 167)
++++ fontypythonmodules/fontcontrol.py	(working copy)
+@@ -15,7 +15,7 @@
+ ##	You should have received a copy of the GNU General Public License
+ ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-import os, sys, locale, glob
++import os, sys, locale, glob, errno
+ import Image, ImageFont, ImageDraw 
+ import fontybugs, fpsys
+ from pathcontrol import *
+@@ -757,7 +757,7 @@
+ 				os.symlink(frompaf, topaf)  #Should do the trick.
+ 				return True
+ 			except OSError, detail:
+-				if detail.errno != 17: raise # File exists -- this font is already installed, we can ignore 17.
++				if detail.errno != errno.EEXIST: raise # File exists -- this font is already installed, we can ignore EEXIST.
+ 				## This font has been linked before.
+ 				fpsys.Overlap.inc(fi.name) # Use the class in fpsys to manage overlaps.
+ 				
+@@ -909,7 +909,7 @@
+ 				file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
+ 			except OSError,e:
+ 				bugs=True
+-				# e.errno == 2: # 2 is No such file or directory
++				# e.errno == errno.ENOENT: # No such file or directory
+ 				print e # whatever is wrong, print the message and continue
+ 
+ 		file.close()		
