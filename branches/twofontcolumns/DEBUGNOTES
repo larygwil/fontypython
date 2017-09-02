@@ -1,0 +1,10 @@
+Python debugger
+#import pdb; pdb.set_trace()
+
+wxPython inspector. See wxgui.py in the App class definition:
+# Code for debugging:
+##http://wiki.wxpython.org/Widget%20Inspection%20Tool
+## Use ctrl+alt+i to open it.
+import wx.lib.mixins.inspection
+## Start the main frame and then show it.
+class App(wx.App , wx.lib.mixins.inspection.InspectionMixin) :
