@@ -1,0 +1,76 @@
+From: Pietro Battiston <me@pietrobattiston.it>
+Date: Fri, 30 Jun 2017 15:37:18 +0200
+Subject: Replace python-imaging with python-pil
+
+---
+ fontypythonmodules/fontcontrol.py | 2 +-
+ fontypythonmodules/fpsys.py       | 2 +-
+ fontypythonmodules/sanitycheck.py | 2 +-
+ fontypythonmodules/strings.py     | 8 ++++----
+ 4 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/fontypythonmodules/fontcontrol.py b/fontypythonmodules/fontcontrol.py
+index d379209..af2facd 100644
+--- a/fontypythonmodules/fontcontrol.py
++++ b/fontypythonmodules/fontcontrol.py
+@@ -16,7 +16,7 @@
+ ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ import os, sys, locale, glob, errno
+-import Image, ImageFont, ImageDraw 
++from PIL import Image, ImageFont, ImageDraw
+ import fontybugs, fpsys
+ from pathcontrol import *
+ 
+diff --git a/fontypythonmodules/fpsys.py b/fontypythonmodules/fpsys.py
+index 434759f..8d3453b 100644
+--- a/fontypythonmodules/fpsys.py
++++ b/fontypythonmodules/fpsys.py
+@@ -159,7 +159,7 @@ def checkFonts( dirtocheck, printer ):
+ 	global segfonts
+ 	
+ 	code = """
+-import ImageFont
++from PIL import ImageFont
+ try:
+ 	font=ImageFont.truetype("%s", 24, 0)
+ 	dud=font.getname()
+diff --git a/fontypythonmodules/sanitycheck.py b/fontypythonmodules/sanitycheck.py
+index bedf620..b696ecc 100644
+--- a/fontypythonmodules/sanitycheck.py
++++ b/fontypythonmodules/sanitycheck.py
+@@ -24,7 +24,7 @@ import imp
+ 
+ ## PIL : Is it there?
+ try: 
+-	import Image, ImageFont, ImageDraw 
++	from PIL import Image, ImageFont, ImageDraw
+ except: 
+ 	print strings.PILError
+ 	raise SystemExit
+diff --git a/fontypythonmodules/strings.py b/fontypythonmodules/strings.py
+index c21e025..801c398 100644
+--- a/fontypythonmodules/strings.py
++++ b/fontypythonmodules/strings.py
+@@ -306,17 +306,17 @@ http://wxpython.org/download.php
+ """) % {"wxv":wxvers}
+ 
+ 
+-PILError = _("""I cannot find "python-imaging"
++PILError = _("""I cannot find "python-pil"
+ Please install this package.
+ 
+ TIP
+ ===
+ On my distro I can search for it like this:
+-aptitude search python-imag
++aptitude search python-pil
+ This returns many results, one of which is:
+-python-imaging
++python-pil
+ I then install it like this:
+-sudo aptitude install python-imaging
++sudo aptitude install python-pil
+ 
+ Make sure it's at least version 1.1.6-1
+ 

@@ -1,0 +1,4 @@
+include fontypython start_fontypython README COPYING CHANGELOG fontypython.png fontypython.desktop fontypython.1 MANIFEST.in
+recursive-include fontypythonmodules/things *
+recursive-include fontypythonmodules/locale *
+recursive-include fontypythonmodules/help *

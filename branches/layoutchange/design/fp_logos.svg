@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   sodipodi:docbase="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design"
+   sodipodi:docname="fplogo.svg"
+   inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/fp/fplogo.png"
+   inkscape:export-xdpi="89.985931"
+   inkscape:export-ydpi="89.985931"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="6.1"
+     objecttolerance="10"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.48225309"
+     inkscape:cx="19.036885"
+     inkscape:cy="-72.458835"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="32px"
+     height="32px"
+     inkscape:window-width="1676"
+     inkscape:window-height="977"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:object-points="false"
+     inkscape:grid-points="false"
+     inkscape:guide-points="false"
+     showgrid="false">
+    <sodipodi:guide
+       id="guide1946"
+       position="28.9375"
+       orientation="horizontal" />
+    <sodipodi:guide
+       id="guide1948"
+       position="26.666667"
+       orientation="horizontal" />
+    <sodipodi:guide
+       id="guide1950"
+       position="20.716253"
+       orientation="horizontal" />
+    <sodipodi:guide
+       id="guide1956"
+       position="7.8359375"
+       orientation="horizontal" />
+    <sodipodi:guide
+       id="guide1958"
+       position="14.953125"
+       orientation="horizontal" />
+    <sodipodi:guide
+       id="guide1960"
+       position="21.820312"
+       orientation="horizontal" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient3660">
+      <stop
+         style="stop-color:#414e54;stop-opacity:1;"
+         offset="0"
+         id="stop3662" />
+      <stop
+         style="stop-color:#768b94;stop-opacity:0;"
+         offset="1"
+         id="stop3664" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3648">
+      <stop
+         id="stop3650"
+         offset="0"
+         style="stop-color:#b1bdc2;stop-opacity:1;" />
+      <stop
+         id="stop3652"
+         offset="1"
+         style="stop-color:#768b94;stop-opacity:0;" />
+    </linearGradient>
+    <filter
+       id="filter6603"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur6605"
+         stdDeviation="3.6225052"
+         inkscape:collect="always" />
+    </filter>
+    <filter
+       id="filter5563"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur5565"
+         stdDeviation="1.8143196"
+         inkscape:collect="always" />
+    </filter>
+    <filter
+       id="filter6587"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur6589"
+         stdDeviation="4.3543671"
+         inkscape:collect="always" />
+    </filter>
+    <inkscape:perspective
+       id="perspective92"
+       inkscape:persp3d-origin="16 : 10.666667 : 1"
+       inkscape:vp_z="32 : 16 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 16 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <clipPath
+       id="clipPath3714"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         transform="translate(271,-6)"
+         inkscape:export-ydpi="89.985931"
+         inkscape:export-xdpi="89.985931"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+         ry="4.161212"
+         rx="4.1612115"
+         y="-180.80663"
+         x="-497.9292"
+         height="225.37424"
+         width="216.70116"
+         id="rect3716"
+         style="fill:#768b94;fill-opacity:1;stroke:#ffffff;stroke-width:0.89916426;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </clipPath>
+    <linearGradient
+       y2="-107.38374"
+       x2="-383.53033"
+       y1="-207.21753"
+       x1="-383.53033"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3768"
+       xlink:href="#linearGradient3660"
+       inkscape:collect="always" />
+    <linearGradient
+       y2="-30.420269"
+       x2="-383.53033"
+       y1="-160.01096"
+       x1="-383.53033"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3770"
+       xlink:href="#linearGradient3648"
+       inkscape:collect="always" />
+    <filter
+       id="filter3777"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur3779"
+         stdDeviation="3.3882865"
+         inkscape:collect="always" />
+    </filter>
+    <filter
+       id="filter3294"
+       inkscape:collect="always">
+      <feGaussianBlur
+         id="feGaussianBlur3296"
+         stdDeviation="1.3272304"
+         inkscape:collect="always" />
+    </filter>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     style="display:inline"
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <rect
+       transform="translate(-20,-18)"
+       style="fill:#ff9955;fill-opacity:1;stroke:#ffffff;stroke-width:1.33947802;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2201"
+       width="266.02722"
+       height="407.41077"
+       x="-875.10413"
+       y="-166.07126"
+       rx="5.108397"
+       ry="7.5222549"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931" />
+    <rect
+       transform="matrix(1.0488501,0,0,1.1109266,295.32389,14.056266)"
+       style="fill:#768b94;fill-opacity:1;stroke:#000000;stroke-width:4.6320219;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3777)"
+       id="rect3676"
+       width="216.70116"
+       height="225.37424"
+       x="-497.9292"
+       y="-180.80663"
+       rx="3.9674034"
+       ry="3.7457128"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931" />
+    <rect
+       transform="translate(175.83333,-12.5)"
+       ry="2.1158133"
+       rx="1.9673208"
+       y="0.034326553"
+       x="-0.0074653625"
+       height="31.931347"
+       width="32.014931"
+       id="rect2227"
+       style="fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931" />
+    <g
+       id="g2229"
+       transform="matrix(0.910674,0,0,0.910674,177.55954,-11.070784)"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931">
+      <path
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:#ffffff;stroke-width:4.39235258;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Frozen Dog Treats"
+         d="M 16.50868,3.6836859 C 13.677144,3.7838966 11.250218,4.4494558 9.2540195,5.7513883 C 7.0913721,7.1619086 5.7248791,9.086568 5.1770206,11.534962 L 1.3098673,28.346281 L 10.153358,28.346281 L 11.202586,23.881242 L 15.909121,23.881242 L 19.416539,23.881242 C 22.222523,23.881242 28.442599,23.462849 29.609036,17.528302 L 30.598308,11.564928 C 31.254652,6.4578289 28.356287,3.9476879 23.043869,3.6537193 L 20.525723,3.6537193 L 17.22815,3.6537193 L 16.50868,3.6836859 z M 15.459452,10.45616 L 18.96687,10.45616 L 23.253715,10.45616 L 21.964663,16.2697 C 21.832536,16.801865 21.121726,17.051208 20.765547,17.048835 L 17.467973,17.048835 L 12.761438,17.048835 L 14.05049,11.534962 C 14.136978,11.055943 14.267174,10.772398 14.440202,10.665927 C 14.617966,10.548744 14.969886,10.470444 15.459452,10.45616 z"
+         id="path2231"
+         sodipodi:nodetypes="csccccccccccccccccccccsc" />
+      <g
+         transform="matrix(1.133113,0,0,1.13253,-1.272059,-1.580465)"
+         id="g2233">
+        <path
+           style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+           d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+           id="path2235"
+           sodipodi:nodetypes="ccccccccccc" />
+        <path
+           sodipodi:nodetypes="cccccsccccscccc"
+           id="path2237"
+           d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+           style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+      </g>
+    </g>
+    <g
+       transform="matrix(1.133113,0,0,1.13253,119.06745,-168.2133)"
+       id="g2873">
+      <path
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#5b7058;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+         d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+         id="path2875"
+         sodipodi:nodetypes="ccccccccccc" />
+      <path
+         sodipodi:nodetypes="cccccsccccscccc"
+         id="path2877"
+         d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+         style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#2f3032;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+    </g>
+    <g
+       transform="matrix(1.181195,0,0,1.18103,122.65872,-139.7947)"
+       id="g1962">
+      <path
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+         d="M 8.3440419,22.435837 L 19.93425,22.435837 C 22.410599,22.435837 26.097756,22.285206 27.313744,16.821203 L 28.131004,11.559045 C 28.56098,6.7510183 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.58406,15.953495 C 20.467456,16.423384 20.061882,16.411678 19.747545,16.409582 L 7.436218,16.423384"
+         id="path1952"
+         sodipodi:nodetypes="ccccccccccc" />
+      <path
+         sodipodi:nodetypes="cccccsccccscccc"
+         id="path1954"
+         d="M 17.26417,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 21.341917,4.5687527 L 19.967739,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 18.638347,16.412399 L 17.26417,22.43986"
+         style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+    </g>
+    <g
+       transform="matrix(1.133113,0,0,1.13253,85.790543,-151.1125)"
+       id="g2910">
+      <path
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+         d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+         id="path2912"
+         sodipodi:nodetypes="ccccccccccc" />
+      <path
+         sodipodi:nodetypes="cccccsccccscccc"
+         id="path2914"
+         d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+         style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+    </g>
+    <g
+       id="g2230"
+       transform="translate(-76.388889,160.41667)"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design/launchpad64x64.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.477;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect2232"
+         width="64"
+         height="64"
+         x="-652"
+         y="-275.80325" />
+      <g
+         inkscape:export-ydpi="96.760002"
+         inkscape:export-xdpi="96.760002"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design/fp_notext_logo.png"
+         transform="matrix(0.2741846,0,0,0.2741846,-435.24524,-304.9989)"
+         id="g2234">
+        <rect
+           style="fill:#768b94;fill-opacity:1;stroke:#ffffff;stroke-width:0.89916426;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect2236"
+           width="216.70116"
+           height="225.37424"
+           x="-782.18414"
+           y="110.5043"
+           rx="4.1612115"
+           ry="4.161212"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-ydpi="89.985931" />
+        <g
+           id="g2238"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-ydpi="89.985931"
+           transform="translate(-284.25495,291.31093)">
+          <path
+             inkscape:export-ydpi="89.985931"
+             inkscape:export-xdpi="89.985931"
+             inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+             sodipodi:nodetypes="csccccccccccccccccccccsc"
+             id="path2240"
+             d="M -387.06686,-144.42434 C -403.84666,-143.83095 -418.22873,-139.88992 -430.05821,-132.18066 C -442.87415,-123.82841 -450.97207,-112.43175 -454.21864,-97.933844 L -477.13556,1.6125997 L -424.72875,1.6125997 L -418.51098,-24.826655 L -390.61988,-24.826655 L -369.83485,-24.826655 C -353.20647,-24.826655 -316.34613,-27.304125 -309.43377,-62.444916 L -303.57133,-97.756403 C -299.68177,-127.99755 -316.85761,-142.86108 -348.33918,-144.60179 L -363.26176,-144.60179 L -382.80326,-144.60179 L -387.06686,-144.42434 z M -393.28464,-104.32186 L -372.49955,-104.32186 L -347.0956,-104.32186 L -354.73455,-69.897595 C -355.51756,-66.746436 -359.72984,-65.269978 -361.84058,-65.284029 L -381.38208,-65.284029 L -409.27319,-65.284029 L -401.63418,-97.933844 C -401.12169,-100.7703 -400.35012,-102.44929 -399.32474,-103.07974 C -398.27133,-103.77363 -396.18584,-104.23727 -393.28464,-104.32186 z"
+             style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:#ffffff;stroke-width:12.56452751;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Frozen Dog Treats" />
+          <g
+             inkscape:export-ydpi="89.985931"
+             inkscape:export-xdpi="89.985931"
+             inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+             id="g2242"
+             transform="matrix(6.714864,0,0,6.706156,-492.3964,-175.5953)">
+            <path
+               sodipodi:nodetypes="ccccccccccc"
+               id="path2244"
+               d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+               style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+            <path
+               style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+               d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+               id="path2246"
+               sodipodi:nodetypes="cccccsccccscccc" />
+          </g>
+          <path
+             style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:9.2820673;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+             d="M -371.99505,-103.59252 L -363.257,-145.9023"
+             id="path2248"
+             sodipodi:nodetypes="cc" />
+          <path
+             sodipodi:nodetypes="cc"
+             id="path2250"
+             d="M -390.8217,-23.713406 L -381.79555,-66.984678"
+             style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:9.2820673;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+        </g>
+      </g>
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design/fontypython.png"
+       transform="translate(-100.38889,-29.18333)"
+       id="g2277">
+      <rect
+         y="-275.80325"
+         x="-652"
+         height="64"
+         width="64"
+         id="rect2259"
+         style="opacity:1;fill:#ffffff;fill-opacity:0;fill-rule:nonzero;stroke:none;stroke-width:0.477;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <g
+         id="g2217"
+         transform="matrix(0.282654,0,0,0.282654,-429.53825,-306.8892)"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design/fp_notext_logo.png"
+         inkscape:export-xdpi="96.760002"
+         inkscape:export-ydpi="96.760002">
+        <rect
+           inkscape:export-ydpi="89.985931"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+           ry="4.161212"
+           rx="4.1612115"
+           y="110.5043"
+           x="-782.18414"
+           height="225.37424"
+           width="216.70116"
+           id="rect2896"
+           style="fill:#768b94;fill-opacity:1;stroke:#ffffff;stroke-width:0.89916426;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <g
+           transform="translate(-284.25495,291.31093)"
+           inkscape:export-ydpi="89.985931"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+           id="g6208">
+          <path
+             style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:#ffffff;stroke-width:12.56452751;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Frozen Dog Treats"
+             d="M -387.06686,-144.42434 C -403.84666,-143.83095 -418.22873,-139.88992 -430.05821,-132.18066 C -442.87415,-123.82841 -450.97207,-112.43175 -454.21864,-97.933844 L -477.13556,1.6125997 L -424.72875,1.6125997 L -418.51098,-24.826655 L -390.61988,-24.826655 L -369.83485,-24.826655 C -353.20647,-24.826655 -316.34613,-27.304125 -309.43377,-62.444916 L -303.57133,-97.756403 C -299.68177,-127.99755 -316.85761,-142.86108 -348.33918,-144.60179 L -363.26176,-144.60179 L -382.80326,-144.60179 L -387.06686,-144.42434 z M -393.28464,-104.32186 L -372.49955,-104.32186 L -347.0956,-104.32186 L -354.73455,-69.897595 C -355.51756,-66.746436 -359.72984,-65.269978 -361.84058,-65.284029 L -381.38208,-65.284029 L -409.27319,-65.284029 L -401.63418,-97.933844 C -401.12169,-100.7703 -400.35012,-102.44929 -399.32474,-103.07974 C -398.27133,-103.77363 -396.18584,-104.23727 -393.28464,-104.32186 z"
+             id="path2869"
+             sodipodi:nodetypes="csccccccccccccccccccccsc"
+             inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+             inkscape:export-xdpi="89.985931"
+             inkscape:export-ydpi="89.985931" />
+          <g
+             transform="matrix(6.714864,0,0,6.706156,-492.3964,-175.5953)"
+             id="g2890"
+             inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+             inkscape:export-xdpi="89.985931"
+             inkscape:export-ydpi="89.985931">
+            <path
+               style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+               d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+               id="path2892"
+               sodipodi:nodetypes="ccccccccccc" />
+            <path
+               sodipodi:nodetypes="cccccsccccscccc"
+               id="path2894"
+               d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+               style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+          </g>
+          <path
+             sodipodi:nodetypes="cc"
+             id="path6204"
+             d="M -371.99505,-103.59252 L -363.257,-145.9023"
+             style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:9.2820673;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+          <path
+             style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:9.2820673;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+             d="M -390.8217,-23.713406 L -381.79555,-66.984678"
+             id="path6206"
+             sodipodi:nodetypes="cc" />
+        </g>
+      </g>
+    </g>
+    <path
+       transform="translate(175.83333,-12.5)"
+       sodipodi:nodetypes="cc"
+       id="path2239"
+       d="M 18.577322,11.948529 L 20.338393,3.7256577"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931" />
+    <path
+       transform="translate(175.83333,-12.5)"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="M 15.710491,24.271684 L 17.56339,16.081233"
+       id="path2241"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931" />
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design/launchpad14x14.png"
+       transform="translate(-70.138889,103.47222)"
+       id="g2265">
+      <rect
+         y="-173.78416"
+         x="-723.98914"
+         height="14"
+         width="14"
+         id="rect2257"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.477;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <g
+         id="g2243"
+         transform="matrix(0.4266775,0,0,0.4266775,-552.2916,-235.90593)"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/graphic_design/fp_notext_icon.png"
+         inkscape:export-xdpi="96.760002"
+         inkscape:export-ydpi="96.760002">
+        <rect
+           inkscape:export-ydpi="89.985931"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+           style="fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect2906"
+           width="32.014931"
+           height="31.931347"
+           x="-402.00748"
+           y="146.03433"
+           rx="1.9673208"
+           ry="2.1158133" />
+        <g
+           inkscape:export-ydpi="89.985931"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+           transform="matrix(0.910674,0,0,0.910674,-400.27379,147.42922)"
+           id="g2905">
+          <path
+             sodipodi:nodetypes="csccccccccccccccccccccsc"
+             id="path2898"
+             d="M 16.50868,3.6836859 C 13.677144,3.7838966 11.250218,4.4494558 9.2540195,5.7513883 C 7.0913721,7.1619086 5.7248791,9.086568 5.1770206,11.534962 L 1.3098673,28.346281 L 10.153358,28.346281 L 11.202586,23.881242 L 15.909121,23.881242 L 19.416539,23.881242 C 22.222523,23.881242 28.442599,23.462849 29.609036,17.528302 L 30.598308,11.564928 C 31.254652,6.4578289 28.356287,3.9476879 23.043869,3.6537193 L 20.525723,3.6537193 L 17.22815,3.6537193 L 16.50868,3.6836859 z M 15.459452,10.45616 L 18.96687,10.45616 L 23.253715,10.45616 L 21.964663,16.2697 C 21.832536,16.801865 21.121726,17.051208 20.765547,17.048835 L 17.467973,17.048835 L 12.761438,17.048835 L 14.05049,11.534962 C 14.136978,11.055943 14.267174,10.772398 14.440202,10.665927 C 14.617966,10.548744 14.969886,10.470444 15.459452,10.45616 z"
+             style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:#ffffff;stroke-width:4.39235258;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Frozen Dog Treats" />
+          <g
+             id="g2900"
+             transform="matrix(1.133113,0,0,1.13253,-1.272059,-1.580465)">
+            <path
+               sodipodi:nodetypes="ccccccccccc"
+               id="path2902"
+               d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+               style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+            <path
+               style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+               d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+               id="path2904"
+               sodipodi:nodetypes="cccccsccccscccc" />
+          </g>
+        </g>
+        <path
+           inkscape:export-ydpi="89.985931"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           d="M -383.42268,157.94853 L -381.66161,149.72566"
+           id="path6216"
+           sodipodi:nodetypes="cc" />
+        <path
+           inkscape:export-ydpi="89.985931"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/fplogo.png"
+           sodipodi:nodetypes="cc"
+           id="path6218"
+           d="M -386.28951,170.27168 L -384.43661,162.08123"
+           style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Century Schoolbook L"
+       x="-859"
+       y="-140"
+       id="text2252"
+       sodipodi:linespacing="110%"><tspan
+         sodipodi:role="line"
+         id="tspan2254"
+         x="-859"
+         y="-140">Branding for Launchpad</tspan></text>
+    <text
+       sodipodi:linespacing="110%"
+       id="text2291"
+       y="-313.20923"
+       x="-754.10992"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:110.00000238%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Century Schoolbook L"
+       xml:space="preserve"><tspan
+         y="-313.20923"
+         x="-754.10992"
+         id="tspan2293"
+         sodipodi:role="line">64x64 icon</tspan></text>
+    <g
+       transform="matrix(0.6628891,0,0,0.6629273,-417.97326,382.73965)"
+       inkscape:export-ydpi="89.985931"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+       id="g2467">
+      <path
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:#ffffff;stroke-width:9.05102634;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Frozen Dog Treats"
+         d="M -387.06686,-144.42434 C -403.84666,-143.83095 -418.22873,-139.88992 -430.05821,-132.18066 C -442.87415,-123.82841 -450.97207,-112.43175 -454.21864,-97.933844 L -477.13556,1.6125997 L -424.72875,1.6125997 L -418.51098,-24.826655 L -390.61988,-24.826655 L -369.83485,-24.826655 C -353.20647,-24.826655 -316.34613,-27.304125 -309.43377,-62.444916 L -303.57133,-97.756403 C -299.68177,-127.99755 -316.85761,-142.86108 -348.33918,-144.60179 L -363.26176,-144.60179 L -382.80326,-144.60179 L -387.06686,-144.42434 z M -393.28464,-104.32186 L -372.49955,-104.32186 L -347.0956,-104.32186 L -354.73455,-69.897595 C -355.51756,-66.746436 -359.72984,-65.269978 -361.84058,-65.284029 L -381.38208,-65.284029 L -409.27319,-65.284029 L -401.63418,-97.933844 C -401.12169,-100.7703 -400.35012,-102.44929 -399.32474,-103.07974 C -398.27133,-103.77363 -396.18584,-104.23727 -393.28464,-104.32186 z"
+         id="path2469"
+         sodipodi:nodetypes="csccccccccccccccccccccsc"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+         inkscape:export-xdpi="89.985931"
+         inkscape:export-ydpi="89.985931" />
+      <g
+         transform="matrix(6.714864,0,0,6.706156,-492.3964,-175.5953)"
+         id="g2471"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+         inkscape:export-xdpi="89.985931"
+         inkscape:export-ydpi="89.985931">
+        <path
+           style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+           d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+           id="path2473"
+           sodipodi:nodetypes="ccccccccccc" />
+        <path
+           sodipodi:nodetypes="cccccsccccscccc"
+           id="path2475"
+           d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+           style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+      </g>
+      <path
+         sodipodi:nodetypes="cc"
+         id="path2477"
+         d="M -371.99505,-103.59252 L -363.257,-145.9023"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:4.52551317;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <path
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:4.52551317;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="M -390.8217,-23.713406 L -381.79555,-66.984678"
+         id="path2479"
+         sodipodi:nodetypes="cc" />
+    </g>
+    <g
+       style="display:inline"
+       id="g3593"
+       transform="translate(-143.23103,340.92478)">
+      <use
+         style="filter:url(#filter6587)"
+         height="1052.3622"
+         width="744.09448"
+         transform="translate(176.51258,-190.94707)"
+         id="use3595"
+         xlink:href="#path1917"
+         y="0"
+         x="0" />
+      <use
+         x="0"
+         y="0"
+         xlink:href="#path1917"
+         id="use3597"
+         transform="translate(176.51258,-190.94707)"
+         width="744.09448"
+         height="1052.3622"
+         style="filter:url(#filter6587)" />
+      <g
+         transform="matrix(0.755205,0,0,0.755205,-1060.984,-227.1)"
+         id="g3599">
+        <path
+           style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#999999;fill-opacity:1;stroke:#ffffff;stroke-width:6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;font-family:Frozen Dog Treats"
+           d="M 340.91504,322.40236 C 324.13524,322.99575 309.75317,326.93678 297.92369,334.64604 C 285.10775,342.99829 277.00983,354.39495 273.76326,368.89286 L 250.84634,468.4393 L 303.25315,468.4393 L 309.47092,442.00005 L 337.36202,442.00005 L 358.14705,442.00005 C 374.77543,442.00005 411.63577,439.52258 418.54813,404.38178 L 424.41057,369.0703 C 428.30013,338.82915 411.12429,323.96562 379.64272,322.22491 L 364.72014,322.22491 L 345.17864,322.22491 L 340.91504,322.40236 z M 334.69726,362.50484 L 355.48235,362.50484 L 380.8863,362.50484 L 373.24735,396.92911 C 372.46434,400.08026 368.25206,401.55672 366.14132,401.54267 L 346.59982,401.54267 L 318.70871,401.54267 L 326.34772,368.89286 C 326.86021,366.0564 327.63178,364.37741 328.65716,363.74696 C 329.71057,363.05307 331.79606,362.58943 334.69726,362.50484 z"
+           id="path3601"
+           sodipodi:nodetypes="csccccccccccccccccccccsc"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-ydpi="89.985931" />
+        <g
+           transform="matrix(6.714864,0,0,6.706156,235.5855,291.2314)"
+           id="g3603"
+           inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+           inkscape:export-xdpi="89.985931"
+           inkscape:export-ydpi="89.985931">
+          <path
+             style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#768b94;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats"
+             d="M 8.3440419,22.435837 L 18.241049,22.435837 C 20.717398,22.435837 26.209704,22.06128 27.239113,16.821203 L 28.131004,11.559045 C 28.710243,7.0495857 26.135075,4.8283208 21.446736,4.5687527 L 15.687291,4.582194 L 14.762988,10.595008 L 21.649368,10.595008 L 20.509429,15.729569 C 20.392825,16.199458 19.763356,16.411678 19.449019,16.409582 L 7.436218,16.423384"
+             id="path3605"
+             sodipodi:nodetypes="ccccccccccc" />
+          <path
+             sodipodi:nodetypes="cccccsccccscccc"
+             id="path3607"
+             d="M 15.160497,22.43986 L 11.004028,22.43986 L 10.08791,26.387673 L 2.2627323,26.387673 L 5.6981761,11.54813 C 6.1816747,9.3862509 7.3777168,7.682584 9.2863062,6.4371248 C 11.194873,5.1917055 13.536061,4.5689858 16.309881,4.568964 L 19.238244,4.5687527 L 17.864066,10.595008 L 14.929089,10.595008 C 14.39467,10.595024 14.045016,10.655189 13.866898,10.772668 C 13.714196,10.866679 13.599681,11.125166 13.523353,11.54813 L 12.378206,16.412399 L 16.534674,16.412399 L 15.160497,22.43986"
+             style="font-size:36.68085098px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#090a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Frozen Dog Treats" />
+        </g>
+      </g>
+      <path
+         sodipodi:nodetypes="cscccccccccccccccccccccc"
+         id="path3609"
+         d="M -802.94733,20.284783 C -814.84611,20.705562 -825.04464,23.5002 -833.43307,28.966932 C -842.52101,34.889615 -848.26335,42.971126 -850.56554,53.251782 L -866.81621,123.8414 L -833.65388,123.8414 L -829.24478,104.093 L -805.46686,104.093 L -790.72789,104.093 C -778.93654,104.093 -752.79842,103.33619 -747.89673,78.417421 L -743.73964,53.377604 C -740.98152,31.933222 -753.16114,21.393309 -775.48508,20.158952 L -786.06686,20.158952 L -799.92404,20.158952 L -802.94733,20.284783 z M -809.43439,43.697489 L -791.0631,43.697489 L -768.60934,43.697489 L -775.3612,74.124018 C -776.05335,76.909227 -779.77642,78.214223 -781.64198,78.201806 L -798.91417,78.201806 L -823.56624,78.201806 L -816.81438,49.343666 C -816.36133,46.836607 -815.67936,45.352602 -814.77314,44.795365 C -813.842,44.182057 -811.99866,43.772264 -809.43439,43.697489 z"
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:0.33699999;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4.53122997;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;filter:url(#filter5563);font-family:Frozen Dog Treats" />
+      <path
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:0.24468085;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4.53122997;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;filter:url(#filter5563);font-family:Frozen Dog Treats"
+         d="M -802.94733,20.284783 C -814.84611,20.705562 -825.04464,23.5002 -833.43307,28.966932 C -842.52101,34.889615 -848.26335,42.971126 -850.56554,53.251782 L -866.81621,123.8414 L -833.65388,123.8414 L -829.24478,104.093 L -805.46686,104.093 L -790.72789,104.093 C -778.93654,104.093 -752.79842,103.33619 -747.89673,78.417421 L -743.73964,53.377604 C -740.98152,31.933222 -753.16114,21.393309 -775.48508,20.158952 L -786.06686,20.158952 L -799.92404,20.158952 L -802.94733,20.284783 z M -809.43439,43.697489 L -791.0631,43.697489 L -768.60934,43.697489 L -775.3612,74.124018 C -776.05335,76.909227 -779.77642,78.214223 -781.64198,78.201806 L -798.91417,78.201806 L -823.56624,78.201806 L -816.81438,49.343666 C -816.36133,46.836607 -815.67936,45.352602 -814.77314,44.795365 C -813.842,44.182057 -811.99866,43.772264 -809.43439,43.697489 z"
+         id="path3611"
+         sodipodi:nodetypes="cscccccccccccccccccccccc" />
+      <path
+         transform="matrix(0.8690301,0,0,0.8814371,-105.85693,8.1829973)"
+         sodipodi:nodetypes="cscccccccccccccccccccccc"
+         id="path3613"
+         d="M -802.94733,20.284783 C -814.84611,20.705562 -825.04464,23.5002 -833.43307,28.966932 C -842.52101,34.889615 -848.26335,42.971126 -850.56554,53.251782 L -866.81621,123.8414 L -840.61197,123.8414 L -836.20287,104.093 L -805.46686,104.093 L -790.72789,104.093 C -778.93654,104.093 -752.79842,103.33619 -747.89673,78.417421 L -743.73964,53.377604 C -740.98152,31.933222 -753.16114,21.393309 -775.48508,20.158952 L -786.06686,20.158952 L -799.92404,20.158952 L -802.94733,20.284783 z M -812.81401,39.328902 L -789.79075,39.328902 L -761.65125,39.328902 L -770.11282,77.460028 C -770.98023,80.950507 -775.64606,82.585954 -777.98402,82.570393 L -799.62987,82.570393 L -830.52433,82.570393 L -822.06276,46.404803 C -821.49499,43.262907 -820.64033,41.403123 -819.50464,40.704782 C -818.33772,39.936173 -816.02761,39.422612 -812.81401,39.328902 z"
+         style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;opacity:0.49468085;fill:#d2eff7;fill-opacity:1;stroke:none;stroke-width:4.53122997;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;filter:url(#filter6603);font-family:Frozen Dog Treats" />
+    </g>
+    <path
+       inkscape:export-ydpi="89.985931"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/designfiles/biglogo.png"
+       sodipodi:nodetypes="csccccccccccccccccccccsc"
+       id="path1917"
+       d="M 908.79657,-397.37303 C 896.12437,-396.9249 885.26297,-393.94861 876.32927,-388.12654 C 866.65067,-381.81888 860.53507,-373.21207 858.08317,-362.26317 L 840.77627,-287.08521 L 880.35417,-287.08521 L 885.04987,-307.05226 L 906.11327,-307.05226 L 921.81027,-307.05226 C 934.36807,-307.05226 962.20517,-308.92326 967.42547,-335.46176 L 971.85277,-362.12917 C 974.79017,-384.96744 961.81887,-396.19245 938.04387,-397.50704 L 926.77427,-397.50704 L 912.01637,-397.50704 L 908.79657,-397.37303 z M 904.10087,-367.08744 L 919.79787,-367.08744 L 938.98307,-367.08744 L 933.21407,-341.09006 C 932.62267,-338.71029 929.44157,-337.59526 927.84757,-337.60587 L 913.08967,-337.60587 L 892.02617,-337.60587 L 897.79517,-362.26317 C 898.18227,-364.40528 898.76497,-365.67326 899.53927,-366.14938 C 900.33487,-366.67341 901.90987,-367.02355 904.10087,-367.08744 z"
+       style="font-size:39.99996948px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill-opacity:1;stroke:none;stroke-width:4.53122997;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline;font-family:Frozen Dog Treats"
+       transform="translate(-1883.5547,611.41958)" />
+    <g
+       transform="translate(-0.5000013,0.5000007)"
+       id="g3753">
+      <rect
+         inkscape:export-ydpi="89.985931"
+         inkscape:export-xdpi="89.985931"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+         ry="5.2872953"
+         rx="3.0987504"
+         y="-180.80663"
+         x="-497.9292"
+         height="225.37424"
+         width="216.70116"
+         id="rect2465"
+         style="fill:#768b94;fill-opacity:1;stroke:#ffffff;stroke-width:1.9454509;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(1.3428676,0,0,0.7870209,113.36375,382.93196)" />
+      <rect
+         inkscape:export-ydpi="89.985931"
+         inkscape:export-xdpi="89.985931"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+         ry="10.854259"
+         rx="3.1939282"
+         y="-180.80663"
+         x="-497.9292"
+         height="225.37424"
+         width="216.70116"
+         id="rect3656"
+         style="fill:url(#linearGradient3768);fill-opacity:1;stroke:none;stroke-width:3.8909018;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(1.3028508,0,0,-0.3833713,97.77406,343.88598)" />
+      <rect
+         transform="matrix(1.3028508,0,0,0.3833713,97.77406,314.11611)"
+         style="fill:url(#linearGradient3770);fill-opacity:1;stroke:none;stroke-width:3.8909018;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3646"
+         width="216.70116"
+         height="225.37424"
+         x="-497.9292"
+         y="-180.80663"
+         rx="3.1939282"
+         ry="10.854259"
+         inkscape:export-filename="/home/donn/Projects/pythoning/fontyPython/dev/dev-dec-2007/trunk/fontypython/things/aboutfplogo.png"
+         inkscape:export-xdpi="89.985931"
+         inkscape:export-ydpi="89.985931" />
+      <g
+         id="g3666"
+         style="opacity:1">
+        <text
+           sodipodi:linespacing="125%"
+           transform="matrix(1.6495501,0,0,1.6495501,283.52995,-245.90538)"
+           id="text3251"
+           y="393"
+           x="-499"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#94a4ab;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:BlendfontsWuestling;-inkscape-font-specification:BlendfontsWuestling"
+           xml:space="preserve"><tspan
+             y="393"
+             x="-499"
+             id="tspan3253"
+             sodipodi:role="line">Bring out your fonts!</tspan></text>
+        <text
+           sodipodi:linespacing="125%"
+           transform="matrix(1.045403,0,0,1.045403,-21.361831,-10.357622)"
+           id="text3255"
+           y="393"
+           x="-499"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#c1cace;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Rough Draft;-inkscape-font-specification:Rough Draft"
+           xml:space="preserve"><tspan
+             y="393"
+             x="-499"
+             id="tspan3257"
+             sodipodi:role="line">Bring out your fonts!</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#b2bdc2;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:IM FELL English PRO;-inkscape-font-specification:IM FELL English PRO"
+           x="-499"
+           y="393"
+           id="text2501"
+           transform="matrix(1.4972432,0,0,1.4972432,208.20529,-187.27928)"
+           sodipodi:linespacing="125%"><tspan
+             sodipodi:role="line"
+             id="tspan2503"
+             x="-499"
+             y="393">Bring out your fonts!</tspan></text>
+      </g>
+      <text
+         xml:space="preserve"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:800;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:BlendfontsMonokultur;-inkscape-font-specification:BlendfontsMonokultur Ultra-Bold"
+         x="-499"
+         y="393"
+         id="text2477"
+         transform="matrix(1.2290398,0,0,1.2290398,76.151932,-82.661256)"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan2479"
+           x="-499"
+           y="393">Bring out your fonts!</tspan></text>
+      <use
+         x="0"
+         y="0"
+         xlink:href="#g3593"
+         id="use3644"
+         transform="translate(536,-101)"
+         width="32"
+         height="32" />
+    </g>
+    <g
+       transform="translate(-4.9570602,3.0000028)"
+       id="g3742">
+      <g
+         id="g3726">
+        <use
+           clip-path="url(#clipPath3714)"
+           height="32"
+           width="32"
+           transform="translate(-271,6)"
+           id="use3712"
+           xlink:href="#rect3676"
+           y="0"
+           x="0" />
+        <use
+           height="32"
+           width="32"
+           transform="matrix(1.3452474,0,0,1.3452474,884.1305,-628.14252)"
+           id="use3674"
+           xlink:href="#g3593"
+           y="0"
+           x="0" />
+      </g>
+    </g>
+  </g>
+  <g
+     style="display:none"
+     inkscape:label="slices"
+     id="layer2"
+     inkscape:groupmode="layer">
+    <rect
+       inkscape:label="#rect2289"
+       style="opacity:0.2;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1.97348583;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="aboutfplogo"
+       width="216.70116"
+       height="225.37424"
+       x="-497.9292"
+       y="-180.80663"
+       inkscape:export-filename="aboutfplogo.png"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931"
+       transform="matrix(1.0244523,0,0,1.0205248,4.5690331,4.3981421)" />
+    <rect
+       transform="matrix(1.3659364,0,0,0.8075457,121.85086,384.8301)"
+       inkscape:export-ydpi="89.985931"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-filename="splash.png"
+       y="-180.80663"
+       x="-497.9292"
+       height="225.37424"
+       width="216.70116"
+       id="splash"
+       style="opacity:0.2;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1.97348583;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:label="#rect2289" />
+    <rect
+       inkscape:label="#rect2289"
+       style="opacity:0.2;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1.97348583;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="fphelplogo"
+       width="216.70116"
+       height="225.37424"
+       x="-497.9292"
+       y="-180.80663"
+       inkscape:export-xdpi="89.985931"
+       inkscape:export-ydpi="89.985931"
+       transform="matrix(3.507134,0,0,0.6478114,1558.0148,273.12859)" />
+  </g>
+</svg>
