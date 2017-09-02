@@ -23,6 +23,15 @@ import fpversion
 ## Now, bring in all those big modules
 import wx
 
+
+## AUG 2017
+## Massive gui hacking. See wxgui.orig.py if you need to roll back.
+
+
+
+
+
+
 ## June 25th 2016
 ## Remarking these two lines because they are causing a segfault:
 ##  ../src/common/stdpbase.cpp(62): assert "traits" failed in Get(): 

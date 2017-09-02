@@ -111,6 +111,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 	def CreateFitmapsWRAPSIZER(self, viewobject) :
 		"""
+		METHOD NOT BEING USED. I leave it here for future ref. See CreateFitmaps for the actual one.
+
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
 		viewobject: is a sub-list of fitems to display - i.e. after the page number math.
 			** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
@@ -253,6 +255,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 				## JULY 2016
 				## =========
 				## If the bitmap is wider than a column, we will crop it
+				## IDEA: Do a fade to white instead of a hard cut on the right.
 				##
 				if fm.bitmap.GetWidth() > colw:
 					h = fm.bitmap.GetHeight()

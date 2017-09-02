@@ -134,9 +134,11 @@ class FontViewPanel(wx.Panel):
 		self.choicePage = wx.Choice(self, -1, choices = ["busy"])
 		self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
 
+		##Tried to replace the horrible pager pulldown. This is a slider:
 		#self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
 		#self.choiceSlider.SetTickFreq(1,1)
 		#self.choiceSlider.Bind(wx.EVT_SCROLL, self.OnSliderScroll)
+		## ... it sucked!
 
 		#self.SA=SearchAssistant(self)
 

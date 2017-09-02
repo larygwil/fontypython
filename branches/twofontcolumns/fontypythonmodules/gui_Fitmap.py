@@ -538,10 +538,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					image = wx.EmptyImage(*pilimage.size)
 
 					## June 25, 2016
-					## PIL has changed. It now requires tobytes()
+					## PIL has changed. (And Pillow too.) Both now require tobytes()
 					## not tostring(). 
-					## Since I don't want to break on older installs of PIL,
-					## I will use a try block here. 
+					## Sept 2017: Since I am explicitly using Pillow now, is this of
+					## any use: Since I don't want to break on older installs of PIL,
+					## I will use a try block here.
+					## ?
 					## TODO: Test for a new min PIL version and kill this try:
 					try:
 						#Old style:
