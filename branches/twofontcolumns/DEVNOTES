@@ -1,5 +1,6 @@
 Work and notes in 2016/2017. Slow due to my ill health.
 ====
+See also the older "ROADMAP" file.
 
 NB::Don't forget to remove the wx debug stuff on the app object
 
@@ -35,6 +36,9 @@ FUTURE IDEAS
 * BUSY: SIMPLIFY THE HELP. Make the .fonts thing PRIMARY
 
 * A start-up initial directory for font source.
+
+
+
 
 TODO
 ==
