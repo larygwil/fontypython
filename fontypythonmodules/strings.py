@@ -309,6 +309,12 @@ http://wxpython.org/download.php
 PILError = _("""I cannot find "python-pil"
 Please install this package.
 
+NOTE
+===
+PIL has been forked by Pillow.
+The old package was "python-imaging",
+the new one is "python-pil".
+
 TIP
 ===
 On my distro I can search for it like this:
