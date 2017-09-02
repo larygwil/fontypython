@@ -2,6 +2,14 @@ Work and notes in 2016/2017. Slow due to my ill health.
 ====
 See also the older "ROADMAP" file.
 
+BRANCHES:
+==
+Sept 2nd 2017
+I created the layoutchange branch. It's purpose is to mess with the wx layout of fonty.
+I intend to get to the filter/pager stuff too, but will try to do that in its own branch, after this one is reintegrated into trunk.
+
+
+
 NB::Don't forget to remove the wx debug stuff on the app object
 
 * Was working on showing multiple columns of fonts in the middle view. All okay but for the initial panel size being 0 when app runs. 
