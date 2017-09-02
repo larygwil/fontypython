@@ -46,17 +46,17 @@ class DirControl(wx.GenericDirCtrl) :
 	The Directory tree view. Note: Directory names are all UNICODE!
 	"""
 	def __init__(self, parent):
-		if fpsys.state.viewpattern == "F": 
+		if fpsys.state.viewpattern == "F":
 			startdir = fpsys.state.viewobject.path
-		else: 
+		else:
 			##Let's get it from the config object
 			lastdir = fpsys.config.lastdir
-			
+
 			if os.path.exists(lastdir):
 				startdir = lastdir
 			else:
 				startdir = os.environ['HOME']
-		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY)
+		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
 
 		# create the image list:
 		isz = (16,16)
@@ -96,16 +96,16 @@ class NoteBook(wx.Notebook):
 	"""
 	Used in the left part of the splitter in mainframe.
 	Has two tabs - Folders and Pogs
-	THIS IS THE VIEW or SOURCE of fonts.	
+	THIS IS THE VIEW or SOURCE of fonts.
 	"""
-	def __init__(self, parent):
-		wx.Notebook.__init__(self, parent, style=wx.NB_BOTTOM)
+	def __init__(self, parent, name="notebook_not_named"):
+		wx.Notebook.__init__(self, parent, style=wx.NB_BOTTOM, name = name)
 		self.imlist = wx.ImageList(16, 16)
-		
+
 		pan1 = wx.Panel(self)
 
 		## THE DIR CONTROL
-		self.dircontrol = DirControl(pan1) 
+		self.dircontrol = DirControl(pan1)
 
 		## The Recurse check-box
 		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
@@ -113,25 +113,25 @@ class NoteBook(wx.Notebook):
 		self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
 
 		## Add them to a sizer
-		box = wx.BoxSizer(wx.VERTICAL) 
-		box.Add( self.dircontrol,1, wx.EXPAND ) 
+		box = wx.BoxSizer(wx.VERTICAL)
+		box.Add( self.dircontrol,1, wx.EXPAND )
 		box.Add( self.recurseFolders,0,wx.EXPAND )
-		pan1.SetSizer(box) 
-		box.Layout() 
+		pan1.SetSizer(box)
+		box.Layout()
 
 		self.pogindexselected = 0
-	
+
 		## The SOURCE POG control
-		pan2 = wx.Panel(self) 
+		pan2 = wx.Panel(self)
 		page = 0
 		s = None
-		if fpsys.state.viewpattern  == "P": 
+		if fpsys.state.viewpattern  == "P":
 			s = fpsys.state.viewobject.name
 			if s == "EMPTY": s= None #Very first run, the view will be an EMPTY object.
 			page = 1
 		self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
 
-		
+
 		ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
 		ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
 		ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
@@ -139,37 +139,37 @@ class NoteBook(wx.Notebook):
 
 		# Get a ref to the dircontrol.
 		self.tree = self.dircontrol.GetTreeCtrl()
-		
+
 		## Dud tree events, causing bad behaviour:
 		## EVT_LIST_ITEM_SELECTED
 		## EVT_LEFT_UP
-		
+
 		## Bind to another event solve the problem of EVT_LEFT_UP firing when the little
 		## open-branch/tree arrow was pressed.
 		## 5.3.2009 Michael Hoeft
-		self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick) 	
+		self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
 
 		## Had a context menu, but not using it.
 		#self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
-		box2 = wx.BoxSizer(wx.HORIZONTAL) 
-		box2.Add(self.ctrlPogSource,1,wx.EXPAND) 
-		pan2.SetSizer(box2) 
-		box2.Layout() 
-		
+		box2 = wx.BoxSizer(wx.HORIZONTAL)
+		box2.Add(self.ctrlPogSource,1,wx.EXPAND)
+		pan2.SetSizer(box2)
+		box2.Layout()
+
 		self.AddPage(pan1, _("Folders"))
-		self.AddPage(pan2, _("Pogs")) 
-		
+		self.AddPage(pan2, _("Pogs"))
+
 		source_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
 
 		target_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
-		
+
 		self.AssignImageList(self.imlist)
 		self.SetPageImage(1, source_pog_icon)
 		self.SetPageImage(0, target_pog_icon)
-		
+
 		self.SetSelection(page)
-	
+
 		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
 
 		## If the app is started with a Folder as the Source, then
@@ -177,7 +177,7 @@ class NoteBook(wx.Notebook):
 		if fpsys.state.viewpattern  == "F":
 			if self.recurseFolders.GetValue():
 				self.__onDirCtrlClick(None) # Fake an event
-		
+
 
 	def onPageChanged(self, e):
 		self.ctrlPogSource.ClearLastIndex()
@@ -227,10 +227,10 @@ class NoteBook(wx.Notebook):
 			fpsys.config.lastdir = p
 		except fontybugs.FolderHasNoFonts, e:
 			pass # update_font_view handles this with a std message.
-		
+
 		ps.pub(reset_to_page_one)# reset before updating!		  
 		ps.pub(update_font_view)
-		
+
 		wx.EndBusyCursor()
 		wx.CallAfter( self.SetFocus )
 
@@ -239,8 +239,8 @@ class NoteBook(wx.Notebook):
 		args[0] is pogname, args[1] is pognochange
 		"""
 		## Check pognochange, it means this is the same pog as last time.
-		if args[1]: return 
-		
+		if args[1]: return
+
 		## instantiateViewPog calls pog.genList which bubbles:
 		## PogInvalid
 		## BUT - this error only makes sense from the
@@ -255,13 +255,13 @@ class NoteBook(wx.Notebook):
 		else:
 			ps.pub(reset_to_page_one)
 		ps.pub(update_font_view)
-	
+
 	def AddItem(self, pogname):
 		self.ctrlPogSource.AddItem(pogname[0]) #[0] bit is because pogname is a tuple from pubsub.
 
 	def RemoveItem(self, pogname):
 		self.ctrlPogSource.RemoveItem(pogname[0])
-		
+
 	def SelectNoView(self):
 		## Purpose: To select no viewobject and clear view pog list selections
 		## Called when a TARGET item is clicked AND samepogs it True

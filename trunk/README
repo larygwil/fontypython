@@ -1,11 +1,13 @@
 Fonty Python
-Copyright (C) 2006,2007,2008,2009,2016 Donn.C.Ingle
+Copyright (C) 2006,2007,2008,2009,2016,2017 Donn.C.Ingle
 donn.ingle@gmail.com
 
 Fonty Python comes with ABSOLUTELY NO WARRANTY; for details
 see the COPYING file.  This is free software, and you are welcome
 to redistribute it under certain conditions; see the COPYING file 
 for details.
+
+UPDATED SEPT 2017
 
 NB: Remove the old version BEFORE you install FP.
 ==============
@@ -70,8 +72,9 @@ Fonty Python depends on several other libraries:
 ( These are minimum version numbers )
 1. python2.4 to python2.6 (Not python3)
 2. python-dev (odd one this. See notes below)
-3. python-imaging
-4. python-wxgtk2.6 or greater.
+*3. python-imaging *CHANGED
+3. python-pil (The "Pillow" module has replaced the old PIL one.)
+4. python-wxgtk2.6 or greater, but not wx 4.x, which is not even released yet.
 
 Items 1 and 3 are usually pre-installed on Gnu\Linux distros.
 Item 2 is a new twist. I am not sure why it's required for FP
@@ -101,7 +104,7 @@ If you still do not come right, then I advise you
 to go to the following web sites for help directly
 from the horse's mouth:
 http://wxpython.org
-http://www.pythonware.com/products/pil/index.htm
+https://python-pillow.org/
 
 
 LOCALIZATION TIPS

@@ -8,6 +8,7 @@ FontTools module. This has not come to fruition, but I will keep this
 module just in-case.
 """
 def doFilter( filter_string ):
+	print "filter:", filter_string
 	##filter_string is a unicode object
 
 	## STEP 1 : get the current view object (pog or folder)
@@ -23,10 +24,14 @@ def doFilter( filter_string ):
 		## We allow regex in the string. Is this wise?
 		test = re.compile(filter_string, re.IGNORECASE)
 
+		#L=set([set(i.style[0].split(u" ")) for i in fpsys.state.viewobject])
+		#print L
+		import pdb; pdb.set_trace()
 		## Go through each font item and match 
 		## the regex against certain fields.
 		## EXTEND THIS TO PANOSE AND other fontTools criteria.
 		for fi in fpsys.state.viewobject:
+			#print fi.name, fi.family, fi.style
 			## July 2016
 			## =========
 			## There was a None slipping in via fi.style!
