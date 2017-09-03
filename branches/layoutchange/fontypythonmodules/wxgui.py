@@ -23,6 +23,8 @@ import fpversion
 ## Now, bring in all those big modules
 import wx
 
+#import	wx.aui
+from wx.lib.splitter import MultiSplitterWindow
 
 ## AUG 2017
 ## Massive gui hacking. See wxgui.orig.py if you need to roll back.
@@ -97,6 +99,20 @@ class MainFrame(wx.Frame):
 		except:
 			pass
 
+		#self._mgr	=	wx.aui.AuiManager(self, wx.aui.AUI_MGR_DEFAULT)# | wx.aui.AUI_MGR_LIVE_RESIZE)
+
+
+
+		self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+		#colours = ["pink", "yellow", "sky blue", "Lime Green"]
+		#for colour in colours:
+		#	panel = SamplePanel(splitter, colour)
+		#	splitter.AppendWindow(panel)
+		
+		#self.Show()
+
+
+
 		## STATUS BAR
 		self.sb = StatusBar(self)
 		self.SetStatusBar(self.sb)
@@ -163,11 +179,15 @@ class MainFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
 		self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
 
+
+
+
 		## Create a splitter 
-		self.splitter = Splitter(self,name="splitter1")
+		#self.splitter = Splitter(self,name="splitter1")
 
 		## The notebook
-		self.panelNotebook = wx.Panel(self.splitter,name="panel_for_notebook")
+		#self.panelNotebook = wx.Panel(self.splitter,name="panel_for_notebook")
+		self.panelNotebook = wx.Panel(self.msw,name="panel_for_notebook")
 
 		## Notebook label and icon
 		self.viewIcon = wx.StaticBitmap( self.panelNotebook, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
@@ -193,38 +213,73 @@ class MainFrame(wx.Frame):
 		self.panelNotebook.SetSizer(self.sizerNotebook)
 		self.sizerNotebook.Layout()
 
+
+		#self._mgr.AddPane(self.panelNotebook,	wx.LEFT,'Pane1')
+		#self._mgr.AddPane(self.panelNotebook, wx.aui.AuiPaneInfo().Left().BestSize(wx.Size(200,100)).MinSize(wx.Size(200,100)) )
+		
+		
+		self.panelNotebook.SetMinSize(self.panelNotebook.GetBestSize())
+		print "self.panelNotebook.GetBestSize()::", self.panelNotebook.GetBestSize()
+
+		self.msw.AppendWindow(self.panelNotebook, 200)
+
+
 		## dec 2007 : Added a second splitter. It was a bitch!
-		self.splitter2 = Splitter(self.splitter, name="splitter2(parent is splitter1)") # gets the second slot of splitter
+		#self.splitter2 = Splitter(self.splitter, name="splitter2(parent is splitter1)") # gets the second slot of splitter
 
 		## Font View Panel Control:
-		self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
+		#self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
+		self.fontViewPanel = FontViewPanel(self.msw)
 
 		self.sizerFontView  = wx.BoxSizer(wx.VERTICAL)
 		self.sizerFontView.Add(self.fontViewPanel, 1, wx.EXPAND)
 		self.sizerFontView.SetDimension( 0, 0, 1024, 0)
-		#self.fontViewPanel.Layout()
+		self.fontViewPanel.Layout()
+
+		#self._mgr.AddPane(self.fontViewPanel, wx.CENTER)
+		self.fontViewPanel.SetMinSize(wx.Size(1024,1))
+		self.fontViewPanel.Layout()
+		self.msw.AppendWindow(self.fontViewPanel)
+
+
+
 
 		## THE FAR RIGHT HAND SIDE
 		## The TargetPogChooser
-		self.panelTargetPogChooser = TargetPogChooser(self.splitter2) # last slot of splitter2
+		#self.panelTargetPogChooser = TargetPogChooser(self.splitter2) # last slot of splitter2
+		self.panelTargetPogChooser = TargetPogChooser(self.msw)
 
 		self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
 		self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
 		self.panelTargetPogChooser.Layout()
 
-		self.splitter.SetMinimumPaneSize(64)
-		self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
 
-		self.splitter2.SetMinimumPaneSize(128)
+
+		self.panelTargetPogChooser.SetMinSize(wx.Size(200,100))#self.panelTargetPogChooser.GetBestSize())
+		print "self.panelTargetPogChooser.GetBestSize()::", self.panelTargetPogChooser.GetBestSize()
+
+
+		#self._mgr.AddPane(self.panelTargetPogChooser, wx.RIGHT)
+		self.msw.AppendWindow(self.panelTargetPogChooser, 200)
+
+		#self._mgr.Update()
+
+
+
+
+		#self.splitter.SetMinimumPaneSize(64)
+		#self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
+
+		#self.splitter2.SetMinimumPaneSize(128)
 		## July 2016
 		## =========
 		## Still struggling with this intial size of the scroll panel thing.
 		## Herewith an attempt to set a size via the SplitVertically method.
-		framewidth = self.GetSizeTuple()[0]
-		sashleft, sashright = self.GetSashesPos()
-		scrollpanelstartwidth = framewidth - sashleft - sashright
+		#framewidth = self.GetSizeTuple()[0]
+		#sashleft, sashright = self.GetSashesPos()
+		#scrollpanelstartwidth = framewidth - sashleft - sashright
 		#print "scrollpanelstartwidth:", scrollpanelstartwidth
-		self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser, scrollpanelstartwidth )
+		#self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser, scrollpanelstartwidth )
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
@@ -245,10 +300,14 @@ class MainFrame(wx.Frame):
 		## This eventually draws all the Fitmaps - giving the middle a width.
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
-		self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
+		#self.splitter.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
+		
+		# Using the multiSplitterWindow from the demo:
+		self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
+
 
 		# Force splitter2 to the correct position. 
-		self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )
+		#self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )
 
 		self.Layout()
 
@@ -300,11 +359,16 @@ class MainFrame(wx.Frame):
 		Save app's vital statistics and exit.
 		See the end of start.py where it's actually saved.
 		"""
-		fpsys.config.pos = self.GetPositionTuple()
+		#	deinitialize	the	frame	manager
+		#self._mgr.UnInit()
+		
+		#fpsys.config.pos = self.GetPositionTuple()
+		
 		## Dec 2007 - I was using the wrong func and the
 		## main window kept getting smaller!
 		fpsys.config.size = self.GetSizeTuple()
-		fpsys.config.leftSash, fpsys.config.rightSash = self.GetSashesPos()
+		#fpsys.config.leftSash, fpsys.config.rightSash = self.GetSashesPos()
+		
 		##June 2009 - fetch and record the value of the recurse folders checkbox.
 		fpsys.config.recurseFolders = app.GetTopWindow().nb.recurseFolders.GetValue()
 		self.Destroy()

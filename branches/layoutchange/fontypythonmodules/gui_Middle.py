@@ -229,6 +229,12 @@ class FontViewPanel(wx.Panel):
 
 		#def DoGetBestSize(self):
 		# DOES NOT RUN FOR A wx.Panel
+		
+		
+		#self.Bind(wx.EVT_SIZE,	self.TESTOnResize)
+	#def	TESTOnResize(self,	*args,	**kwargs):#KILL ME
+		#print	"Test Resizing in AUI stuff."
+		#self.MainFontViewUpdate()
 
 	def OnClearClick( self, event ):
 		self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.

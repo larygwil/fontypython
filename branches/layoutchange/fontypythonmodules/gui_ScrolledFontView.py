@@ -60,7 +60,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
 		## July 2016
-		self.Bind(wx.EVT_SIZE, self.onSize)
+		## Sep 2017. New hacks. Might not need this...
+		#self.Bind(wx.EVT_SIZE, self.onSize)
 
 		self.SetupScrolling(rate_y=5, scroll_x=False)
 
