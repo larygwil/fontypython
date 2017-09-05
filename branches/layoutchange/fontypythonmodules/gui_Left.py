@@ -41,6 +41,39 @@ import fontyfilter
 import fontybugs
 
 
+class FontSourcesPanel(wx.Panel):
+	"""
+	A panel to represent the entire Source GUI.
+	"""
+	def __init__(self, parent):
+		wx.Panel.__init__(self, parent, id = -1)
+
+		## Notebook label and icon
+		self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
+		self.viewLabel = wx.StaticText( self, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
+		self.viewLabel.SetFont( wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
+
+		## A horiz sizer to hold the icon and text
+		self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
+		self.sizer_iconandtext.Add( (4, 1), 0 )
+		self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4 )
+		self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
+
+		## Now the actual notebook
+		self.nb = NoteBook(self, name="notebook")
+
+		## Make a Vertical sizer to hold them.
+		self.sizerNotebook = wx.BoxSizer(wx.VERTICAL)
+
+		## Add them to the sizer.
+		self.sizerNotebook.Add(self.sizer_iconandtext, 0, wx.EXPAND)
+		self.sizerNotebook.Add(self.nb,1,wx.EXPAND)
+
+		self.SetSizer(self.sizerNotebook)
+		self.Layout()
+
+
+
 class DirControl(wx.GenericDirCtrl) :
 	"""
 	The Directory tree view. Note: Directory names are all UNICODE!
