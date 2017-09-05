@@ -23,7 +23,7 @@ import fpversion
 ## Now, bring in all those big modules
 import wx
 
-#import	wx.aui
+#Sept 2017
 from wx.lib.splitter import MultiSplitterWindow
 
 ## AUG 2017
@@ -89,6 +89,8 @@ class MainFrame(wx.Frame):
 		title = title + "   -   " + locale.getpreferredencoding()
 		wx.Frame.__init__(self,parent,-1,title,fpsys.config.pos,fpsys.config.size)
 
+		framewidth = self.GetSizeTuple()[0]
+		
 		## Try to show an icon
 		try:
 			image = wx.Image(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_PNG)
@@ -98,18 +100,6 @@ class MainFrame(wx.Frame):
 			self.SetIcon(icon)
 		except:
 			pass
-
-		#self._mgr	=	wx.aui.AuiManager(self, wx.aui.AUI_MGR_DEFAULT)# | wx.aui.AUI_MGR_LIVE_RESIZE)
-
-
-
-		self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-		#colours = ["pink", "yellow", "sky blue", "Lime Green"]
-		#for colour in colours:
-		#	panel = SamplePanel(splitter, colour)
-		#	splitter.AppendWindow(panel)
-		
-		#self.Show()
 
 
 
@@ -180,13 +170,24 @@ class MainFrame(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
 
 
+		## Sept 2017
+		## The multi splitter window
+		self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+
+		## July 2016,Sept 2017
+		## ===================
+		## Still struggling with this intial size of the scroll panel thing.
+		## Herewith an attempt to set a size via the SplitVertically method.
+		## Changed to MultiSplitterWindow in 2017, same kind of thing:
+		#sp0 = self.msw.GetSashPosition(0) #i.e. whatever it boils down to
+		#sashzero = fpsys.config.leftSash if fpsys.config.leftSash < sp0
+		
+		sashzero = fpsys.config.leftSash # Has a minimum val in that code
 
 
-		## Create a splitter 
-		#self.splitter = Splitter(self,name="splitter1")
+
 
 		## The notebook
-		#self.panelNotebook = wx.Panel(self.splitter,name="panel_for_notebook")
 		self.panelNotebook = wx.Panel(self.msw,name="panel_for_notebook")
 
 		## Notebook label and icon
@@ -210,76 +211,66 @@ class MainFrame(wx.Frame):
 		self.sizerNotebook.Add(self.sizer_iconandtext, 0, wx.EXPAND)
 		self.sizerNotebook.Add(self.nb,1,wx.EXPAND)
 
-		self.panelNotebook.SetSizer(self.sizerNotebook)
+		self.panelNotebook.SetMinSize(self.panelNotebook.GetBestSize())
+
+		self.panelNotebook.SetMinSize(wx.Size(sashzero,100))
+		## Put the panelNotebook into the first pane of the splitter
+		self.msw.AppendWindow(self.panelNotebook, sashzero)
+
+		## Set the sizer on the actual pane of the MultiSplitterWindow
+		self.msw.GetWindow(0).SetSizer(self.sizerNotebook)
 		self.sizerNotebook.Layout()
 
 
-		#self._mgr.AddPane(self.panelNotebook,	wx.LEFT,'Pane1')
-		#self._mgr.AddPane(self.panelNotebook, wx.aui.AuiPaneInfo().Left().BestSize(wx.Size(200,100)).MinSize(wx.Size(200,100)) )
-		
-		
-		self.panelNotebook.SetMinSize(self.panelNotebook.GetBestSize())
-		print "self.panelNotebook.GetBestSize()::", self.panelNotebook.GetBestSize()
-
-		self.msw.AppendWindow(self.panelNotebook, 200)
 
 
-		## dec 2007 : Added a second splitter. It was a bitch!
-		#self.splitter2 = Splitter(self.splitter, name="splitter2(parent is splitter1)") # gets the second slot of splitter
 
 		## Font View Panel Control:
-		#self.fontViewPanel = FontViewPanel(self.splitter2) # first slot in splitter2
+		## Does not need a sizer!
 		self.fontViewPanel = FontViewPanel(self.msw)
 
-		self.sizerFontView  = wx.BoxSizer(wx.VERTICAL)
-		self.sizerFontView.Add(self.fontViewPanel, 1, wx.EXPAND)
-		self.sizerFontView.SetDimension( 0, 0, 1024, 0)
-		self.fontViewPanel.Layout()
-
-		#self._mgr.AddPane(self.fontViewPanel, wx.CENTER)
-		self.fontViewPanel.SetMinSize(wx.Size(1024,1))
-		self.fontViewPanel.Layout()
+		## Have a minimum for the fontviewpanel
+		minfontvwidth = framewidth/3
+		self.fontViewPanel.SetMinSize(wx.Size(minfontvwidth,1))
+		## But don't set that min in the sizer!
 		self.msw.AppendWindow(self.fontViewPanel)
 
 
 
 
 		## THE FAR RIGHT HAND SIDE
-		## The TargetPogChooser
-		#self.panelTargetPogChooser = TargetPogChooser(self.splitter2) # last slot of splitter2
+		## The TargetPogChooser, also no sizer.
 		self.panelTargetPogChooser = TargetPogChooser(self.msw)
 
-		self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
-		self.panelTargetPogChooser.Layout()
+		rightminwidth = max(fpsys.config.rightSash, self.panelTargetPogChooser.GetBestSize()[0])
+		sashone = framewidth - sashzero - rightminwidth
+
+		# Adding a sizer to the right causes a segfault. HAND.
+		# Without a sizer, I don't think I can properly control the width
+		# of the right hand side. It tends to go off the window.
+		# Hence all the other stuff to try constraining it.
+		#self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
+		#self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+
+		#self.panelTargetPogChooser.SetMinSize(wx.Size(200,100))#self.panelTargetPogChooser.GetBestSize())
+
+
+		self.msw.AppendWindow(self.panelTargetPogChooser, rightminwidth )
+		#self.msw.GetWindow(2).SetSizer(self.sizerRight)
+		#self.sizerRight.Layout()
 
 
 
-		self.panelTargetPogChooser.SetMinSize(wx.Size(200,100))#self.panelTargetPogChooser.GetBestSize())
-		print "self.panelTargetPogChooser.GetBestSize()::", self.panelTargetPogChooser.GetBestSize()
 
 
-		#self._mgr.AddPane(self.panelTargetPogChooser, wx.RIGHT)
-		self.msw.AppendWindow(self.panelTargetPogChooser, 200)
-
-		#self._mgr.Update()
-
-
-
-
-		#self.splitter.SetMinimumPaneSize(64)
-		#self.splitter.SplitVertically( self.panelNotebook, self.splitter2, fpsys.config.leftSash )
-
-		#self.splitter2.SetMinimumPaneSize(128)
-		## July 2016
-		## =========
-		## Still struggling with this intial size of the scroll panel thing.
-		## Herewith an attempt to set a size via the SplitVertically method.
-		#framewidth = self.GetSizeTuple()[0]
-		#sashleft, sashright = self.GetSashesPos()
-		#scrollpanelstartwidth = framewidth - sashleft - sashright
+		#print "sashleft:", sashleft
+		#print "sashright:", sashright
 		#print "scrollpanelstartwidth:", scrollpanelstartwidth
-		#self.splitter2.SplitVertically( self.fontViewPanel, self.panelTargetPogChooser, scrollpanelstartwidth )
+		
+		self.msw.SetSashPosition(0,sashzero)
+		self.msw.SetSashPosition(1,sashone)
+
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
@@ -294,7 +285,7 @@ class MainFrame(wx.Frame):
 
 		ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
 
-		#ps.sub ( get_sashes_position, self.GetSashesPos )
+		#ps.sub ( get_sashes_position, self.getSashesPos )
 
 		## call the big one - the big chief, the big cheese:
 		## This eventually draws all the Fitmaps - giving the middle a width.
@@ -304,12 +295,19 @@ class MainFrame(wx.Frame):
 		
 		# Using the multiSplitterWindow from the demo:
 		self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
-
+		self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
 
 		# Force splitter2 to the correct position. 
 		#self.splitter2.SetSashPosition( -fpsys.config.rightSash, redraw=False )
 
 		self.Layout()
+		
+		## Sept 2017
+		## ===
+		## Attempting to deal with resizes of the entire wx.Frame
+		## This causes much fail :(
+		#self.firstresize = True
+		#self.Bind(wx.EVT_SIZE, self.onFrameSize)
 
 		## A nasty looking line to call the SortOutTheDamnImages function
 		## This is to draw the right icons depending on the params from cli.
@@ -324,16 +322,53 @@ class MainFrame(wx.Frame):
 		self.MENUSELECTION.Enable(301,onoff[0])
 		self.MENUSELECTION.Enable(302,onoff[0])
 
+	def setSashes( self ):
+		# To prevent the Pog Chooser from being split right off the window:
+		# amount of right space available = window width - (left width + fontv width) 
+		# if right space < 200 (the min) then we need more space for the right panel
+		#  Thus we must take it out of the font view's width:
+		#   new fontv width -= the diff (i.e. min - right space)
+		#   Then set the right hand sash to the fontv width.
+		framewidth = self.GetSizeTuple()[0]
+		leftpart = self.msw.GetSashPosition(0)
+		rightminwidth = self.panelTargetPogChooser.GetBestSize()[0]
+		fontpart = self.fontViewPanel.GetSizeTuple()[0]
+
+		rightpart = framewidth - (leftpart + fontpart)
+		if rightpart < rightminwidth:
+			diff = rightminwidth - rightpart
+			fontpart = fontpart - diff
+			self.msw.SetSashPosition(1,fontpart)
+
+
 	def onSize( self, evt ):
 		"""
-		The splitter has been moved. Don't ask me why splitter and not splitter2
-		is the one we have to use. Go figure.
+		The splitter has been moved. 
 		"""
+		#print "onSize() for ", self
+
+		#self.setSashes()
 		ps.pub( update_font_view ) # starts a chain of calls.
 
-	def GetSashesPos( self, args=None ):
+	def onSplitterPosChanging(self,evt):
+		if evt.GetSashIdx() == 1:
+			esp = evt.GetSashPosition()
+			framewidth = self.GetSizeTuple()[0]
+			rightminwidth = self.panelTargetPogChooser.GetBestSize()[0]
+			leftpart = self.msw.GetSashPosition(0)
+			print "esp:",esp
+			print "framewidth:", framewidth
+			print "rightminwidth:", rightminwidth
+			print "leftpart:", leftpart
+			print "fw-rmw-leftpart:", framewidth - rightminwidth - leftpart
+			print 
+			if esp > framewidth - rightminwidth - leftpart:
+				evt.Veto()
+
+
+	def getSashesPos( self, args=None ):
 		## For saving/restoring the sashes to where we bloody left them :\
-		return ( self.splitter.GetSashPosition(), self.panelTargetPogChooser.GetClientSize()[0])
+		return ( self.msw.GetSashPosition(0), self.panelTargetPogChooser.GetClientSize()[0])
 
 	def StatusbarPrint(self, args):
 		self.sb.Report(args[0])
@@ -367,7 +402,9 @@ class MainFrame(wx.Frame):
 		## Dec 2007 - I was using the wrong func and the
 		## main window kept getting smaller!
 		fpsys.config.size = self.GetSizeTuple()
-		#fpsys.config.leftSash, fpsys.config.rightSash = self.GetSashesPos()
+		
+		#Sept 2017
+		fpsys.config.leftSash, fpsys.config.rightSash = self.getSashesPos()
 		
 		##June 2009 - fetch and record the value of the recurse folders checkbox.
 		fpsys.config.recurseFolders = app.GetTopWindow().nb.recurseFolders.GetValue()

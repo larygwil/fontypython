@@ -106,7 +106,9 @@ class TargetPogChooser(wx.Panel):
 		self.sizer.Add(self.buttNew, 0, wx.EXPAND)
 		self.sizer.Add(self.buttDelete, 0, wx.EXPAND)
 		self.sizer.Add(self.buttZip, 0, wx.EXPAND)
+
 		self.SetSizer(self.sizer)
+
 
 		## Bind the events:
 		e=wx.EVT_BUTTON # was wx.EVT_LEFT_UP

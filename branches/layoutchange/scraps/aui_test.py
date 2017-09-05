@@ -64,8 +64,16 @@ class	MyFrame(wx.Frame):
 		#	delete	the	frame
 		self.Destroy()
 
-class	MyApp(wx.App):
+# Code for debugging:
+##http://wiki.wxpython.org/Widget%20Inspection%20Tool
+## Use ctrl+alt+i to open it.
+import wx.lib.mixins.inspection
+## Start the main frame and then show it.
+class MyApp(wx.App , wx.lib.mixins.inspection.InspectionMixin) :
+#class	MyApp(wx.App):
 	def	OnInit(self):
+		self.Init() #init the inspector
+
 		frame	=	MyFrame(None,	-1,	'07_wxaui.py')
 		frame.Show()
 		self.SetTopWindow(frame)

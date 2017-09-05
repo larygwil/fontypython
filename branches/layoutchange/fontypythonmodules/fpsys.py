@@ -291,9 +291,12 @@ class Configure:
 		self.usegui = "wxgui"
 		self.max = True
 		self.lastdir = iPC.home()
+		## Sept 2017
+		self.leftSashMin = 200
+		self.rightSashMin = 200
 		## Added Dec 2007
 		self.leftSash = 200 
-		self.rightSash = 128
+		self.rightSash = 200
 		## Added June 2009
 		self.recurseFolders = False 
 		## Added Sept 2009
@@ -332,8 +335,10 @@ class Configure:
 			self.usegui = self.__data['usegui']
 			self.max = self.__data['max']
 			self.lastdir = self.__data['lastdir']
-			self.leftSash = self.__data['leftSash']
-			self.rightSash = self.__data['rightSash']
+			#Sept 2017
+			self.leftSash = max( self.leftSashMin, self.__data['leftSash'] )
+			#Sept 2017
+			self.rightSash = max( self.rightSashMin, self.__data['rightSash'] )
 			self.recurseFolders = self.__data['recurseFolders']
 			self.ignore_adjustments = self.__data['ignore_adjustments']
 			self.app_char_map = self.__data['app_char_map']
