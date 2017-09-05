@@ -210,9 +210,9 @@ class MainFrame(wx.Frame):
 		## and the actual size the panel happens to be right now.
 		rightminwidth = max(fpsys.config.rightSash, self.panelTargetPogChooser.GetBestSize()[0])
 
-		## Sashone is the right-hand splitter (it's index 1)
+		## SASHONE is the right-hand splitter (it's index 1)
 		## It's the whole window minus the left panel (SASHZERO) minus the right panel.
-		## It's x pixels across from SASHZERO!
+		## It's x pixels across from SASHZERO, not the left-edge of the frame!
 		SASHONE = framewidth - SASHZERO - rightminwidth
 
 		# Sept 2018: Adding sizer to the right causes a SEGFAULT. H.A.N.D.
@@ -221,6 +221,8 @@ class MainFrame(wx.Frame):
 		# Hence all the other stuff to try constraining it.
 		#self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
 		#self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+		## Stick the rhs into the splitter window:
 		self.msw.AppendWindow(self.panelTargetPogChooser, rightminwidth )
 
 
