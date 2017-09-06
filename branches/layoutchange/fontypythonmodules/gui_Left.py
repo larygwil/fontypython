@@ -89,6 +89,7 @@ class DirControl(wx.GenericDirCtrl) :
 				startdir = lastdir
 			else:
 				startdir = os.environ['HOME']
+		print "start with:", startdir
 		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
 		self.SelectPath( startdir, True )
 
