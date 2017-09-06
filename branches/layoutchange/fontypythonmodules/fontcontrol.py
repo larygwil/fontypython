@@ -306,7 +306,12 @@ class FontItem( object ):
 			l1 = self.badfontmsg
 			l2 = self.glyphpaf_unicode
 			## Sept 2017: Shortened the paf by subtracting the $HOME dir out.
-			l2 = l2.replace( fpsys.iPC.home(), u"…" )
+			try:
+				l2 = l2.replace( fpsys.iPC.home(), u"…" )
+			except:
+				# With strings, you never know...
+				# Hopefully some legible vers of l2 will leave this func.
+				pass
 		return ( l1, l2 )
 
 

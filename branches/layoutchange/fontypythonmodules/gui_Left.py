@@ -90,6 +90,9 @@ class DirControl(wx.GenericDirCtrl) :
 			else:
 				startdir = os.environ['HOME']
 		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
+		self.SelectPath( startdir, True )
+
+
 
 		# create the image list:
 		isz = (16,16)
@@ -140,6 +143,18 @@ class NoteBook(wx.Notebook):
 		## THE DIR CONTROL
 		self.dircontrol = DirControl(pan1)
 
+		# Get a ref to the dircontrol.
+		self.tree = self.dircontrol.GetTreeCtrl()
+
+		## Sept 2017
+		## Trynig to ensure the tree is scrolled to the start dir. No go so far.
+		#s = self.tree.GetSelection()
+		#print s
+		#print dir(s)
+		#import pdb; pdb.set_trace()
+		#self.tree.EnsureVisible(s)
+		#self.tree.ScrollTo(s)
+
 		## The Recurse check-box
 		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
 		self.recurseFolders.SetValue( fpsys.config.recurseFolders )
@@ -170,8 +185,6 @@ class NoteBook(wx.Notebook):
 		ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
 		ps.sub( remove_pog_item_from_source, self.RemoveItem ) #DND: class NoteBook
 
-		# Get a ref to the dircontrol.
-		self.tree = self.dircontrol.GetTreeCtrl()
 
 		## Dud tree events, causing bad behaviour:
 		## EVT_LIST_ITEM_SELECTED
@@ -207,9 +220,12 @@ class NoteBook(wx.Notebook):
 
 		## If the app is started with a Folder as the Source, then
 		## check if we must recurse. If so, fake a click to kick that off.
+		## Sept 2017
+		## Can't figure out why this depended on the recursion check box. Took it out.
+		## TODO: Expect fail...
 		if fpsys.state.viewpattern  == "F":
-			if self.recurseFolders.GetValue():
-				self.__onDirCtrlClick(None) # Fake an event
+			#if self.recurseFolders.GetValue():
+			self.__onDirCtrlClick(None) # Fake an event
 
 
 	def onPageChanged(self, e):
@@ -255,6 +271,7 @@ class NoteBook(wx.Notebook):
 	def __onDirCtrlClick(self, e):
 		wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
 		p = self.dircontrol.GetPath()
+
 		try:
 			fpsys.instantiateViewFolder(p,self.recurseFolders.GetValue() )
 			fpsys.config.lastdir = p

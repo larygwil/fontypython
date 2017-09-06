@@ -696,4 +696,4 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.prepDraw( FontPencil( tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
 
 		tx,ty = (46,40) if isinfo else (5 ,40)
-		self.prepDraw( FontPencil( tx, ty, textTup[1], fcol, points=7 ) )
+		self.prepDraw( FontPencil( tx, ty, textTup[1], fcol, points=8 ) )
