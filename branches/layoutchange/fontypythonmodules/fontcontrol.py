@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 ##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
@@ -15,10 +17,13 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import os, sys, locale, glob, errno
 from PIL import Image, ImageFont, ImageDraw
 import fontybugs, fpsys
-from pathcontrol import *
+
+
+#from pathcontrol import *
 
 ## Sep 2009 : zip functionality
 import zipfile
@@ -46,7 +51,7 @@ class FontItem( object ):
 		#print "FontItem init, glyphpaf:", [glyphpaf]
 		## I want to have a var I can use when I display the glyphpaf
 		## either in the gui or onto the cli. This should be a unicode
-		## object, so I must make sure of it's type before I do so.
+		## object, so I must make sure of its type before I do so.
 		self.glyphpaf_unicode = fpsys.LSP.ensure_unicode( glyphpaf )
 
 		## The same goes for name. It *must* be unicode.
@@ -296,9 +301,12 @@ class FontItem( object ):
 
 	def InfoOrErrorText(self):
 		"""Used in Fitmap code to draw strings and things."""
+		l1 = l2 = "Text that should not appear."
 		if self.badfont:
 			l1 = self.badfontmsg
 			l2 = self.glyphpaf_unicode
+			## Sept 2017: Shortened the paf by subtracting the $HOME dir out.
+			l2 = l2.replace( fpsys.iPC.home(), u"…" )
 		return ( l1, l2 )
 
 

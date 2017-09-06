@@ -168,7 +168,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			'INACTIVE':
 				{
 					'backcol': white,
-					'fcol'   : (128,128,128), 
+					'fcol'   : (98,98,98), #128,128,128), 
 					'bcol'   : white,
 					'icon'	 : None,
 					'ndi'    : ndi
@@ -518,7 +518,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## It's *not* a badfont
 		else:
 			if self.fitem.inactive:
-				totheight += (Fitmap.SPACER-20) #want room for 'is in pog' message.
+				totheight += (Fitmap.SPACER-10) #want room for 'is in pog' message.
 
 			#TODO self.bottomFadeEffect( memDc, totheight, maxwidth )
 
@@ -584,13 +584,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Record the calculated height
 		self.height = totheight
 
-		## Special message
+		## Special INACTIVE (Font already in...) message:
 		if self.fitem.inactive:
 			x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
 			self.prepDraw( BitmapPencil( x-16, y-1, self.TICKSMALL) )
 
 			txt = self.fitem.activeInactiveMsg
-			self.prepDraw( FontPencil(x, y, txt, fcol, points=11) )
+			self.prepDraw( FontPencil( x+2, y, txt, fcol, points=10) )
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
@@ -692,7 +692,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		textTup = self.fitem.InfoOrErrorText()
 
 		## prep the two lines of text
-		tx,ty = (46,15) if isinfo else (38 ,13)
+		tx,ty = (46,15) if isinfo else (38 , 20)
 		self.prepDraw( FontPencil( tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
 
 		tx,ty = (46,40) if isinfo else (5 ,40)
