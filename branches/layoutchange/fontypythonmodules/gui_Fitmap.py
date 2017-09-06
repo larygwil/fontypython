@@ -477,7 +477,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ):
 			self.style=Fitmap.styles['INFO_FONT_ITEM']
 			self.drawInfoOrError( isinfo=True )
-			self.usePencils(Fitmap.MIN_FITEM_HEIGHT)
+			##Sept 2017:Added some to height to cater for newlines in 
+			## the info text. See class InfoFontItem in fontcontrol.py
+			self.usePencils(Fitmap.MIN_FITEM_HEIGHT + 20)
 			return # Just get out.
 
 		## Get a list of pilimages, for each subface: Some fonts 
@@ -680,10 +682,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		"""
 		#import pdb; pdb.set_trace()
 
+		#Sept 2017: Move it all over by an offset
+		offx = 20
+
 		icon = self.style['icon']
 		if icon:
 			Icon = self.FVP.__dict__[icon] #See gui_Middle.py ~line 97
 			ix,iy = (6,10) if isinfo else (2,6)
+
+			ix += offx
 			self.prepDraw( BitmapPencil( ix, iy, Icon) )
 
 		## Prep and measure the texts to be drawn. Add them to drawlist.
@@ -693,7 +700,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		## prep the two lines of text
 		tx,ty = (46,15) if isinfo else (38 , 20)
+
+		tx += offx
 		self.prepDraw( FontPencil( tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
 
 		tx,ty = (46,40) if isinfo else (5 ,40)
-		self.prepDraw( FontPencil( tx, ty, textTup[1], fcol, points=8 ) )
+
+		tx += offx
+		self.prepDraw( FontPencil( tx, ty, textTup[1], fcol, points=10 ) )

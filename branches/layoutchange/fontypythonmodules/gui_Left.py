@@ -89,7 +89,7 @@ class DirControl(wx.GenericDirCtrl) :
 				startdir = lastdir
 			else:
 				startdir = os.environ['HOME']
-		print "start with:", startdir
+
 		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
 		self.SelectPath( startdir, True )
 
@@ -148,7 +148,7 @@ class NoteBook(wx.Notebook):
 		self.tree = self.dircontrol.GetTreeCtrl()
 
 		## Sept 2017
-		## Trynig to ensure the tree is scrolled to the start dir. No go so far.
+		## Trying to ensure the tree is scrolled to the start dir. No go so far.
 		#s = self.tree.GetSelection()
 		#print s
 		#print dir(s)

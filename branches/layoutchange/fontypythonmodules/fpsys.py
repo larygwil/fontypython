@@ -282,23 +282,23 @@ class Configure:
 		self.__dontSaveNumInPage = False
 		
 		## PUBLIC vars :  Set some defaults:
-		self.size = (800,600) 
+		self.size = (800,600)
 		self.pos = (10, 10)
 		self.numinpage = 10
 		self.text = _("Jump the lazy dog fox")
-		self.points = 64	  
+		self.points = 64
 		self.lastview = "EMPTY" # a pog name or a folder path.
 		self.usegui = "wxgui"
 		self.max = True
 		self.lastdir = iPC.home()
 		## Sept 2017
-		self.leftSashMin = 200
-		self.rightSashMin = 200
+		self.leftSashMin = 180
+		self.rightSashMin = 180
 		## Added Dec 2007
-		self.leftSash = 200 
-		self.rightSash = 200
+		self.leftSash = self.leftSashMin
+		self.rightSash = self.rightSashMin
 		## Added June 2009
-		self.recurseFolders = False 
+		self.recurseFolders = False
 		## Added Sept 2009
 		self.ignore_adjustments = False
 		## Added 3 Oct 2009
@@ -314,14 +314,14 @@ class Configure:
 			try:
 				pf = open(iPC.appConf(), "rb" ) # Binary for new pickle protocol.
 				self.__data = pickle.load( pf )
-				pf.close() 
+				pf.close()
 			except:
 				## Dec 2007 : Let's try erase and rewind
 				os.unlink(iPC.appConf())
 				
-		if not os.path.exists(iPC.appConf()):		
+		if not os.path.exists(iPC.appConf()):
 			print _("No config file found, creating it with defaults.")
-			self.Save() 
+			self.Save()
 			
 
 		## Now get them into the instance vars:

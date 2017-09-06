@@ -23,6 +23,7 @@ from PIL import Image, ImageFont, ImageDraw
 import fontybugs, fpsys
 
 
+#Sept 2017: Remarked the pathcontrol import. TODO: await fail..
 #from pathcontrol import *
 
 ## Sep 2009 : zip functionality
@@ -333,7 +334,7 @@ class InfoFontItem( FontItem ):
 	def InfoOrErrorText( self ):
 		"""An override : InfoFontItem needs only these words"""
 		l1 = _("There are no fonts to see here, move along.")
-		l2 = _("(Check your filter!)")
+		l2 = _("Stuff to check:\n\t1) The filter (below).\n\t2) The \"include sub-folders\" check box (under the source folders tree).")
 		return ( l1, l2 )
 
 class TruetypeItem( FontItem ):
