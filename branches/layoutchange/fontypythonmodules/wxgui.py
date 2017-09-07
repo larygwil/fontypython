@@ -171,7 +171,7 @@ class MainFrame(wx.Frame):
 
 		## THE MAIN GUI
 		## ------------------------------------------------------------------
-		self.whatgui = 2
+		self.whatgui = 4
 
 		if self.whatgui == 1:
 			## Sept 2017: Using a multi splitter window
@@ -236,7 +236,7 @@ class MainFrame(wx.Frame):
 
 		if self.whatgui == 2:
 			#splitter window of 2 across
-			#left: sizer of two across. source, then target guis
+			#left: a panel with sizer of two across of: source, then target guis
 			#right: fontview
 			self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
 			self.spw.SetMinimumPaneSize(300)
@@ -256,6 +256,55 @@ class MainFrame(wx.Frame):
 
 			self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
 
+		if self.whatgui == 3:
+			#splitter window of 2 across
+			#left: a panel with sizer of two high of: source, then target guis
+			#right: fontview
+			##This one freezes the app when you resize to the right... :(
+			## Hard to reproduce. I used gdb and got it to crash, then
+			## did a 'bt' and saw some complaints about get text extents
+			## might be a bug in my font drawing code..?
+			self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+			self.spw.SetMinimumPaneSize(300)
+
+			p1 = wx.Panel(self.spw)
+			self.panelFontSources = FontSourcesPanel(p1)
+			self.panelTargetPogChooser = TargetPogChooser(p1)
+
+			twosizer = wx.BoxSizer(wx.VERTICAL)
+			twosizer.Add(self.panelFontSources, 1, wx.EXPAND)
+			twosizer.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+			p1.SetSizer(twosizer)
+
+			self.fontViewPanel = FontViewPanel(self.spw)
+
+			self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
+			# Thanks to the multiSplitterWindow code from the demo:
+			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
+			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
+
+		if self.whatgui == 4:
+			#No splitters at all.
+			# box across two
+			# left box down two
+
+			self.panelFontSources = FontSourcesPanel(self)
+			self.panelFontSources.SetMinSize(wx.Size(400,1))
+
+			self.panelTargetPogChooser = TargetPogChooser(self)
+			self.fontViewPanel = FontViewPanel(self)
+
+			stsizer = wx.BoxSizer(wx.VERTICAL)
+			stsizer.Add(self.panelFontSources, 1, wx.EXPAND)
+			stsizer.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+
+			lrsizer = wx.BoxSizer(wx.HORIZONTAL)
+			lrsizer.Add( stsizer, 0, wx.EXPAND)
+			lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND )
+			
+			self.SetSizer(lrsizer)
 
 
 		## GUI ENDS
@@ -300,24 +349,32 @@ class MainFrame(wx.Frame):
 		"""
 		A Splitter is moving - PRESENT TENSE. Let's do the least work poss.
 		"""
-		## Filter the second splitter - the right hand side:
-		if evt.GetSashIdx() == 1:
-			## Let's (at least) try to constrain the width of the rhs panel
+		if self.whatgui == 1:
+			## Filter the second splitter - the right hand side:
+			if evt.GetSashIdx() == 1:
+				## Let's (at least) try to constrain the width of the rhs panel
+				esp = evt.GetSashPosition()
+
+				framewidth = self.GetSizeTuple()[0]
+				rightminwidth = self.panelTargetPogChooser.GetBestSize()[0]
+				sashzero = self.msw.GetSashPosition(0)
+
+				# esp is pixels relative to sashzero, thus we must
+				# subtract sashzero away to get it relative to 0.
+
+				# So, if the second splitter is too far across, then veto the event.
+				# This has the effect of stopping the drag when the rhs panel
+				# is getting smaller than its minimum.
+				# Again, taken from the wx-demo code.
+				if esp > framewidth - rightminwidth - sashzero:
+					evt.Veto()
+				return
+
+		if self.whatgui == 3:
 			esp = evt.GetSashPosition()
-
-			framewidth = self.GetSizeTuple()[0]
-			rightminwidth = self.panelTargetPogChooser.GetBestSize()[0]
-			sashzero = self.msw.GetSashPosition(0)
-
-			# esp is pixels relative to sashzero, thus we must
-			# subtract sashzero away to get it relative to 0.
-
-			# So, if the second splitter is too far across, then veto the event.
-			# This has the effect of stopping the drag when the rhs panel
-			# is getting smaller than its minimum.
-			# Again, taken from the wx-demo code.
-			if esp > framewidth - rightminwidth - sashzero:
+			if esp > 300:
 				evt.Veto()
+			return
 
 	def onSize( self, evt ):
 		"""
