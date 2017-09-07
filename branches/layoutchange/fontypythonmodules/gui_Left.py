@@ -136,7 +136,7 @@ class NoteBook(wx.Notebook):
 	THIS IS THE VIEW or SOURCE of fonts.
 	"""
 	def __init__(self, parent, name="notebook_not_named"):
-		wx.Notebook.__init__(self, parent, style=wx.NB_BOTTOM, name = name)
+		wx.Notebook.__init__(self, parent, style=wx.NB_TOP, name = name)
 		self.imlist = wx.ImageList(16, 16)
 
 		pan1 = wx.Panel(self)
@@ -158,13 +158,14 @@ class NoteBook(wx.Notebook):
 
 		## The Recurse check-box
 		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
+		self.recurseFolders.SetToolTipString(_("Caution: This will crash Fonty if the folder is deep."))
 		self.recurseFolders.SetValue( fpsys.config.recurseFolders )
 		self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
 
 		## Add them to a sizer
 		box = wx.BoxSizer(wx.VERTICAL)
-		box.Add( self.dircontrol,1, wx.EXPAND )
 		box.Add( self.recurseFolders,0,wx.EXPAND )
+		box.Add( self.dircontrol,1, wx.EXPAND )
 		pan1.SetSizer(box)
 		box.Layout()
 
@@ -217,8 +218,8 @@ class NoteBook(wx.Notebook):
 		pan2.SetSizer(box2)
 		box2.Layout()
 
-		self.AddPage(pan1, _("Folders"))
-		self.AddPage(pan2, _("Pogs"))
+		self.AddPage(pan1, _("Source Folders"))
+		self.AddPage(pan2, _("Source Pogs"))
 
 		source_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
 

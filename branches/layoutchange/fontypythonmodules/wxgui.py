@@ -166,6 +166,8 @@ class MainFrame(wx.Frame):
 		## A temporary switch to test out various ideas
 		self.whatgui = 4
 
+		MINSCREENWIDTH = 800
+
 		if self.whatgui == 1:
 			## Sept 2017: Using a multi splitter window
 			self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
@@ -283,8 +285,8 @@ class MainFrame(wx.Frame):
 			# left box down two (source/target), right = fontview
 			# :- kind of shape.
 
-			minw=300
-			fvminw=800-minw
+			minw = 320
+			fvminw = MINSCREENWIDTH - minw
 			ms = wx.Size(minw,1)
 
 			self.panelFontSources = FontSourcesPanel(self)
@@ -338,7 +340,7 @@ class MainFrame(wx.Frame):
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
 
-		self.SetMinSize(wx.Size(800,600)) #Old Skool: Assuming monitor size...
+		self.SetMinSize(wx.Size(MINSCREENWIDTH,600)) #Old Skool: Assuming monitor size...
 		self.Layout()
 
 
