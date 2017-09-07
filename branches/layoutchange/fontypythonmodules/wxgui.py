@@ -62,15 +62,6 @@ from gui_Middle import *
 from gui_Right import *
 
 
-#class Splitter(wx.SplitterWindow):
-#	"""
-#	The splitter used twice in mainframe.
-#	"""
-#	def __init__(self, parent, name="splitter_not_named") :
-#		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D, name = name)
-
-
-
 class StatusBar(wx.StatusBar):
 	"""
 	The status bar
@@ -171,6 +162,8 @@ class MainFrame(wx.Frame):
 
 		## THE MAIN GUI
 		## ------------------------------------------------------------------
+
+		## A temporary switch to test out various ideas
 		self.whatgui = 4
 
 		if self.whatgui == 1:
@@ -232,7 +225,7 @@ class MainFrame(wx.Frame):
 
 			# Thanks to the multiSplitterWindow code from the demo:
 			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)#present tense
-			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)#past tense
+			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterChanged)#past tense
 
 		if self.whatgui == 2:
 			#splitter window of 2 across
@@ -282,18 +275,26 @@ class MainFrame(wx.Frame):
 			self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
 			# Thanks to the multiSplitterWindow code from the demo:
 			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
-			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)
+			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterPosChanged)
 
 		if self.whatgui == 4:
 			#No splitters at all.
 			# box across two
-			# left box down two
+			# left box down two (source/target), right = fontview
+			# :- kind of shape.
+
+			minw=300
+			fvminw=800-minw
+			ms = wx.Size(minw,1)
 
 			self.panelFontSources = FontSourcesPanel(self)
-			self.panelFontSources.SetMinSize(wx.Size(400,1))
+			self.panelFontSources.SetMinSize(ms)
 
 			self.panelTargetPogChooser = TargetPogChooser(self)
+			self.panelTargetPogChooser.SetMinSize(ms)
+
 			self.fontViewPanel = FontViewPanel(self)
+			self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
 			stsizer = wx.BoxSizer(wx.VERTICAL)
 			stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -301,10 +302,18 @@ class MainFrame(wx.Frame):
 
 
 			lrsizer = wx.BoxSizer(wx.HORIZONTAL)
-			lrsizer.Add( stsizer, 0, wx.EXPAND, 15)
+			lrsizer.Add( stsizer, 0, wx.EXPAND)
 			lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
-			
+
 			self.SetSizer(lrsizer)
+
+			## Idle/resize idea from here:
+			##https://stackoverflow.com/questions/13479831/what-is-the-simplest-way-of-monitoring-when-a-wxpython-frame-has-been-resized
+			self.resized = False
+			self.Bind(wx.EVT_IDLE, self.onIdle)
+			self.Bind(wx.EVT_SIZE, self.onFrameSize)
+
+
 
 
 		## GUI ENDS
@@ -329,16 +338,10 @@ class MainFrame(wx.Frame):
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
 
-
+		self.SetMinSize(wx.Size(800,600)) #Old Skool: Assuming monitor size...
 		self.Layout()
 
-		## Sept 2017
-		## ===
-		## Attempting to deal with resizes of the entire wx.Frame
-		## Because it doesn't seem to echo down into the children properly.
-		## ..Bah! This causes ALL the fail :( Giving up.
-		#self.firstresize = True
-		#self.Bind(wx.EVT_SIZE, self.onFrameSize)
+
 
 
 		## This is to draw the correct icons depending on cli params.
@@ -376,12 +379,22 @@ class MainFrame(wx.Frame):
 				evt.Veto()
 			return
 
-	def onSize( self, evt ):
+	def onSplitterPosChanged( self, evt ):
 		"""
 		A Splitter has been moved - PAST TENSE.
 		We only want to redraw the fonts when the splitter dragging is over.
 		"""
 		ps.pub( update_font_view ) # starts a HUGE chain of calls.
+
+
+	def onFrameSize(self,evt):
+		self.resized = True
+		evt.Skip()
+
+	def onIdle(self, evt):
+		if self.resized:
+			ps.pub (update_font_view )
+			self.resized = False
 
 	def getSashesPos( self, args=None ):
 		## For saving/restoring the sashes to where we bloody left them :\
