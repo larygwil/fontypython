@@ -119,7 +119,7 @@ class MainFrame(wx.Frame):
 		menu1.AppendSeparator()
 		## Jan 18 2008
 		menu1.Append( 102, _("&Check fonts"), _("Find those fonts that crash Fonty.") )
-		menu1.Append( 103, _("&Purge Pog"), _("Remove all ghost fonts from the selected Pog.") )
+		menu1.Append( 103, _("&Purge Pog.See TogglePurgeMenuItem for actual string."), _("Remove all ghost fonts from the selected Pog.") )
 
 		self.MENUPURGE = menu1
 
@@ -296,13 +296,13 @@ class MainFrame(wx.Frame):
 			self.fontViewPanel = FontViewPanel(self)
 
 			stsizer = wx.BoxSizer(wx.VERTICAL)
-			stsizer.Add(self.panelFontSources, 1, wx.EXPAND)
-			stsizer.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+			stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
+			stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
 
 
 			lrsizer = wx.BoxSizer(wx.HORIZONTAL)
-			lrsizer.Add( stsizer, 0, wx.EXPAND)
-			lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND )
+			lrsizer.Add( stsizer, 0, wx.EXPAND, 15)
+			lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
 			
 			self.SetSizer(lrsizer)
 
@@ -525,9 +525,9 @@ class MainFrame(wx.Frame):
 		## Make the label of the menu reflect the view Pog's name
 		## so it's clear which selection counts for purging.
 		if vis:
-			self.MENUPURGE.SetLabel(103, _("&Purge \"%s\"" % fpsys.state.viewobject.name ) )
+			self.MENUPURGE.SetLabel(103, _("&Purge \"%s\"\tCtrl+P" % fpsys.state.viewobject.name ) )
 		else:
-			self.MENUPURGE.SetLabel(103, _("&Purge Pog")) #Reflect original string, as it's got translations already.
+			self.MENUPURGE.SetLabel(103, _("&Purge Pog\tCtrl+P")) #Reflect original string, as it's got translations already.
 
 
 	def menuPurgePog(self,e):

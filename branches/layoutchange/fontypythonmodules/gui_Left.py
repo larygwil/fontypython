@@ -46,7 +46,7 @@ class FontSourcesPanel(wx.Panel):
 	A panel to represent the entire Source GUI.
 	"""
 	def __init__(self, parent):
-		wx.Panel.__init__(self, parent, id = -1)
+		wx.Panel.__init__(self, parent, id = -1)#, style = wx.BORDER_RAISED)
 
 		## Notebook label and icon
 		self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
@@ -55,7 +55,7 @@ class FontSourcesPanel(wx.Panel):
 
 		## A horiz sizer to hold the icon and text
 		self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer_iconandtext.Add( (4, 1), 0 )
+		self.sizer_iconandtext.Add( (8, 1), 0 )
 		self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4 )
 		self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
 
@@ -180,6 +180,17 @@ class NoteBook(wx.Notebook):
 			page = 1
 		self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
 
+		#vbox = wx.BoxSizer(wx.VERTICAL)
+
+		#self.idpurge = wx.NewId()
+		## Yeah baby, BUTT PURGE! :D
+		#self.buttPurge = wx.Button(pan2, label = _("Purge Pog"), id = self.idpurge )
+		#self.buttPurge.SetToolTipString(_("Cleans this Pog of fonts that are missing."))
+
+		#vbox.Add( self.ctrlPogSource, 1, wx.EXPAND )
+		#vbox.Add( self.buttPurge, 0, wx.EXPAND )
+		#pan2.SetSizer(vbox)
+		#vbox.Layout()
 
 		ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
 		ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook

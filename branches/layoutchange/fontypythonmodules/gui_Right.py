@@ -82,10 +82,10 @@ class TargetPogChooser(wx.Panel):
 		self.buttNew.SetToolTipString(_("Creates a new, empty Pog"))
 
 		self.buttInstall = wx.Button(self, label = _("Install Pog"), id = self.idinstall )
-		self.buttInstall.SetToolTipString(_("Installs all selected Pogs.\nUse SHIFT/CTRL+Click on the list above."))
+		self.buttInstall.SetToolTipString(_("Installs all selected Pogs.\nHold SHIFT or CTRL as you select Pogs, if you wish to select many at once."))
 
 		self.buttUninstall = wx.Button(self, label = _("Uninstall Pog"), id = self.iduninstall )
-		self.buttUninstall.SetToolTipString(_("Uninstalls all selected Pogs.\nUse SHIFT/CTRL+Click on the list above."))
+		self.buttUninstall.SetToolTipString(_("Uninstalls all selected Pogs.\nHold SHIFT or CTRL as you select Pogs, if you wish to select many at once."))
 
 		self.buttDelete = wx.Button(self, label = _("Delete Pog") , id = self.iddelete)
 		self.buttDelete.SetToolTipString(_("Deletes the selected Pog(s)"))
@@ -94,20 +94,64 @@ class TargetPogChooser(wx.Panel):
 		self.buttZip.SetToolTipString(_("Save a zip file of the selected Pogs"))
 
 
-		self.sizer = wx.BoxSizer(wx.VERTICAL)
+		mainvs = wx.BoxSizer(wx.VERTICAL)
 		self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
+		self.iconandtext.Add( (8, 1), 0 )
 		self.iconandtext.Add(self.icon, 0, wx.TOP | wx.BOTTOM, border = 4)
 		self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.ALL, border = 4)
-		self.sizer.Add(self.iconandtext, 0, wx.EXPAND)
-		self.sizer.Add(self.pogTargetlist, 1, wx.EXPAND)
-		self.sizer.Add(self.buttNoPog, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, border=5)
-		self.sizer.Add(self.buttInstall, 0, wx.EXPAND)
-		self.sizer.Add(self.buttUninstall, 0, wx.EXPAND)
-		self.sizer.Add(self.buttNew, 0, wx.EXPAND)
-		self.sizer.Add(self.buttDelete, 0, wx.EXPAND)
-		self.sizer.Add(self.buttZip, 0, wx.EXPAND)
+		mainvs.Add(self.iconandtext, 0, wx.EXPAND)
 
-		self.SetSizer(self.sizer)
+
+		gui = 3
+		if gui == 1:
+			mainvs.Add(self.pogTargetlist, 1, wx.EXPAND)
+
+			mainvs.Add(self.buttNoPog, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, border=5)
+			mainvs.Add(self.buttInstall, 0, wx.EXPAND)
+			mainvs.Add(self.buttUninstall, 0, wx.EXPAND)
+			mainvs.Add(self.buttNew, 0, wx.EXPAND)
+			mainvs.Add(self.buttDelete, 0, wx.EXPAND)
+			mainvs.Add(self.buttZip, 0, wx.EXPAND)
+
+			self.SetSizer(mainvs)
+
+		if gui == 2:
+			hs = wx.BoxSizer(wx.HORIZONTAL)
+			hs.Add(self.pogTargetlist, 1, wx.EXPAND)
+
+			vs = wx.BoxSizer(wx.VERTICAL)
+
+			vs.Add(self.buttNoPog, 0, wx.EXPAND )
+			vs.Add(self.buttInstall, 0, wx.EXPAND)
+			vs.Add(self.buttUninstall, 0, wx.EXPAND)
+			vs.Add(self.buttNew, 0, wx.EXPAND)
+			vs.Add(self.buttDelete, 0, wx.EXPAND)
+			vs.Add(self.buttZip, 0, wx.EXPAND)
+
+			hs.Add(vs, 0, wx.EXPAND)
+
+			mainvs.Add(hs, 1, wx.EXPAND)
+			self.SetSizer(mainvs)
+
+		if gui == 3:
+			mainvs.Add(self.pogTargetlist, 1, wx.EXPAND)
+
+			gs = wx.GridSizer(2,3)
+			gs.AddMany( [
+			(self.buttNoPog, 1, wx.EXPAND ),
+			(self.buttInstall, 1, wx.EXPAND),
+			(self.buttUninstall, 1, wx.EXPAND),
+			(self.buttNew, 1, wx.EXPAND),
+			(self.buttDelete, 1, wx.EXPAND),
+			(self.buttZip, 1, wx.EXPAND)
+			])
+
+			mainvs.Add(gs, 0, wx.EXPAND)
+
+			self.SetSizer(mainvs)
+
+
+
 
 
 		## Bind the events:

@@ -12,7 +12,6 @@ BUGS
 ==
 FIXED* Just saw: In fitem - space between the name of the font and the "This is in" message is too small.
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
-*YELLOW colour of the bad font icon sucks on the white backdrop.
 
 
 NB::Don't forget to remove the wx debug stuff on the app object
@@ -35,6 +34,12 @@ Perhaps a top/bottom split.
 -------------------
 | SOURCE | TARGET |
 -------------------
+
+FIXES:
+==
+*YELLOW colour of the bad font icon sucks on the white backdrop.
+*TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
+
 
 FUTURE IDEAS
 ============
