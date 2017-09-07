@@ -62,12 +62,14 @@ from gui_Middle import *
 from gui_Right import *
 
 
-class Splitter(wx.SplitterWindow):
-	"""
-	The splitter used twice in mainframe.
-	"""
-	def __init__(self, parent, name="splitter_not_named") :
-		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D, name = name)
+#class Splitter(wx.SplitterWindow):
+#	"""
+#	The splitter used twice in mainframe.
+#	"""
+#	def __init__(self, parent, name="splitter_not_named") :
+#		wx.SplitterWindow.__init__(self, parent, -1, style = wx.SP_LIVE_UPDATE | wx.SP_3D, name = name)
+
+
 
 class StatusBar(wx.StatusBar):
 	"""
@@ -122,7 +124,6 @@ class MainFrame(wx.Frame):
 		self.MENUPURGE = menu1
 
 		self.exit = menu1.Append(104, _("&Exit"), _("Close the app"))
-		## Add menu to the menu bar
 		self.menuBar.Append(menu1, _("&Tools"))
 
 
@@ -130,7 +131,6 @@ class MainFrame(wx.Frame):
 		menu3 = wx.Menu()
 		menu3.Append( 301, _("&Select ALL the source fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
 		menu3.Append( 302, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
-		## Add menu to the menu bar
 		self.menuBar.Append(menu3, _("&Selection"))
 		self.MENUSELECTION = menu3
 
@@ -138,10 +138,8 @@ class MainFrame(wx.Frame):
 		menu2 = wx.Menu()
 		menu2.Append(201, _("H&elp\tF1"))
 		menu2.Append(202, _("&About"))
-		## Append 2nd menu
 		self.menuBar.Append(menu2, _("&Help"))
 
-		## Tell the frame the news
 		self.SetMenuBar(self.menuBar)
 
 		## Setup the ESC key and the LEFT / RIGHT keys
@@ -173,67 +171,95 @@ class MainFrame(wx.Frame):
 
 		## THE MAIN GUI
 		## ------------------------------------------------------------------
+		self.whatgui = 2
 
-		## Sept 2017: Using a multi splitter window
-		self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+		if self.whatgui == 1:
+			## Sept 2017: Using a multi splitter window
+			self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+			self.msw.SetMinimumPaneSize(150)
 
-		## SASHZERO is the left-most sash, it's x pixels from the left:
-		SASHZERO = fpsys.config.leftSash # Has a minimum val in that code
-
-
-		## LEFT HAND SIDE GUI
-		## -------------------------------------------------------------------
-		## The Font Source notebook, etc.
-		self.panelFontSources = FontSourcesPanel(self.msw)
-		self.panelFontSources.SetMinSize(wx.Size(SASHZERO,100))
-		## Put the panelNotebook into the first pane of the splitter
-		self.msw.AppendWindow(self.panelFontSources, SASHZERO)
+			## SASHZERO is the left-most sash, it's x pixels from the left:
+			SASHZERO = fpsys.config.leftSash # Has a minimum val in that code
 
 
-		## CENTRE GUI
-		## -------------------------------------------------------------------
-		## Font View Panel Control. No sizer.
-		self.fontViewPanel = FontViewPanel(self.msw)
-		## Have a minimum for the fontviewpanel
-		minfontvwidth = framewidth/3 #randomly set it as a third.
-		self.fontViewPanel.SetMinSize(wx.Size(minfontvwidth,1))
-		## To get it to display, don't set that min in AppendWindow!
-		self.msw.AppendWindow(self.fontViewPanel)
+			## LEFT HAND SIDE GUI
+			## -------------------------------------------------------------------
+			## The Font Source notebook, etc.
+			self.panelFontSources = FontSourcesPanel(self.msw)
+			self.panelFontSources.SetMinSize(wx.Size(SASHZERO,100))
+			## Put the panelNotebook into the first pane of the splitter
+			self.msw.AppendWindow(self.panelFontSources, SASHZERO)
 
 
-		## THE FAR RIGHT HAND SIDE GUI
-		## --------------------------------------------------------------------
-		## The TargetPogChooser. No sizer.
-		self.panelTargetPogChooser = TargetPogChooser(self.msw)
+			## CENTRE GUI
+			## -------------------------------------------------------------------
+			## Font View Panel Control. No sizer.
+			self.fontViewPanel = FontViewPanel(self.msw)
+			## Have a minimum for the fontviewpanel
+			minfontvwidth = framewidth/3 #randomly set it as a third.
+			self.fontViewPanel.SetMinSize(wx.Size(minfontvwidth,1))
+			## To get it to display, don't set that min in AppendWindow!
+			self.msw.AppendWindow(self.fontViewPanel)
 
-		## Set the minimum width between the strict minimum in the config
-		## and the actual size the panel happens to be right now.
-		rightminwidth = max(fpsys.config.rightSash, self.panelTargetPogChooser.GetBestSize()[0])
 
-		## SASHONE is the right-hand splitter (it's index 1)
-		## It's the whole window minus the left panel (SASHZERO) minus the right panel.
-		## It's x pixels across from SASHZERO, not the left-edge of the frame!
-		SASHONE = framewidth - SASHZERO - rightminwidth
+			## THE FAR RIGHT HAND SIDE GUI
+			## --------------------------------------------------------------------
+			## The TargetPogChooser. No sizer.
+			self.panelTargetPogChooser = TargetPogChooser(self.msw)
 
-		# Sept 2018: Adding sizer to the right causes a SEGFAULT. H.A.N.D.
-		# Without a sizer, I don't think I can properly control the width
-		# of the right hand side. It tends to go off the window.
-		# Hence all the other stuff to try constraining it.
-		#self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
-		#self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+			## Set the minimum width between the strict minimum in the config
+			## and the actual size the panel happens to be right now.
+			rightminwidth = max(fpsys.config.rightSash, self.panelTargetPogChooser.GetBestSize()[0])
 
-		## Stick the rhs into the splitter window:
-		self.msw.AppendWindow(self.panelTargetPogChooser, rightminwidth )
+			## SASHONE is the right-hand splitter (it's index 1)
+			## It's the whole window minus the left panel (SASHZERO) minus the right panel.
+			## It's x pixels across from SASHZERO, not the left-edge of the frame!
+			SASHONE = framewidth - SASHZERO - rightminwidth
+
+			# Sept 2017: Adding sizer to the right causes a SEGFAULT. H.A.N.D.
+			# Without a sizer, I don't think I can properly control the width
+			# of the right hand side. It tends to go off the window.
+			# Hence all the other stuff to try constraining it.
+			#self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
+			#self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+			## Stick the rhs into the splitter window:
+			self.msw.AppendWindow(self.panelTargetPogChooser, rightminwidth )
+
+			## Forcibly set the sashes - which forcibly splits and sizes stuff
+			self.msw.SetSashPosition(0,SASHZERO)
+			self.msw.SetSashPosition(1,SASHONE)
+
+			# Thanks to the multiSplitterWindow code from the demo:
+			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)#present tense
+			self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)#past tense
+
+		if self.whatgui == 2:
+			#splitter window of 2 across
+			#left: sizer of two across. source, then target guis
+			#right: fontview
+			self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+			self.spw.SetMinimumPaneSize(300)
+
+
+			p1 = wx.Panel(self.spw)
+			self.panelFontSources = FontSourcesPanel(p1)
+			self.panelTargetPogChooser = TargetPogChooser(p1)
+
+			twosizer = wx.BoxSizer(wx.HORIZONTAL)
+			twosizer.Add(self.panelFontSources, 1, wx.EXPAND)
+			twosizer.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+			p1.SetSizer(twosizer)
+
+			self.fontViewPanel = FontViewPanel(self.spw)
+
+			self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
+
 
 
 		## GUI ENDS
 		## =============
-
-
-		## Forcibly set the sashes - which forcibly splits and sizes stuff
-		self.msw.SetSashPosition(0,SASHZERO)
-		self.msw.SetSashPosition(1,SASHONE)
-
 
 		self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
@@ -253,9 +279,6 @@ class MainFrame(wx.Frame):
 		## This eventually draws all the Fitmaps - giving the middle a width.
 		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
 
-		# Thanks to the multiSplitterWindow code from the demo:
-		self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)#present tense
-		self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSize)#past tense
 
 
 		self.Layout()
@@ -264,12 +287,12 @@ class MainFrame(wx.Frame):
 		## ===
 		## Attempting to deal with resizes of the entire wx.Frame
 		## Because it doesn't seem to echo down into the children properly.
-		## This causes all the fail :( Giving up.
+		## ..Bah! This causes ALL the fail :( Giving up.
 		#self.firstresize = True
 		#self.Bind(wx.EVT_SIZE, self.onFrameSize)
 
-		## A nasty looking line to call the SortOutTheDamnImages function
-		## This is to draw the right icons depending on the params from cli.
+
+		## This is to draw the correct icons depending on cli params.
 		self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
 
@@ -305,7 +328,9 @@ class MainFrame(wx.Frame):
 
 	def getSashesPos( self, args=None ):
 		## For saving/restoring the sashes to where we bloody left them :\
-		return ( self.msw.GetSashPosition(0), self.panelTargetPogChooser.GetClientSize()[0])
+		if self.whatgui == 1:
+			return ( self.msw.GetSashPosition(0), self.panelTargetPogChooser.GetClientSize()[0])
+		return (200,200)
 
 
 
