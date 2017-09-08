@@ -31,7 +31,7 @@ import wx, os
 ##mylocale = wx.Locale( langid )
 
 
-from pubsub import *
+from pubsub import * #I want all the topics.
 from wxgui import ps
 
 from gui_PogChooser import *

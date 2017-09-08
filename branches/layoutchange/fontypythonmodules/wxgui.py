@@ -48,7 +48,7 @@ from wx.lib.splitter import MultiSplitterWindow
 #mylocale = wx.Locale( langid )
 
 ## Fetch my own pubsub stuff
-from pubsub import *
+from pubsub import * #I want all the topics.
 ps = CPubsub()
 
 ## Fetch the dialogue classes *About, Settings, Help, etc.*
@@ -57,7 +57,7 @@ import dialogues
 ## DND: NB--Comments that have DND: in them mean DO NOT DELETE. They are used by me via grep on the cli.
 
 
-from gui_Left import *
+from gui_FontSources import *
 from gui_Middle import *
 from gui_Right import *
 

@@ -311,7 +311,7 @@ class TargetPogChooser(wx.Panel):
 						# We installed RHS, so need to set that in RHS
 						# which is a sep object.
 						fpsys.state.viewobject.setInstalledFlag(True)
-					ps.pub( change_pog_icon )
+					ps.pub( change_pog_icon ) #Causes TWO calls to update BOTH choosers.
 					self.toggleButtons()
 					ps.pub( update_font_view )
 
@@ -344,7 +344,7 @@ class TargetPogChooser(wx.Panel):
 						# We uninstalled RHS, so need to set that in RHS
 						# which is a sep object.
 						fpsys.state.viewobject.setInstalledFlag(False)
-					ps.pub( change_pog_icon )
+					ps.pub( change_pog_icon ) #Causes TWO calls to update BOTH choosers.
 					self.toggleButtons()
 					ps.pub( update_font_view )
 

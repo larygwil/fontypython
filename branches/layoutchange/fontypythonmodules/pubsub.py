@@ -75,7 +75,13 @@ class CPubsub:
 		self.__ears [ self.__key ] = t
 		self.__key += 1
 
-	## Go thru all the topics, find any that match and call their functions, passing any args too.
+	## Go thru *all* the topics, find any that match and call their functions, passing any args too.
+	##
+	## NB: *All* the topics are matched. i.e. there's no early returning. This mechanism is
+	## relied on by topic:change_pog_icon in the PogChooser which subscribes TWICE as it is
+	## instanced twice (source and target pog choosers). A single pub of that topic will find
+	## two functions within the list and run both.
+	##
 	## NOTE: It's possible for this to recurse, if one pub calls another. 
 	##			 This is why return values are not advised.
 	##
