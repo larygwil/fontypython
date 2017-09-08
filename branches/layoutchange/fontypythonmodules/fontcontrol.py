@@ -39,7 +39,7 @@ class FontItem( object ):
 	"""
 	Represents a single font file. It has the ability to provide a font image
 	and query a font file for the family name and style.
-	
+
 	Ancestor to the specific classes per font type.
 	Never instantiate one directly.
 	"""
@@ -62,23 +62,23 @@ class FontItem( object ):
 		self.ticked = False # State of the tick/cross symbol.
 		self.inactive = False # Set in fpsys.markInactive()
 		self.activeInactiveMsg = "" #Say something unique when I draw this item.  
-		
+
 		## These are lists to cater for sub-faces
 		self.family, self.style =  [], []
 		self.numFaces = 0
 		self.pilheight, self.pilwidth = 0,0
-		
+
 		## I'm not bad in any way, until I turn bad that is :)
 		self.badfont = False
 		## If I'm bad, what should I say?
 		self.badfontmsg = ""
 		## What kind of bad to the bone am I?
 		## One of FILE_NOT_FOUND, PIL_IO_ERROR, PIL_UNICODE_ERROR, PIL_CANNOT_RENDER
-		self.badstyle = "" 
+		self.badstyle = ""
 
 		## July 2016 - Used in gui_Fitmap.py
 		self.textExtentsDict = {}
-		
+
 		## We need the family name and style to be fetched
 		## because we have that filter thingy in the gui
 		## and it uses those strings to search for terms.
@@ -86,7 +86,7 @@ class FontItem( object ):
 		## We also want to know what flavour of bad this item will be
 		## and we must open the file and query it to know that.
 		self.__queryFontFamilyStyleFlagBad()
-		
+
 		## Vars used in the rendering stage.
 		self.fx = [None for i in xrange(self.numFaces)] # Position calculated for best top-left of each face image.
 		self.fy = self.fx[:] #Damn! Make a COPY of that list!
@@ -95,25 +95,25 @@ class FontItem( object ):
 	def __queryFontFamilyStyleFlagBad( self ):
 		"""
 		Get the family, style and size of entire font.
-		
+
 		If this font has a problem (PIL can't read it) then we set the
 		badfont flag, along with the badstyle & badfontmsg vars.
-		
+
 		badstyle: FILE_NOT_FOUND, PIL_IO_ERROR, PIL_UNICODE_ERROR
-		
+
 		The last kind of badstyle is set in generatePilFont() and is
 		set to: PIL_CANNOT_RENDER
-		
+
 		This is tricky because FontImage.getname() is fragile
 		and apt to segfault. As of Dec 2007 I have reported
 		the bug, and a patch has been written but I don't
 		know how it will be implemented yet.
-		
+
 		NB: InfoFontItem overrides this so it does not happen
 		in that case. This is why I made this a method and not
 		simply part of the __init__ above.
 		"""
-		
+
 		i = 0
 		## Step through all subfaces.
 		#print "BUILDING:", [self.glyphpaf]
@@ -131,8 +131,8 @@ class FontItem( object ):
 				print _("Unhandled error:\nPlease move (%s) away from here and report this to us.") % self.glyphpaf
 				raise
 			try:
-				font = ImageFont.truetype(self.glyphpaf, 16, index=i, encoding="unicode" )  
-			except IOError: 
+				font = ImageFont.truetype(self.glyphpaf, 16, index=i, encoding="unicode" )
+			except IOError:
 				"""
 				Means the ttf file cannot be opened or rendered by PIL !
 				NOTE: Sets badfont
@@ -147,7 +147,7 @@ class FontItem( object ):
 			except UnicodeEncodeError:
 				"""
 				NOTE: Sets badfont
-				"""				
+				"""	
 				## Aw man! I thought I had this taped. This error does not *seem* to
 				## be related to the encoding param passed to ImageFont. I have
 				## mailed the PIL list about this.
@@ -168,13 +168,13 @@ class FontItem( object ):
 				## *If* 'check' is run, there will be a file containing pafs of the
 				## fonts that segfault PIL. (To my best knowledge, at least.)
 				## This file is held in the 'segfonts' list - opened in fpsys
-				
+
 				## So, before we do a getname and cause a segfault, let's
 				## see whether that font is in segfonts, and if so, skip it.
 				if self.glyphpaf not in fpsys.segfonts:
 					# This writes to lastFontBeforeSegfault file. Just in case it crashes the 
 					# app on the .family call below.
-					fpsys.logSegfaulters( self.glyphpaf ) 
+					fpsys.logSegfaulters( self.glyphpaf )
 					##
 					## Sep 2009
 					## It has been reported by a user that some fonts have family names (and other info?) that
@@ -214,20 +214,20 @@ class FontItem( object ):
 					break
 
 		self.numFaces = i
-				
+
 	def generatePilFont( self, enc="unicode" ):
 		"""
 		This function seems too similar to the __queryFontFamilyStyleFlagBad one
 		and in many ways it is. I am forced to work with PIL and it's not ideal
 		at the moment.
-		
+
 		This function is called from the GUI in a tight loop. It provides (generates)
 		pilimage objects with the font's text rendered onto them.
-		
+
 		Fonts that cause errors are marked 'badfont' and provide no image.
 		They can then be 'displayed' and can be put into Pogs etc., but they cannot
 		be seen.
-		
+
 		"""
 		## text gets extra spaces at the end to cater for cut-off characters.
 		paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
@@ -319,10 +319,10 @@ class FontItem( object ):
 ## Create some subclasses to represent the fonts that we support:		
 class InfoFontItem( FontItem ):
 	"""
-	This class is only instantiated in wxgui.CreateFitmaps 
+	This class is only instantiated in wxgui.CreateFitmaps
 	It's used to indicate when a Folder or Pog is EMPTY and
 	if a single font is bad in some way.
-	
+
 	It's the only Font Item in the target or source view list
 	at that time.
 	"""
@@ -340,48 +340,67 @@ class InfoFontItem( FontItem ):
 class TruetypeItem( FontItem ):
 	def __init__( self, glyphpaf ):
 		FontItem.__init__( self, glyphpaf )
-		
-class TruetypeCollectionItem( FontItem ):
+
+#Sept 2017: Renamed class.
+class TruetypeOrOpentypeCollectionItem( FontItem ):
 	def __init__( self, glyphpaf ):
 		FontItem.__init__( self, glyphpaf )
 
 class OpentypeItem( FontItem ):
 	def __init__( self, glyphpaf ):
 		FontItem.__init__( self, glyphpaf )
-	  
+
 class Type1Item( FontItem ):
 	def __init__( self, glyphpaf, metricpaf=None ):
 		FontItem.__init__( self, glyphpaf )
 		self.metricpaf = metricpaf
-		
+
+## Added Sept 2017:
+class WebOpenFontFormatItem( FontItem ):
+	def __init__( self, glyphpaf ):
+		FontItem.__init__( self, glyphpaf )
+
+## Sept 2017: Not supported by PIL
+#class X11PCFItem( FontItem ):
+#	def __init__( self, glyphpaf ):
+#		FontItem.__init__( self, glyphpaf )
+
+## Sept 2017 - Also not working ...
+#class WindowsFNTItem( FontItem ):
+#	def __init__( self, glyphpaf ):
+#		FontItem.__init__( self, glyphpaf )
+
+
+
+
 def itemGenerator( fromObj, sourceList ):
 	"""
 	Prepare for hell...
-	This is a *generator* function that yields a FontItem 
+	This is a *generator* function that yields a FontItem
 	instantiated according to the type of the font.
 	Call it once-off, or in a loop, to get one FontItem after another.
 	Pass it a sourceList that contains pafs.
-	
+
 	VERY NB:
-	When the app is run from a utf8 locale, this func generates 
+	When the app is run from a utf8 locale, this func generates
 	UNICODE glyphpaf vars.
 	When run from C/POSIX/None it generates BYTE STRING glyphpaf vars.
-	
+
 	sourceList is not a predictable beast. It comes in mixed strings/unicode
 	"""
 	#print "sourceList comes in:",[sourceList]
 	#print
-	
+
 	def ext(s): return s.split(".")[-1].upper()
 	def stripExt(s): return s[:s.rfind(".")]
-	
+
 	listOfItemsGenerated = []
-	
+
 	## So, [paf,paf,paf,paf,paf] comes in.
-	
+
 	## If it comes from FOLDER then it's full of ALL the files in a single dir.
 	##  NB: It may or may not include 'type1' files and their 'metrics'
-	
+
 	## If it comes from POG then it's just pafs of the basic glyph files
 	## thus it does not include the afm/pfm files.
 	##  So: this is a special case.
@@ -404,9 +423,9 @@ def itemGenerator( fromObj, sourceList ):
 		## Replace the sourceList
 		del( sourceList )
 		sourceList = tmp
-	
+
 	## Now we have a sourceList that is complete - full of files
-	
+
 	## TYPE1 stuff. 10 Jan 2008
 	## Jump through hoops to find the 'metric' files (AFM then PFM)
 	## for each Type1 font that's in the list
@@ -416,18 +435,18 @@ def itemGenerator( fromObj, sourceList ):
 	## starting with AFM extensions, then trying PFM extensions.
 	## AFM is preferred over PFM.
 	## Make Type1Item objects and associate the 'metric' file found (or none)
-	
+
 	## Filter some lists from sourceList to step through:
 	PFABs= [[stripExt(e),e] for e in sourceList if ext(e) in ("PFA","PFB")] # all type1 files
 	AFMs = [[stripExt(e),e] for e in sourceList if ext(e) in ("AFM")] # all AFM metric files
 	PFMs = [[stripExt(e),e] for e in sourceList if ext(e) in ("PFM")] # all PFM metric files
-	
+
 	## Those lists look like this:
 	##  ["/some/path/file", "/some/path/file.pfa"]
 	##  [0] is paf sans extension, [1] is all of it (*)
 	##  (*) We have to worry about case sensitivity, so I store more data.
 
-	## Go through the (maybe empty) list of PFA and FPB files
+	## Go through the (maybe empty) list of PFA and PFB files
 	for pfab_tup in PFABs:
 		foundAFM = False
 		## Looking for AFM files
@@ -458,25 +477,33 @@ def itemGenerator( fromObj, sourceList ):
 
 	## Do the other font types
 	TTFList = [ paf for paf in sourceList if ext(paf) == "TTF" ]
-	if len(TTFList) > 0:
-		for paf in TTFList:
-			fi = TruetypeItem( paf )
-			listOfItemsGenerated.append( fi )
-				
+	for paf in TTFList:
+		fi = TruetypeItem( paf )
+		listOfItemsGenerated.append( fi )
+
 	OTFList = [ paf for paf in sourceList if ext(paf) == "OTF" ]
-	if len(OTFList) > 0:
-		for paf in OTFList:
-			fi = OpentypeItem( paf )
-			listOfItemsGenerated.append(fi)
-			
-	TTCList = [ paf for paf in sourceList if ext(paf) == "TTC" ]
-	if len(TTCList) > 0:
-		for paf in TTCList:
-			fi = TruetypeCollectionItem( paf )
-			listOfItemsGenerated.append(fi)
-	
+	for paf in OTFList:
+		fi = OpentypeItem( paf )
+		listOfItemsGenerated.append(fi)
+
+	#Sept 2017: Added OTC, hence the "in" test. Also new class name.
+	TTCandOTCList = [ paf for paf in sourceList if ext(paf) in ( "TTC", "OTC" ) ]
+	for paf in TTCandOTCList:
+		fi = TruetypeOrOpentypeCollectionItem( paf )
+		listOfItemsGenerated.append(fi)
+
+	##Sept 2017
+	WOFFList = [ paf for paf in sourceList if ext(paf) == "WOFF" ]
+	for paf in WOFFList:
+		fi = WebOpenFontFormatItem( paf )
+		listOfItemsGenerated.append(fi)
+
+	##Sept 2017 - .fnt files AFAICT not supported by PIL
+	##Sept 2017 - X11 .pcf files. PIL does not seem to support these directly.
+
+
 	## NB: listOfItemsGenerated can contain MIXED byte strings/unicode
-	
+
 	## Sort the list: I use the glyphpaf_unicode var becuase it's unicode only.
 	listOfItemsGenerated.sort( cmp=locale.strcoll, key=lambda obj:obj.glyphpaf_unicode ) # Try to sort on that field.
 
@@ -499,20 +526,20 @@ class EmptyView(BasicFontList):
 	"""
 	Imitates an empty Pog or an empty Folder.
 	"""
-	def __init__(self): 
+	def __init__(self):
 		BasicFontList.__init__(self)
-		
+
 		## Public properties:
 		self.name = "EMPTY"
 		self.installed = False
 		self.empty = True
-		
+
 	def label(self):
 		return str(self.name)
 
 	def genList(self):
-		return 
-		
+		return
+
 	def isInstalled(self):
 		return False
 
@@ -521,16 +548,16 @@ class Folder(BasicFontList):
 	"""
 	Represents an entire Folder (from a path given by user clicking on the
 	GenericDirCtrl or from a command line string.)
-	
+
 	This is called from fpsys.instantiateViewFolder
-	
+
 	Contains a list of various FontItem Objects.
 	Supply the start path and an optional recurse T/F param.
 	"""
 	def __init__(self, path, recurse=False):
 		BasicFontList.__init__(self)
 		#print "path:",[path]
-		
+
 		## I reckon self.path is always coming in as unicode.
 		## From the gui, it's unicode anyway cos of the dir control.
 		## From the cli, I converted args to unicode there.
@@ -560,7 +587,7 @@ class Folder(BasicFontList):
 			# listOfFilenamesOnly *should* be a list of pure unicode objects as a result.
 			# It's NOT - I have found problems... see safeJoin func just above.
 			listOfFilenamesOnly = os.listdir (  self.path  ) # Get the unicode list
-		
+
 			sourceList = safeJoin(self.path, listOfFilenamesOnly )
 		else:
 			# Recursive code
@@ -572,21 +599,21 @@ class Folder(BasicFontList):
 				R = fpsys.LSP.to_unicode( root )
 				F = [ fpsys.LSP.to_unicode(f) for f in files ]
 				sourceList.extend( safeJoin( R, F ) )
-		
+
 		# At this point sourceList is full of PURE BYTE STRINGS
 
 		## Now employ the generator magic:
 		## Makes FontItem objects for each paf in the list.
 		for fi in itemGenerator( self, sourceList ):
 			self.append(fi)
-		
+
 		if len(self) == 0:
 			#print "EMPTY FOLDER"
 			raise fontybugs.FolderHasNoFonts(self.path)
 
 	def __str__(self):
 		return str(self.path)
-		
+
 	def label( self ):
 		"""
 		A handy way to refer to Folders & Pogs in certain circumstances.
@@ -594,10 +621,10 @@ class Folder(BasicFontList):
 		Folder.label returns the path
 		"""
 		return os.path.basename( self.path )
-		
+
 class Pog(BasicFontList):
 	"""
-	Represents an entire Pog. 
+	Represents an entire Pog.
 	Contains a list of various FontItems.
 	Dec 2007 - adding OTF and Type 1
 	Supply the pog name.
@@ -606,19 +633,19 @@ class Pog(BasicFontList):
 	def __init__(self, name ): #, progressCallback = None):
 		BasicFontList.__init__(self)
 		self.__pc = fpsys.iPC # A hack to pathcontrol.
-		
+
 		## Public properties:
 		##
 		## name always comes in as a byte string because
 		## we built the path up to .fontypython from byte strings
-		
+
 		## Make a unicode of that name:
 		uname = fpsys.LSP.ensure_unicode( name )
 		## Stores a unicode for access from other places:
 		self.name = uname
-		
+
 		self.__installed = "dirty" #am I installed?
-		
+
 		##
 		## NB NOTE: self.paf IS A BYTE STRING
 		##
@@ -629,7 +656,7 @@ class Pog(BasicFontList):
 		## OVERKILL : self.paf = fpsys.LSP.path_join_ensure_bytestring_result( self.__pc.appPath(),name + ".pog" )
 
 		self.badpog = False #To be used mainly to draw icons and ask user to purge.
-		
+
 	def label(self):
 		"""
 		A handy way to refer to Folders & Pogs in certain circumstances.
@@ -637,9 +664,9 @@ class Pog(BasicFontList):
 		Pog.label returns the name (in unicode)
 		Folder.label return the path
 		These are both the full paf of the font.
-		"""		
+		"""
 		return self.name
-	
+
 	def __openfile(self):
 		"""
 		Open my pog file. Raise PogInvalid error or return a file handle.
@@ -651,7 +678,7 @@ class Pog(BasicFontList):
 			## In theory, any file can *always* be opened - no matter what
 			## locale. POSIX deals only in byte strings. So, this next
 			## line will never fail.
-			
+
 			## I am going to open it as an ASCII file:
 			f = open( self.paf, 'r' ) # ASCII byte string file only.
 		except:
@@ -678,8 +705,8 @@ class Pog(BasicFontList):
 		## It has a valid line 1
 		## It may or may not have paf lines below it.
 		return f
-		
-		
+
+
 	def isInstalled(self):
 		"""
 		Passes a raise PogInvalid error through. Any other will abort app.
@@ -692,8 +719,8 @@ class Pog(BasicFontList):
 		f = self.__openfile() #sets __installed flag
 		f.close()
 		if self.__installed == "yes": return True
-		if self.__installed == "no": return False		
-		
+		if self.__installed == "no": return False
+
 	def setInstalledFlag(self, TF):
 		"""
 		JULY 2016
@@ -713,12 +740,12 @@ class Pog(BasicFontList):
 		#print "Invalid Pog : \"%s\"\nRenaming it to \"%s\"" % (self.paf, newpaf)
 		os.rename(self.paf, newpaf) #just going to hope this works...
 		self.paf = newpaf
-		
+
 	def genList(self):
 		"""
 		Generate the list of font items within myself.
 		Access the disk. Build the object up. All attribs and the list of fonts.
-		
+
 		Passes any PogInvalid error directly through.
 		"""
 		f = self.__openfile() #sets install flag, raises PogInvalid error.
@@ -733,7 +760,7 @@ class Pog(BasicFontList):
 			for paf in f: #This continues from line 2 onwards ...
 				paf = paf[:-1] #Strip the damn \n from the file
 				sourceList.append(paf)
-			f.close()  
+			f.close()
 		except UnicodeDecodeError:
 			## I can't even display the paf because it's not been set
 			## (paf is the last value that was read, since this is an error condition)
@@ -741,11 +768,11 @@ class Pog(BasicFontList):
 			pass
 			## Not using this anymore.
 			#raise fontybugs.PogContentEncodingNotMatched( self.paf )
-			
+
 		## Now to make Fontitems out of sourceList
 		for fi in itemGenerator( self, sourceList):
 			self.append(fi) # store them in myself.
-			
+
 	def purge(self):
 		"""
 		Purge method - remove fonts in the pog that are not on disk.
@@ -766,24 +793,24 @@ class Pog(BasicFontList):
 			for i in self:
 				try: #prevent weird errors on path test...
 					if not os.path.exists(i.glyphpaf) :
-						badfonts.append(i) 
+						badfonts.append(i)
 				except:
 					pass # it's bad through-and-through! It'll be axed too.
 			## Now go thru this list and remove the bad items.
 			for bi in badfonts:
 				#print "purging:", bi.name
-				self.remove(bi) 
-			self.write() 
+				self.remove(bi)
+			self.write()
 
 	def install(self):
 		"""
 		Install the fonts in myself to the user's fonts folder.
 		NOTE:
-		Even if ONLY ONE font out of a gigazillion in the pog 
+		Even if ONLY ONE font out of a gigazillion in the pog
 		actually installs, the POG == INSTALLED.
 		If we have a font that cannot be sourced, flag BADPOG
 
-		For Type1 fonts - 
+		For Type1 fonts -
 			The choice I have made is:
 			I will ONLY reference the PFA/B in the Pog file.
 			When we install a Pog, the metric file must be sought
@@ -807,7 +834,7 @@ class Pog(BasicFontList):
 				if detail.errno != errno.EEXIST: raise # File exists -- this font is already installed, we can ignore EEXIST.
 				## This font has been linked before.
 				fpsys.Overlap.inc(fi.name) # Use the class in fpsys to manage overlaps.
-				
+
 				return False
 
 		## If this is flagged as installed, then just get out.
@@ -818,7 +845,7 @@ class Pog(BasicFontList):
 		## We start thinking all is rosey:
 		self.__installed = "yes"
 		## Now we make sure ...
-		if len(self) == 0: 
+		if len(self) == 0:
 			self.__installed = "no"
 			raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
 
@@ -856,7 +883,7 @@ class Pog(BasicFontList):
 
 		self.write()
 
-		
+
 	def uninstall(self):
 		"""
 		Uninstall the fonts.
@@ -870,13 +897,13 @@ class Pog(BasicFontList):
 				 PogEmpty
 				 PogLinksRemain
 				 PogNotInstalled
-		"""		
+		"""
 		if len(self) == 0: raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
 		bugs = 0
 		if self.__installed == "yes":
 			for fi in self:
 				#print "*Uninstalling candidate %s" % fi.name
-				if fpsys.Overlap.dec(fi.name): 
+				if fpsys.Overlap.dec(fi.name):
 					#print " Going to leave this one here"
 					continue # If it overlaps then we skip removing it by going to next fi in loop.
 				#print "  Going to REMOVE this one"
@@ -885,7 +912,7 @@ class Pog(BasicFontList):
 				## Step one - look for the actual file (link)
 				if os.path.exists(link):
 					try:
-						os.unlink(link) 
+						os.unlink(link)
 						## The Type1 special case - its AFM/PFM may be here...
 						if isinstance( fi, Type1Item ):
 							## It's a Type 1, does it have a metricpaf?
@@ -893,7 +920,7 @@ class Pog(BasicFontList):
 							if fi.metricpaf:
 								pfmlink = os.path.join(self.__pc.userFontPath(), os.path.basename(fi.metricpaf))
 								if os.path.exists( pfmlink ):
-									os.unlink( pfmlink )					 
+									os.unlink( pfmlink )
 					except: # e.g. Permission denied [err 13]
 						## Only bugs that imply that the file is THERE but CANNOT BE REMOVED
 						## are classified as bugs. We are making a sweeping assumption here.
@@ -910,7 +937,7 @@ class Pog(BasicFontList):
 		else:
 			## self.__installed says we are not installed:
 			raise fontybugs.PogNotInstalled(self.name) # RAISED :: PogNotInstalled
-			
+
 
 	def write(self) :
 		"""
@@ -921,21 +948,21 @@ class Pog(BasicFontList):
 			i = "not installed\n"
 			if self.__installed == "yes":
 				i = "installed\n"
-			f.write(i) 
+			f.write(i)
 			#Now write the font pafs
 			for i in self:
 				## since the glyphpaf can vary it's type
 				## we must encode it to a byte string if it's unicode.
 				gpaf = fpsys.LSP.ensure_bytes( i.glyphpaf )
 
-				f.write( gpaf + "\n") 
-			f.close() 
+				f.write( gpaf + "\n")
+			f.close()
 		except:
 			raise fontybugs.PogWriteError(self.paf)
 
 	def delete(self):
 		"""
-		Delete my pogfile, then clean myself up, ready to be destroyed.		
+		Delete my pogfile, then clean myself up, ready to be destroyed.
 		"""
 		try:
 			os.unlink(self.paf)
@@ -943,7 +970,7 @@ class Pog(BasicFontList):
 			raise fontybugs.PogCannotDelete(self.paf)
 		self.clear()
 		self.__installed = "no"
-	
+
 	def zip(self, todir):
 		"""Sept 2009 : Add all the fonts to a zip file in todir."""
 		## Start a zip file: I am not sure if a filename should be bytestrings or unicode....
@@ -951,7 +978,7 @@ class Pog(BasicFontList):
 		self.genList() # I forget how to handle errors raised in that labyrinth... sorry world :(
 		#print "ZIP:",ipog.name
 		bugs=False
-		for fi in self:	
+		for fi in self:
 			## zipfiles have no internal encoding, so I must encode from unicode to a byte string
 			arcfile = fpsys.LSP.ensure_bytes(os.path.basename(fi.glyphpaf))
 			try:
@@ -967,5 +994,5 @@ class Pog(BasicFontList):
 			except ValueError,e:
 				bugs=True
 				print _("%s failed to zip because %s" % (fi.glyphpaf, e))
-		file.close()		
+		file.close()
 		return bugs # a flag for later.

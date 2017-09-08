@@ -40,16 +40,18 @@ import fontybugs
 
 class PogChooser(wx.ListCtrl) :
 	"""
-	Basic list control for pogs - instanced by TargetPogChooser and NoteBook
-	This single class (being used twice) causes terrible conceptual hardships
-	and forces all kinds of twisty tests. I'm sorry for this, we need a better
-	solution.
+	Basic list control for pogs - instanced by TargetPogChooser and in the
+	NoteBook in gui_FontSources.
+
+	This single class (being used twice) causes all kinds of twisty tests.
+	I'm not sure how better to do it.
 	"""
-	## CLASS LEVEL variables - special things these.
+
+	## CLASS LEVEL variables - Independent of instances. i.e. common to all.
 	__poglistCopy = {} # To help in sorting.
 	__TARGET = None
 	__VIEW = None
-	
+
 	def __init__(self, parent, whoami, select = None) :
 		self.indexselected = 0
 		self.lastindexselected = -1

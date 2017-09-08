@@ -20,11 +20,39 @@ NB::Don't forget to remove the wx debug stuff on the app object
 * Another idea - to ask the user how many cols they want; get the width from that (panelwidth/numcolswanted) and then send that width into the code that draws the actual bitmaps. 
 * Possible: A fade-to-white on right edge of fitmaps so long text doesn't look so cut-off.
 * I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. Still the old idea for an HTML style pager control.
-* I need to contrain the min size of the font target panel on the right. somehow. it can go right off the frame!
 * Was also messing in pubsub. Added a return factor to it - also added a new key = sash position ish  -- idea was to get the width of scroll panel in some cleaner way than exists. Then ripped it out: it causes recursion issues.
 * Maybe - the scroll panel can be measured during its init? store that for when it reports 0?
-* ESC key is being swallowed by some widgets. Find a way to forward it on to the main frame.
 * Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
+
+FIXED BY REMOVING ALL SPLITTERS* I need to contrain the min size of the font target panel on the right. somehow. it can go right off the frame!
+
+TODO
+==
+* Update the WXLAYOUTNOTES diagram.
+
+FREETYPE SUPPORTED FONTS:
+==
+How many do I have to cover?
+
+    OK TrueType fonts (TTF) and TrueType collections (TTC)
+		OK OpenType collections (OTC) Is the same as TTC (seems to supercede TTF)
+    OK OpenType fonts (OTF)
+    OK Type 1 fonts (PFA and PFB)
+    ADDED SEPT 2017: OK WOFF fonts
+
+    NOT SUPP BY PIL X11 PCF fonts
+    NOT SUPP BY PIL Windows FNT fonts
+
+		NOT YET Opentype CFF variants and ..
+    NOT YET CFF fonts [same] Not at all sure that these are a file type.
+
+
+    NOT YET ?? CID-keyed Type 1 fonts
+    NOT YET ?? SFNT-based bitmap fonts, including color Emoji
+    NOT YET ?? BDF fonts (including anti-aliased ones)
+    NOT YET ?? PFR fonts
+    NOT YET ?? Type 42 fonts (limited support)
+
 
 Layout idea
 ==
@@ -58,7 +86,7 @@ FUTURE IDEAS
 
 
 
-TODO
+FILTER TODO
 ==
 Filtering ideas. Pillow is supplying all kinds of info now:
 
