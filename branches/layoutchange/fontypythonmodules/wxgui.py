@@ -59,7 +59,7 @@ import dialogues
 
 from gui_FontSources import *
 from gui_Middle import *
-from gui_Right import *
+from gui_PogTargets import *
 
 
 class StatusBar(wx.StatusBar):

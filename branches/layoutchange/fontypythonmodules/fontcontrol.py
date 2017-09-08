@@ -700,7 +700,7 @@ class Pog(BasicFontList):
 		=========
 		In a situation where we have two objects of the same Pog, and one is installed
 		we need to set the other one to installed too.
-		See gui_Right multiClick
+		See gui_PogTargets multiClick
 		"""
 		self.__installed = TF
 
