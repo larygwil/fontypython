@@ -39,7 +39,7 @@ from gui_Fitmap import * #Also brings in 'ps' variable
 
 class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 	"""
-	This is the main font control, the child of CLASS FontViewPanel (in gui_Middle.py)
+	This is the main font control, the child of CLASS FontViewPanel (in gui_FontView.py)
 	Draw a list of fitmaps from a font list object (derived from BasicFontList)
 
 	July 2016
@@ -116,7 +116,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 		Creates fitmaps (which draws them) of each viewobject FontItem down the control.
 		viewobject: is a sub-list of fitems to display - i.e. after the page number math.
-			** See filterAndPageThenCallCreateFitmaps in gui_Middle.py
+			** See filterAndPageThenCallCreateFitmaps in gui_FontView.py
 
 		NOTE: Uses a WrapSizer which has some side-effects. Wide fitmaps, early in the
 					list tend to "shield" narrow ones under them, so the wrapping leaves them

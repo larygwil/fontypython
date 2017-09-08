@@ -687,7 +687,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		icon = self.style['icon']
 		if icon:
-			Icon = self.FVP.__dict__[icon] #See gui_Middle.py ~line 97
+			Icon = self.FVP.__dict__[icon] #See gui_FontView.py ~line 97
 			ix,iy = (6,10) if isinfo else (2,6)
 
 			ix += offx

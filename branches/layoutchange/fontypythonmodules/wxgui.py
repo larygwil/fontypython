@@ -58,7 +58,7 @@ import dialogues
 
 
 from gui_FontSources import *
-from gui_Middle import *
+from gui_FontView import *
 from gui_PogTargets import *
 
 
@@ -337,7 +337,7 @@ class MainFrame(wx.Frame):
 
 		## call the big one - the big chief, the big cheese:
 		## This eventually draws all the Fitmaps - giving the middle a width.
-		ps.pub( update_font_view ) #DND: It's in gui_Middle.py under class FontViewPanel
+		ps.pub( update_font_view ) #DND: It's in gui_FontView.py under class FontViewPanel
 
 
 		self.SetMinSize(wx.Size(MINSCREENWIDTH,600)) #Old Skool: Assuming monitor size...
@@ -410,7 +410,7 @@ class MainFrame(wx.Frame):
 
 
 	def OnAccelKey(self,evt):
-		ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_Middle.py
+		ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_FontView.py
 
 
 	def toggleSelectionMenuItem(self, onoff):
