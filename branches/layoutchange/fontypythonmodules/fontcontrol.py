@@ -147,7 +147,7 @@ class FontItem( object ):
 			except UnicodeEncodeError:
 				"""
 				NOTE: Sets badfont
-				"""	
+				"""
 				## Aw man! I thought I had this taped. This error does not *seem* to
 				## be related to the encoding param passed to ImageFont. I have
 				## mailed the PIL list about this.

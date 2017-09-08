@@ -47,7 +47,7 @@ iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i' (Boy thi
 root = __file__
 if os.path.islink(root):
 	root = os.path.realpath(root)
-fontyroot = os.path.dirname(os.path.abspath(root)) 
+fontyroot = os.path.dirname(os.path.abspath(root))
 
 ## Where my images and things are.
 mythingsdir = os.path.join(fontyroot,"things/")
@@ -100,7 +100,7 @@ class Overlaperize(object):
 	def sleep(self):
 		'''Save the OVERLAP_COUNT_DICT to a file (if it has content). Called when app closes.'''
 		if self.DISABLE_THIS: return
-		
+
 		if not self.OVERLAP_COUNT_DICT:
 			self.OVERLAP_COUNT_DICT={} # Ensure there is a blank overlap_counts file!
 
@@ -108,10 +108,10 @@ class Overlaperize(object):
 		fr = open( paf, 'wb' ) # pickle says use 'binary' files, but only Windows makes this distinction. I use it to be safe...
 		pickle.dump( self.OVERLAP_COUNT_DICT, fr, protocol=pickle.HIGHEST_PROTOCOL )
 		fr.close()
-	
+
 	def wakeup(self):
 		'''Restore the OVERLAP_COUNT_DICT from a file (if any). Called as app starts.'''
-		if self.DISABLE_THIS: return 
+		if self.DISABLE_THIS: return
 
 		paf = os.path.join(iPC.appPath(),"overlap_counts")
 		if os.path.exists( paf ):
@@ -142,7 +142,7 @@ def getSegfontsList():
 		## CORNER CASE: Some error or other.
 		raise
 ## Call it.		
-getSegfontsList()	
+getSegfontsList()
 
 
 def checkFonts( dirtocheck, printer ):
@@ -151,13 +151,13 @@ def checkFonts( dirtocheck, printer ):
 	Scan a tree for fonts that can cause segfaults.
 	Write a file 'segfonts' and create a list 'segfonts'
 	that gets checked to exclude them.
-	
-	printer is a function of some kind. 
-	
+
+	printer is a function of some kind.
+
 	Can be called from the cli or the gui.
 	"""
 	global segfonts
-	
+
 	code = """
 from PIL import ImageFont
 try:
@@ -199,7 +199,7 @@ except:
 				gotsome = True
 				seglist.append( paf )
 				printer ( " " + file ) # show it on-screen somewhere.
-				
+
 	if not gotsome:
 		printer(_("I could not find any bad fonts."))
 	## Now write the segfonts file:
@@ -220,10 +220,10 @@ except:
 		#print
 		fw.write( bytestring )
 		fw.close()
-		
+
 	printer()
 	printer(_("The process is complete."))
-	
+
 def isFolder(thing):
 	"""True if a folder. False if not - but that does not mean it's a pog."""
 	if os.path.isdir(thing): return True
@@ -245,13 +245,13 @@ class FPState:
 	def __init__(self):
 		## Contains the Pog or Folder being viewed
 		self.viewobject = None
-		
+
 		## Refs the view object *after* the filter has been applied
 		self.filteredViewObject= None
 
 		## Contains a Pog (or None) that is the Target
 		self.targetobject = None
-		
+
 		## Represents the situation in a letter code
 		## P for Pog, F for Folder, E for Empty, N for None
 		self.viewpattern = ""
@@ -514,7 +514,7 @@ def instantiateTargetPog( newpog_name ):
 		if state.viewobject.name == newpog_name:
 			## The pog clicked in the TARGET is the same as what's ALREADY selected in the VIEW
 			state.samepogs = True
-			
+
 	quickinstalledflag = False
 	if ipog.isInstalled(): quickinstalledflag  = True
 	state.targetpattern = "P" 

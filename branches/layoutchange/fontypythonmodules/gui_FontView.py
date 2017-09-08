@@ -457,18 +457,18 @@ class FontViewPanel(wx.Panel):
 			self.filterAndPageThenCallCreateFitmaps()
 		wx.EndBusyCursor()
 
-	def OnSliderScroll(self, event):
-		"""
-			July 2016: Tried a slider to move through pages. It sucked.
-			This code not in use.
-		"""
-		obj = event.GetEventObject()
-		val = obj.GetValue()
-		wx.BeginBusyCursor()
-		if self.pageindex != val: #Only redraw if actually onto another page.
-			self.pageindex = val
-			self.filterAndPageThenCallCreateFitmaps()
-		wx.EndBusyCursor()
+	#def OnSliderScroll(self, event):
+	#	"""
+	#		July 2016: Tried a slider to move through pages. It sucked.
+	#		This code not in use.
+	#	"""
+	#	obj = event.GetEventObject()
+	#	val = obj.GetValue()
+	#	wx.BeginBusyCursor()
+	#	if self.pageindex != val: #Only redraw if actually onto another page.
+	#		self.pageindex = val
+	#		self.filterAndPageThenCallCreateFitmaps()
+	#	wx.EndBusyCursor()
 
 
 	def navClick(self,event) :
@@ -542,7 +542,7 @@ class FontViewPanel(wx.Panel):
 		Vpatt = fpsys.state.viewpattern # View Pattern
 		Tpatt = fpsys.state.targetpattern # Target pattern
 
-		Patt = Vpatt + Tpatt # Patt = Pattern
+		Patt = Vpatt + Tpatt
 
 		lab = ""
 		status = ""
@@ -556,7 +556,7 @@ class FontViewPanel(wx.Panel):
 		## F is Folder
 
 		if Vpatt == "E": #NOTE : TESTING VPATT, not PATT - ergo: this covers E, EN, EP
-			## Empty "E" - when the chosen Folder or Pog has NO FONTS IN IT.
+			## Empty ("E") - when the chosen Folder or Pog has NO FONTS IN IT.
 			if Tpatt == "P":
 				lab = _("Your active Target is %s") % T.name
 				status = _("Please choose a Source.")
