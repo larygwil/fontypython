@@ -43,21 +43,21 @@ if loc is None or len(loc) < 2:
 	langcode = 'en'
 else:
 	langcode = loc[:2].lower()# This is going to cause grief in the future...
- 
+
 class DialogHelp(wx.Dialog):
 	def __init__(self, *args, **kwds):
 		kwds["style"] = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
 		wx.Dialog.__init__(self, *args, **kwds)
-		
+
 		ID_ESC = 1001
 		self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
 		self.SetAcceleratorTable(self.accel)
 		self.Bind(wx.EVT_MENU, self.Escape, id=ID_ESC)
-		
+
 		dbox = wx.BoxSizer(wx.VERTICAL)
 		btn = wx.Button(self, wx.ID_CANCEL)
 		btn.SetDefault()
-		win = TestHtmlPanel(self, size = kwds["size"]) 
+		win = TestHtmlPanel(self, size = kwds["size"])
 		dbox.Add(win, 1, wx.EXPAND)
 		dbox.Add(btn, 0, wx.CENTER | wx.TOP | wx.BOTTOM,border = 4)
 		self.SetSizer(dbox)
@@ -89,7 +89,7 @@ class TestHtmlPanel(wx.Panel):
 
 		self.SetSizer(self.box)
 		self.SetAutoLayout(True)
-		
+
 		## Find localized help, or default to English.
 		packpath = fpsys.fontyroot
 		helppaf = os.path.join(packpath, "help", langcode, "help.html")
@@ -114,34 +114,34 @@ class DialogAbout(wx.Dialog):
 		kwds["style"] = wx.DEFAULT_DIALOG_STYLE
 		wx.Dialog.__init__(self, *args, **kwds)
 		self.nb = wx.Notebook(self, -1, style=0)
-		
+
 		self.notebook_1_pane_2 = wx.Panel(self.nb, -1)
 		self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
 		self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
-		
+
 		self.bLOGO = wx.StaticBitmap\
 		(self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
-		
+
 		self.AboutText = wx.StaticText\
 		(self.notebook_1_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
 
 		self.emaillink = wx.TextCtrl\
-		(self.notebook_1_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)		
-		
+		(self.notebook_1_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)
+
 		self.GPL_TEXT = wx.TextCtrl\
 		(self.notebook_1_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
- 
+
 		self.THANKS = wx.TextCtrl\
 		(self.notebook_1_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
- 
+
 		ID_ESC = 1001
 		self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
 		self.SetAcceleratorTable(self.accel)
 		self.Bind(wx.EVT_MENU, self.EscapeAbout, id=ID_ESC)
-		
+
 		self.__set_properties()
 		self.__do_layout()
-		self.notebook_1_pane_1.SetFocus() 
+		self.notebook_1_pane_1.SetFocus()
 		# end wxGlade
 
 	def __set_properties(self):
@@ -152,16 +152,16 @@ class DialogAbout(wx.Dialog):
 
 	def EscapeAbout(self, event):
 		self.Close()
-		
+
 	def __do_layout(self):
 		# begin wxGlade: MyDialog.__do_layout
 		sizer_1 = wx.BoxSizer(wx.VERTICAL)
 		sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
 		sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
-		
+
 		sizerPane1 = wx.BoxSizer(wx.HORIZONTAL)
 		sizerPane1.Add(self.bLOGO, 0, 0, 0)
-		
+
 		textsizer = wx.BoxSizer(wx.VERTICAL)
 		textsizer.Add(self.AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
 		textsizer.Add(self.emaillink, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)

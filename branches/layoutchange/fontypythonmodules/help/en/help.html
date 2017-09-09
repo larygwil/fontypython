@@ -13,7 +13,7 @@
 		
 		<A NAME="TOP"></A>
 		<p>
-		<a href="#LAYOUT">The layout</a> | <a href="#MENUS">The Menus</a> | <a href="#SHORTCUTS">Shortcuts</a> | <a href="#TIPS">Tips</a> | <a href="#L10N">Localization</a> | <a href="#BUGS">Bugs</a> | <a href="#LIC">Licence</a>
+		<a href="#DOTFONTS">Dot fonts info</a> | <a href="#LAYOUT">The layout</a> | <a href="#MENUS">The Menus</a> | <a href="#SHORTCUTS">Shortcuts</a> | <a href="#TIPS">Tips</a> | <a href="#L10N">Localization</a> | <a href="#BUGS">Bugs</a> | <a href="#LIC">Licence</a>
 		</p>
 
 		<h3><font color="#758B94">Ye olde Basic Idea</font></h3>
@@ -22,9 +22,11 @@
 		<p>Your fonts never move from where they live, neither are copies made; <i>only links to the original files are used</i> to install the fonts into your home <i>.fonts</i> directory.</p>
 		<p>For example, you might have a Pog called "Zoo Logo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you need to work with them, you simply install the "Zoo Logo" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp and other apps. When you are done designing, you uninstall "Zoo Logo" and all those fonts go away. (The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.)</p>
 		<p>Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.</p>
-		<h3><font color="#758B94">Home dot fonts</font></h3>
-		<p>In your home directory there is a hidden directory named ".fonts". The dot makes it hidden. In there you will find font files of various kinds. Whatever is listed in that directory is a font that your system can use. It's not as simple as this because on GNU/Linux there are other places where fonts are also installed, but it's a handy place to work. You should never need to go into this directory so there's no reason to worry about it.</p>
-		<p><b>NB:</b> If the .fonts directorydoes not exist, please create it in your home directory.<br><b>For example</b><pre>$ cd ~<br>$ mkdir .fonts</pre></p>
+
+		<h3><A NAME="DOTFONTS"></A><font color="#758B94">Home dot fonts</font></h3>
+		<p>In your home directory there is a hidden directory named <b>".fonts"</b>. Whatever's in there is a font that your system can use. (There's a trend now to do away with this approach. It could spell doom for Fonty.)</p>
+		<p><b>NB:</b> If the .fonts directory does not exist, please create it in your home directory.<br><b>For example</b><pre>$ cd ~<br>$ mkdir .fonts</pre><br><br><b>Alternatively</b> Make use of your file manager and simply create ".fonts" in your home folder.</p>
+
 		<h3><font color="#758B94">Latest News</font></h3>
 		<ol>	
 			<li>(July 2016) Many fixes due to changes in PIL and GTK versions.</li>

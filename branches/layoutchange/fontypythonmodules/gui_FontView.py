@@ -229,8 +229,8 @@ class FontViewPanel(wx.Panel):
 
 		#def DoGetBestSize(self):
 		# DOES NOT RUN FOR A wx.Panel
-		
-		
+
+
 		#self.Bind(wx.EVT_SIZE,	self.TESTOnResize)
 	#def	TESTOnResize(self,	*args,	**kwargs):#KILL ME
 		#print	"Test Resizing in AUI stuff."

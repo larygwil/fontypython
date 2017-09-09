@@ -67,11 +67,24 @@ class StatusBar(wx.StatusBar):
 	The status bar
 	"""
 	def __init__(self, parent):
-		wx.StatusBar.__init__(self, parent, -1)
-		self.SetFieldsCount(1)
-		self.SetStatusText( _("Welcome to Fonty Python version %s") % fpversion.version, 0)
+		wx.StatusBar.__init__(self, parent, -1) # default style is good
+
+		##The last field is the gripper (32px)
+		self.SetFieldsCount( 4 if fpsys.iPC.missingDotFontsDirectory else 3 )
+
+		self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
+
+		if fpsys.iPC.missingDotFontsDirectory:
+			self.SetStatusText( strings.missingDotFontsMessages["statusbar"], 2)
+			self.SetStatusWidths([300,-2,-1,32])
+			#self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
+		else:
+			self.SetStatusWidths([300,-2,32])
+			#self.SetStatusStyles([wx.SB_SUNKEN]*2)
+
+
 	def Report(self, msg):
-		self.SetStatusText(msg, 0)
+		self.SetStatusText(msg, 1)
 
 class MainFrame(wx.Frame):
 	"""
@@ -394,7 +407,9 @@ class MainFrame(wx.Frame):
 		evt.Skip()
 
 	def onIdle(self, evt):
+		#print "Idle runs"
 		if self.resized:
+			#print "  Idle updates fontViewPanel"
 			ps.pub (update_font_view )
 			self.resized = False
 
@@ -417,6 +432,7 @@ class MainFrame(wx.Frame):
 		#HIG says to leave top menu alone and only toggle sub-items.
 		self.MENUSELECTION.Enable(301,onoff[0])
 		self.MENUSELECTION.Enable(302,onoff[0])
+
 	def StatusbarPrint(self, args):
 		self.sb.Report(args[0])
 
@@ -424,10 +440,12 @@ class MainFrame(wx.Frame):
 		dlg = wx.MessageDialog(self, args[0] , _("Warning"), wx.OK | wx.ICON_INFORMATION)
 		dlg.ShowModal()
 		dlg.Destroy()
+
 	def ErrorBox(self, args):
 		dlg = wx.MessageDialog(self, args[0], _("Error"), wx.OK | wx.ICON_ERROR)
 		dlg.ShowModal()
 		dlg.Destroy()
+
 	def ErrorAbort(self, args):
 		self.ErrorBox(args) #Pass it along to be displayed
 		self.endApp()

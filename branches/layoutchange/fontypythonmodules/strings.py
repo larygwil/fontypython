@@ -17,11 +17,11 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import pathcontrol 
+import pathcontrol
 import fpversion
 import os
 
-copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016 Donn.C.Ingle"
+copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
 contact = "email: donn.ingle@gmail.com"
 done = "Done."
 
@@ -32,6 +32,16 @@ done = "Done."
 ## So, there is a new flag to manage this now:
 _pc = pathcontrol.PathControl( makeFolder=False )
 
+
+## Sept 2017
+## The "missing .fonts directory" speech. I am repeating it too much, time
+## to bring it all here.
+missingDotFontsMessages = {
+"basic": _("Please create a \".fonts\" directory (in your home directory) so that Fonty can install fonts. Until this is done, Pogs cannot be installed. Please see the \"Dot fonts\" section in the Help for more information.\n\nExample:\ncd ~\nmkdir .fonts\n\n"),
+"statusbar": _("Missing \"~\.fonts\" directory. See Help.")
+}
+
+
 version = _("Fonty Python version %s") % fpversion.version
 
 warranty = """This program is distributed in the
@@ -41,24 +51,56 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the GNU General Public License for
 more details."""
 
+copy_warranty_contact = u"{}\n\n{}\n\n{}".format(copyright, warranty, contact)
+
+
 aboutText = "%s\n%s\nWritten on Gnu\Linux, using wxPython.\n\n%s" % (copyright, version, warranty)
+
+fonts_supported = _("""Fonts supported: TTF, OTF, TTC, WOFF, Type1 (PFB, PFA).""")
+
+basic_idea = _("""Manage your fonts on GNU/Linux
+==============================
+Many designers have collections of font files in big
+directories. Fonty Python will help you gather these
+fonts and structure them into collections that I call
+"Pogs" -- a place to keep tyPOGraphy. Well, why not?
+
+Fonty lets you you select fonts visually and place
+links to them in a Pog, which you can install or
+remove as you require.
+
+(Your font files never move from where they are. No
+copies of your fonts are made. Only links to the
+original files are used.)
+
+For example, you might have a Pog called 'logos'
+into which you place fonts of company logos.
+Thereafter, when you want to use those logos, simply
+install the 'logos' Pog and start your design app!
+
+When you are done, remove the 'logos' Pog, and all
+those linked-fonts will go away.
+
+FP is also great for just looking at fonts wherever
+they are on your computer, without having to install
+them system-wide.""")
 
 options=_("""Options:
   -v --version  Show program's version number and exit.
-  -h --help	 Show this help message and exit.
+  -h --help  Show this help message and exit.
   -e --examples
 				Show some %$@#$ examples!
   -i Pog --install=Pog
-				Install the fonts in this Pog to your 
+				Install the fonts in this Pog to your
 				fonts folder.
   -u Pog --uninstall=Pog
 				Uninstall the fonts in this Pog.
-  -l --list	
+  -l --list
 				List the names of all the Pogs.
   -s num --size=num
 				Set a new default point size.
   -n num --number=num
-				Set a new default for how many fonts 
+				Set a new default for how many fonts
 				to view at one go. Don't overdo this.
   -p Pog --purge=Pog
 				Purge the Pog of font files that are no
@@ -90,60 +132,26 @@ options=_("""Options:
 				All the fonts inside Pog will be zipped
 				and the zipfile will be named after the Pog.
 				The file will be placed in the current
-				directory.
-				""")
+				directory.""")
 
 use = _("""%(c)s [OPTIONS] [VIEW] [TARGET]
+%(version)s
+
 VIEW   : A place where fonts are. (A Pog or a Folder.)
 TARGET : A "Pog". A place to keep those fonts.
 
-("%(c)s" on it's own will start the GUI.)
+("%(c)s" on its own will start the GUI.)
 
-NB: Try not to use spaces in Pog names. If you must, 
+NB: Try not to use spaces in Pog names. If you must,
 then "quote the name."
 
 Please use -e to see more info.
 
-NEWS : We now support TTF, OTF, Type1 (PFB, PFA) 
-and TTC fonts.
+%(fonts_supported)s
 
-%(version)s
+%(basic_idea)s""" ) % { "c":"fontypython", "folder":_pc.appPath(), "version":version, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
-The basic idea:
-===============
-Many designers have collections of font files in big
-directory structures or on other media. Fonty Python
-will let you gather your fonts and structure them
-into collections -- or what I call "Pogs" -- a place
-to keep tyPOGraphy. Well, why not?
 
-Your fonts never move from where they are
-(so don't worry). All that happens is that you select 
-fonts visually and place their names into a Pog,
-then you install or uninstall Pogs as you need them.
-No copies of your fonts are made, only links to the
-original files are used to install the fonts.
-
-For example, you might have a Pog called 'logos'
-into which you place all the fonts you have of
-company logos. After that, when you need to work
-with those logos, you simply install the 'logos' Pog
-and start your design app!
-
-FP is also great for just looking at fonts wherever
-they are on your computer, without having to install
-them system-wide.
-
-Manage your fonts on Gnu/Linux!
-===============================
-%(copy)s
-
-%(warranty)s
-
-%(contact)s
-""" ) % { "c":"fontypython", "folder":_pc.appPath(), "contact":contact, "copy":copyright, "warranty":warranty, "version":version }
-
-	
 examples = _("""The basic format is:
 %(c)s [VIEW] [TARGET]
   VIEW   = A place where fonts are. A Pog or a folder
@@ -166,7 +174,7 @@ Examples: All using short options, see -h
 =========
 %(c)s /path/to/fonts/ttfs/a
   This will start off showing the fonts in that path.
- 
+
 %(c)s /path/to/fonts/ttfs/b Trouser
   This will let you view and choose fonts from the
   path and it will store them in a Pog named "Trouser".
@@ -189,23 +197,23 @@ Examples: All using short options, see -h
 
 %(c)s -u Trouser
   Will uninstall the fonts listed in Pog Trouser,
-  so you can't use 'em anymore.( You Naughty thing) 
-  
-%(c)s -s 128 
+  so you can't use 'em anymore.( You Naughty thing)
+
+%(c)s -s 128
   Will set the point size to 128 - Crazy man!
 
 %(c)s -n 25
   Will show 25 fonts at a time. Beware large numbers!
-	
+
 %(c)s -s 64 -v 10 Pimple
   Will set the point size to 64, the number of fonts
   to view is 10 and then display the Pimple Pog.
 
 %(c)s -p Glutton
-  If there are any fonts in "Glutton" that are not
-  really on your drive/media anymore (perhaps you
-  deleted them or the cat did) then this will go 
-  through your Pog and cull them.
+  Purging a font. If there are any fonts in "Glutton"
+	that are not really on your drive/media anymore
+	(perhaps you deleted them or the cat did) this
+	will go through the Pog and cull them.
 
 %(c)s -c /some/path/to/fonts
   If Fonty keeps crashing on /some/path/to/fonts
@@ -218,50 +226,22 @@ Examples: All using short options, see -h
   the Pog called HolyHandGrenade.
 
 %(c)s -A /some/path Tutto
-  This will do the same as -a above: start in that 
-  path, but it will then walk down recursivly 
-  through all sub-folders too. The fonts will 
+  This will do the same as -a above: start in that
+  path, but it will then walk down recursivly
+  through all sub-folders too. The fonts will
   be placed in Tutto.
 
 Your fontypython folder is:
 %(folder)s
 If you want to backup your Pogs, that's where ya go.
+
 %(contact)s
 
 %(copy)s""") % { "c":"fontypython", "folder":_pc.appPath(), "contact":contact, "copy":copyright }
 
 ## These two are used in setup.py
 description = _("Fonty Python - view and manage all kinds of fonts on Gnu/Linux")
-long_description = _("""Manage your fonts on Gnu/Linux.
-NEWS : We now support TTF, OTF, Type1 (PFB, PFA) 
-and TTC fonts.
-
-Many designers have collections of font files in big
-directory structures or on other media. Fonty Python
-will let you gather your fonts and structure them
-into collections -- or what I call "Pogs" -- a place
-to keep tyPOGraphy. Well, why not?
-
-Your fonts never move from where they are
-(so don't worry). All that happens is that you select 
-fonts visually and place their names into a Pog,
-then you install or uninstall Pogs as you need them.
-No copies of your fonts are made, only links to the
-original files are used to install the fonts.
-
-For example, you might have a Pog called "logos"
-into which you place all the fonts you have of
-company logos. After that, when you need to work
-with those logos, you simply install the 'logos' Pog
-and start your design app!
-
-FP is also great for just looking at fonts wherever
-they are on your computer, without having to install
-them system-wide.
-	
-	%(copy)s
-	%(contact)s
-	""") % {"copy":copyright, "contact":contact}
+long_description = "%(basic_idea)s\n\n%(fonts_supported)s\n\n%(copy)s\n\n%(contact)s" % {"copy":copyright, "contact":contact, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 
 wxvers="2.8"
@@ -353,10 +333,10 @@ thanks = u"""Many thanks to:
 
 ## June 2009 : Get the GPL from the COPYING file rather than a copy of it all here again.
 try:
-	root = __file__                              
-	if os.path.islink(root):                     
-		root = os.path.realpath(root)            
-	fontyroot = os.path.dirname(os.path.abspath(root)) 
+	root = __file__
+	if os.path.islink(root):
+		root = os.path.realpath(root)
+	fontyroot = os.path.dirname(os.path.abspath(root))
 	p = os.path.join(fontyroot,'COPYING')
 	GPL = open(p,"r").read()
 except:

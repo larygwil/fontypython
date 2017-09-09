@@ -23,18 +23,22 @@ class PathControl:
 	2. Provide paths for fontypython on Linux
 	3. Provide list of pog names (without the .pog extension)
 	4. Provide a list of pog FILE names (with .pog extension)
-	
+
 	* All these vars contain/return BYTE STRING paths and files.
+
+	NOTE We use PathControl in strings.py (which is also used in setup.py)
+	These are situation in which we do not want to create the ~/.fontypython
+	folder from this module. Hence, the makeFolder flag.
 	"""
-	
+
 	def __init__(self, makeFolder=True ):
 		## __HOME will be a BYTE STRING (Under Linux)
 		self.__HOME = os.environ['HOME']
-		
+
 		self.__fphomepath = self.__HOME + "/.fontypython/" # byte string
 		self.__fpconffile = self.__HOME + "/.fontypython/fp.conf" # byte string
-		
-		
+
+
 		## Is there a .fonts folder ?
 		##
 		## EDIT
@@ -53,25 +57,32 @@ class PathControl:
 		# Couldn't make the .fonts folder in %s
 		# Please check your write permissions and try again.""") % self.__HOME
 		#	raise SystemExit
-		
+
 		## EDIT
 		## August 2012
 		## If there is no .fonts dir, install pog fails. The cursor keeps busy and nothing
 		## further happens. Here my suggestion: only perform a test, without creating the dir.
-		
+
 		#if not os.path.exists(self.__HOME + "/.fonts"):
 		#	print _("""
 		#It seems there is no %s/.fonts folder or there are wrong permissions.
 		#Please create it manually to be able to install your fonts with FontyPython.""") % self.__HOME
 			#raise SystemExit
-		
+
 		## end of michael edit.
 
 		##Edit Donn June 25, 2016
 		## Remarked Michael's edit. Moved the test for missing .fonts dir to
 		## fontcontrol.py in the install() function
-		
+
 		self.__userfontpath = self.__HOME + "/.fonts"
+
+		self.missingDotFontsDirectory = not os.path.exists( self.__userfontpath )
+
+		#	print _("""
+		#It seems there is no %s/.fonts folder or there are wrong permissions.
+		#Please create it manually to be able to install your fonts with FontyPython.""") % self.__HOME
+			#raise SystemExit
 
 		## June 25, 2016
 		## Some distros do not have the .fonts directory by default. :( :O

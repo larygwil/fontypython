@@ -297,6 +297,7 @@ class TargetPogChooser(wx.Panel):
 					ps.pub( show_error, unicode(er) )
 					ok=False
 				except (fontybugs.NoFontsDir), er:
+					#import pdb; pdb.set_trace()
 					ps.pub( show_error, unicode(er) )
 					ok=False
 

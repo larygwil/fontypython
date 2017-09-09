@@ -16,6 +16,7 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 import locale
 import fpsys
+import strings
 
 """
 testing i18n with fontybugs
@@ -46,7 +47,7 @@ class Errors ( Exception ):
 	1010 : _("Not a single font in this pog could be installed.\nThe original font folder has probably moved or been renamed."),
 	1020 : _("Not a single font in this pog could be uninstalled.\nNone of the fonts were in your fonts folder, please check your home .fonts (with a dot in front) folder for broken links.\nThe pog has been marked as \"not installed\"."),
 	1030 : _("This folder has no fonts in it."),
-	1040 : _("Please create the ~/.fonts directory (in your home directory) so that you can install fonts.\n\nExample:\ncd ~\nmkdir .fonts\n\n")
+	1040 : strings.missingDotFontsMessages["basic"]
 	}
 
 	def __unicode__( self ):
@@ -69,73 +70,73 @@ class Errors ( Exception ):
 
 
 class BadVoodoo ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
 		self._id = 001
-		
+
 class ErrNoSuchItem ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
 		self._id = 100
 
 class PogEmpty ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
 		self._id = 200
-		
+
 class PogInstalled ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 300		
- 
+		self._id = 300
+
 class PogWriteError ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 500		 
-		
+		self._id = 500
+
 class PogInvalid ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 600	   
+		self._id = 600
 
 class PogSomeFontsDidNotInstall ( Errors ): #Some fonts did get installed, but not all
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 700  
-		
+		self._id = 700
+
 class PogNotInstalled ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 800  
-		
+		self._id = 800
+
 class PogLinksRemain ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 900		
-		
+		self._id = 900
+
 class PogCannotDelete ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
 		self._id = 1000
-		
+
 class PogAllFontsFailedToInstall ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 1010	  
+		self._id = 1010	
 
 class PogAllFontsFailedToUninstall ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 1020		 
-		
+		self._id = 1020
+
 class FolderHasNoFonts ( Errors ):
-	def __init__ ( self, item = None): 
+	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 1030			
+		self._id = 1030
 
 #June 25, 2016
 class NoFontsDir ( Errors ):
 	def __init__ (self, item = None ):
 		self._item = item
 		self._id=1040
-		
+

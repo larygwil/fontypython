@@ -44,7 +44,7 @@ class options(object):
 	all = None
 	allrecurse = None
 	zip = None
-	
+
 ## If non-ascii chars get entered on the cli, say a Japanese word for
 ## a pog's name, we may have a problem. 
 ## So, I am going to (try to) decode those byte strings into Unicode first:	
@@ -85,12 +85,15 @@ for o, a in opts:
 	if o in ("-e", "--examples"):
 		print strings.examples
 		raise SystemExit
-		
+
 	elif o in ("-h", "--help"):
 		print strings.use
+		print
 		print strings.options
+		print
+		print strings.copy_warranty_contact
 		raise SystemExit
-		
+
 	elif o in ("-l", "--list"):
 		options.list = True
 
@@ -116,7 +119,7 @@ for o, a in opts:
 			n = int(a)
 		except:
 			print _("Please use a number for %s") % o
-			raise SystemExit 
+			raise SystemExit
 		options.points = n
 
 	elif o in ("-n", "--number"):
@@ -124,7 +127,7 @@ for o, a in opts:
 			n = int(a)
 		except:
 			print _("Please use a number for %s") % o
-			raise SystemExit			
+			raise SystemExit
 		options.numinpage = n
 
 	elif o in ("-a", "--all", "-A","--all-recurse"):
@@ -162,14 +165,14 @@ iPC = pathcontrol.PathControl()
 if options.check:
 	if not os.path.exists( dirtocheck ):
 		print _("I can't find %s") % dirtocheck
-		raise SystemExit	
-		
+		raise SystemExit
+
 	def printer( pstr = "" ):
 		"""A func to print strings to cli, called back from checkFonts."""
 		if type(pstr) is str:
 			pstr = fpsys.LSP.to_unicode( pstr )
 		print pstr
-		
+
 	fpsys.checkFonts( dirtocheck, printer )
 	raise SystemExit
 
@@ -213,7 +216,7 @@ if options.zip:
 ## This one can mix with other args, so don't exit.
 if options.points > 0:
 	fpsys.config.points = options.points
-	
+
 ####
 ## View
 ## This one can mix with other args, so don't exit.
@@ -229,7 +232,7 @@ if options.numinpage > 1:
 ##Handle purge
 if options.purge:
 	pogtopurge = options.purge # for clarity
-	
+
 	if fpsys.isPog(pogtopurge):
 		pog = fontcontrol.Pog(pogtopurge)
 		try:
@@ -269,11 +272,10 @@ if options.install:
 			##		  NoFontsDir
 				print _("Installing (%s)") % pogtoinstall
 				pog.install()
-			except (fontybugs.PogEmpty, 
+			except ( fontybugs.PogEmpty,
 					fontybugs.PogAllFontsFailedToInstall,
 					fontybugs.PogSomeFontsDidNotInstall,
-					fontybugs.NoFontsDir
-				   ), e:
+					fontybugs.NoFontsDir ), e:
 				e.print_error()
 		else: # not a pogname
 			print _("(%s) cannot be found. Try -l to see the names.") % pogtoinstall
@@ -281,7 +283,7 @@ if options.install:
 	fpsys.config.Save()
 	print strings.done
 	raise SystemExit
-	
+
 ####
 ## uninstall
 if options.uninstall:
@@ -331,7 +333,7 @@ if options.all:
 			ipog.write()
 		except fontybugs.PogWriteError, e:
 			e.print_error_and_quit()
-	
+
 	## Fill it with fontitems.
 	ipog.genList()
 
@@ -360,13 +362,13 @@ if len(args) > 2:
 	## The user may have chosen a pogname with spaces and no quotes
 	print _("""Please check your arguments, there seem to be too many.\n(Remember: it's one pound for a five-minute argument, but only eight pounds for a course of ten.)\n\nNB: If you wanted to use spaces in a pogname or folder then please put "quotes around them." """)
 	raise SystemExit
-	
+
 ####
 ## Handle Cases :
 A = None
 B = None
 
-fakearg = False 
+fakearg = False
 
 ## If there are no arguments, then we should fetch the last ones used from
 ## the config file.
@@ -392,7 +394,7 @@ if not fpsys.isFolder(A) and not fpsys.isPog(A) and not fakearg:
 if B and fpsys.isFolder(B):
 	print _("You cannot use a folder as the target argument. Try --help")
 	raise SystemExit
-	
+
 ## Let's ensure that B exists, else we must make it.
 ## This is because when you call VIEW TARGET and
 ## TARGET gets created (the file) if it's not there.
@@ -409,15 +411,15 @@ if B and not fpsys.isPog(B):
 ## generated - i.e. where all their fontItems are built-up.
 ## One arg:
 if A and not B:
-	if fpsys.isFolder(A): 
+	if fpsys.isFolder(A):
 		try:
 			fpsys.instantiateViewFolder(A) # creates a state.viewobject globally.
 		except fontybugs.FolderHasNoFonts, e:
 			e.print_error()
 			## Let it continue
 			fpsys.config.lastdir = os.path.abspath(A)
-			
-	if fpsys.isPog(A): 
+
+	if fpsys.isPog(A):
 		try:
 			fpsys.instantiateViewPog(A)# creates state.targetobject globally
 		except fontybugs.PogInvalid, e:
@@ -425,10 +427,10 @@ if A and not B:
 	## Because we are catering for a potential full gui,
 	## we must make an official "targetobject" set to None
 	fpsys.SetTargetPogToNone()
-	
+
 ## Two args:
 if A and B:
-	if fpsys.isFolder(A)and fpsys.isPog(B): 
+	if fpsys.isFolder(A)and fpsys.isPog(B):
 		## "FP"
 		try:
 			fpsys.instantiateViewFolder(A)
@@ -439,10 +441,10 @@ if A and B:
 			installed = fpsys.instantiateTargetPog(B)
 		except fontybugs.PogInvalid, e:
 			e.print_error_and_quit()
-		if installed: 
+		if installed:
 			print _("The target pog (%s) is currently installed, you can't use it as a target.") % B
 			raise SystemExit
-		
+
 	if fpsys.isPog(A)and fpsys.isPog(B):
 		## "PP"
 		if A == B:
@@ -452,10 +454,10 @@ if A and B:
 			empty = fpsys.instantiateViewPog(A)
 		except fontybugs.PogInvalid, e:
 			e.print_error_and_quit()
-		if empty: 
+		if empty:
 			print _("This pog is empty")
 			raise SystemExit
- 
+
 		try:
 			installed = fpsys.instantiateTargetPog(B)
 		except fontybugs.PogInvalid, e:

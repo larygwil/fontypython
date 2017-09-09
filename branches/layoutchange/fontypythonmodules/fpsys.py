@@ -256,22 +256,22 @@ class FPState:
 		## P for Pog, F for Folder, E for Empty, N for None
 		self.viewpattern = ""
 		self.targetpattern = ""
-		
+
 		## Will be "NOTHING_TO_DO", "REMOVE" or "APPEND" (Add fonts to Pog)
-		self.action = "" 
-		
+		self.action = ""
+
 		## Can an item be ticked
 		self.cantick = None
-		
+
 		## The View and Target pogs chosen are the same.
 		self.samepogs = False
-		
+
 		## How many tick marks.
 		self.numticks = 0
-		
+
 state = FPState() #The only instance of the state object -- app-wide
 
-		
+
 ####
 ## Save and Load the conf file
 class Configure:
@@ -280,7 +280,7 @@ class Configure:
 	def __init__(self) :
 		## Private vars
 		self.__dontSaveNumInPage = False
-		
+
 		## PUBLIC vars :  Set some defaults:
 		self.size = (800,600)
 		self.pos = (10, 10)
@@ -305,11 +305,11 @@ class Configure:
 		self.app_char_map = "UNSET" # A string of an app name.
 
 		self.__setData()
-		
+
 		## Oct 2009 -- The Character Map Controller.
 		self.CMC = charmaps.CharMapController(  self.app_char_map_set )
 
-		
+
 		if os.path.exists(iPC.appConf()):
 			try:
 				pf = open(iPC.appConf(), "rb" ) # Binary for new pickle protocol.
@@ -318,11 +318,11 @@ class Configure:
 			except:
 				## Dec 2007 : Let's try erase and rewind
 				os.unlink(iPC.appConf())
-				
+
 		if not os.path.exists(iPC.appConf()):
 			print _("No config file found, creating it with defaults.")
 			self.Save()
-			
+
 
 		## Now get them into the instance vars:
 		try:

@@ -132,10 +132,20 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		## On wheel zoom -> it should recreate fitmaps,for e.g.
 		## But, on a mere resize of the window, why bother?
 		allsame = True
-		for fi1,fi2 in zip(self.fitmaps, viewobject):
-			print "fi1 {}, fi2 {}".format(fi1.fitem.glyphpaf,fi2)
-			if fi1.fitem.glyphpaf != fi2:
-				allsame = False
+		if self.fitmaps:
+			print "Have fitmaps:"
+			for fi1,fi2 in zip(self.fitmaps, viewobject):
+				print "fi1 {}, fi2 {}".format(fi1.fitem.glyphpaf,fi2.glyphpaf)
+				if fi1.fitem.glyphpaf != fi2.glyphpaf:
+					allsame = False
+					print "NOT SAME!"
+					break
+			if allsame: 
+				print "Not creating nada."
+				sz = self.GetSizer()
+				print sz
+				sz.Layout()
+				## All hypothetical if I can't get the sizer to be more automatic...
 				return #???:O Kind of works. I think...
 
 
