@@ -13,7 +13,6 @@ BUGS
 FIXED* Just saw: In fitem - space between the name of the font and the "This is in" message is too small.
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
 
-
 NB::Don't forget to remove the wx debug stuff on the app object
 
 * Was working on showing multiple columns of fonts in the middle view. All okay but for the initial panel size being 0 when app runs. 
@@ -29,6 +28,12 @@ FIXED BY REMOVING ALL SPLITTERS* I need to contrain the min size of the font tar
 TODO
 ==
 * Update the WXLAYOUTNOTES diagram.
+* Fix the state config for the window size etc.
+* Fix the fugly Help cancel button and size etc.
+* Fix the fugly look of the help file.
+*YELLOW colour of the bad font icon sucks on the white backdrop.
+*TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
+* Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
 
 FREETYPE SUPPORTED FONTS:
 ==
@@ -54,21 +59,6 @@ How many do I have to cover?
     NOT YET ?? Type 42 fonts (limited support)
 
 
-Layout idea
-==
-Perhaps a top/bottom split.
--------------------
-| FONTVIEWUPHERE  |
--------------------
-| SOURCE | TARGET |
--------------------
-
-FIXES:
-==
-*YELLOW colour of the bad font icon sucks on the white backdrop.
-*TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
-
-
 FUTURE IDEAS
 ============
 * Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
@@ -78,10 +68,6 @@ FUTURE IDEAS
 
 * Distinguish TTC somehow
 * Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
-
-* BUSY: SIMPLIFY THE HELP. Make the .fonts thing PRIMARY
-
-* A start-up initial directory for font source.
 
 
 

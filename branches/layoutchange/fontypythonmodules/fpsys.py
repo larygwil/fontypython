@@ -517,7 +517,7 @@ def instantiateTargetPog( newpog_name ):
 
 	quickinstalledflag = False
 	if ipog.isInstalled(): quickinstalledflag  = True
-	state.targetpattern = "P" 
+	state.targetpattern = "P"
 	state.targetobject = ipog
 	markInactive()
 	flushTicks()
@@ -525,15 +525,15 @@ def instantiateTargetPog( newpog_name ):
 
 def markInactive():
 	"""
-	INACTIVE means the font displayed is already inside the 
+	INACTIVE means the font displayed is already inside the
 	chosen target pog. So, it's not 'active', not clickable etc.
-	
+
 	Mark each font item as inactive, as needs-be.
 	Clear the ticks.
 	Sets the message to display in the fontmap.
-	"""	
+	"""
 	if state.viewobject: state.viewobject.clearInactiveflags()
-		
+
 	if state.viewobject and state.targetobject:
 		## What's in TARGET must be inactive in VIEW
 

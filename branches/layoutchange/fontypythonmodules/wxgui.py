@@ -31,9 +31,6 @@ from wx.lib.splitter import MultiSplitterWindow
 
 
 
-
-
-
 ## June 25th 2016
 ## Remarking these two lines because they are causing a segfault:
 ##  ../src/common/stdpbase.cpp(62): assert "traits" failed in Get(): 
@@ -69,7 +66,12 @@ class StatusBar(wx.StatusBar):
 	def __init__(self, parent):
 		wx.StatusBar.__init__(self, parent, -1) # default style is good
 
-		##The last field is the gripper (32px)
+		##Sept2017
+		## Test if there's a need to warn about missing .fonts dir.
+		## Field 1 is Welcome...
+		## Field 2 is normal conversation.
+		## Field 3 <if missing .fonts> is the warning message.
+		## Last field "gripper" (32px)
 		self.SetFieldsCount( 4 if fpsys.iPC.missingDotFontsDirectory else 3 )
 
 		self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
@@ -82,9 +84,9 @@ class StatusBar(wx.StatusBar):
 			self.SetStatusWidths([300,-2,32])
 			#self.SetStatusStyles([wx.SB_SUNKEN]*2)
 
-
 	def Report(self, msg):
 		self.SetStatusText(msg, 1)
+
 
 class MainFrame(wx.Frame):
 	"""
@@ -95,9 +97,7 @@ class MainFrame(wx.Frame):
 		title = title + "   -   " + locale.getpreferredencoding()
 		wx.Frame.__init__(self,parent,-1,title,fpsys.config.pos,fpsys.config.size)
 
-		framewidth = self.GetSizeTuple()[0]
-
-		print "Main frame:", self.GetSizeTuple()[0]
+		#print "Main frame:", self.GetSizeTuple()[0]
 
 		## Try to show an icon
 		try:
@@ -187,6 +187,8 @@ class MainFrame(wx.Frame):
 			## Sept 2017: Using a multi splitter window
 			self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
 			self.msw.SetMinimumPaneSize(150)
+
+			framewidth = self.GetSizeTuple()[0]
 
 			## SASHZERO is the left-most sash, it's x pixels from the left:
 			SASHZERO = fpsys.config.leftSash # Has a minimum val in that code
@@ -359,8 +361,6 @@ class MainFrame(wx.Frame):
 		self.Layout()
 
 
-
-
 		## This is to draw the correct icons depending on cli params.
 		self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
@@ -412,7 +412,7 @@ class MainFrame(wx.Frame):
 		#print "Idle runs"
 		if self.resized:
 			#print "  Idle updates fontViewPanel"
-			ps.pub (update_font_view )
+			ps.pub( update_font_view )
 			self.resized = False
 
 	def getSashesPos( self, args=None ):
@@ -420,9 +420,6 @@ class MainFrame(wx.Frame):
 		if self.whatgui == 1:
 			return ( self.msw.GetSashPosition(0), self.panelTargetPogChooser.GetClientSize()[0])
 		return (200,200)
-
-
-
 
 
 
@@ -592,14 +589,14 @@ class MainFrame(wx.Frame):
 # Code for debugging:
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-import wx.lib.mixins.inspection
+#import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App , wx.lib.mixins.inspection.InspectionMixin) :
+class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
 	"""
 	The main wxPython app starts here
 	"""
 	def OnInit(self):
-		self.Init()  # initialize the inspection tool
+		#self.Init()  # initialize the inspection tool
 
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:
@@ -625,13 +622,13 @@ class FontySplash(wx.SplashScreen):
 		def __init__(self, parent=None):
 			aBitmap = wx.Bitmap( fpsys.mythingsdir + "splash.png", wx.BITMAP_TYPE_PNG )
 			splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
-			splashDuration = 3000 # milliseconds
+			splashDuration = 1000 # milliseconds
 
 			wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
 			self.Bind(wx.EVT_CLOSE, self.OnExit)
 
-			# Nice! Kick the show off in 1 second's time
-			self.fc = wx.FutureCall(1000,self.showMain)
+			# Nice! Kick the show off in x millis.
+			self.fc = wx.FutureCall(500,self.showMain)
 
 		def OnExit(self, evt):
 			# The program will freeze without this line.

@@ -39,24 +39,10 @@ class PathControl:
 		self.__fpconffile = self.__HOME + "/.fontypython/fp.conf" # byte string
 
 
-		## Is there a .fonts folder ?
-		##
-		## EDIT
-		##
 		## April 2012 - Kartik Mistry (kartik@debian.org)
 		## informed me there was a bug in some esoteric build
 		## of some voodoo Debian process and that I should
 		## simply skip the check and creation of .fonts directory.
-
-		#if not os.path.exists(self.__HOME + "/.fonts"):
-			## We gotta make it.
-		#	try:
-		#		os.mkdir(self.__HOME + "/.fonts")
-		#	except:
-		#		print _("""
-		# Couldn't make the .fonts folder in %s
-		# Please check your write permissions and try again.""") % self.__HOME
-		#	raise SystemExit
 
 		## EDIT
 		## August 2012
@@ -71,23 +57,20 @@ class PathControl:
 
 		## end of michael edit.
 
-		##Edit Donn June 25, 2016
+		## June 25, 2016
+		## Some distros do not have the .fonts directory by default. :( :O
+		## This is a disaster. 
 		## Remarked Michael's edit. Moved the test for missing .fonts dir to
 		## fontcontrol.py in the install() function
 
 		self.__userfontpath = self.__HOME + "/.fonts"
 
+		## Sept 2017
+		## ===
+		## Added this flag so I can test in wxgui when I draw the status bar,so
+		## it can warn user about the situation.
 		self.missingDotFontsDirectory = not os.path.exists( self.__userfontpath )
 
-		#	print _("""
-		#It seems there is no %s/.fonts folder or there are wrong permissions.
-		#Please create it manually to be able to install your fonts with FontyPython.""") % self.__HOME
-			#raise SystemExit
-
-		## June 25, 2016
-		## Some distros do not have the .fonts directory by default. :( :O
-		## This is a disaster. 
-		## I have shifted the test for this into fontcontrol install()
 
 		## Make ~/.fontypython
 		if makeFolder:
