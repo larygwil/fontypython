@@ -99,21 +99,21 @@ class PathControl:
 Couldn't make the folder in %s
 Please check your write permissions and try again.""") % self.__fphomepath
 					raise SystemExit
-			
-	def appPath(self): 
+
+	def appPath(self):
 		""" Kind of spastic, but I was in a get/set mode"""
 		return self.__fphomepath
-		
-	def appConf(self): 
+
+	def appConf(self):
 		return self.__fpconffile
-		
-	def getPogNames(self): 
+
+	def getPogNames(self):
 		## We pass a byte string path to os.listdir therefore this function
 		## return a LIST OF BYTE STRINGS.
 		return [ f[0:-4] for f in os.listdir(self.__fphomepath) if f.endswith(".pog") ]
 
-	def userFontPath(self): 
+	def userFontPath(self):
 		return self.__userfontpath
-		
-	def home(self) : 
+
+	def home(self) :
 		return self.__HOME

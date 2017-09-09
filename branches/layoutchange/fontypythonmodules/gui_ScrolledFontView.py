@@ -54,7 +54,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		self.SetBackgroundColour('white')
 
 		self.fitmaps = []
-		
+		self.last_viewobject = None
+
 		## At least this one works.
 		self.wheelValue = fpsys.config.points
 		self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
@@ -96,8 +97,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 
 			##TODO: just re-create the same bunch of fitmaps - no need for the chain...
-			ps.pub( update_font_view ) # starts a chain of calls.
-
+			#ps.pub( update_font_view ) # starts a chain of calls.
+			self.CreateFitmaps( self.last_viewobject, force = True )
 			return
 		## Keep the wheel event going
 		evt.Skip()
@@ -112,9 +113,135 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		for fi in fpsys.state.viewobject:
 			fi.top_left_adjust_completed = False
 
+	def CreateFitmaps( self, viewobject, force = False ) :
+		"""
+		July 16, 2016
+		=============
+		A forceful approach: Destroy old sizer, make a new one.
+		It seems to work. At least the fitmaps draw properly - even on a fresh restart of Fonty.
+		FlexGridSizer
+		=============
+		With this sizer, I get predictable columns of the same size. It forces more work - to
+		calculate the max width fitmap and thence the number of columns.
+		I also perform a crop on bitmaps over the average width.
+		"""
+		## Sept2017:
+		## WIP. Seeking a way to detect whether what we showed last time
+		## is different from what we must show now.
+		## On wheel zoom -> it should recreate fitmaps,for e.g.
+		## But, on a mere resize of the window, why bother?
+		allsame = False
+		if not force:
+			if self.last_viewobject == viewobject:
+				allsame = True
+
+		self.last_viewobject = viewobject
 
 
-	def CreateFitmaps(self, viewobject) :
+		## Uncertain: Feel I should strive to delete previous sizers..
+		sz = self.GetSizer()
+		if sz:
+			# remove all the items
+			sz.Clear()
+			# destroy it
+			self.SetSizer(None) # (vim) ddp here, and run - fonty segfaults!
+			#sz.Destroy() # This errors out.
+			del sz
+		## I think that sizer is at least suffering and will soon die. RIP!
+
+		self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
+
+
+
+
+		if not allsame:
+			## Ensure we destroy all old fitmaps -- and I mean it.
+			for f in self.fitmaps:
+				print "Destroying fitmap:", f
+				f.Destroy()  #Ah, nailed ya! You bastard! I fart in your general direction!
+
+			## Yes, die. Die!
+			del self.fitmaps[:]
+
+		## If our viewobject has NO FONTS inside it (i.e. it's an EmptyView object)
+		## then setup a fake FontItem so we can have a dud Fitmap to show.
+		if len(viewobject) == 0:
+			## We only need a simple box sizer
+			bs = wx.BoxSizer(wx.VERTICAL)
+
+			empty_fitem = fontcontrol.InfoFontItem()
+			fm = Fitmap( self, empty_fitem )
+			self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
+
+			bs.Add( fm )
+			self.SetSizer(bs)
+			bs.FitInside(self)
+
+		else:
+			## Okay - let's make fonts!
+
+			yld = fpsys.config.numinpage > 20
+			if not self.fitmaps or not allsame:
+				print "Making fitmap from:", viewobject
+				w = []
+				for fitem in viewobject:
+					## Create a Fitmap out of the FontItem we have at hand.
+					fm = Fitmap( self, fitem )
+					self.fitmaps.append( fm )
+					#w.append(fm.GetBestSize()[0])
+					w.append(fm.bitmap.GetWidth())
+
+					## If I allow this yield, there's a visible flicker as fitmaps are made.
+					## I don't understand why. I hope there's no memory leak going on...
+					## JULY 2016 - remarked it.
+					#if yld: wx.Yield()
+
+				## I am getting an AVERAGE of all the widths
+				## This cuts the super-long bitmaps down to
+				## a more-or-less size with the others.
+				self.colw = int( sum(w) / max( len(w), 1) )
+
+			cols = 1
+
+			panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
+
+			## Can we afford some columns?
+			if self.colw < panelwidth:
+				cols = int(panelwidth / self.colw)
+
+			## Let's also divvy-up the hgap
+			hgap = (panelwidth - (cols * self.colw)) / 2
+
+			## Make the new FlexGridSizer
+			fgs = wx.FlexGridSizer( cols=cols, hgap=hgap, vgap=2 )
+			print "New sizer cols %s" % cols
+
+			## Loop again and plug them into the sizer
+			for fm in self.fitmaps:
+				## JULY 2016
+				## =========
+				## If the bitmap is wider than a column, we will crop it
+				## IDEA: Do a fade to white instead of a hard cut on the right.
+				##
+				if fm.bitmap.GetWidth() > self.colw:
+					print "Cropping:",fm.name
+					h = fm.bitmap.GetHeight()
+					img = fm.bitmap.ConvertToImage().Resize( (self.colw, h),(0,0),255,255,255 )
+					fm.bitmap = img.ConvertToBitmap()
+					fm.SetBestSize((self.colw,h))
+
+				## Add fm to the sizer
+				fgs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+
+				## This yield is ok. No flickering of bitmaps on the panel.
+				if yld: wx.Yield()
+
+			self.SetSizer(fgs)
+			fgs.FitInside(self)
+
+
+
+	def olderCreateFitmaps(self, viewobject) :
 		"""
 		July 16, 2016
 		=============
@@ -140,13 +267,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 					allsame = False
 					print "NOT SAME!"
 					break
-			if allsame: 
+			if allsame:
 				print "Not creating nada."
-				sz = self.GetSizer()
-				print sz
-				sz.Layout()
+				#sz = self.GetSizer()
+				#print sz
+				#sz.Layout()
 				## All hypothetical if I can't get the sizer to be more automatic...
-				return #???:O Kind of works. I think...
+				#return #???:O Kind of works. I think...
 
 
 		## Uncertain: Feel I should strive to delete previous sizers..

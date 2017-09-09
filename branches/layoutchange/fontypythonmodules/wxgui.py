@@ -96,7 +96,9 @@ class MainFrame(wx.Frame):
 		wx.Frame.__init__(self,parent,-1,title,fpsys.config.pos,fpsys.config.size)
 
 		framewidth = self.GetSizeTuple()[0]
-		
+
+		print "Main frame:", self.GetSizeTuple()[0]
+
 		## Try to show an icon
 		try:
 			image = wx.Image(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_PNG)
