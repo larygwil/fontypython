@@ -27,6 +27,9 @@ FIXED BY REMOVING ALL SPLITTERS* I need to contrain the min size of the font tar
 
 TODO
 ==
+* UPDATE CHANGELOG
+* UPDATE README
+* THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
 * Fix the state config for the window size etc.
 * Fix the fugly Help cancel button and size etc.
@@ -34,6 +37,10 @@ TODO
 *YELLOW colour of the bad font icon sucks on the white backdrop.
 *TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
+
+* In MainFontViewUpdate, put the TICKMAP into fpsys.state !
+* Then .. can state itself detect if it's changed? We can test an fpsys.state change directly in MinimalCreateFitmaps...
+
 
 FREETYPE SUPPORTED FONTS:
 ==

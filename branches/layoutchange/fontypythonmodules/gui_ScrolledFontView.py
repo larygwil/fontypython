@@ -56,7 +56,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		self.fitmaps = []
 
 		#MinimalCreateFitmaps() plan on pause...
-		#self._last_viewobject = None 
+		self._last_viewobject = None
 
 		## At least this one works.
 		self.wheelValue = fpsys.config.points
@@ -256,6 +256,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 		Disabled for now.
 		"""
+		print "MinimalCreateFitmaps runs"
 		## Sept2017:
 		## WIP. Seeking a way to detect whether what we showed last time
 		## is different from what we must show now.
@@ -265,6 +266,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 		if not force:
 			if self._last_viewobject == viewobject:
 				allsame = True
+
+		print "allsame:", allsame
 
 		self._last_viewobject = viewobject
 
@@ -312,7 +315,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 			## Okay - let's make fonts!
 
 			yld = fpsys.config.numinpage > 20
-			if not self.fitmaps or not allsame:
+			if not self.fitmaps:# or not allsame:
 				print "Making fitmap from:", viewobject
 				w = []
 				for fitem in viewobject:
@@ -331,6 +334,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 				## This cuts the super-long bitmaps down to
 				## a more-or-less size with the others.
 				self.colw = int( sum(w) / max( len(w), 1) )
+			else:
+				for fitmap in self.fitmaps:
+					print "refresh:",fitmap.name
+					fitmap
+					fitmap.prepareBitmap()
+					fitmap.Refresh()
 
 			cols = 1
 

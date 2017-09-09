@@ -27,15 +27,15 @@ from pubsub import *
 from wxgui import ps
 
 ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
-ndi=(227,226,219) # No Draw Inactive.
+ndi=(227,226,219) # No Draw Inactive => "ndi"
 black=(0,0,0)
 white=(255,255,255)
 
 class OverOutSignal(object):
-	'''
+	"""
 	Signal an external function when a state has CHANGED from
 	True to False or vice-vera
-	'''
+	"""
 	def __init__( self, func_to_signal ):
 		self.announce = func_to_signal
 		self.state = False
@@ -106,7 +106,7 @@ class BitmapPencil(Pencil):
 
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 	"""
-	This class is a bitmap of a TTF font - it detects events and
+	This class is a bitmap of a font - it detects events and
 	displays itself.
 
 	Sept 2009
@@ -118,7 +118,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 	## This class-level dict is a kind of "style sheet" to use in fitmap drawing.
 	styles={
-			'FILE_NOT_FOUND': #Needs purging
+			'FILE_NOT_FOUND':
 				{
 					'backcol': (255,214,57),
 					'fcol'   : black,
@@ -186,15 +186,16 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 	def __init__( self, parent, fitem ) :
 
-		#print pos
 		self.name = fitem.name
-		#print self.name
 
 		self.fitem = fitem
 
 		Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
+
 		self.FVP = parent.parent #The Font View Panel
-		self.TICKMAP = parent.parent.TICKMAP
+
+		#self.TICKMAP = parent.parent.TICKMAP
+		self.parent = parent
 		self.TICKSMALL = parent.parent.TICKSMALL
 
 
@@ -202,9 +203,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 		# Some values for drawing
 		self.gradientheight = 50
-
-		#self.width = parent.width # Get it from the scrollFontViewPanel.
-		#self.width = parent.width/2 # Get it from the scrollFontViewPanel.
 
 		self.widestpilimage = 0 # July 2016: The final, drawn, width of this fitem.
 
@@ -248,10 +246,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 		if fpsys.state.action in ("REMOVE", "APPEND"):
 			self.CURSOR = wx.StockCursor( wx.CURSOR_HAND )
-		if self.fitem.badstyle == "FILE_NOT_FOUND":
-			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
-		if self.fitem.inactive:
-			self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+		#if self.fitem.badstyle == "FILE_NOT_FOUND":
+		#	self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+		#if self.fitem.inactive:
+		#	self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 
 	def xxxDoGetBestSize(self):
 		"""
@@ -298,7 +296,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		Given a pencil, this will append it to the drawlist.
 		If there's a width in the pencil, that goes into the
 		dcw list (a space on the right-hand side is calculated by
-		2 times the x coord added to the width)
+		n times the x coord added to the width)
 		"""
 		if pencil.width > 0:
 			self.dcw.append( pencil.width + int(1.5 * pencil.x) )
@@ -331,9 +329,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		#~ thread.start()
 
 	def run(self, *args):
-		'''
+		"""
 		Uses the instance (held in fpsys.config) of the classes in charmaps.py.
-		'''
+		"""
 		iCM = fpsys.config.CMC.GetInstance()
 		iCM.OpenApp( *args )
 		iCM.Cleanup( )
@@ -342,14 +340,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		ps.pub( menu_settings, None )
 
 	def can_have_button( self ):
-		'''
+		"""
 		Because I just can't guarantee that there is a family name
 		and because bad fonts that can't draw (but do not segfault)
 		are so rare that I can't bloody find any to test with (grrr)
 		I make the sweeping fiat that no badfonts will get a button.
 
 		Other fitems like info and FILE_NOT_FOUND don't get buttons.
-		'''
+		"""
 		if not fpsys.config.CMC.APPS_ARE_AVAILABLE: return False
 		if isinstance( self.fitem, fontcontrol.InfoFontItem ): return False
 		if self.fitem.badstyle == "FILE_NOT_FOUND": return False
@@ -377,13 +375,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			self.SetCursor( self.CURSOR )
 
 	def onLeave(self, event):
-		'''
+		"""
 		Catch the leave event for set the charmap button off,
 		if the pointer goes out on the left edge.
-		'''
+		"""
 		self.onHover(event)
 
 	def onClick(self, event) :
+		"""
+		Deals with clicks on self.
+		Charmap button is a sub-test on a rect.
+		This refreshes the underlying bitmap and DOES NOT cause the
+		chain update_font_view (in gui_FontView) to run.
+		"""
 		if self.cmb_overout.state and self.can_have_button():
 			self.openCharacterMap()
 			return
@@ -470,7 +474,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		This is where all the drawing code goes. It gets the font rendered
 		from the FontItems (via PIL) and then draws a single Fitmap.
 		"""
-
+		print "prepareBitmap runs for:", self
 		## Is this a normal FontItem, or an InfoFontItem?
 		## InfoFontItem is a fake font item for the purposes
 		## of saying "There are no fonts to see here."
@@ -480,7 +484,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			##Sept 2017:Added some to height to cater for newlines in 
 			## the info text. See class InfoFontItem in fontcontrol.py
 			self.usePencils(Fitmap.MIN_FITEM_HEIGHT + 20)
-			return # Just get out.
+			return
 
 		## Get a list of pilimages, for each subface: Some fonts 
 		## have multiple faces, and their heights.
@@ -493,10 +497,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		totheight = 0
 		maxwidth = [Fitmap.MIN_FITEM_WIDTH]
 
+		## NOTE: generatePilFont sets the colour of the font bitmap!
 		for pilimage in self.fitem.generatePilFont( ):
 			pilList.append( pilimage )
 			totheight += pilimage.size[1] + Fitmap.SPACER
 			maxwidth.append(pilimage.size[0])
+
 		## Limit the minimum we allow.
 		if totheight < Fitmap.MIN_FITEM_HEIGHT:
 			totheight = Fitmap.MIN_FITEM_HEIGHT
@@ -597,7 +603,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
 		if self.fitem.badstyle != "FILE_NOT_FOUND":
+			print "self.fitem.name ticked:", self.fitem.ticked
 			if self.fitem.ticked:
+				#print " tickmap is tick:", self.TICKMAP
+
+				self.TICKMAP = self.parent.parent.TICKMAP
 				self.prepDraw( BitmapPencil( 20, 5, self.TICKMAP) )
 
 		## Make one big bitmap to house one or more faces (subfaces)
@@ -609,9 +619,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Now a dividing line
 		memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
 		memDc.DrawLine( 0, self.height-1, self.widestpilimage, self.height-1 )
+		#print "prepareBitmap ends for:", self
 
 	def setStyle( self ):
-		'''Set a copy of the styles key and alter colours as needed.'''
+		"""
+		Set a copy of the styles key and alter colours as needed.
+		"""
 		# InfoFontItem does not use this, all others do.
 		if self.fitem.badfont:
 			self.style=Fitmap.styles[self.fitem.badstyle].copy() #damn! this was tricky!
