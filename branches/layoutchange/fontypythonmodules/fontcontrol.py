@@ -215,7 +215,8 @@ class FontItem( object ):
 
 		self.numFaces = i
 
-	def generatePilFont( self, enc="unicode" ):
+	def generatePilFont( self, points, text, enc="unicode" ):
+		## self is a FontItem
 		"""
 		This function seems too similar to the __queryFontFamilyStyleFlagBad one
 		and in many ways it is. I am forced to work with PIL and it's not ideal
@@ -228,9 +229,19 @@ class FontItem( object ):
 		They can then be 'displayed' and can be put into Pogs etc., but they cannot
 		be seen.
 
+		NOTE:
+		====
+		FontItems do not hold the bitmap thus rendered. I have another class
+		called Fitmap (in gui_Fitmap) which is a widget that handles events and
+		displays itself.
+
+		A FontItem does NOT hold a Fitmap.
+		A Fitmap does hold a FontItem.
+
 		"""
 		## text gets extra spaces at the end to cater for cut-off characters.
-		paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
+		#paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
+		paf = self.glyphpaf
 		i = 0
 		generatorgo=True
 		while (generatorgo):

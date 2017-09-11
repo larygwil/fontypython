@@ -26,6 +26,8 @@ import fpsys # Global objects
 from pubsub import *
 from wxgui import ps
 
+import collections
+
 ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
 ndi=(227,226,219) # No Draw Inactive => "ndi"
 black=(0,0,0)
@@ -60,15 +62,16 @@ class Pencil(object):
 	"""
 	## A class var
 	textExtentsDict = {}
-	def __init__( self, x, y ):
+	def __init__( self, id, x, y ):
+		self.id = id
 		self.x = x; self.y = y
 	def Draw(self, memdc):
 		pass
 
 
 class FontPencil(Pencil):
-	def __init__( self, x, y, txt, fcol, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
-		Pencil.__init__(self, x, y)
+	def __init__( self, id, x, y, txt, fcol, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
+		Pencil.__init__(self, id, x, y)
 		self.txt = txt
 		self.fcol = fcol
 		self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
@@ -96,8 +99,8 @@ class FontPencil(Pencil):
 		memdc.DrawText( self.txt, self.x, self.y )
 
 class BitmapPencil(Pencil):
-	def __init__( self, x, y, bitmap, width=0 ):
-		Pencil.__init__(self, x, y)
+	def __init__( self, id, x, y, bitmap, width=0 ):
+		Pencil.__init__(self, id, x, y)
 		self.bitmap = bitmap
 		self.width = width
 	def Draw(self, memdc):
@@ -214,7 +217,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 		## Go draw the fitmap into a memory dc
-		self.drawlist = []
+		#self.drawlist = []
+		self.drawDict = collections.OrderedDict()
+
 		self.dcw = []
 		self.bitmap = None
 		self.prepareBitmap()
@@ -281,11 +286,16 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		self.bitmap = bitmap #record this for the init
 
 		## Draw it all - via the pencils
-		for pencil in self.drawlist:
+		#for pencil in self.drawlist:
+		#	pencil.Draw(memDc)
+		for pencil in self.drawDict.values():
 			pencil.Draw(memDc)
+			print "drawing:", pencil.id
 
 		## Now empty the drawlist
-		del self.drawlist[:]
+		#del self.drawDict
+		self.drawDict.clear()
+
 		## Also empty the dcw list
 		del self.dcw[:]
 
@@ -293,14 +303,29 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 	def prepDraw(self, pencil):
 		"""
-		Given a pencil, this will append it to the drawlist.
+		Given a pencil, this will append it to the drawDict.
 		If there's a width in the pencil, that goes into the
 		dcw list (a space on the right-hand side is calculated by
 		n times the x coord added to the width)
 		"""
 		if pencil.width > 0:
 			self.dcw.append( pencil.width + int(1.5 * pencil.x) )
-		self.drawlist.append( pencil )
+
+		# possible point in which to cmp old pencil vs new pencil
+		# to see if it needs drawing at all
+		#import pdb; pdb.set_trace()
+		oldpencil = self.drawDict.get(pencil.id, None)
+		if oldpencil:
+			#cmp oldpencil to new pencil
+			#if same:	
+			#		return early
+			#else:
+				#replace or delete the entry in the dict! del(od[key])
+			self.drawDict.update([(pencil.id, pencil)])
+			#	return
+
+		self.drawDict[pencil.id] = pencil
+		#self.drawlist.append( pencil )
 
 
 	def openCharacterMap( self ):
@@ -474,6 +499,22 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		This is where all the drawing code goes. It gets the font rendered
 		from the FontItems (via PIL) and then draws a single Fitmap.
 		"""
+
+		##Sept 2017
+		## My thinking is that:
+		## If this routine can somehow determine that the visual state is about to change
+		## (from what it was last time), then we can know if we can return early -- i.e.
+		## reuse the current bitmap as-is.
+		## If so, then we can save a lot of time in creating fitmaps in the MinimalCreateFitmaps
+		## method of gui_ScrolledFontView
+		##
+		## Idea - What if the pencils can make a state "stamp" we can match on?
+		## It's not ideal because the pencils happen after a lot of work
+		## on x,y coords and colours and so on..
+		## Esp problematic with faceBitmap ... Damn ...
+		##  if isinstance(o, (set, tuple, list)): return tuple([make_hash(e) for e in o])
+
+
 		print "prepareBitmap runs for:", self
 		## Is this a normal FontItem, or an InfoFontItem?
 		## InfoFontItem is a fake font item for the purposes
@@ -498,7 +539,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		maxwidth = [Fitmap.MIN_FITEM_WIDTH]
 
 		## NOTE: generatePilFont sets the colour of the font bitmap!
-		for pilimage in self.fitem.generatePilFont( ):
+		points, text = fpsys.config.points, " " + fpsys.config.text + "  "
+		for pilimage in self.fitem.generatePilFont( points, text ):
 			pilList.append( pilimage )
 			totheight += pilimage.size[1] + Fitmap.SPACER
 			maxwidth.append(pilimage.size[0])
@@ -571,17 +613,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 					## Some new error that I have not caught before has happened.
 					## It may also be a bad sub-face from a ttc font.
 					txt=_("This text cannot be drawn. Hey, it happens...")
-					self.prepDraw( FontPencil( 10, mainy+2, txt, fcol, fpsys.config.points, style=wx.ITALIC) )
+					self.prepDraw( FontPencil( "cannotdraw", 10, mainy+2, txt, fcol, fpsys.config.points, style=wx.ITALIC) )
 
 				else:
 					## Place it into the main image, down a tad so it looks better.
 					x = 16
 					if i > 0: x *= 3 # Shift sub-faces over a little
-					self.prepDraw( BitmapPencil( x-fx, mainy-fy, faceBitmap, width=self.widestpilimage) )
+					self.prepDraw( BitmapPencil( "facebitmap", x-fx, mainy-fy, faceBitmap, width=self.widestpilimage) )
 
 				## The font name/fam/style : fnfs
 				txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
-				self.prepDraw( FontPencil( 28, mainy + glyphHeight + 8, txt, fcol, points=8 ) )
+				self.prepDraw( FontPencil( "namefamstyle", 28, mainy + glyphHeight + 8, txt, fcol, points=8 ) )
 
 				## Move TOP down to next BOTTOM (for next sub-face)
 				mainy += glyphHeight +  Fitmap.SPACER
@@ -595,10 +637,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		## Special INACTIVE (Font already in...) message:
 		if self.fitem.inactive:
 			x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-			self.prepDraw( BitmapPencil( x-16, y-1, self.TICKSMALL) )
+			self.prepDraw( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
 
 			txt = self.fitem.activeInactiveMsg
-			self.prepDraw( FontPencil( x+2, y, txt, fcol, points=10) )
+			self.prepDraw( FontPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
 
 		## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
 		## NB: FILE_NOT_FOUND is not available for installation!
@@ -608,7 +650,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 				#print " tickmap is tick:", self.TICKMAP
 
 				self.TICKMAP = self.parent.parent.TICKMAP
-				self.prepDraw( BitmapPencil( 20, 5, self.TICKMAP) )
+				self.prepDraw( BitmapPencil( "tickmap", 20, 5, self.TICKMAP) )
 
 		## Make one big bitmap to house one or more faces (subfaces)
 		## Draw it all - via the pencils. Also makes the memDc and returns
@@ -704,7 +746,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 			ix,iy = (6,10) if isinfo else (2,6)
 
 			ix += offx
-			self.prepDraw( BitmapPencil( ix, iy, Icon) )
+			self.prepDraw( BitmapPencil( "infoicon", ix, iy, Icon) )
 
 		## Prep and measure the texts to be drawn. Add them to drawlist.
 		fcol = self.style['fcol']
@@ -715,9 +757,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 		tx,ty = (46,15) if isinfo else (38 , 20)
 
 		tx += offx
-		self.prepDraw( FontPencil( tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
+		self.prepDraw( FontPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
 
 		tx,ty = (46,40) if isinfo else (5 ,40)
 
 		tx += offx
-		self.prepDraw( FontPencil( tx, ty, textTup[1], fcol, points=10 ) )
+		self.prepDraw( FontPencil( "tup1", tx, ty, textTup[1], fcol, points=10 ) )

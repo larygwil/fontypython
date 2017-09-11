@@ -2,6 +2,35 @@ Work and notes in 2016/2017. Slow due to my ill health.
 ====
 See also the older "ROADMAP" file.
 
+FONTCONFIG and "~.fonts" deprecated
+===================================
+Info is vague, but it looks like ~/.local/share/fonts is the new place
+
+https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+$XDG_DATA_HOME defines the base directory relative to which user specific data files should be stored. If $XDG_DATA_HOME is either not set or empty, a default equal to $HOME/.local/share should be used.
+
+https://github.com/eosrei/emojione-color-font/issues/14
+
+Also look in ~/.config/fontconfig
+
+/etc/fonts/fonts.conf has:
+
+        <!-- the following element will be removed in the future -->
+        <dir>~/.fonts</dir>
+
+In mailinglist:
+https://lists.freedesktop.org/archives/fontconfig/2014-July/005270.html
+"Use $XDG_DATA_HOME/fonts instead where is ~/.local/share/fonts in most cases."
+
+Might be able to look for $XDG_DATA and deduce from that ...
+
+Interesting fc-list command. Shows all the filenames of known fonts and then I grep it to limit to my home dir:
+fc-list : file | grep donn
+
+(I wonder if this could be a way to limit font cruft in choosers?)
+
+
+
 BRANCHES:
 ==
 Sept 2nd 2017
