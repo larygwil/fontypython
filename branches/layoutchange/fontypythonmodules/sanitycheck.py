@@ -40,6 +40,13 @@ except:
 	print
 try:
 	imp.find_module("wx")
-except: 
+except:
 	print strings.wxError
 	raise SystemExit
+
+try:
+	from gi.repository import GLib
+except:
+	print strings.giError
+	raise SystemExit
+

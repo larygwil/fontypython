@@ -155,7 +155,7 @@ for o, a in opts:
 
 ####
 ## Ensure we have a .fontypython folder and a .fonts folder.
-iPC = pathcontrol.PathControl()
+iPC = pathcontrol.PathControl(frm="cli")
 
 
 ####

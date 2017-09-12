@@ -38,7 +38,7 @@ import subprocess
 DFAM=None # Set in wxgui.py in class App()
 
 ## Ensure we have a .fontypython folder and a .fonts folder.
-iPC = pathcontrol.PathControl() #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
+iPC = pathcontrol.PathControl(frm="fpsys") #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
 
 ##  Borrowed from wxglade.py
 ## The reason for this is to find the path of this file
@@ -269,6 +269,7 @@ class FPState:
 		## How many tick marks.
 		self.numticks = 0
 
+
 state = FPState() #The only instance of the state object -- app-wide
 
 
@@ -304,6 +305,7 @@ class Configure:
 		## Added 3 Oct 2009
 		self.app_char_map = "UNSET" # A string of an app name.
 
+
 		self.__setData()
 
 		## Oct 2009 -- The Character Map Controller.
@@ -331,7 +333,7 @@ class Configure:
 			self.numinpage = self.__data['numinpage']
 			self.text = self.__data['text']
 			self.points= self.__data['points']
-			self.lastview = self.__data['lastview']			
+			self.lastview = self.__data['lastview']
 			self.usegui = self.__data['usegui']
 			self.max = self.__data['max']
 			self.lastdir = self.__data['lastdir']
@@ -347,6 +349,7 @@ class Configure:
 			##  That appname may be valid or not (it may have been uninstalled...)
 			self.CMC.SET_CURRENT_APPNAME(self.app_char_map)
 
+
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
 			## Let's delete and re-make it.
@@ -356,10 +359,10 @@ class Configure:
 				print _("The fontypython config file is damaged.\nPlease remove it and start again")
 				raise SystemExit
 			self.Save()
-		
 
 	def dontSaveNumInPage(self, flag):
 		self.__dontSaveNumInPage = flag
+
 	def __setData(self):
 		self.__data = {"size" : self.size,
 								"pos" : self.pos,
@@ -374,7 +377,7 @@ class Configure:
 								"rightSash" : self.rightSash,
 								"recurseFolders": self.recurseFolders,
 								"ignore_adjustments": self.ignore_adjustments,
-								"app_char_map" : self.app_char_map
+								"app_char_map" : self.app_char_map,
 								}
 	def app_char_map_set( self, x ):
 		'''
@@ -382,7 +385,7 @@ class Configure:
 		this gets called to keep the config version of the appname current.
 		'''
 		self.app_char_map = x
-		
+
 	def Save(self) :
 		#If we are NOT to save the numinpage, then fetch it from what was there before.
 		if self.__dontSaveNumInPage:

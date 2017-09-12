@@ -33,7 +33,7 @@ import distutils.command.install_data
 def opj(*args):
 	path = os.path.join(*args)
 	return os.path.normpath(path)
-	
+
 # Specializations of some distutils command classes
 class wx_smart_install_data(distutils.command.install_data.install_data):
 	"""need to change self.install_dir to the actual library dir"""
@@ -41,11 +41,11 @@ class wx_smart_install_data(distutils.command.install_data.install_data):
 		install_cmd = self.get_finalized_command('install')
 		self.install_dir = getattr(install_cmd, 'install_lib')
 		return distutils.command.install_data.install_data.run(self)
-		
+
 def find_data_files(srcdir, *wildcards, **kw):
 	# get a list of all files under the srcdir matching wildcards,
 	# returned in a format to be used for install_data
-	
+
 	## A list of partials within a filename that would disqualify it
 	## from appearing in the tarball.
 	badnames=[".pyc","~","no_",".svn","CVS",".old"]
@@ -85,7 +85,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 try:
 	os.remove("MANIFEST")
 	print "MANIFEST removed"
-except: 
+except:
 	print "No MANIFEST to remove."
 try:
 	os.remove("PKG-INFO")
@@ -133,5 +133,5 @@ long_description = fontypythonmodules.strings.long_description,
 	  'Topic :: Text Processing :: Fonts',
 		'Topic :: Multimedia :: Graphics',
 		'Topic :: Utilities',
-	  ]	
+	  ]
 )

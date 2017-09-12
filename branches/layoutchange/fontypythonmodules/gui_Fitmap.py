@@ -68,6 +68,18 @@ class Pencil(object):
 	def Draw(self, memdc):
 		pass
 
+	#TODO
+	#....
+	#def __eq__(self, other, *attributes):
+	#	if not isinstance(other, type(self)):
+	#			return NotImplemented
+	#
+	#		if attributes:
+	#				d = float('NaN')  # default that won't compare equal, even with itself
+	#				return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes)
+	#
+	#		return self.__dict__ == other.__dict__
+
 
 class FontPencil(Pencil):
 	def __init__( self, id, x, y, txt, fcol, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):

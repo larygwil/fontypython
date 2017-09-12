@@ -30,7 +30,7 @@ done = "Done."
 ## This module (strings) also gets used via setup.py
 ## and that has the result of making the folder with root ownership! Bad news.
 ## So, there is a new flag to manage this now:
-_pc = pathcontrol.PathControl( makeFolder=False )
+_pc = pathcontrol.PathControl( frm = "strings", make_fontypython_dir = False )
 
 
 ## Sept 2017
@@ -254,18 +254,18 @@ TIP
 On my distro I can search for it like this:
 aptitude search python-wx
 This returns many results, one of which is:
-python-wxversion 
+python-wxversion
 I then install it like this:
-sudo aptitude install python-wxversion 
+sudo aptitude install python-wxversion
 
 If you get long error messages, you will need to
-install python-wxgtk*, where the star means the 
+install python-wxgtk*, where the star means the
 version number and it should be at least %(wxv)s
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
 """) % {"wxv":wxvers}
-	
+
 wxError =_("""I cannot find "python-wxgtkX.Y"
 Please install this package - NB: ensure that
 you use only the "Unicode build".
@@ -309,6 +309,16 @@ Make sure it's at least version 1.1.6-1
 You can also get the latest version from here:
 http://www.pythonware.com/products/pil/index.htm
 """)
+
+##Sept 2017
+giError = _("""I cannot fond "Python-gi"
+Please install this package.
+
+TIP
+===
+Look for "python-gi" in your package manager.
+""")
+
 
 ## Won't xlate the thanks:
 thanks = u"""Many thanks to:

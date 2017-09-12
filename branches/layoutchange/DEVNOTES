@@ -29,6 +29,33 @@ fc-list : file | grep donn
 
 (I wonder if this could be a way to limit font cruft in choosers?)
 
+XGD info
+===
+There's a movement to standard desktop ideas. One of the is to use a standard config, data and cache directory system.
+Here's what I did in a python console:
+
+python-gi
+-- Seems to be the deb/rpm name of package to install.
+
+python (2.7)
+>>>import glib ## This is out of date. I think.
+>>>glib.get_user_data_dir()
+'/home/donn/.local/share'
+So, that works. I am not sure where 'glib' comes from...
+Also:
+## It seems this is the latest way to  do it:
+>>>from gi.repository import GLib
+>>>GLib.get_user_data_dir()
+'/home/donn/.local/share'
+So, that works too. 
+
+.fontypython should go in there somewhere - poss into the config dir:
+>>> glib.get_user_config_dir()
+'/home/donn/.config'
+>>> GLib.get_user_config_dir()
+'/home/donn/.config'
+
+.fonts should go in DATA dir.
 
 
 BRANCHES:
