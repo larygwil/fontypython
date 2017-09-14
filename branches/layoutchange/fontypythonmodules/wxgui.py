@@ -72,11 +72,11 @@ class StatusBar(wx.StatusBar):
 		## Field 2 is normal conversation.
 		## Field 3 <if missing .fonts> is the warning message.
 		## Last field "gripper" (32px)
-		self.SetFieldsCount( 4 if fpsys.iPC.missingDotFontsDirectory else 3 )
+		self.SetFieldsCount( 4 if fpsys.iPC.no_fonts_dir_found else 3 )
 
 		self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
 
-		if fpsys.iPC.missingDotFontsDirectory:
+		if fpsys.iPC.no_fonts_dir_found:
 			self.SetStatusText( strings.missingDotFontsMessages["statusbar"], 2)
 			self.SetStatusWidths([300,-2,-1,32])
 			#self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
@@ -645,6 +645,12 @@ class FontySplash(wx.SplashScreen):
 			##  this is the only place I can get the system font family
 			fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
 
+			## Possible:
+			## If there's an error in the XDG bs (in pathcontrol) that
+			## needs to be shown in a gui, I could open a frame here
+			## to spell it out, then quit fp.
+			if fpsys.iPC.ohfuckshit:
+			else: ...
 			frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
 			app.SetTopWindow(frame)
 

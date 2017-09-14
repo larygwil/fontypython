@@ -17,20 +17,12 @@
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import pathcontrol
 import fpversion
 import os
 
 copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
 contact = "email: donn.ingle@gmail.com"
 done = "Done."
-
-## We use PathControl to get some info, BUT we DO NOT WANT TO MAKE
-## the ~/.fontypython folder from this module.
-## This module (strings) also gets used via setup.py
-## and that has the result of making the folder with root ownership! Bad news.
-## So, there is a new flag to manage this now:
-_pc = pathcontrol.PathControl( frm = "strings", make_fontypython_dir = False )
 
 
 ## Sept 2017
@@ -149,7 +141,7 @@ Please use -e to see more info.
 
 %(fonts_supported)s
 
-%(basic_idea)s""" ) % { "c":"fontypython", "folder":_pc.appPath(), "version":version, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
+%(basic_idea)s""" ) % { "c":"fontypython", "version":version, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 
 examples = _("""The basic format is:
@@ -237,7 +229,7 @@ If you want to backup your Pogs, that's where ya go.
 
 %(contact)s
 
-%(copy)s""") % { "c":"fontypython", "folder":_pc.appPath(), "contact":contact, "copy":copyright }
+%(copy)s""") % { "c":"fontypython", "contact":contact, "copy":copyright }
 
 ## These two are used in setup.py
 description = _("Fonty Python - view and manage all kinds of fonts on Gnu/Linux")

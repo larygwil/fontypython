@@ -18,14 +18,20 @@
 
 import sys, locale, os
 import strings
-import pathcontrol
+
+#import pathcontrol
 import fpsys
+
 import fontybugs
 import fontcontrol
 
 ## replaced optparse with this one because optparse chokes on 
 ## Unicode strings.
 import getopt
+
+####
+## Ensure we have a fontypython folder and a fonts folder.
+iPC = fpsys.iPC#pathcontrol.PathControl(frm="cli")
 
 class options(object):
 	"""
@@ -83,7 +89,8 @@ for o, a in opts:
 		raise SystemExit
 
 	if o in ("-e", "--examples"):
-		print strings.examples
+		## The 'folder' string replace is left until this moment:
+		print strings.examples % {"folder": iPC.appPath()}
 		raise SystemExit
 
 	elif o in ("-h", "--help"):
@@ -153,9 +160,6 @@ for o, a in opts:
 		## We should not reach here at all.
 		raise SystemExit
 
-####
-## Ensure we have a .fontypython folder and a .fonts folder.
-iPC = pathcontrol.PathControl(frm="cli")
 
 
 ####

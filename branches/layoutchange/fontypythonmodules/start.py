@@ -18,13 +18,16 @@
 ## test modules etc.
 import fontypythonmodules.sanitycheck
 
-import fpsys
+#import fpsys
+
 ## Process the command line stuff
 import cli
 ## I think, because I have a bad memory, that what keeps
-## the cli and the gui apart is any raise SystemExit between here
+## the cli and the gui apart is any raise SystemExit inside cli
+## between here
 ## and ..
 ## The GUI
 import fontypythonmodules.wxgui
+
 ## End, clean up
 fpsys.config.Save()

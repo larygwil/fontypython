@@ -26,11 +26,13 @@ import linux_safe_path_library
 LSP = linux_safe_path_library.linuxSafePath()
 
 import pathcontrol
-import strings
+#import strings
+
 import fontcontrol
+
 import charmaps
 
-import wx
+#import wx
 
 import subprocess
 
@@ -38,7 +40,11 @@ import subprocess
 DFAM=None # Set in wxgui.py in class App()
 
 ## Ensure we have a .fontypython folder and a .fonts folder.
-iPC = pathcontrol.PathControl(frm="fpsys") #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
+try:
+	iPC = pathcontrol.PathControl(frm="fpsys") #Make an instance - hence the small 'i' (Boy this convention *sure* lasted....)
+except e:
+	raise
+
 
 ##  Borrowed from wxglade.py
 ## The reason for this is to find the path of this file
@@ -393,8 +399,8 @@ class Configure:
 		self.__setData()
 		try:
 			pf = open( iPC.appConf(), "wb" )
-			pickle.dump(self.__data, pf, protocol = pickle.HIGHEST_PROTOCOL ) 
-			pf.close() 
+			pickle.dump(self.__data, pf, protocol = pickle.HIGHEST_PROTOCOL )
+			pf.close()
 		except IOError:
 			print _("Could not write to the config file.")
 
@@ -409,7 +415,7 @@ def instantiateViewFolder( foldername, recurse=None ):
 	"""
 	Creates a Folder object and fills it with FontItem objects
 	according to what's in the folder's path.
-	
+
 	This is the VIEW - i.e. what you are looking at.
 	"""
 	if state.viewobject: del state.viewobject
@@ -446,7 +452,7 @@ def instantiateViewFolder( foldername, recurse=None ):
 def instantiateViewPog( newpog_name ):
 	"""
 	Given a Pog Name string, make a Pog object.
-	
+
 	This is the VIEW - i.e. what you are looking at.
 
 	A VIEW Pog can be EMPTY. This happens on the first run when there is no config file.
@@ -455,14 +461,14 @@ def instantiateViewPog( newpog_name ):
 ##	print "COMES IN to instantiateViewPog:"
 ##	print "newpog_name:", newpog_name
 ##	print "type(newpog_name):", type(newpog_name)
-	
+
 	#if state.viewobject: del state.viewobject
 	if state.viewobject: state.viewobject = None
-	
+
 	if newpog_name == "EMPTY":
 		ipog = fontcontrol.EmptyView()
 	else:
-		ipog = fontcontrol.Pog( newpog_name ) 
+		ipog = fontcontrol.Pog( newpog_name )
 	## Test TARGETPOG to see if this is the same pogname
 	## The not None test is for first run - there is no targetobject yet just after cli.py calls us, so we
 	## do not want to access it or we get NoneType errors.
@@ -475,7 +481,7 @@ def instantiateViewPog( newpog_name ):
 	## fontybugs.PogInvalid (only valid from cli pov)
 	##
 	## We 'handle' this by NOT catching it, pass it up.
-	ipog.genList()  
+	ipog.genList()
 
 	## Continue if all ok.
 	state.viewobject = ipog
@@ -491,9 +497,9 @@ def instantiateViewPog( newpog_name ):
 		state.viewpattern = "P"
 		markInactive()
 		flushTicks()
-		
+
 	#print "instantiateViewPog says viewpattern is:", state.viewpattern
-	
+
 	return empty # this return is only used in cli.py
 
 def instantiateTargetPog( newpog_name ):
@@ -501,11 +507,11 @@ def instantiateTargetPog( newpog_name ):
 	The app could begin with NO TARGET POG chosen.
 	After that (in the gui) either a pog is chosen or NO POG is chosen (i.e. None)
 	Therefore - there can NEVER BE a targetobject called EMPTY
-	
+
 	The CLI install/uninstall/purge DO NOT use this routine.
 	"""
 	if state.targetobject: del state.targetobject
-	ipog = fontcontrol.Pog(newpog_name) 
+	ipog = fontcontrol.Pog(newpog_name)
 	## Must gen the Pog to get a count of items:
 	ipog.genList() # Raises fontybugs.PogInvalid error THIS ENDS THE APP.
 	## TEST the viewobject which is the stuff being 

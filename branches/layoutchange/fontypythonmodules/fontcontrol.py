@@ -23,9 +23,6 @@ from PIL import Image, ImageFont, ImageDraw
 import fontybugs, fpsys
 
 
-#Sept 2017: Remarked the pathcontrol import. TODO: await fail..
-#from pathcontrol import *
-
 ## Sep 2009 : zip functionality
 import zipfile
 zcompress=zipfile.ZIP_STORED #we default to uncompressed.
@@ -834,7 +831,7 @@ class Pog(BasicFontList):
 			NoFontsDir
 		"""
 		if not os.path.exists(self.__pc.userFontPath()):
-			raise fontybugs.NoFontsDir("Missing .fonts dir")
+			raise fontybugs.NoFontsDir("Missing fonts dir")
 
 		def linkfont(fi, frompaf, topaf):
 			## 15 Sept 2009 : Catch situations where the font is already installed.
