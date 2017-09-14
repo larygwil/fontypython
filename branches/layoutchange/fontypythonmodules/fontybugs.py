@@ -15,8 +15,13 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 import locale
-import fpsys
+
+#import fpsys
+
 import strings
+
+import linux_safe_path_library
+LSP = linux_safe_path_library.linuxSafePath()
 
 """
 testing i18n with fontybugs
@@ -48,6 +53,7 @@ class Errors ( Exception ):
 	1020 : _("Not a single font in this pog could be uninstalled.\nNone of the fonts were in your fonts folder, please check your home .fonts (with a dot in front) folder for broken links.\nThe pog has been marked as \"not installed\"."),
 	1030 : _("This folder has no fonts in it."),
 	1040 : strings.missingDotFontsMessages["basic"]
+	1040 : _("Please create a \"fonts\" directory (in your %(d)s directory) so that Fonty can install fonts. Until this is done, Pogs cannot be installed. Please see the \"Fonts Directory\" section in the Help for more information.\n\nExample:\ncd %(d)s\nmkdir fonts\n\n" ) % { 'd' : fpsys.iPC.userFontPath() }
 	}
 
 	def __unicode__( self ):
@@ -68,6 +74,13 @@ class Errors ( Exception ):
 		raise SystemExit
 
 
+class Weirdo(Errors):
+	def __init__ (self, msg, itemdict):
+		self.msg = msg
+		self._item = itemdict
+	def __unicode__(self):
+	aaargh
+		return u"%s: %s" % (self.msg % {'replaceme':self._item})
 
 class BadVoodoo ( Errors ):
 	def __init__ ( self, item = None):

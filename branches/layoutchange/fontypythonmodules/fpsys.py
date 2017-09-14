@@ -42,16 +42,12 @@ from gi.repository import GLib
 
 class PathControl:
 	"""
-	1. Makes the .fontypython path - in $XDG_DATA_HOME (GLib will supply this)
+	1. Makes the fontypython path - in $XDG_DATA_HOME (GLib will supply this)
 	2. Provide paths for fontypython on Linux
 	3. Provide list of pog names (without the .pog extension)
 	4. Provide a list of pog FILE names (with .pog extension)
 
 	* All these vars contain/return BYTE STRING paths and files.
-
-	NOTE We use PathControl in strings.py (which is also used in setup.py)
-	These are situations in which we do not want to create the "fontypython"
-	folder from this module. Hence, the make_fontypython_dir flag.
 
 	Sept 2017: Freedesktop specs being used now:
 	https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
@@ -69,19 +65,21 @@ class PathControl:
 	__xdgdatahome_fpconf = "unset" # will be in XDG_DATA_HOME/fontypython, fuck it.
 	__XDG_DATA_HOME = "unset" #Supposed to be preset to "$HOME/.local/share"
 
-	def __init__(self, frm="unknown", make_fontypython_dir=True ):
+	def __init__( self ):
 
 		## Use Glib to get the XDG data path:
-		PathControl.__XDG_DATA_HOME = GLib.get_user_data_dir() # What kinds of errors happen here?
+		PathControl.__XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
+
 
 		if not os.path.exists(PathControl.__XDG_DATA_HOME):
 			## XDG_DATA_HOME has a value, but it's not actually on the file system...
-			## Let's make .local/share. Fuck it:
-			hack = PathControl.__XDG_DATA_HOME
-			try:
-				os.makedirs( hack )
-			except e:
-				return {"XDG_STATUS":"FAIL", "REASON":_(u"Couldn't make the directory \"{}\". Please check your write permissions, or create it yourself, and try again.\n{}".format( hack, unicode(e) ))}
+			## I could simply make the path, but Kartik warned me about this in:
+			##	April 2012 - Kartik Mistry (kartik@debian.org)
+			##		informed me there was a bug in some esoteric build
+			##		of some voodoo Debian process and that I should
+			##		simply skip the check and creation of .fonts directory.
+			## Thus, I opt to bail out and complain:
+			return {"XDG_STATUS":"FAIL", "REASON":_("Couldn't find the \"{}\" directory. Your system should have it. You could create it yourself, and run me again.".format( PathControl.__XDG_DATA_HOME )}
 
 
 		## At this point we defs have ~/.local/share/
@@ -110,10 +108,6 @@ class PathControl:
 			## If found = old system; move shit.
 			self.XFG_upgrade_status_dict = self.upgrade_to_XDG_std()
 
-		## April 2012 - Kartik Mistry (kartik@debian.org)
-		## informed me there was a bug in some esoteric build
-		## of some voodoo Debian process and that I should
-		## simply skip the check and creation of .fonts directory.
 
 		## EDIT
 		## August 2012
@@ -233,7 +227,7 @@ DFAM=None # Set in wxgui.py in class App()
 
 ## Ensure we have a fontypython folder and a fonts folder.
 try:
-	iPC = pathcontrol.PathControl(frm="fpsys")
+	iPC = PathControl()
 except e:
 	raise
 

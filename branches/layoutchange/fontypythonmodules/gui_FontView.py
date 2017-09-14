@@ -38,9 +38,9 @@ from wxgui import ps
 
 from gui_ScrolledFontView import *
 
-import fontybugs
 import fpsys # Global objects
 import fontyfilter
+import fontybugs
 
 ##The SearchAssistant idea was to have a panel that opens to give tips and interactive
 ##help for searching. We were going to have field and PANOSE access via fontTools but

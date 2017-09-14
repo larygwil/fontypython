@@ -20,7 +20,9 @@
 
 import os, sys, locale, glob, errno
 from PIL import Image, ImageFont, ImageDraw
-import fontybugs, fpsys
+
+import fpsys
+import fontybugs
 
 
 ## Sep 2009 : zip functionality
