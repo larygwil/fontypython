@@ -21,10 +21,10 @@ import strings
 import fontybugs
 #import pathcontrol
 
-try:
-	import fpsys
-except fontybugs.NoXDG_DATA_HOME, e:
-	print e.print_error_and_quit()
+#try:
+import fpsys
+#except fontybugs.NoXDG_DATA_HOME, e:
+#	print e.print_error_and_quit()
 
 import fontcontrol
 
@@ -34,7 +34,6 @@ import getopt
 
 ####
 ## Ensure we have a fontypython folder and a fonts folder.
-iPC = fpsys.iPC#pathcontrol.PathControl(frm="cli")
 
 class options(object):
 	"""
@@ -93,7 +92,8 @@ for o, a in opts:
 
 	if o in ("-e", "--examples"):
 		## The 'folder' string replace is left until this moment:
-		print strings.examples % {"folder": iPC.appPath()}
+		MIGHT BE A PROBLEM fpsys.iPC here
+		print strings.examples % {"folder": fpsys.iPC.appPath()}
 		raise SystemExit
 
 	elif o in ("-h", "--help"):
@@ -180,13 +180,18 @@ if options.check:
 			pstr = fpsys.LSP.to_unicode( pstr )
 		print pstr
 
+	THIS SHOULD TRY:
 	fpsys.checkFonts( dirtocheck, printer )
 	raise SystemExit
 
 
 ## List -  Quick and dirty. 
 if options.list:
-	poglist = iPC.getPogNames()
+	This is a CLI only command
+	DO an iPC error state check here and print/quit if
+
+	poglist = fpsys.iPC.getPogNames()
+
 	poglist.sort( cmp=locale.strcoll, key=lambda obj:obj) #28 May 2009. Hope this works for other locales...
 	if len(poglist) == 0:
 		print _("There are no pogs available.")
@@ -194,7 +199,7 @@ if options.list:
 	print _("Listing %d pog(s)") % len(poglist)
 	print _(" * indicates installed pogs")
 	for pog in poglist:
-		paf = iPC.appPath() + pog + ".pog"
+		paf = fpsys.iPC.appPath() + pog + ".pog"
 		try:
 			f = open(paf, "r" ) #  It's a plain byte-string ascii file.
 			installed = f.readline()[:-1] #Strips the \n off the end
@@ -367,8 +372,12 @@ if options.all:
 ## If there are > 2 args then there is chaos:
 if len(args) > 2:
 	## The user may have chosen a pogname with spaces and no quotes
-	print _("""Please check your arguments, there seem to be too many.\n(Remember: it's one pound for a five-minute argument, but only eight pounds for a course of ten.)\n\nNB: If you wanted to use spaces in a pogname or folder then please put "quotes around them." """)
+	print _("""Please check your arguments, there seem to be too many.\n(Remember: it's one pound for a five-minute argument, but only eight pounds for a course of ten.)\n\nNB: If you wanted to use spaces in a Pog or Folder name then please put "quotes around them." """)
 	raise SystemExit
+
+
+THIS IS THE DIVIDE I THINK
+ANYTHING PAST HERE INTENDS TO GO ON TO GUI
 
 ####
 ## Handle Cases :

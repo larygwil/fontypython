@@ -112,12 +112,12 @@ options=_("""Options:
 				simply a bug in the library we use to
 				access fonts that chokes things. This
 				will (hopefully) improve in the future.
-  -a folder Pog --all folder Pog
+  -a Folder Pog --all Folder Pog
 				Puts all fonts in this folder into the Pog.
 				If the Pog already exists, it will add
 				only *new* fonts, this means fonts are not
 				repeated in that Pog.
-  -A folder Pog --all-recurse folder Pog
+  -A Folder Pog --all-recurse Folder Pog
 				Puts all fonts in this folder and *all*
 				sub-folders into the Pog. Rest same as -a.
   -z Pog --zip=Pog

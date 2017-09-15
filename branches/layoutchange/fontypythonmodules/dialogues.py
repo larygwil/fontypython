@@ -397,7 +397,7 @@ class DialogCheckFonts( wx.Dialog ):
 	def __init__( self, parent, startdir ):
 		wx.Dialog.__init__(self, parent, -1, _("Check for dangerous fonts."), \
 		size=(800,400),pos = wx.DefaultPosition, style=wx.DEFAULT_FRAME_STYLE )
-		
+
 		## LEFT
 		leftsz = wx.BoxSizer(wx.VERTICAL)
 
@@ -424,9 +424,9 @@ class DialogCheckFonts( wx.Dialog ):
 		self.btn.Bind( wx.EVT_BUTTON, self.OnClick)
 
 		rightsz.Add(bsz,0,wx.EXPAND)
-		
+
 		sz = wx.BoxSizer(wx.HORIZONTAL)
-		
+
 		sz.Add(leftsz, 1, wx.EXPAND)
 		sz.Add(rightsz, 1, wx.EXPAND )# this wx.EXPAND got the text control to fit the height.
 
@@ -442,14 +442,14 @@ class DialogCheckFonts( wx.Dialog ):
 		if txt is None: txt = "\n"
 		self.output.WriteText(txt + "\n")
 		wx.SafeYield()
-		
+
 	def __goFigure( self, e ):
 		self.output.Clear()
 		wx.BeginBusyCursor()
 		dirtocheck = self.treedir.GetPath()
 		fpsys.checkFonts( dirtocheck, self.printer )
 		wx.EndBusyCursor()
-		
+
 ## May 2009 - Busy
 ## June 2009 - Given up on this code for now.
 

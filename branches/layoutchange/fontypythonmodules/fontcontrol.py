@@ -21,7 +21,11 @@
 import os, sys, locale, glob, errno
 from PIL import Image, ImageFont, ImageDraw
 
+## This import will not RUN the code in fpsys.py
+## because it's been imported before. (It's a Python thing.)
+## This is NB as I don't want it making a new PathControl
 import fpsys
+
 import fontybugs
 
 

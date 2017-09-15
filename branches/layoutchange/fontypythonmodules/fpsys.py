@@ -80,7 +80,7 @@ class PathControl:
 
 	def __init__( self ):
 
-		self.ERROR_STATE={}
+		self.__ERROR_STATE={}
 
 		## Use Glib to get the XDG data path:
 		PathControl.__XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
@@ -94,8 +94,7 @@ class PathControl:
 			##		of some voodoo Debian process and that I should
 			##		simply skip the check and creation of .fonts directory.
 			## Thus, I opt to bail out and complain:
-			#raise fontypython.NoXDG_DATA_HOME( PathControl.__XDG_DATA_HOME)
-			self.ERROR_STATE["NoXDG_DATA_HOME"] = PathControl.__XDG_DATA_HOME
+			self.__ERROR_STATE["NoXDG_DATA_HOME"] = fontybugs.NoXDG_DATA_HOME(PathControl.__XDG_DATA_HOME)
 			return
 
 
@@ -149,21 +148,33 @@ class PathControl:
 			try:
 				os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
 			except OSError as e:
-				#self.ERROR_STATE["OSError"] = (errno.ENOENT, os.strerror(errno.ENOENT), PathControl.__xdgdatahome_fontypython)
-				self.ERROR_STATE["OSError"] = e
+				#self.__ERROR_STATE["OSError"] = (errno.ENOENT, os.strerror(errno.ENOENT), PathControl.__xdgdatahome_fontypython)
+				self.__ERROR_STATE["OSError_mkdirs_fontypython"] = e
 				return
 
+	def getErrorStateDict(self):
+		return self.__ERROR_STATE
+
+	def __raiseOrContinue(self, errkey):
+		e = self.__ERROR_STATE.get( errkey, False )
+		if e: raise e
+
 	def appPath(self):
-		""" Kind of spastic, but I was in a get/set mode"""
+		self.__raiseOrContinue("NoXDG_DATA_HOME")
+		self.__raiseOrContinue("OSError_mkdirs_fontypython")
 		return PathControl.__xdgdatahome_fontypython
 
 	def appConf(self):
+		self.__raiseOrContinue("NoXDG_DATA_HOME")
+		self.__raiseOrContinue("OSError_mkdirs_fontypython")
 		return PathControl.__xdgdatahome_fpconf
 
 	def getPogNames(self):
 		## We pass a byte string path to os.listdir therefore this function
 		## return a LIST OF BYTE STRINGS.
+		THIS SHOULD TRY/RAISE NoXDG_DATA_HOME - really? Who's job is it?
 		return [ f[0:-4] for f in os.listdir(PathControl.__xdgdatahome_fontypython) if f.endswith(".pog") ]
+
 
 	def userFontPath(self):
 		return PathControl.__xdgdatahome_fonts
@@ -246,17 +257,17 @@ DFAM=None # Set in wxgui.py in class App()
 ## also error states that make progress hard or impossible.
 ## The idea here is to raise errors *after* making the iPC
 ## so that other modules who "import fpsys" can catch them.
-## (If I put these raises in the __init__ of PathControl, it
+## (If I use raise in the __init__ of PathControl, it
 ## aborts the instance itelf.)
 iPC = PathControl()
-e = iPC.ERROR_STATE.get("NoXDG_DATA_HOME", None)
-if e: raise fontybugs.NoXDG_DATA_HOME( e )# e is a path
+#e = iPC.__ERROR_STATE.get("NoXDG_DATA_HOME", None)
+#if e: raise fontybugs.NoXDG_DATA_HOME( e )# e is a path
 
-e = iPC.ERROR_STATE.get("NoFontsDir", None)
-if e: raise fontybugs.NoFontsDir( e ) #e is a path
+#e = iPC.__ERROR_STATE.get("NoFontsDir", None)
+#if e: raise fontybugs.NoFontsDir( e ) #e is a path
 
-e = iPC.ERROR_STATE.get("OSError", None)
-if e: raise e # e is the actual error object
+#e = iPC.__ERROR_STATE.get("OSError", None)
+#if e: raise e # e is the actual error object
 
 
 
@@ -432,6 +443,7 @@ except:
 		segfonts = tmp
 		del (tmp)
 		## Now save it.
+		THIS SHOULD TRY/RAISE NoXDG_DATA_HOME FOUND - AT MIN
 		paf = os.path.join(iPC.appPath(),"segfonts")
 		fw = open( paf, "w" ) # byte string ascii
 		bytestring = "".join([line + "\n" for line in segfonts if line != ""])
