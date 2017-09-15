@@ -18,11 +18,14 @@
 
 import sys, locale, os
 import strings
-
-#import pathcontrol
-import fpsys
-
 import fontybugs
+#import pathcontrol
+
+try:
+	import fpsys
+except fontybugs.NoXDG_DATA_HOME, e:
+	print e.print_error_and_quit()
+
 import fontcontrol
 
 ## replaced optparse with this one because optparse chokes on 

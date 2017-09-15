@@ -52,8 +52,6 @@ class Errors ( Exception ):
 	1010 : _("Not a single font in this pog could be installed.\nThe original font folder has probably moved or been renamed."),
 	1020 : _("Not a single font in this pog could be uninstalled.\nNone of the fonts were in your fonts folder, please check your home .fonts (with a dot in front) folder for broken links.\nThe pog has been marked as \"not installed\"."),
 	1030 : _("This folder has no fonts in it."),
-	1040 : strings.missingDotFontsMessages["basic"]
-	1040 : _("Please create a \"fonts\" directory (in your %(d)s directory) so that Fonty can install fonts. Until this is done, Pogs cannot be installed. Please see the \"Fonts Directory\" section in the Help for more information.\n\nExample:\ncd %(d)s\nmkdir fonts\n\n" ) % { 'd' : fpsys.iPC.userFontPath() }
 	}
 
 	def __unicode__( self ):
@@ -73,14 +71,6 @@ class Errors ( Exception ):
 		self.print_error()
 		raise SystemExit
 
-
-class Weirdo(Errors):
-	def __init__ (self, msg, itemdict):
-		self.msg = msg
-		self._item = itemdict
-	def __unicode__(self):
-	aaargh
-		return u"%s: %s" % (self.msg % {'replaceme':self._item})
 
 class BadVoodoo ( Errors ):
 	def __init__ ( self, item = None):
@@ -135,7 +125,7 @@ class PogCannotDelete ( Errors ):
 class PogAllFontsFailedToInstall ( Errors ):
 	def __init__ ( self, item = None):
 		self._item = item
-		self._id = 1010	
+		self._id = 1010
 
 class PogAllFontsFailedToUninstall ( Errors ):
 	def __init__ ( self, item = None):
@@ -147,9 +137,20 @@ class FolderHasNoFonts ( Errors ):
 		self._item = item
 		self._id = 1030
 
-#June 25, 2016
-class NoFontsDir ( Errors ):
-	def __init__ (self, item = None ):
-		self._item = item
-		self._id=1040
+## Sept 2017
+## Altered NoFontsDir and added NoXDG_DATA_HOME
+## These errors take a path argument so their unicode
+## can display that path in the error message.
+class NoXDG_DATA_HOME(Errors):
+	def __init__ (self, path):
+		self.path = path
+	def __unicode__(self):
+		return _(u"The %s directory is missing. I don't know what to do. You *could* create it yourself, and start me again.\n\nExample:\nmkdir -p %(path)s") % self.path
+
+class NoFontsDir(Errors):
+	def __init__(self,path):
+		self.path = path
+	def __unicode__(self):
+		return _(u"The main \"fonts\" directory within %(path)s is missing.\nFonts cannot be installed until it exists. Please create it, and start me again.\n\nExample:\ncd %(path)s\nmkdir fonts") % {"path":self.path}
+
 

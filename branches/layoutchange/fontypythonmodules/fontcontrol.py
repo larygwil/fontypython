@@ -833,7 +833,7 @@ class Pog(BasicFontList):
 			NoFontsDir
 		"""
 		if not os.path.exists(self.__pc.userFontPath()):
-			raise fontybugs.NoFontsDir("Missing fonts dir")
+			raise fontybugs.NoFontsDir( self.__pc.userFontPath() )
 
 		def linkfont(fi, frompaf, topaf):
 			## 15 Sept 2009 : Catch situations where the font is already installed.

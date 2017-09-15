@@ -32,14 +32,18 @@ import wx, os
 
 
 from pubsub import * #I want all the topics.
-from wxgui import ps
 
-from gui_PogChooser import *
-
-import fpsys # Global objects
-import fontyfilter
+#import fpsys # Global objects
 import fontybugs
 
+try:
+	import fpsys
+except fontybugs.NoXDG_DATA_HOME, e:
+	print e.print_error_and_quit()
+
+from wxgui import ps
+from gui_PogChooser import *
+import fontyfilter
 
 class FontSourcesPanel(wx.Panel):
 	"""

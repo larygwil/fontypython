@@ -25,7 +25,8 @@ import sys, os, pickle
 import linux_safe_path_library
 LSP = linux_safe_path_library.linuxSafePath()
 
-import pathcontrol
+import fontybugs
+#import pathcontrol
 #import strings
 
 import fontcontrol
@@ -42,6 +43,11 @@ from gi.repository import GLib
 
 class PathControl:
 	"""
+	Instanced here, in fpsys, where it is used globally.
+
+	TASKS:
+	===
+	0. Sets an error dict and returns on various failures.
 	1. Makes the fontypython path - in $XDG_DATA_HOME (GLib will supply this)
 	2. Provide paths for fontypython on Linux
 	3. Provide list of pog names (without the .pog extension)
@@ -49,13 +55,20 @@ class PathControl:
 
 	* All these vars contain/return BYTE STRING paths and files.
 
+	NOTE
+	==
+	This class is imported and used in the 'fontypython' wrapper too - when there's
+	a segfault.
+
 	Sept 2017: Freedesktop specs being used now:
+	===
 	https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-	#>>>from gi.repository import GLib
-	#>>>GLib.get_user_data_dir()
-	#'/home/donn/.local/share'
+	# >>>from gi.repository import GLib
+	# >>>GLib.get_user_data_dir()
+	# '/home/donn/.local/share'
 
 	GLib:
+	==
 	https://developer.gnome.org/glib/2.40/glib-Miscellaneous-Utility-Functions.html#g-get-user-data-dir
 	"""
 	__FIRSTRUN = True
@@ -66,6 +79,8 @@ class PathControl:
 	__XDG_DATA_HOME = "unset" #Supposed to be preset to "$HOME/.local/share"
 
 	def __init__( self ):
+
+		self.ERROR_STATE={}
 
 		## Use Glib to get the XDG data path:
 		PathControl.__XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
@@ -79,7 +94,9 @@ class PathControl:
 			##		of some voodoo Debian process and that I should
 			##		simply skip the check and creation of .fonts directory.
 			## Thus, I opt to bail out and complain:
-			return {"XDG_STATUS":"FAIL", "REASON":_("Couldn't find the \"{}\" directory. Your system should have it. You could create it yourself, and run me again.".format( PathControl.__XDG_DATA_HOME )}
+			#raise fontypython.NoXDG_DATA_HOME( PathControl.__XDG_DATA_HOME)
+			self.ERROR_STATE["NoXDG_DATA_HOME"] = PathControl.__XDG_DATA_HOME
+			return
 
 
 		## At this point we defs have ~/.local/share/
@@ -124,19 +141,17 @@ class PathControl:
 		## ===
 		## Added this flag so I can test in wxgui when I draw the status bar,so
 		## it can warn user about the situation.
-		self.no_fonts_dir_found = not os.path.exists( PathControl.__xdgdatahome_fonts )
+		#self.no_fonts_dir_found = not os.path.exists( PathControl.__xdgdatahome_fonts )
 
 
 		## Make XDG_DATA_HOME/fontypython
-		if make_fontypython_dir:
-			if not os.path.exists(PathControl.__xdgdatahome_fontypython):
-				try:
-					os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
-				except:
-					print _("""
-Couldn't make the folder in %s
-Please check your write permissions and try again.""") % PathControl.__xdgdatahome_fontypython
-					raise SystemExit
+		if not os.path.exists(PathControl.__xdgdatahome_fontypython):
+			try:
+				os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
+			except OSError as e:
+				#self.ERROR_STATE["OSError"] = (errno.ENOENT, os.strerror(errno.ENOENT), PathControl.__xdgdatahome_fontypython)
+				self.ERROR_STATE["OSError"] = e
+				return
 
 	def appPath(self):
 		""" Kind of spastic, but I was in a get/set mode"""
@@ -226,10 +241,23 @@ Please check your write permissions and try again.""") % PathControl.__xdgdataho
 DFAM=None # Set in wxgui.py in class App()
 
 ## Ensure we have a fontypython folder and a fonts folder.
-try:
-	iPC = PathControl()
-except e:
-	raise
+## Sept 2017
+## I want to guarantee that the iPC instance exists, but there are
+## also error states that make progress hard or impossible.
+## The idea here is to raise errors *after* making the iPC
+## so that other modules who "import fpsys" can catch them.
+## (If I put these raises in the __init__ of PathControl, it
+## aborts the instance itelf.)
+iPC = PathControl()
+e = iPC.ERROR_STATE.get("NoXDG_DATA_HOME", None)
+if e: raise fontybugs.NoXDG_DATA_HOME( e )# e is a path
+
+e = iPC.ERROR_STATE.get("NoFontsDir", None)
+if e: raise fontybugs.NoFontsDir( e ) #e is a path
+
+e = iPC.ERROR_STATE.get("OSError", None)
+if e: raise e # e is the actual error object
+
 
 
 ##  Borrowed from wxglade.py

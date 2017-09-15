@@ -17,14 +17,26 @@
 
 import locale
 import strings
-import fpsys # Global objects
+import fontybugs
+
+## For the gui, I want to defer the error state until I can 
+## fire-up the right mojo to show a message box etc.
+## Thus am capturing any errors into a dict:
+FPSYS_ERROR_STATE={}
+try:
+	import fpsys # Global objects
+except fontybugs.NoXDG_DATA_HOME, errmsg:
+	FPSYS_ERROR_STATE = { "NoXDG_DATA_HOME": {"errmsg": errmsg} }
+except fontybugs.NoFontsDir, errmsg:
+	FPSYS_ERROR_STATE = { "NoFontsDir": {"errmsg":errmsg} }
+
 import fpversion
 
 ## Now, bring in all those big modules
 import wx
 
 #Sept 2017
-from wx.lib.splitter import MultiSplitterWindow
+#from wx.lib.splitter import MultiSplitterWindow
 
 ## AUG 2017
 ## Massive gui hacking. See wxgui.orig.py if you need to roll back.
@@ -603,6 +615,11 @@ class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
 			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )
 			raise SystemExit
 
+		err1 = FPSYS_ERROR_STATE.get("NoXDG_DATA_HOME", None)
+		if err1:
+			wx.MessageBox( err1.errmsg )
+			raise SystemExit
+
 		# Start a splash screen - which then starts the main frame
 		MySplash = FontySplash()
 		MySplash.Show()
@@ -645,12 +662,6 @@ class FontySplash(wx.SplashScreen):
 			##  this is the only place I can get the system font family
 			fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
 
-			## Possible:
-			## If there's an error in the XDG bs (in pathcontrol) that
-			## needs to be shown in a gui, I could open a frame here
-			## to spell it out, then quit fp.
-			if fpsys.iPC.ohfuckshit:
-			else: ...
 			frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
 			app.SetTopWindow(frame)
 

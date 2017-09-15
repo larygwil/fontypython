@@ -32,7 +32,7 @@ import subprocess, sys, os
 root = __file__
 if os.path.islink(root):
 	root = os.path.realpath(root)
-fontyroot = os.path.dirname(os.path.abspath(root)) 
+fontyroot = os.path.dirname(os.path.abspath(root))
 
 import fontypythonmodules.i18n as i18n
 
@@ -69,7 +69,7 @@ else: # err code -11
 	#print "ERROR CODE:", p1
 	## This actually works!
 	import sys, os, locale
-	import fontypythonmodules.pathcontrol as PC
+	import fontypythonmodules.fpsys as PC
 	import wx, fontypythonmodules.dialogues as D
 
 	## July 2016 - Removed as causing a segfault in wxPython.
