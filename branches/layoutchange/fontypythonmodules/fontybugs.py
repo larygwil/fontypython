@@ -147,6 +147,12 @@ class NoXDG_DATA_HOME(Errors):
 	def __unicode__(self):
 		return _(u"The %s directory is missing. I don't know what to do. You *could* create it yourself, and start me again.\n\nExample:\nmkdir -p %(path)s") % self.path
 
+class NoFontypythonDir(Errors):
+	def __init__(self,path):
+		self.path = path
+	def __unicode__(self):
+		return _(u"The \"fontypython\" directory within %(path)s cannot be crested or founr.\nFonty cannot run until it exists. Please create it, and start me again.\n\nExample:\ncd %(path)s\nmkdir fontypython") % {"path":self.path}
+
 class NoFontsDir(Errors):
 	def __init__(self,path):
 		self.path = path

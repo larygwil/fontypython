@@ -147,40 +147,49 @@ class PathControl:
 		if not os.path.exists(PathControl.__xdgdatahome_fontypython):
 			try:
 				os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
-			except OSError as e:
+			#except OSError as e:
+			except:
 				#self.__ERROR_STATE["OSError"] = (errno.ENOENT, os.strerror(errno.ENOENT), PathControl.__xdgdatahome_fontypython)
-				self.__ERROR_STATE["OSError_mkdirs_fontypython"] = e
+				self.__ERROR_STATE["NoFontypythonDir"] = fontybugs.NoFontypythonDir( PathControl.__xdgdatahome_fontypython )
 				return
 
-	def getErrorStateDict(self):
-		return self.__ERROR_STATE
 
 	def __raiseOrContinue(self, errkey):
 		e = self.__ERROR_STATE.get( errkey, False )
 		if e: raise e
 
-	def appPath(self):
+	def __try_errors_in_priority_order(self):
 		self.__raiseOrContinue("NoXDG_DATA_HOME")
-		self.__raiseOrContinue("OSError_mkdirs_fontypython")
+		self.__raiseOrContinue("NoFontypythonDir")
+		self.__raiseOrContinue("NoFontsDir")
+
+	def probeErrors(self):
+		"""For outsiders to probe these errors."""
+		self.__try_errors_in_priority_order()
+
+	def appPath(self):
+		self.__try_errors_in_priority_order()
 		return PathControl.__xdgdatahome_fontypython
 
 	def appConf(self):
-		self.__raiseOrContinue("NoXDG_DATA_HOME")
-		self.__raiseOrContinue("OSError_mkdirs_fontypython")
+		self.__try_errors_in_priority_order()
 		return PathControl.__xdgdatahome_fpconf
+
+	def userFontPath(self):
+		self.__try_errors_in_priority_order()
+		return PathControl.__xdgdatahome_fonts
+
+	def home(self):
+		#Not gonna bother error checking HOME
+		return PathControl.__HOME
 
 	def getPogNames(self):
 		## We pass a byte string path to os.listdir therefore this function
 		## return a LIST OF BYTE STRINGS.
-		THIS SHOULD TRY/RAISE NoXDG_DATA_HOME - really? Who's job is it?
+		# Not going to test for path errors. Anything outside of the 
+		# basic path get methods is presumed safe.
+		# i.e. no self.__try_errors_in_priority_order()
 		return [ f[0:-4] for f in os.listdir(PathControl.__xdgdatahome_fontypython) if f.endswith(".pog") ]
-
-
-	def userFontPath(self):
-		return PathControl.__xdgdatahome_fonts
-
-	def home(self) :
-		return PathControl.__HOME
 
 
 	def upgrade_to_XDG_std(self):
@@ -443,7 +452,7 @@ except:
 		segfonts = tmp
 		del (tmp)
 		## Now save it.
-		THIS SHOULD TRY/RAISE NoXDG_DATA_HOME FOUND - AT MIN
+		
 		paf = os.path.join(iPC.appPath(),"segfonts")
 		fw = open( paf, "w" ) # byte string ascii
 		bytestring = "".join([line + "\n" for line in segfonts if line != ""])

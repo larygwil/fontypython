@@ -19,16 +19,7 @@ import locale
 import strings
 import fontybugs
 
-## For the gui, I want to defer the error state until I can 
-## fire-up the right mojo to show a message box etc.
-## Thus am capturing any errors into a dict:
-FPSYS_ERROR_STATE={}
-try:
-	import fpsys # Global objects
-except fontybugs.NoXDG_DATA_HOME, errmsg:
-	FPSYS_ERROR_STATE = { "NoXDG_DATA_HOME": {"errmsg": errmsg} }
-except fontybugs.NoFontsDir, errmsg:
-	FPSYS_ERROR_STATE = { "NoFontsDir": {"errmsg":errmsg} }
+import fpsys # Global objects
 
 import fpversion
 
@@ -612,13 +603,25 @@ class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
 
 		## Initial dialogue to inform user about their potential fate:
 		if not "unicode" in wx.PlatformInfo:
-			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."), caption=_("SORRY: UNICODE MUST BE SUPPORTED"), style=wx.OK | wx.ICON_EXCLAMATION )
+			wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."),
+				caption=_("SORRY: UNICODE MUST BE SUPPORTED"),
+				style=wx.OK | wx.ICON_EXCLAMATION )
 			raise SystemExit
 
-		err1 = FPSYS_ERROR_STATE.get("NoXDG_DATA_HOME", None)
-		if err1:
-			wx.MessageBox( err1.errmsg )
+		## Probe for delayed errors in PathControl
+		## and show them in message boxes.
+		try:
+			fpsys.iPC.probeErrors()
+		except (fontybugs.NoXDG_DATA_HOME, fontybugs.NoFontypythonDir) as e:
+			wx.MessageBox( unicode(e),
+				caption=_("FATAL ERROR"),
+				style=wx.OK | wx.ICON_ERROR )
+			## This one is unrecoverable:
 			raise SystemExit
+		except fontybugs.NoFontsDir as e:
+			wx.MessageBox( unicode(e),
+				caption=_("WARNING"),
+				style=wx.OK | wx.ICON_ERROR )
 
 		# Start a splash screen - which then starts the main frame
 		MySplash = FontySplash()

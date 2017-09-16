@@ -28,8 +28,8 @@ done = "Done."
 ## Sept 2017
 ## The "missing .fonts directory" speech. I am repeating it too much, time
 ## to bring it all here.
+TODO FIXME
 missingDotFontsMessages = {
-"basic": _("Please create a \".fonts\" directory (in your home directory) so that Fonty can install fonts. Until this is done, Pogs cannot be installed. Please see the \"Dot fonts\" section in the Help for more information.\n\nExample:\ncd ~\nmkdir .fonts\n\n"),
 "statusbar": _("Missing \"~\.fonts\" directory. See Help.")
 }
 
@@ -145,7 +145,7 @@ Please use -e to see more info.
 
 
 examples = _("""The basic format is:
-%(c)s [VIEW] [TARGET]
+%(c)s [OPTIONS] [VIEW] [TARGET]
   VIEW   = A place where fonts are. A Pog or a folder
 		   someplace.
   TARGET = A Pog, a place to keep references to fonts

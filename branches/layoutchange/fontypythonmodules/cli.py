@@ -19,12 +19,8 @@
 import sys, locale, os
 import strings
 import fontybugs
-#import pathcontrol
 
-#try:
 import fpsys
-#except fontybugs.NoXDG_DATA_HOME, e:
-#	print e.print_error_and_quit()
 
 import fontcontrol
 
@@ -37,9 +33,8 @@ import getopt
 
 class options(object):
 	"""
-	Imitate the previous optparse 'options' thing that could
-	not handle unicode properly, coz I've got all this
-	code written and don't want to hack it.
+	A class that won't instantiate. It's a small packet of
+	values that are set as-per the command line's arguments.
 	"""
 	list = False
 	points = None
@@ -81,19 +76,32 @@ except getopt.GetoptError, err:
 	print str(err) # will print something like "option -a not recognized"
 	raise SystemExit
 
+only_cli = False
+
 for o, a in opts:
 	if o in (u"-c", u"--check"):
 		dirtocheck = os.path.abspath( a )
 		options.check = True
+		only_cli = True
 		break
 	if o in ("-v", "--version"):
 		print strings.version
+		only_cli = True
 		raise SystemExit
 
 	if o in ("-e", "--examples"):
 		## The 'folder' string replace is left until this moment:
-		MIGHT BE A PROBLEM fpsys.iPC here
-		print strings.examples % {"folder": fpsys.iPC.appPath()}
+		## MIGHT BE A PROBLEM fpsys.iPC.appPath here:
+		try:
+			fldr = fpsys.iPC.appPath()
+		except (fontybugs.NoXDG_DATA_HOME, fontybugs.NoFontypythonDir) as e:
+			print unicode(e)
+			raise SystemExit
+		except fontybugs.NoFontsDir:
+			## not a concern in this context.
+			pass
+		print strings.examples % {"folder": fldr }
+		only_cli = True
 		raise SystemExit
 
 	elif o in ("-h", "--help"):
@@ -102,10 +110,12 @@ for o, a in opts:
 		print strings.options
 		print
 		print strings.copy_warranty_contact
+		only_cli = True
 		raise SystemExit
 
 	elif o in ("-l", "--list"):
 		options.list = True
+		only_cli = True
 
 	elif o in ("-i","--install"):
 		options.install = [a]
@@ -114,15 +124,18 @@ for o, a in opts:
 			## and added to the list. If they are not, they simply won't
 			## be installed.
 			options.install += args
+		only_cli = True
 
 	elif o in ("-u", "--uninstall"):
 		options.uninstall = [a]
 		if args:
 			## Same as install.
 			options.uninstall += args
+		only_cli = True
 
 	elif o in ("-p", "--purge"):
 		options.purge = a
+		only_cli = True
 
 	elif o in ("-s", "--size"):
 		try:
@@ -152,23 +165,43 @@ for o, a in opts:
 			print _("%s takes two arguments: SOURCE(folder) TARGET(pog)") % o
 			print _("""NB: If you wanted to use spaces in a pogname or folder then please put "quotes around them."  """)
 			raise SystemExit
+		only_cli = True
+
 	elif o in ("-z","--zip"):
 		# a is the Pog name we must zip.
 		# This only does one pog, not several at once.
 		# (due to the limits of gnu_getopt)
 		options.zip = True
 		options.pog = a
+		only_cli = True
 
 	else:
 		## We should not reach here at all.
 		raise SystemExit
 
 
+## If we are only intended for CLI then we can print errors
+## in the normal way.
+if only_cli:
+	## Probe for any delayed fpsys pathcontrol errors
+	## The fatal errors are going to STOP the app at this point
+	## (If it's in the cli context.)
+	try:
+		fpsys.iPC.probeErrors()
+	except (fontybugs.NoXDG_DATA_HOME, fontybugs.NoFontypythonDir) as e:
+		e.print_error_and_quit() #QUIT!
+	except fontybugs.NoFontsDir as e:
+		e.print_error()
+
+## If not only_cli, we intend running the wxgui.
+## I will do a similar pathcontrol error probe there, and
+## open msgboxes or something to print the errors.
+
 
 ####
 ## Let's handle those options that DO NOT require args.
 
-## Check fonts
+## Check fonts - a cli context.
 if options.check:
 	if not os.path.exists( dirtocheck ):
 		print _("I can't find %s") % dirtocheck
@@ -180,16 +213,15 @@ if options.check:
 			pstr = fpsys.LSP.to_unicode( pstr )
 		print pstr
 
-	THIS SHOULD TRY:
+	## checkFonts employs pathcontrol, but we are past the
+	## main probe for errors. At this point PathControl is 
+	## in a trusted state.
 	fpsys.checkFonts( dirtocheck, printer )
 	raise SystemExit
 
 
 ## List -  Quick and dirty. 
 if options.list:
-	This is a CLI only command
-	DO an iPC error state check here and print/quit if
-
 	poglist = fpsys.iPC.getPogNames()
 
 	poglist.sort( cmp=locale.strcoll, key=lambda obj:obj) #28 May 2009. Hope this works for other locales...

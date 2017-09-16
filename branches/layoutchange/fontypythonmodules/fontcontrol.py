@@ -646,7 +646,6 @@ class Pog(BasicFontList):
 	"""
 	def __init__(self, name ): #, progressCallback = None):
 		BasicFontList.__init__(self)
-		self.__pc = fpsys.iPC # A hack to pathcontrol.
 
 		## Public properties:
 		##
@@ -666,8 +665,8 @@ class Pog(BasicFontList):
 
 		## Note, name (not self.name) is used here. It is a byte string. 
 		## appPath() is a bs, name is a bs so join leaves this all as a bs.
-		self.paf = os.path.join( self.__pc.appPath(),name + ".pog")
-		## OVERKILL : self.paf = fpsys.LSP.path_join_ensure_bytestring_result( self.__pc.appPath(),name + ".pog" )
+		self.paf = os.path.join( fpsys.iPC.appPath(),name + ".pog")
+		## OVERKILL : self.paf = fpsys.LSP.path_join_ensure_bytestring_result( fpsys.iPC.appPath(),name + ".pog" )
 
 		self.badpog = False #To be used mainly to draw icons and ask user to purge.
 
@@ -836,8 +835,8 @@ class Pog(BasicFontList):
 			PogSomeFontsDidNotInstall
 			NoFontsDir
 		"""
-		if not os.path.exists(self.__pc.userFontPath()):
-			raise fontybugs.NoFontsDir( self.__pc.userFontPath() )
+		if not os.path.exists(fpsys.iPC.userFontPath()):
+			raise fontybugs.NoFontsDir( fpsys.iPC.userFontPath() )
 
 		def linkfont(fi, frompaf, topaf):
 			## 15 Sept 2009 : Catch situations where the font is already installed.
@@ -869,7 +868,7 @@ class Pog(BasicFontList):
 			## These os.path functions have been performing flawlessly.
 			## See linux_safe_path_library remarks (at top) for details.
 			dirname = os.path.basename( fi.glyphpaf )
-			linkDestination = os.path.join(self.__pc.userFontPath(), dirname )
+			linkDestination = os.path.join(fpsys.iPC.userFontPath(), dirname )
 
 			## Link it if it ain't already there.
 			if os.path.exists(fi.glyphpaf):
@@ -879,7 +878,7 @@ class Pog(BasicFontList):
 						## It's a Type 1, does it have a metricpaf?
 						if fi.metricpaf:
 							linkDestination = \
-							os.path.join( self.__pc.userFontPath(), os.path.basename( fi.metricpaf ) )
+							os.path.join( fpsys.iPC.userFontPath(), os.path.basename( fi.metricpaf ) )
 							linkfont( fi, fi.metricpaf, linkDestination )
 			else:
 				bugs += 1
@@ -922,7 +921,7 @@ class Pog(BasicFontList):
 					continue # If it overlaps then we skip removing it by going to next fi in loop.
 				#print "  Going to REMOVE this one"
 				dirname = os.path.basename( fi.glyphpaf )
-				link = os.path.join(self.__pc.userFontPath(), dirname )
+				link = os.path.join(fpsys.iPC.userFontPath(), dirname )
 				## Step one - look for the actual file (link)
 				if os.path.exists(link):
 					try:
@@ -932,7 +931,7 @@ class Pog(BasicFontList):
 							## It's a Type 1, does it have a metricpaf?
 							## It may be None (if this pfb happens not to have had a afm/pfm.)
 							if fi.metricpaf:
-								pfmlink = os.path.join(self.__pc.userFontPath(), os.path.basename(fi.metricpaf))
+								pfmlink = os.path.join(fpsys.iPC.userFontPath(), os.path.basename(fi.metricpaf))
 								if os.path.exists( pfmlink ):
 									os.unlink( pfmlink )
 					except: # e.g. Permission denied [err 13]

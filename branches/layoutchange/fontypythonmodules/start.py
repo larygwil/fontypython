@@ -19,23 +19,15 @@
 import fontypythonmodules.sanitycheck
 
 import fpsys
-#The first import means the code in there gets RUN.
-#Hence the iPC is now made.
+## The first import means the code in there gets RUN.
+## Hence the iPC (single instance of PathControl) is now made.
 
-## Process the command line stuff
+## Process the command line stuff...
 import cli
-## I think, because I have a bad memory, that what keeps
-## the cli and the gui apart is any raise SystemExit inside cli
-## between here
-## and ..
+## What keeps the cli and the gui apart is any 
+## "raise SystemExit" inside cli
+## between here and ..
 ## The GUI
-
-BUT - I cn't simply quit when fpsys raises iPC errors
-because then it never ghets to wxgui
-Also- the second import fpsys ehich happens in wxgui, will
-not execute any code in that module, hence the try won't
-be functional...
-
 import fontypythonmodules.wxgui
 
 ## End, clean up

@@ -82,8 +82,6 @@ class PogChooser(wx.ListCtrl) :
 
 		self.AssignImageList(il, wx.IMAGE_LIST_SMALL)
 
-		self.__PC = fpsys.iPC # reuse the global pathcontrol object
-
 		self.fillPogList()
 
 		## Highlight the pog selected (the last one, or the cli chosen one)
@@ -191,7 +189,7 @@ class PogChooser(wx.ListCtrl) :
 		This will CULL any bad pogs (i.e. those with malformed content)
 		Thus the PogInvalid error should not happen any more after a run.
 		"""
-		pl = self.__PC.getPogNames() # pl will always be a BYTE STRING list
+		pl = fpsys.iPC.getPogNames() # pl will always be a BYTE STRING list
 
 		for p in pl: # 'p' is a byte string.
 			ipog = fontcontrol.Pog(p)
