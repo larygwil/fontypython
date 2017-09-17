@@ -1,4 +1,4 @@
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
@@ -24,7 +24,7 @@ import fpsys
 
 import fontcontrol
 
-import clifuncs
+import clifuncs #Split out the hard work to shorten this file
 
 ## replaced optparse with this one because optparse chokes on 
 ## Unicode strings.
@@ -45,7 +45,7 @@ class situation(object):
 	install = None
 	uninstall = None
 	checkdir = False
-	all = None
+	allfromfolder = None
 	alltargetpog=[]
 	allrecurse = None
 	zip = None
@@ -159,7 +159,7 @@ for option, argument in opts:
 
 	elif option in ("-a", "--all", "-A","--all-recurse"):
 		strictly_cli_context_only = True
-		situation.all = argument
+		situation.allfromfolder = argument
 		if option in ("-a","--all"):
 			situation.allrecurse = False
 		else:
@@ -227,11 +227,11 @@ if strictly_cli_context_only:
 
 	## Install ALL fonts in folder to given pog.
 	## the def wants: 1=foldername, 2=pogname. 3=recurseflag
-	if situation.all: clifuncs.installall( situation.all,
+	if situation.allfromfolder: clifuncs.installall( situation.allfromfolder,
 																				situation.alltargetpog,
 																				situation.allrecurse )
 
-	## Setting the final, right-hand side, [VIEW] [TARGET] in pure cli 
+	## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
 	## context has no meaning, so we'll simply ignore them.
 
 	## Nothing left for the strictly command line only context to do, so:
@@ -240,29 +240,32 @@ if strictly_cli_context_only:
 
 
 ## At this point:
-## This is a mixed zone: "fontypython" is being run - either be from 
+## This is a mixed zone: "fontypython" is being run either from 
 ## the cli or from the gui (via a .desktop file).
 ##
-## All flags that trigger an *strictly_cli_context_only* have been dealt with, this leaves
-## only the remaining_cli_arguments [VIEW] and/or [TARGET] to handle.
+## All flags that trigger a *strictly_cli_context_only* have been dealt with, this leaves
+## only some gui options and the remaining_cli_arguments [VIEW] and/or [TARGET] to handle.
 ##
-## Fonty *may* be from the command line (e.g. fontypython /fonts BAR)
-## OR fonty *may* be coming from an icon (.desktop file), we can't know.
-## As a result, some of the print statements below will not be visible to
-## the user if they run from a gui.
-## I can't tell which context is which, so I will leave them to chat.
+## Fonty is:
+## 1. Definitely from the cli (e.g. fontypython /fonts BAR) if there ARE remaining_cli_arguments
+## 2. Possibly * from an icon (.desktop file), if there ARE NO remaining_cli_arguments.
+## 
+## * It's possible to run "fontypython" naked on the cli, thus I can't make assumptions
+## about where Fonty is really coming from. For this reason, I will leave all print 
+## statements (below) to stdout to cover cli useage.
+
 
 ## If there are many remaining_cli_arguments, it's chaos:
 if len(remaining_cli_arguments) > 2:
 	## The user may have chosen a pogname with spaces and no quotes
-	print _("""Please check your arguments, there seem to be too many.\n(Remember: it's one pound for a five-minute argument, but only eight pounds for a course of ten.)\n\nNB: If you wanted to use spaces in a Pog or Folder name then please put "quotes around them." """)
+	print _("Please check your arguments, there seem to be too many.\n(Remember: it's one pound for a five minute argument, but only eight pounds for a course of ten.)\n\nNB: If you use spaces in a Pog or Folder name then put \"quotes around the names.\"")
 	raise SystemExit
 
-## Last few situation that have NO MEANING in cli context.
-## Size
+## Args that only have meaning in gui context:
+## Size of fonts
 if situation.points > 0:
 	fpsys.config.points = situation.points
-## View
+## Number in a page
 if situation.numinpage > 1:
 	fpsys.config.numinpage = situation.numinpage
 

@@ -23,7 +23,7 @@ import fpsys
 ## Hence the iPC (single instance of PathControl) is now made.
 
 ## Process the command line stuff...
-import cli
+import cli2
 ## What keeps the cli and the gui apart is any 
 ## "raise SystemExit" inside cli
 ## between here and ..
