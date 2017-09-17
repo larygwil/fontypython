@@ -835,8 +835,11 @@ class Pog(BasicFontList):
 			PogSomeFontsDidNotInstall
 			NoFontsDir
 		"""
-		if not os.path.exists(fpsys.iPC.userFontPath()):
-			raise fontybugs.NoFontsDir( fpsys.iPC.userFontPath() )
+		# This raises NoFontsDir if it's missing	
+		fpsys.iPC.probeNoFontsDirError()
+
+		#if not os.path.exists(fpsys.iPC.userFontPath()):
+		#	raise fontybugs.NoFontsDir( fpsys.iPC.userFontPath() )
 
 		def linkfont(fi, frompaf, topaf):
 			## 15 Sept 2009 : Catch situations where the font is already installed.
@@ -907,10 +910,14 @@ class Pog(BasicFontList):
 		NO BAD POG flag EVER.
 
 		Raises:
+				 NoFontsDir
 				 PogEmpty
 				 PogLinksRemain
 				 PogNotInstalled
 		"""
+		## Make sure fonts dir is there:
+		fpsys.iPC.probeNoFontsDirError()
+
 		if len(self) == 0: raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
 		bugs = 0
 		if self.__installed == "yes":

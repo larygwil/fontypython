@@ -37,6 +37,7 @@ class options(object):
 	values that are set as-per the command line's arguments.
 	"""
 	list = False
+	showdir=False
 	points = None
 	numinpage = None
 	text = None
@@ -68,8 +69,8 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-	opts, args = getopt.gnu_getopt(uargs, "hvlc:ei:u:s:n:p:a:A:z:",\
-	["help", "version", "list", "check=","examples","install=",\
+	opts, args = getopt.gnu_getopt(uargs, "hvldc:ei:u:s:n:p:a:A:z:",\
+	["help", "version", "list", "dir", "check=","examples","install=",\
 	"uninstall=","size=","number=","purge=","all=","all-recurse=","zip="])
 except getopt.GetoptError, err:
 	print _("Your arguments amuse me :) Please read the help.")

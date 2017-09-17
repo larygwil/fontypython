@@ -163,20 +163,27 @@ class PathControl:
 		self.__raiseOrContinue("NoFontypythonDir")
 		self.__raiseOrContinue("NoFontsDir")
 
+	def probeNoFontsDirError(self):
+		"""For outside probing of missing fonts dir."""
+		self.__raiseOrContinue("NoFontsDir")
+
 	def probeErrors(self):
 		"""For outsiders to probe these errors."""
 		self.__try_errors_in_priority_order()
 
-	def appPath(self):
-		self.__try_errors_in_priority_order()
+	def appPath(self, doerrortest=False):
+		"""Supplies $xdgdatahome/fontypython without testing for errors, unless set to."""
+		if doerrortest: self.__try_errors_in_priority_order()
 		return PathControl.__xdgdatahome_fontypython
 
-	def appConf(self):
-		self.__try_errors_in_priority_order()
+	def appConf(self, doerrortest=False):
+		"""Supplies $xdgdatahome/fontypython/fp.conf without testing for errors, unless set to."""
+		if doerrortest: self.__try_errors_in_priority_order()
 		return PathControl.__xdgdatahome_fpconf
 
-	def userFontPath(self):
-		self.__try_errors_in_priority_order()
+	def userFontPath(self, doerrortest=False):
+		"""Supplies $xdgdatahome/fonts without testing for errors, unless set to."""
+		if doerrortest: self.__try_errors_in_priority_order()
 		return PathControl.__xdgdatahome_fonts
 
 	def home(self):

@@ -80,6 +80,8 @@ them system-wide.""")
 options=_("""Options:
   -v --version  Show program's version number and exit.
   -h --help  Show this help message and exit.
+	-d --dir Shows you where the fontypython directory is
+				on your drive.
   -e --examples
 				Show some %$@#$ examples!
   -i Pog --install=Pog
@@ -145,12 +147,23 @@ Please use -e to see more info.
 
 
 examples = _("""The basic format is:
-%(c)s [OPTIONS] [VIEW] [TARGET]
-  VIEW   = A place where fonts are. A Pog or a folder
-		   someplace.
-  TARGET = A Pog, a place to keep references to fonts
-		   If you don't include a target then you are
-		   viewing/editing only.
+%(c)s [OPTIONS] | [VIEW] [TARGET]
+	OPTIONS = Various flags for use on the command-line.
+						See -h or --help for more.
+
+	Or:
+	Two arguments which will determine what you see in the
+	graphical user interface:
+
+  VIEW = A place where fonts are. A Pog or a folder
+				where fonts are located.
+
+  TARGET = A Pog.	If this Pog does not exist, it will
+					be created.
+
+	Neither argument is required. When there's only one
+	it's assumed to be a VIEW. When there are two, the
+	second is assumed to be a TARGET.
 
 Tips:
 =====
@@ -223,13 +236,14 @@ Examples: All using short options, see -h
   through all sub-folders too. The fonts will
   be placed in Tutto.
 
-Your fontypython folder is:
-%(folder)s
-If you want to backup your Pogs, that's where ya go.
-
 %(contact)s
 
 %(copy)s""") % { "c":"fontypython", "contact":contact, "copy":copyright }
+
+fontyfolder = _("""Your fontypython folder is:
+%(folder)s
+If you want to backup your Pogs, that's where ya go.
+""")
 
 ## These two are used in setup.py
 description = _("Fonty Python - view and manage all kinds of fonts on Gnu/Linux")
