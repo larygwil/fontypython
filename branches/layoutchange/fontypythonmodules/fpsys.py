@@ -93,12 +93,12 @@ class PathControl:
 			##		informed me there was a bug in some esoteric build
 			##		of some voodoo Debian process and that I should
 			##		simply skip the check and creation of .fonts directory.
-			## Thus, I opt to bail out and complain:
+			## It's not ~/.fonts anymore, but I opt to set an error state and bail.
 			self.__ERROR_STATE["NoXDG_DATA_HOME"] = fontybugs.NoXDG_DATA_HOME(PathControl.__XDG_DATA_HOME)
 			return
 
 
-		## At this point we defs have ~/.local/share/
+		## At this point we defs have ~/.local/share/ (or whatever it is)
 
 
 		# byte strings
@@ -106,52 +106,32 @@ class PathControl:
 		PathControl.__xdgdatahome_fpconf = PathControl.__XDG_DATA_HOME + "/fontypython/fp.conf"
 		PathControl.__xdgdatahome_fonts = PathControl.__XDG_DATA_HOME + "/fonts"
 
-		## Now have a better way to detect the very first run of this code:
-		## by using a class variable. The tests and creation of the 
-		## fontypython directory are sane now.
-		## 
-		## FYI: Instantiations of PathControl in order:
-		##  PathControl instanced from: strings
-		##  PathControl instanced from: fpsys
-		##  PathControl instanced from: cli
+		PathControl.__upgradeMessageList = []
+
+		## Class var to detect the very first run of this code:
 		if PathControl.__FIRSTRUN:
 			PathControl.__FIRSTRUN = False
 
-			## (I can't access the config object from here because it's in fpsys
-			## which imports this code, so it's all loopy. Instead of saving some
-			#  XDG_compliance_vers in config, I will just repeat the test for the old 
-			## ~/.fontypython path every time. Yay! \o/
-			## If found = old system; move shit.
-			self.XFG_upgrade_status_dict = self.upgrade_to_XDG_std()
+			## Make XDG_DATA_HOME/fontypython
+			if not os.path.exists(PathControl.__xdgdatahome_fontypython):
+				try:
+					os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
+				#except OSError as e:
+				except:
+					## Serious error. We can't continue. See cli and wxgui for how this plays out.
+					self.__ERROR_STATE["NoFontypythonDir"] = fontybugs.NoFontypythonDir( PathControl.__xdgdatahome_fontypython )
+					return
 
+			## Test for the old ~/.fontypython path. Every time. Yay! \o/
+			## If found => it's the old system; move shit.
 
-		## EDIT
-		## August 2012
-		## If there is no .fonts dir, install pog fails. The cursor keeps busy and nothing
-		## further happens. Here my suggestion: only perform a test, without creating the dir.
-
-		## June 25, 2016
-		## Some distros do not have the .fonts directory by default. :( :O
-		## This is a disaster. 
-		## Remarked Michael's edit. Moved the test for missing .fonts dir to
-		## fontcontrol.py in the install() function
-
-		## Sept 2017
-		## ===
-		## Added this flag so I can test in wxgui when I draw the status bar,so
-		## it can warn user about the situation.
-		#self.no_fonts_dir_found = not os.path.exists( PathControl.__xdgdatahome_fonts )
-
-
-		## Make XDG_DATA_HOME/fontypython
-		if not os.path.exists(PathControl.__xdgdatahome_fontypython):
-			try:
-				os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
-			#except OSError as e:
-			except:
-				#self.__ERROR_STATE["OSError"] = (errno.ENOENT, os.strerror(errno.ENOENT), PathControl.__xdgdatahome_fontypython)
-				self.__ERROR_STATE["NoFontypythonDir"] = fontybugs.NoFontypythonDir( PathControl.__xdgdatahome_fontypython )
-				return
+			if os.path.exists( PathControl.__HOME + "/.fontypython" ):
+				err = self.upgrade_to_XDG_std()
+				## Oh dear, failed to move...
+				if err:
+					self.__ERROR_STATE["??"] = err
+					return
+				## All done!
 
 
 	def __raiseOrContinue(self, errkey):
@@ -159,6 +139,7 @@ class PathControl:
 		if e: raise e
 
 	def __try_errors_in_priority_order(self):
+		"""Most serious are the first two. The last one means fonts can be viewed, but not installed."""
 		self.__raiseOrContinue("NoXDG_DATA_HOME")
 		self.__raiseOrContinue("NoFontypythonDir")
 		self.__raiseOrContinue("NoFontsDir")
@@ -204,26 +185,25 @@ class PathControl:
 		Move Fonty's config files to the new XDG_CONFIG_HOME path.
 		Move the old ~/.fonts for to the new XDG_DATA_HOME path.
 		"""
-		if not os.path.exists(PathControl.__HOME + "/.fontypython"):
-			return {"XDG_STATUS":"OK"}
 
-		## fpsys.config.XDG_compliance_vers = 1 # goddam. Can't reach config from here.
-		print _("Detected an old version of Fonty.\nMoving files to new locations in {}. This should only happen once.")
+		PathControl.__upgradeMessageList.append( _("Detected an old version of Fonty. Moving files to new locations in {}. This should only happen once.".format(PathControl.__XDG_DATA_HOME) ) )
+
 		import shutil
+
+		## First ~/.fontypython -> XDG_DATA_HOME/fontypython
 		olddotfonty = PathControl.__HOME + "/.fontypython"
-		newfonty = PathControl.__XDG_DATA_HOME + "/fontypython"
-		## I am not going to catch the error. Let it barf and quit.
-		shutil.move( olddotfonts, newfonty )
+		newfonty = PathControl.__xdgdatahome_fontypython
+		try:
+			shutil.move( olddotfonty, newfonty )
+		except Exception as e:
+			return fontybugs.UpgradeFail(_("Failed to move old {} to new {}.".format(olddotfonts, newfonty), e )
 
+		## Next: ~/.fonts -> XDG_DATA_HOME/fonts
 		olddotfonts = PathControl.__HOME + "/.fonts"
-		newfonts = PathControl.__XDG_DATA_HOME + "/fonts"
-
-		## newfonts may already exist...
+		newfonts = PathControl.__xdgdatahome_fonts
+		## Does newfonts exist? No? Make it the user's problem!
 		if not os.path.exists( newfonts ):
-			## It's not there...
-			## Do I make it? Complain to user? Shit...
-			return {"XDG_STATUS":"FAIL","REASON":_("There is no \"fonts\" directory in {}. Please make it yourself and start me again.".format( newfonts ))}
-
+			return fontybugs.NoFontsDir( newfonts )
 
 		## * Must go through all my installed Pogs and relink them into newfonts...
 		if os.path.exists(olddotfonts):
@@ -271,19 +251,14 @@ DFAM=None # Set in wxgui.py in class App()
 ## Sept 2017
 ## I want to guarantee that the iPC instance exists, but there are
 ## also error states that make progress hard or impossible.
-## The idea here is to raise errors *after* making the iPC
-## so that other modules who "import fpsys" can catch them.
-## (If I use raise in the __init__ of PathControl, it
-## aborts the instance itelf.)
-iPC = PathControl()
-#e = iPC.__ERROR_STATE.get("NoXDG_DATA_HOME", None)
-#if e: raise fontybugs.NoXDG_DATA_HOME( e )# e is a path
+iPC = None # Start with None so we can catch weird paths into this module
 
-#e = iPC.__ERROR_STATE.get("NoFontsDir", None)
-#if e: raise fontybugs.NoFontsDir( e ) #e is a path
+## I Manually call this from start.py
+def CreatePathControlInstance():
+	global iPC
+	iPC = PathControl()
 
-#e = iPC.__ERROR_STATE.get("OSError", None)
-#if e: raise e # e is the actual error object
+
 
 
 

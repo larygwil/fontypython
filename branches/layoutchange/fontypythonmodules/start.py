@@ -20,7 +20,8 @@ import fontypythonmodules.sanitycheck
 
 import fpsys
 ## The first import means the code in there gets RUN.
-## Hence the iPC (single instance of PathControl) is now made.
+## Manually create iPC (single instance of PathControl).
+fpsys.CreatePathControlInstance()
 
 ## Process the command line stuff...
 import cli2

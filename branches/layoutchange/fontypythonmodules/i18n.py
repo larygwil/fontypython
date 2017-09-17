@@ -23,8 +23,8 @@ import locale, gettext, sys, os
 root = __file__
 if os.path.islink(root):
 	root = os.path.realpath(root)
-fontyroot = os.path.dirname(os.path.abspath(root)) 
-		
+fontyroot = os.path.dirname(os.path.abspath(root))
+
 ## Dec 2007
 ## Try to setup the proper locale to get i18n started:
 localedir = os.path.join(fontyroot, "locale")
@@ -35,7 +35,7 @@ except:
 	print "And now for something completely different..."
 	print "setlocale failed. Please report this to us."
 	raise SystemExit
-			
+
 ## REMEMBER:
 ## locale.getlocale() -- DON'T USE getlocale
 ## ALWAYS use locale.getpreferredencoding()

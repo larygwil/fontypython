@@ -159,4 +159,12 @@ class NoFontsDir(Errors):
 	def __unicode__(self):
 		return _(u"The main \"fonts\" directory within %(path)s is missing.\nFonts cannot be installed until it exists. Please create it, and start me again.\n\nExample:\ncd %(path)s\nmkdir fonts") % {"path":self.path}
 
+class UpgradeFail(Errors):
+	def __init__(self, msg, shutilerr):
+		self.msg = msg
+		self.err = shutilerr
+	def __unicode__(self):
+		return _(u"Error during Upgrade.\n{}\n\n{}".format(self.msg, shutilerr))
+
+
 

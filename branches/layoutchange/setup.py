@@ -16,7 +16,11 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
-
+## None of these imports touches fpsys in any way.
+## Thus, there is no iPC instanced. Thus there should
+## be no running of the code that upgrades old fonty
+## to new (and makes files/directories), which is good
+## because setup is run as root!
 import fontypythonmodules.i18n
 import fontypythonmodules.sanitycheck
 import fontypythonmodules.fpversion

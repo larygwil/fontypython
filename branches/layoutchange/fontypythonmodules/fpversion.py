@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
