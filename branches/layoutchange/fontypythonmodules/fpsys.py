@@ -73,65 +73,94 @@ class PathControl:
 	"""
 	__FIRSTRUN = True
 	__HOME = os.environ["HOME"] # Is a byte string under Linux.
-	__xdgdatahome_fonts = "unset" # will be in XDG_DATA_HOME/fonts
-	__xdgdatahome_fontypython = "unset" # will be in XDG_DATA_HOME/fontypython
-	__xdgdatahome_fpconf = "unset" # will be in XDG_DATA_HOME/fontypython, fuck it.
-	__XDG_DATA_HOME = "unset" #Supposed to be preset to "$HOME/.local/share"
+
+	__fp_dir = None
+	__fpconf_paf = None
+	__fonts_dir = None
 
 	def __init__( self ):
 
 		self.__ERROR_STATE={}
 
-		## Use Glib to get the XDG data path:
-		PathControl.__XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
-
-
-		if not os.path.exists(PathControl.__XDG_DATA_HOME):
-			## XDG_DATA_HOME has a value, but it's not actually on the file system...
-			## I could simply make the path, but Kartik warned me about this in:
-			##	April 2012 - Kartik Mistry (kartik@debian.org)
-			##		informed me there was a bug in some esoteric build
-			##		of some voodoo Debian process and that I should
-			##		simply skip the check and creation of .fonts directory.
-			## It's not ~/.fonts anymore, but I opt to set an error state and bail.
-			self.__ERROR_STATE["NoXDG_DATA_HOME"] = fontybugs.NoXDG_DATA_HOME(PathControl.__XDG_DATA_HOME)
-			return
-
-
-		## At this point we defs have ~/.local/share/ (or whatever it is)
-
-
-		# byte strings
-		PathControl.__xdgdatahome_fontypython = PathControl.__XDG_DATA_HOME + "/fontypython/"
-		PathControl.__xdgdatahome_fpconf = PathControl.__XDG_DATA_HOME + "/fontypython/fp.conf"
-		PathControl.__xdgdatahome_fonts = PathControl.__XDG_DATA_HOME + "/fonts"
-
-		PathControl.__upgradeMessageList = []
-
 		## Class var to detect the very first run of this code:
 		if PathControl.__FIRSTRUN:
 			PathControl.__FIRSTRUN = False
 
-			## Make XDG_DATA_HOME/fontypython
-			if not os.path.exists(PathControl.__xdgdatahome_fontypython):
-				try:
-					os.makedirs(PathControl.__xdgdatahome_fontypython) #using makedirs - just in case.
-				#except OSError as e:
-				except:
-					## Serious error. We can't continue. See cli and wxgui for how this plays out.
-					self.__ERROR_STATE["NoFontypythonDir"] = fontybugs.NoFontypythonDir( PathControl.__xdgdatahome_fontypython )
-					return
+			##Small helper func to test a path and catch errors.
+			## Returns True if path was there (or was made okay)
+			## False on error.
+			def direxists(path, errkey):
+				if not os.path.exists(path):
+					try:
+						os.makedirs(path)
+					except:
+						##TODO: The actual error is being lost here. Think on it.
+						if errkey="NoFontypythonDir":
+							e = fontybugs.NoFontypythonDir(path)
+						else:
+							e = fontybugs.NoFonsir(path)
+						self.__ERROR_STATE[errkey] = e
+						return False
+					else: # There was no error:
+						return True
 
-			## Test for the old ~/.fontypython path. Every time. Yay! \o/
-			## If found => it's the old system; move shit.
+			## Use Glib to get the XDG data path:
+			XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
 
-			if os.path.exists( PathControl.__HOME + "/.fontypython" ):
-				err = self.upgrade_to_XDG_std()
-				## Oh dear, failed to move...
-				if err:
-					self.__ERROR_STATE["??"] = err
-					return
-				## All done!
+			## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
+			## I don't know if this is even a possibility... :|
+			if not os.path.exists(XDG_DATA_HOME):
+
+				## We are in fallback to the old fonty dirs etc.
+				fp_dir = PathControl.__HOME + "/.fontypython"
+				if not direxists(fp_dir, "NoFontypythonDir"):
+					return #Serious error, bail.
+				else:
+					PathControl.__fp_dir = fp_dir # Record it for use.
+
+				fonts_dir = PathControl.__HOME + "/.fonts"
+				if direxists(fonts_dir, "NoFontsDir"):
+					PathControl.__fonts_dir = fonts_dir
+				## End of old fonty fallback
+
+			else:
+				## We are in valid XDG terrain: ~/.local/share/ (or whatever) exists.
+				## We may hit perm errors within there, I guess..
+
+				x_fp_dir = XDG_DATA_HOME + "/fontypython"
+				if not direxists(x_fp_dir, "NoFontypythonDir"):
+					return #Serious error
+				else:
+					PathControl.__fp_dir = x_fp_dir
+
+				x_fonts_dir = XDG_DATA_HOME + "/fonts"
+				if direxists(x_fonts_dir, "NoFontsDir"):
+					PathControl.__fonts_dir = x_fonts_dir #None if there was an error.
+
+				## Decide on what can be upgraded..
+				# if new fp_dir exists *and* old fp_dir exisis, then we can upgrade 
+				#  since, by now, x_fp_dir does exist, we need only look for the old.
+
+				old_fp_dir = PathControl.__HOME + "/.fontypython"
+				old_fonts_dir = PathControl.__HOME + "/.fonts"
+
+				## fontypython dir:
+				if os.path.exists(old_fp_dir):
+					move pogs to new
+					move fp.conf to new
+					rm old fontypython dir
+					errors raise ?? perhaps a new upgrade error?
+
+				# if new fonts exists *and* old fonts exists, then we can upgrade
+				#  (new fonts *might* not exist...)
+				hasnewfonts = "NoFontsDir" not in self.__ERROR_STATE
+				if hasnewfonts and os.path.exists(old_fonts_dir):
+					## Okay, both dirs exists.
+					## for each pog that's installed, loop it's fonts and
+					## move the link from old fonts into new fonts
+					errors? upgrade error moving_fonts ??
+
+
 
 
 	def __raiseOrContinue(self, errkey):
@@ -153,19 +182,22 @@ class PathControl:
 		self.__try_errors_in_priority_order()
 
 	def appPath(self, doerrortest=False):
-		"""Supplies $xdgdatahome/fontypython without testing for errors, unless set to."""
+		"""Supplies the "fontypython" application directory.
+		* By default, without testing for errors."""
 		if doerrortest: self.__try_errors_in_priority_order()
-		return PathControl.__xdgdatahome_fontypython
+		return PathControl.__fp_dir
 
 	def appConf(self, doerrortest=False):
-		"""Supplies $xdgdatahome/fontypython/fp.conf without testing for errors, unless set to."""
+		"""Supplies paf of "fp.conf"
+		* By default, without testing for errors."""
 		if doerrortest: self.__try_errors_in_priority_order()
-		return PathControl.__xdgdatahome_fpconf
+		return PathControl.__fp_dir + "/fp.conf"
 
 	def userFontPath(self, doerrortest=False):
-		"""Supplies $xdgdatahome/fonts without testing for errors, unless set to."""
+		"""Supplies the user's "fonts" directory.
+		* By default, without testing for errors."""
 		if doerrortest: self.__try_errors_in_priority_order()
-		return PathControl.__xdgdatahome_fonts
+		return PathControl.__fonts_dir
 
 	def home(self):
 		#Not gonna bother error checking HOME
@@ -177,7 +209,7 @@ class PathControl:
 		# Not going to test for path errors. Anything outside of the 
 		# basic path get methods is presumed safe.
 		# i.e. no self.__try_errors_in_priority_order()
-		return [ f[0:-4] for f in os.listdir(PathControl.__xdgdatahome_fontypython) if f.endswith(".pog") ]
+		return [ f[0:-4] for f in os.listdir(PathControl.__fp_dir) if f.endswith(".pog") ]
 
 
 	def upgrade_to_XDG_std(self):
@@ -210,6 +242,10 @@ class PathControl:
 			blah
 		else:
 		#pass
+
+		pasted code - todo still. will need it to sort-out which fonts are installed
+		so that we only move those fonts to the new x_fonts_dir
+
 		"""
 		This is among the very FIRST things we do.
 		Fill the list with pogs.
@@ -527,7 +563,9 @@ class Configure:
 		self.ignore_adjustments = False
 		## Added 3 Oct 2009
 		self.app_char_map = "UNSET" # A string of an app name.
-
+		self.xdg_status={"upgraded": False,
+			"xdgdatahome_fontypython" : None,
+			"xdgdatahome_fonts":None}
 
 		self.__setData()
 
@@ -538,7 +576,9 @@ class Configure:
 		if os.path.exists(iPC.appConf()):
 			try:
 				pf = open(iPC.appConf(), "rb" ) # Binary for new pickle protocol.
-				self.__data = pickle.load( pf )
+				#self.__data = pickle.load( pf )
+				## I want to merge-in what may be in pickle
+				self.__data.update( pickle.load( pf ) )
 				pf.close()
 			except:
 				## Dec 2007 : Let's try erase and rewind
@@ -572,6 +612,7 @@ class Configure:
 			##  That appname may be valid or not (it may have been uninstalled...)
 			self.CMC.SET_CURRENT_APPNAME(self.app_char_map)
 
+			self.xdg_status = self.__data['xdg_status']
 
 		except KeyError:
 			## The conf file has keys that don't work for this version, chances are it's old.
@@ -601,6 +642,7 @@ class Configure:
 								"recurseFolders": self.recurseFolders,
 								"ignore_adjustments": self.ignore_adjustments,
 								"app_char_map" : self.app_char_map,
+								"xdg_status" : self.xdg_status
 								}
 	def app_char_map_set( self, x ):
 		'''
