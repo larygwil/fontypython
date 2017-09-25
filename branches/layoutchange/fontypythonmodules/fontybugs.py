@@ -138,34 +138,38 @@ class FolderHasNoFonts ( Errors ):
         self._id = 1030
 
 ## Sept 2017
-## Altered NoFontsDir and added NoXDG_DATA_HOME
+## Some new errors.
 ## These errors take a path argument so their unicode
 ## can display that path in the error message.
-class NoXDG_DATA_HOME(Errors):
-    def __init__ (self, path):
-        self.path = path
-    def __unicode__(self):
-        return _(u"The %s directory is missing. I don't know what to do. You *could* create it yourself, and start me again.\n\nExample:\nmkdir -p %(path)s") % self.path
-
+## They also take an "associated_err" which is an error object
+## (Probably an OSError of some kind.)
 class NoFontypythonDir(Errors):
     def __init__(self,path, associated_err):
-        self.path = path
-        self.associated_err = associated_err
+        self.path = LSP.ensure_unicode(path)
+        self.associated_err = LSP.ensure_unicode(associated_err)
     def __unicode__(self):
-        return _(u"The \"fontypython\" directory within %(path)s cannot be created or found.\nFonty cannot run until it exists. Please create it, and start me again.\n\nExample:\n\tcd %(path)s\n\tmkdir fontypython\n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+        return _(u"The \"fontypython\" directory within %(path)s cannot be \
+                created or found.\nFonty cannot run until it exists. \
+                Please create it, and start me again.\
+                \n\nExample:\n\tcd %(path)s\n\tmkdir fontypython\
+                \n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
 
 class NoFontsDir(Errors):
     def __init__(self,path, associated_err):
-        self.path = path
+        self.path = LSP.ensure_unicode(path)
     def __unicode__(self):
-        return _(u"The main \"fonts\" directory within %(path)s is missing.\nFonts cannot be installed until it exists. Please create it, and start me again.\n\nExample:\n\tcd %(path)s\n\tmkdir fonts\n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+        return _(u"The main \"fonts\" directory within \
+                %(path)s is missing.\nFonts cannot be installed until it exists.\
+                Please create it, and start me again.\
+                \n\nExample:\n\tcd %(path)s\n\tmkdir fonts\
+                \n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
 
 class UpgradeFail(Errors):
-    def __init__(self, msg, shutilerr):
-        self.msg = msg
-        self.err = shutilerr
+    def __init__(self, msg, associated_err):
+        self.msg = LSP.ensure_unicode(msg)
+        self.associated_err = LSP.ensure_unicode(associated_err)
     def __unicode__(self):
-        return _(u"Error during Upgrade.\n{}\n\n{}".format(self.msg, shutilerr))
+        return _(u"Upgrade Error.\n{}\n\n[Extra:{}]").format(self.msg, associated_err)
 
 
 

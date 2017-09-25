@@ -195,7 +195,7 @@ if strictly_cli_context_only:
     try:
         fpsys.iPC.probeErrors()
     ## These stop the app.
-    except (fontybugs.NoXDG_DATA_HOME, fontybugs.NoFontypythonDir) as e:
+    except fontybugs.NoFontypythonDir as e:
         e.print_error_and_quit()
     ## This one is a warning only.
     except fontybugs.NoFontsDir as e:

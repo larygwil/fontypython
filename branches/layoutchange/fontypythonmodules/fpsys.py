@@ -142,14 +142,18 @@ class PathControl:
                 ## After an upgrade, the old_fp_dir will be deleted, making
                 ## this a once-off:
                 if os.path.exists(old_fp_dir):
-                    self.__upgrade_fp_dir( old_fp_dir, x_fp_dir )
+                    try:
+                        self.__upgrade_fp_dir( old_fp_dir, x_fp_dir )
+                    except:
+                        return
+                IF THAT FAILS.... :O
 
                 # if new fonts exists *and* old fonts exists, then we can upgrade
                 #  (new fonts *might* not exist...)
                 hasnewfontsdir = "NoFontsDir" not in self.__ERROR_STATE #Rather than another exists test.
                 if hasnewfontsdir and os.path.exists(old_fonts_dir):
                     ## Okay, both dirs exist.
-                    self.__upgrade_fonts_dir( old_fonts_dir, x_fonts_dir )
+                    self.__upgrade_fonts_dir( old_fp_dir, old_fonts_dir, x_fonts_dir )
 
 
     def __try_test_make_dir( self, path, errkey ):
@@ -173,13 +177,15 @@ class PathControl:
         if e: raise e
 
     def __try_errors_in_priority_order(self):
-        """Most serious are the first two. The last one means fonts can be viewed, but not installed."""
-        self.__raiseOrContinue("NoXDG_DATA_HOME")
+        """Most serious first. The last one means fonts can be viewed, but not installed."""
         self.__raiseOrContinue("NoFontypythonDir")
+        self.__raiseOrContinue("UpgradeError::ImmovableFpConf")
+        self.__raiseOrContinue("UpgradeError::ImmovablePog")
+        self.__raiseOrContinue("UpgradeError::CannotRemoveOldDotFontypython")
         self.__raiseOrContinue("NoFontsDir")
 
     def probeNoFontsDirError(self):
-        """For outside probing of missing fonts dir."""
+        """For outside probing of missing fonts dir. E.g. see fontcontrol.py"""
         self.__raiseOrContinue("NoFontsDir")
 
     def probeErrors(self):
@@ -208,43 +214,94 @@ class PathControl:
         #Not gonna bother error checking HOME
         return PathControl.__HOME
 
-    def getPogNames(self):
+    def getPogNames(self, someotherpath=None):
         ## We pass a byte string path to os.listdir therefore this function
         ## return a LIST OF BYTE STRINGS.
         # Not going to test for path errors. Anything outside of the 
         # basic path get methods is presumed safe.
         # i.e. no self.__try_errors_in_priority_order()
-        return [ f[0:-4] for f in os.listdir(PathControl.__fp_dir) if f.endswith(".pog") ]
+        p = PathControl.__fp_dir if not someotherpath else someotherpath
+        return [ f[0:-4] for f in os.listdir(p) if f.endswith(".pog") ]
 
 
     def __upgrade_fp_dir(self, old_fp, new_fp):
-        import shutil
-        import errno
-        try:
-            os.rmdir(old_fp_dir)
-        except OSError as ex:
-            if ex.errno == errno.ENOTEMPTY:
-                #print "directory not empty"
-                move pogs, err->upgrade_fp_dir_err(re fp dir itself)
-                move fp.conf, err->upgrade_fp_dir_err(re fp.con)
-                try: rmdir old_fp_dir, err->upgrade_fp_dir_err(re rmdir)
-            else:
-                err-> was some fucking other thing...
+        """
+        Seeks to:
+        1. move all .pog files in the old ~/.fontypython dir to the new.
+        2. Move the fp.conf file too.
+        3. Rm the old ~/.fontypython dir.
+        On any error, it aborts with an UpgradeError
+        """
 
-        return # job done
+        import errno
+
+        posserrmsg = _("Could not remove the old {} directory.\
+                Please try this yourself.").format(old_fp)
+        try:
+            ## Start out cocky - just up and kill old_fp
+            os.rmdir(old_fp)
+        except OSError as ex:
+            ## Ah, it's not empty: ergo upgrade.
+            if ex.errno == errno.ENOTEMPTY:
+                ## Move each .pog file over, or raise error.
+                pl = self.getPogNames(old_fp)
+                for fle in pl:
+                    try:
+                        oldpogpaf=os.path.join(old_fp, fle)
+                        newpogpaf=os.path.hoin(new_fp, fle)
+                        os.rename( oldpogpaf, newpogpaf )
+                    except Exception as e:
+                        ## We are going to be printing these pafs, so force them into unicode:
+                        self.__ERROR_STATE["UpgradeError::ImmovablePog"] = \
+                                fontybugs.UpgradeFail(
+                            _("Could not move {} to {} while trying to upgrade Fonty. \
+                               Please resolve this and start me again."
+                               ).format(oldpogpaf,newpogpaf), e)
+                        raise
+
+                ## Move fp.conf, or raise error.
+                try: 
+                    oldfpconfpaf=os.path.join(old_fp, "fp.conf")
+                    newfpconfpaf=os.path.join(new_fp, "fp.conf")
+                    os.rename( os.path.join(oldfpconfpaf, newfpconfpaf)
+                except Exception as e:
+                    self.__ERROR_STATE["UpgradeError::ImmovableFpConf"] = fontybugs.UpgradeFail(
+                        _("Could not move the config file {} to {}. \
+                            Pleas resolve the problem and start me again."
+                            ).format(oldfpconfpaf,newfpconfpaf), e)
+                    raise
+            else: # ex.errno was some other OSError code...
+                self.__ERROR_STATE["UpgradeError::CannotRemoveOldDotFontypython"] = \
+                        fontybugs.UpgradeFail(posserrmsg, ex)
+                raise
+
+        ## Part of the os.rmdir(old_fp) try-block
+        except Exception as e: #And whatver the hell else.
+            self.__ERROR_STATE["UpgradeError::CannotRemoveOldDotFontypython"] = \
+                    fontybugs.UpgradeFail(posserrmsg, e)
+            raise
+
+
+        ## Now that we've moved all the guts over to the new fp path..
+        ## Let's, once again, attempt to rm the old fp dir...
+        try:
+            os.rmdir(old_fp)
+        except Exception as e:
+            #Just could not kill the beast!
+            self.__ERROR_STATE["UpgradeError::CannotRemoveOldDotFontypython"] = \
+                    fontybugs.UpgradeFail(posserrmsg, e)
+            raise
+
 
     def __upgrade_fonts_dir(self, old_fonts_dir, new_fonts_dir):
-        ## ~/.fonts ain't gonna be rmdir by me! We'll focus on moving shit out
-        ## and into the new fonts dir.
-        ## for each pog that's installed, loop it's fonts and
-        ## move the link from old fonts into new fonts
-        ## errors? upgrade error moving_fonts ??
-
-        pasted code - todo still. will need it to sort-out which fonts are installed
-        so that we only move those fonts to the new x_fonts_dir
+        """
+        This will re-link fonts to the new directory for all pogs that are installed.
+        This method ignores all errors.
+        Also, ~/.fonts ain't gonna be rmdir by me!
+        """
 
         pl = self.getPogNames()
-        if not pl: return
+        if not pl: return #No pogs, nothing to do!
 
         for p in pl: # 'p' is a byte string.
             ipog = fontcontrol.Pog(p)
