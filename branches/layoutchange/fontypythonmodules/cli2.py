@@ -194,9 +194,11 @@ if strictly_cli_context_only:
     ## and can be used without worrying about these kinds of errors.
     try:
         fpsys.iPC.probeErrors()
+
     ## These stop the app.
-    except fontybugs.NoFontypythonDir as e:
+    except (fontybugs.NoFontypythonDir, fontybugs.UpgradeFail) as e:
         e.print_error_and_quit()
+
     ## This one is a warning only.
     except fontybugs.NoFontsDir as e:
         e.print_error()

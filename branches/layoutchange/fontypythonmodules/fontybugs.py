@@ -165,6 +165,9 @@ class NoFontsDir(Errors):
                 \n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
 
 class UpgradeFail(Errors):
+    """
+    Any and all UpgradeFail errors should end the app after being caught.
+    """
     def __init__(self, msg, associated_err):
         self.msg = LSP.ensure_unicode(msg)
         self.associated_err = LSP.ensure_unicode(associated_err)

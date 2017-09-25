@@ -612,12 +612,16 @@ class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
         ## and show them in message boxes.
         try:
             fpsys.iPC.probeErrors()
-        except fontybugs.NoFontypythonDir as e:
+
+        ## App stopping errors:
+        except (fontybugs.NoFontypythonDir, fontybugs.UpgradeFail) as e:
             wx.MessageBox( unicode(e),
                 caption=_("FATAL ERROR"),
                 style=wx.OK | wx.ICON_ERROR )
             ## This one is unrecoverable:
             raise SystemExit
+
+        ## Warning only
         except fontybugs.NoFontsDir as e:
             wx.MessageBox( unicode(e),
                 caption=_("WARNING"),
