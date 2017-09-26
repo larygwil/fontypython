@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
@@ -25,9 +25,7 @@ from PIL import Image, ImageFont, ImageDraw
 ## because it's been imported before. (It's a Python thing.)
 ## This is NB as I don't want it making a new PathControl
 import fpsys
-
 import fontybugs
-
 
 ## Sep 2009 : zip functionality
 import zipfile
@@ -44,12 +42,13 @@ class FontItem( object ):
     and query a font file for the family name and style.
 
     Ancestor to the specific classes per font type.
+
     Never instantiate one directly.
     """
     def __init__(self, glyphpaf ):
-        ## glyphpaf must be whatever it is. unicode or a byte string
+        ## glyphpaf must be whatever it is. unicode or a byte string.
         ## This is used to access files themselves.
-        ## When the LANG encoding is utf8, its Unicode.
+        ## When the LANG encoding is utf8, it's Unicode.
 
         self.glyphpaf = glyphpaf
         #print "FontItem init, glyphpaf:", [glyphpaf]
@@ -83,7 +82,7 @@ class FontItem( object ):
         self.textExtentsDict = {}
 
         ## We need the family name and style to be fetched
-        ## because we have that filter thingy in the gui
+        ## because we have that filter thing in the gui
         ## and it uses those strings to search for terms.
         ##
         ## We also want to know what flavour of bad this item will be

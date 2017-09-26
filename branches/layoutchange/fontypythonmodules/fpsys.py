@@ -1,4 +1,4 @@
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
@@ -21,22 +21,12 @@
 ## other modules - so they are global to everything.
 
 import sys, os, pickle
-
 import linux_safe_path_library
 LSP = linux_safe_path_library.linuxSafePath()
-
 import fontybugs
-#import pathcontrol
-#import strings
-
 import fontcontrol
-
 import charmaps
-
-#import wx
-
 import subprocess
-
 
 ##Sept 2017 - Trying to get XDG compliance going.
 from gi.repository import GLib
@@ -47,35 +37,36 @@ class PathControl:
 
     TASKS:
     ===
-    0. Sets an error dict and returns on various failures.
-    1. Makes the fontypython path - in $XDG_DATA_HOME (GLib will supply this)
-    2. Provide paths for fontypython on Linux
-    3. Provide list of pog names (without the .pog extension)
-    4. Provide a list of pog FILE names (with .pog extension)
-
-    * All these vars contain/return BYTE STRING paths and files.
+    . Sets an error dict and *returns* on failure, does not raise.
+    . Switches on whether there exists a valid XDG_DATA_HOME directory.
+       No : Falls-back to old ~/.fontypython and ~/.fonts (makes both if must)
+       Yes: Makes new fontypython and fonts (if must)
+            Moves all pogs, the fp.conf into fontypython
+            Moves all links that were in ~/.fonts into fonts
+    . Provides methods to look for what errors happened after __init__
+    . Provide paths for fontypython on Linux
+    . Provide list of pog names (without the .pog extension)
 
     NOTE
-    ==
-    This class is imported and used in the 'fontypython' wrapper too - when there's
-    a segfault.
-
-    Sept 2017: Freedesktop specs being used now:
     ===
-    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-    # >>>from gi.repository import GLib
-    # >>>GLib.get_user_data_dir()
-    # '/home/donn/.local/share'
+    TODO: Evaluate need: This class is imported and used in the 'fontypython' wrapper too - when
+    there has been a segfault.
 
-    GLib:
-    ==
+    Sept 2017
+    ===
+    Freedesktop specs and GLib.
+    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
     https://developer.gnome.org/glib/2.40/glib-Miscellaneous-Utility-Functions.html#g-get-user-data-dir
+
+    >>>from gi.repository import GLib
+    >>>GLib.get_user_data_dir()
+    '/home/donn/.local/share'
     """
     __FIRSTRUN = True
-    __HOME = os.environ["HOME"] # Is a byte string under Linux.
 
+    ## All these vars contain/return BYTE STRING paths and files.
+    __HOME = os.environ["HOME"] # Is a byte string under Linux.
     __fp_dir = None
-    __fpconf_paf = None
     __fonts_dir = None
 
     def __init__( self ):
@@ -83,7 +74,10 @@ class PathControl:
         self.__ERROR_STATE={}
 
         ## Class var to detect the very first run of this code:
-        if PathControl.__FIRSTRUN:
+        if not PathControl.__FIRSTRUN:
+            print "PathControl has been instanced twice."
+            raise SystemExit
+        else:
             PathControl.__FIRSTRUN = False
 
             ## Use Glib to get the XDG data path:
@@ -156,19 +150,24 @@ class PathControl:
                     self.__upgrade_fonts_dir( old_fp_dir, old_fonts_dir, x_fonts_dir )
 
 
+    ## Private Interface:
     def __try_test_make_dir( self, path, errkey ):
     """
-    Test a path, make it if absent. Catch and cache errors.
+    Path exists? No: make it. Catch and cache errors.
     Returns nothing or raises the error.
     """
         if not os.path.exists(path):
             try:
                 os.makedirs(path)
             except Exception as associated_err:
-                if errkey="NoFontypythonDir":
+                if errkey=="NoFontypythonDir":
                     e = fontybugs.NoFontypythonDir(path, associated_err)
-                else:
+                elif errkey=="NoFontsDir":
                     e = fontybugs.NoFontsDir(path, associated_err)
+                else:
+                    # bad arg case:
+                    print "Bad key in PathControl.__try_errors_in_priority_order:", errkey
+                    raise SystemExit
                 self.__ERROR_STATE[errkey] = e
                 raise e # Let's use our error to communicate with the caller.
 
@@ -183,46 +182,6 @@ class PathControl:
         self.__raiseOrContinue("UpgradeFail::ImmovablePog")
         self.__raiseOrContinue("UpgradeFail::CannotRemoveOldDotFontypython")
         self.__raiseOrContinue("NoFontsDir")
-
-    def probeNoFontsDirError(self):
-        """For outside probing of missing fonts dir. E.g. see fontcontrol.py"""
-        self.__raiseOrContinue("NoFontsDir")
-
-    def probeErrors(self):
-        """For outsiders to probe these errors."""
-        self.__try_errors_in_priority_order()
-
-    def appPath(self, doerrortest=False):
-        """Supplies the "fontypython" application directory.
-        * By default, without testing for errors."""
-        if doerrortest: self.__try_errors_in_priority_order()
-        return PathControl.__fp_dir
-
-    def appConf(self, doerrortest=False):
-        """Supplies paf of "fp.conf"
-        * By default, without testing for errors."""
-        if doerrortest: self.__try_errors_in_priority_order()
-        return PathControl.__fp_dir + "/fp.conf"
-
-    def userFontPath(self, doerrortest=False):
-        """Supplies the user's "fonts" directory.
-        * By default, without testing for errors."""
-        if doerrortest: self.__try_errors_in_priority_order()
-        return PathControl.__fonts_dir
-
-    def home(self):
-        #Not gonna bother error checking HOME
-        return PathControl.__HOME
-
-    def getPogNames(self, someotherpath=None):
-        ## We pass a byte string path to os.listdir therefore this function
-        ## return a LIST OF BYTE STRINGS.
-        # Not going to test for path errors. Anything outside of the 
-        # basic path get methods is presumed safe.
-        # i.e. no self.__try_errors_in_priority_order()
-        p = PathControl.__fp_dir if not someotherpath else someotherpath
-        return [ f[0:-4] for f in os.listdir(p) if f.endswith(".pog") ]
-
 
     def __upgrade_fp_dir(self, old_fp, new_fp):
         """
@@ -240,12 +199,13 @@ class PathControl:
         try:
             ## Start out cocky - just up and kill old_fp
             os.rmdir(old_fp)
-        except OSError as ex:
+        except OSError as old_fp_rm_err:
             ## Ah, it's not empty: ergo upgrade.
-            if ex.errno == errno.ENOTEMPTY:
+            if old_fp_rm_err.errno == errno.ENOTEMPTY:
                 ## Move each .pog file over, or raise error.
                 pl = self.getPogNames(old_fp)
                 for fle in pl:
+                    fle += ".pog"
                     try:
                         oldpogpaf=os.path.join(old_fp, fle)
                         newpogpaf=os.path.hoin(new_fp, fle)
@@ -270,9 +230,9 @@ class PathControl:
                             Pleas resolve the problem and start me again."
                             ).format(oldfpconfpaf,newfpconfpaf), e)
                     raise
-            else: # on rm old_fp -> ex.errno was some *other* OSError code...
+            else: # on rm old_fp -> old_fp_rm_err.errno was some *other* OSError code...
                 self.__ERROR_STATE["UpgradeFail::CannotRemoveOldDotFontypython"] = \
-                        fontybugs.UpgradeFail(posserrmsg, ex)
+                        fontybugs.UpgradeFail(posserrmsg, old_fp_rm_err)
                 raise
 
         ## Part of the os.rmdir(old_fp) try-block
@@ -307,8 +267,7 @@ class PathControl:
             ipog = fontcontrol.Pog(p)
             try: #isInstalled raises various errors:
                 if not ipog.isInstalled(): continue # pog is not installed, loop to next one.
-            #except fontybugs.PogInvalid, eInst:
-            except:
+            except: # e.g. fontybugs.PogInvalid
                 pass # Suppress.
             else: #Okay, we have an installed pog.
                 ## Let's loop its fonts and create new links in the new fonts dir:
@@ -319,7 +278,8 @@ class PathControl:
                     try:
                         os.symlink(fi.glyphpaf, new_link_paf)
                     except:
-                        pass # Bad mojo happened.
+                        ## Files may have been unlinked in this loop: pogs can repeat fonts.
+                        pass
                     else:
                         # The font has been symlinked in the new dir
                         # Let's remove the original link in old_fonts_dir
@@ -329,15 +289,53 @@ class PathControl:
                         except:
                             pass #Meh :) 
 
+    ## Public Interface:
+    def probeNoFontsDirError(self):
+        """For outside probing of missing fonts dir. E.g. see fontcontrol.py"""
+        self.__raiseOrContinue("NoFontsDir")
+
+    def probeErrors(self):
+        """For outsiders to probe these errors."""
+        self.__try_errors_in_priority_order()
+
+    def appPath(self, doerrortest=False):
+        """Supplies the "fontypython" application directory.
+        * By default, without testing for errors."""
+        if doerrortest: self.__try_errors_in_priority_order()
+        return PathControl.__fp_dir
+
+    def appConf(self, doerrortest=False):
+        """Supplies paf of "fp.conf"
+        * By default, without testing for errors."""
+        if doerrortest: self.__try_errors_in_priority_order()
+        return PathControl.__fp_dir + "/fp.conf"
+
+    def userFontPath(self, doerrortest=False):
+        """Supplies the user's "fonts" directory.
+        * By default, without testing for errors."""
+        if doerrortest: self.__try_errors_in_priority_order()
+        return PathControl.__fonts_dir
+
+    def home(self):
+        #Not gonna bother error checking HOME
+        return PathControl.__HOME
+
+    def getPogNames(self, someotherpath=None):
+        ## We pass a byte string path to os.listdir therefore this function
+        ## returns a LIST OF BYTE STRINGS.
+        # Not going to test for path errors. Anything outside of the 
+        # basic path get methods is presumed safe.
+        # i.e. no self.__try_errors_in_priority_order()
+        p = PathControl.__fp_dir if not someotherpath else someotherpath
+        return [ f[0:-4] for f in os.listdir(p) if f.endswith(".pog") ]
 
 
 ## Oct 2009 Default Font Family (System font)
 DFAM=None # Set in wxgui.py in class App()
 
-## Ensure we have a fontypython folder and a fonts folder.
 ## Sept 2017
-## I want to guarantee that the iPC instance exists, but there are
-## also error states that make progress hard or impossible.
+## ===
+## Ensure we have "fontypython" and "fonts" dirs.
 iPC = None # Start with None so we can catch weird paths into this module
 
 ## I Manually call this from start.py
@@ -349,7 +347,7 @@ def CreatePathControlInstance():
 
 
 
-##  Borrowed from wxglade.py
+## Borrowed from wxglade.py
 ## The reason for this is to find the path of this file
 ## when it's called from an import somewhere else.
 ## There is no sys.argv[0] in this case.
@@ -365,8 +363,9 @@ mythingsdir = os.path.join(fontyroot,"things/")
 ## Sept 2009
 class Overlaperize(object):
     '''
-    If a single font is in many pogs, then we count each 'overlap' and
-    control the removal of them until there are no overlaps anymore.
+    Used when uninstalling a pog:
+    If a single font is in *many* pogs, then we count each 'overlap' and
+    control the removal of them until there are no overlaps.
     i.e. When no other installed pogs are using the font, it is safe to
     remove the link (should that last pog be removed by the user).
     '''
@@ -438,7 +437,7 @@ segfonts = []# Global var
 
 def getSegfontsList():
     """Runs (below) on startup"""
-    ## On startup, open the 'segfonts' file and keep a list in RAM
+    ## On startup, open the 'segfonts' file and keeps it handy.
     ## This file is written by the 'check' routine.
     global segfonts
     paf = os.path.join(iPC.appPath(),"segfonts")
@@ -458,7 +457,7 @@ def checkFonts( dirtocheck, printer ):
     """
     Jan 18 2008
     Scan a tree for fonts that can cause segfaults.
-    Write a file 'segfonts' and create a list 'segfonts'
+    Writes a file 'segfonts' and creates a list 'segfonts'
     that gets checked to exclude them.
 
     printer is a function of some kind.
@@ -614,9 +613,6 @@ class Configure:
         self.ignore_adjustments = False
         ## Added 3 Oct 2009
         self.app_char_map = "UNSET" # A string of an app name.
-        self.xdg_status={"upgraded": False,
-            "xdgdatahome_fontypython" : None,
-            "xdgdatahome_fonts":None}
 
         self.__setData()
 
@@ -663,8 +659,6 @@ class Configure:
             ##  That appname may be valid or not (it may have been uninstalled...)
             self.CMC.SET_CURRENT_APPNAME(self.app_char_map)
 
-            self.xdg_status = self.__data['xdg_status']
-
         except KeyError:
             ## The conf file has keys that don't work for this version, chances are it's old.
             ## Let's delete and re-make it.
@@ -693,7 +687,6 @@ class Configure:
                                 "recurseFolders": self.recurseFolders,
                                 "ignore_adjustments": self.ignore_adjustments,
                                 "app_char_map" : self.app_char_map,
-                                "xdg_status" : self.xdg_status
                                 }
     def app_char_map_set( self, x ):
         '''
@@ -768,11 +761,6 @@ def instantiateViewPog( newpog_name ):
     A VIEW Pog can be EMPTY. This happens on the first run when there is no config file.
     There are other arcane situations too, but I forget.
     """
-##	print "COMES IN to instantiateViewPog:"
-##	print "newpog_name:", newpog_name
-##	print "type(newpog_name):", type(newpog_name)
-
-    #if state.viewobject: del state.viewobject
     if state.viewobject: state.viewobject = None
 
     if newpog_name == "EMPTY":
@@ -807,8 +795,6 @@ def instantiateViewPog( newpog_name ):
         state.viewpattern = "P"
         markInactive()
         flushTicks()
-
-    #print "instantiateViewPog says viewpattern is:", state.viewpattern
 
     return empty # this return is only used in cli.py
 
@@ -891,5 +877,3 @@ def logSegfaulters( lastPaf ):
         f.close()
     except:
         raise
-
-

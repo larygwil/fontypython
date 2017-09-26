@@ -79,7 +79,6 @@ NB::Don't forget to remove the wx debug stuff on the app object
 * Maybe - the scroll panel can be measured during its init? store that for when it reports 0?
 * Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
 
-FIXED BY REMOVING ALL SPLITTERS* I need to contrain the min size of the font target panel on the right. somehow. it can go right off the frame!
 
 TODO
 ==
@@ -90,9 +89,10 @@ TODO
 * Fix the state config for the window size etc.
 * Fix the fugly Help cancel button and size etc.
 * Fix the fugly look of the help file.
-*YELLOW colour of the bad font icon sucks on the white backdrop.
-*TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
+* YELLOW colour of the bad font icon sucks on the white backdrop.
+* TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
+* Do we need the wrapper and the segfonts stuff?
 
 * In MainFontViewUpdate, put the TICKMAP into fpsys.state !
 * Then .. can state itself detect if it's changed? We can test an fpsys.state change directly in MinimalCreateFitmaps...

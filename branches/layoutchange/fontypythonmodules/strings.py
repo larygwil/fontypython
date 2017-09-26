@@ -80,53 +80,53 @@ them system-wide.""")
 options=_("""Options:
   -v --version  Show program's version number and exit.
   -h --help  Show this help message and exit.
-	-d --dir Shows you where the fontypython directory is
-				on your drive.
+    -d --dir Shows you where the fontypython directory is
+                on your drive.
   -e --examples
-				Show some %$@#$ examples!
+                Show some %$@#$ examples!
   -i Pog --install=Pog
-				Install the fonts in this Pog to your
-				fonts folder.
+                Install the fonts in this Pog to your
+                fonts folder.
   -u Pog --uninstall=Pog
-				Uninstall the fonts in this Pog.
+                Uninstall the fonts in this Pog.
   -l --list
-				List the names of all the Pogs.
+                List the names of all the Pogs.
   -s num --size=num
-				Set a new default point size.
+                Set a new default point size.
   -n num --number=num
-				Set a new default for how many fonts
-				to view at one go. Don't overdo this.
+                Set a new default for how many fonts
+                to view at one go. Don't overdo this.
   -p Pog --purge=Pog
-				Purge the Pog of font files that are no
-				longer really there.
+                Purge the Pog of font files that are no
+                longer really there.
   -c folder --check=folder
-				Check for bad fonts that crash Fonty.
-				It will recurse through sub-folders.
-				This will build a file:
-				~/.fontypython/segfonts
-				After using this tool you should be
-				able to browse folders that crashed
-				Fonty. (The reason it's not done
-				by default is that it's very slow.)
-				* NOTE: The fonts that crash Fonty
-				are probably still perfectly good
-				and can be used in other apps. It's
-				simply a bug in the library we use to
-				access fonts that chokes things. This
-				will (hopefully) improve in the future.
+                Check for bad fonts that crash Fonty.
+                It will recurse through sub-folders.
+                This will build a file:
+                ~/.fontypython/segfonts
+                After using this tool you should be
+                able to browse folders that crashed
+                Fonty. (The reason it's not done
+                by default is that it's very slow.)
+                * NOTE: The fonts that crash Fonty
+                are probably still perfectly good
+                and can be used in other apps. It's
+                simply a bug in the library we use to
+                access fonts that chokes things. This
+                will (hopefully) improve in the future.
   -a Folder Pog --all Folder Pog
-				Puts all fonts in this folder into the Pog.
-				If the Pog already exists, it will add
-				only *new* fonts, this means fonts are not
-				repeated in that Pog.
+                Puts all fonts in this folder into the Pog.
+                If the Pog already exists, it will add
+                only *new* fonts, this means fonts are not
+                repeated in that Pog.
   -A Folder Pog --all-recurse Folder Pog
-				Puts all fonts in this folder and *all*
-				sub-folders into the Pog. Rest same as -a.
+                Puts all fonts in this folder and *all*
+                sub-folders into the Pog. Rest same as -a.
   -z Pog --zip=Pog
-				All the fonts inside Pog will be zipped
-				and the zipfile will be named after the Pog.
-				The file will be placed in the current
-				directory.""")
+                All the fonts inside Pog will be zipped
+                and the zipfile will be named after the Pog.
+                The file will be placed in the current
+                directory.""")
 
 use = _("""%(c)s [OPTIONS] [VIEW] [TARGET]
 %(version)s
@@ -148,22 +148,22 @@ Please use -e to see more info.
 
 examples = _("""The basic format is:
 %(c)s [OPTIONS] | [VIEW] [TARGET]
-	OPTIONS = Various flags for use on the command-line.
-						See -h or --help for more.
+    OPTIONS = Various flags for use on the command-line.
+                        See -h or --help for more.
 
-	Or:
-	Two arguments which will determine what you see in the
-	graphical user interface:
+    Or:
+    Two arguments which will determine what you see in the
+    graphical user interface:
 
   VIEW = A place where fonts are. A Pog or a folder
-				where fonts are located.
+                where fonts are located.
 
   TARGET = A Pog.	If this Pog does not exist, it will
-					be created.
+                    be created.
 
-	Neither argument is required. When there's only one
-	it's assumed to be a VIEW. When there are two, the
-	second is assumed to be a TARGET.
+    Neither argument is required. When there's only one
+    it's assumed to be a VIEW. When there are two, the
+    second is assumed to be a TARGET.
 
 Tips:
 =====
@@ -216,9 +216,9 @@ Examples: All using short options, see -h
 
 %(c)s -p Glutton
   Purging a font. If there are any fonts in "Glutton"
-	that are not really on your drive/media anymore
-	(perhaps you deleted them or the cat did) this
-	will go through the Pog and cull them.
+    that are not really on your drive/media anymore
+    (perhaps you deleted them or the cat did) this
+    will go through the Pog and cull them.
 
 %(c)s -c /some/path/to/fonts
   If Fonty keeps crashing on /some/path/to/fonts
@@ -349,16 +349,16 @@ thanks = u"""Many thanks to:
 
 ## June 2009 : Get the GPL from the COPYING file rather than a copy of it all here again.
 try:
-	root = __file__
-	if os.path.islink(root):
-		root = os.path.realpath(root)
-	fontyroot = os.path.dirname(os.path.abspath(root))
-	p = os.path.join(fontyroot,'COPYING')
-	GPL = open(p,"r").read()
+    root = __file__
+    if os.path.islink(root):
+        root = os.path.realpath(root)
+    fontyroot = os.path.dirname(os.path.abspath(root))
+    p = os.path.join(fontyroot,'COPYING')
+    GPL = open(p,"r").read()
 except:
-	GPL = """
-					GNU GENERAL PUBLIC LICENSE
-					   Version 3, 29 June 2007
+    GPL = """
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
 
 The file "COPYING" cannot be found. Please check the installation directory for the licence.
 """

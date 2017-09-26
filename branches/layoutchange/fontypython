@@ -31,7 +31,7 @@ import subprocess, sys, os
 ## is actually being run.
 root = __file__
 if os.path.islink(root):
-	root = os.path.realpath(root)
+    root = os.path.realpath(root)
 fontyroot = os.path.dirname(os.path.abspath(root))
 
 import fontypythonmodules.i18n as i18n
@@ -61,49 +61,52 @@ for arg in sys.argv[1:]: c1.append( arg )
 
 p1 = subprocess.call( c1 )
 if p1 == 0:
-	print
-	#print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
+    print
+    #print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
 elif p1 == 1:
-	print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
+    print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
 else: # err code -11
-	#print "ERROR CODE:", p1
-	## This actually works!
-	import sys, os, locale
-	import fontypythonmodules.fpsys as FPSYS
-	import wx, fontypythonmodules.dialogues as D
+    #print "ERROR CODE:", p1
+    ## This actually works!
+    import sys, os, locale
+    import fontypythonmodules.fpsys as FPSYS
+    import wx, fontypythonmodules.dialogues as D
 
-	## July 2016 - Removed as causing a segfault in wxPython.
-	## Setup wxPython to access translations : enables the stock buttons.
-	## localedir = "fontypythonmodules/locales"
-	## langid = wx.LANGUAGE_DEFAULT
-	## mylocale = wx.Locale( langid )
+    ## July 2016 - Removed as causing a segfault in wxPython.
+    ## Setup wxPython to access translations : enables the stock buttons.
+    ## localedir = "fontypythonmodules/locales"
+    ## langid = wx.LANGUAGE_DEFAULT
+    ## mylocale = wx.Locale( langid )
 
-	iPC = FPSYS.PathControl()
+    THIS IS OLD. FIX:
+    iPC = FPSYS.PathControl()
 
-	def getSegfaulter():
-		"""
-		What was the last font to segfault PIL?
-		"""
-		paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
-		culprit = None
-		try:
-			f = open( paf, "r" )
-			culprit = f.readline()[:-1]
-			f.close()
-		except:
-			raise
-		return culprit
+    DO I EVEN NEED THIS WRAPPER or lastFontBeforeSegfault etc? PIL seems super stable now in 2017
 
-	## Start the App and then show the Segfault dialog.
-	class App(wx.App) :
-		def OnInit(self) :
-			culprit = getSegfaulter()
-			#print culprit
-			dlg = D.SegfaultDialog(None, culprit)
-			val = dlg.ShowModal()
-			if val == wx.ID_OK:
-				print _("Please restart Fonty Python after you have moved:\"%s\" to some other place.") % culprit
-			dlg.Destroy()
-			return True
-	app = App(0)
-	app.MainLoop()
+    def getSegfaulter():
+        """
+        What was the last font to segfault PIL?
+        """
+        paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
+        culprit = None
+        try:
+            f = open( paf, "r" )
+            culprit = f.readline()[:-1]
+            f.close()
+        except:
+            raise
+        return culprit
+
+    ## Start the App and then show the Segfault dialog.
+    class App(wx.App) :
+        def OnInit(self) :
+            culprit = getSegfaulter()
+            #print culprit
+            dlg = D.SegfaultDialog(None, culprit)
+            val = dlg.ShowModal()
+            if val == wx.ID_OK:
+                print _("Please restart Fonty Python after you have moved:\"%s\" to some other place.") % culprit
+            dlg.Destroy()
+            return True
+    app = App(0)
+    app.MainLoop()

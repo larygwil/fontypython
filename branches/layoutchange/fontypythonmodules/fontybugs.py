@@ -1,4 +1,4 @@
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
@@ -15,11 +15,7 @@
 ##	You should have received a copy of the GNU General Public License
 ##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 import locale
-
-#import fpsys
-
 import strings
-
 import linux_safe_path_library
 LSP = linux_safe_path_library.linuxSafePath()
 
@@ -64,11 +60,15 @@ class Errors ( Exception ):
         msg = fpsys.LSP.to_bytes( msg )
         return msg
 
+    def unicode_of_error(self):
+        """For use in wx gui when I am going to print the error in a messagebox."""
+        return self._format_error()
+
     def print_error(self):
         print self._format_error()
 
     def print_error_and_quit(self):
-        self.print_error()
+        print self._format_error()
         raise SystemExit
 
 
@@ -145,8 +145,8 @@ class FolderHasNoFonts ( Errors ):
 ## (Probably an OSError of some kind.)
 class NoFontypythonDir(Errors):
     def __init__(self,path, associated_err):
-        self.path = LSP.ensure_unicode(path)
-        self.associated_err = LSP.ensure_unicode(associated_err)
+        self.path = path #LSP.ensure_unicode(path)
+        self.associated_err = associated_err #LSP.ensure_unicode(associated_err)
     def __unicode__(self):
         return _(u"The \"fontypython\" directory within %(path)s cannot be \
                 created or found.\nFonty cannot run until it exists. \
@@ -156,7 +156,7 @@ class NoFontypythonDir(Errors):
 
 class NoFontsDir(Errors):
     def __init__(self,path, associated_err):
-        self.path = LSP.ensure_unicode(path)
+        self.path = path # LSP.ensure_unicode(path)
     def __unicode__(self):
         return _(u"The main \"fonts\" directory within \
                 %(path)s is missing.\nFonts cannot be installed until it exists.\
@@ -169,8 +169,8 @@ class UpgradeFail(Errors):
     Any and all UpgradeFail errors should end the app after being caught.
     """
     def __init__(self, msg, associated_err):
-        self.msg = LSP.ensure_unicode(msg)
-        self.associated_err = LSP.ensure_unicode(associated_err)
+        self.msg = msg #LSP.ensure_unicode(msg)
+        self.associated_err = associated_err # LSP.ensure_unicode(associated_err)
     def __unicode__(self):
         return _(u"Upgrade Error.\n{}\n\n[Extra:{}]").format(self.msg, associated_err)
 

@@ -133,13 +133,13 @@ for option, argument in opts:
         if remaining_cli_arguments:
             ## Same as install.
             situation.uninstall += remaining_cli_arguments
-        del remaining_cli_arguments[:] #erase contents, now that they're used.
+        del remaining_cli_arguments[:]
 
     elif option in ("-p", "--purge"):
         strictly_cli_context_only = True
         situation.purge = argument
 
-    ## This is a gui comtext, hence no strictly_cli_context_only
+    ## This is for a gui comtext, hence no strictly_cli_context_only
     elif option in ("-s", "--size"):
         try:
             n = int(argument)
@@ -160,16 +160,13 @@ for option, argument in opts:
     elif option in ("-a", "--all", "-A","--all-recurse"):
         strictly_cli_context_only = True
         situation.allfromfolder = argument
-        if option in ("-a","--all"):
-            situation.allrecurse = False
-        else:
-            situation.allrecurse = True
+        isituation.allrecurse = option in ("-A","--all-recurse")
         if len(remaining_cli_arguments) != 1:
             print _("%s takes two arguments: SOURCE(folder) TARGET(pog)") % option
             print _("NB: If you have spaces in the Pog or Folder names, put \"quotes around the names.\"")
             raise SystemExit
         situation.alltargetpog = remaining_cli_arguments[0]
-        del remaining_cli_arguments[:] #erase contents, now that they're used.
+        del remaining_cli_arguments[:]
 
     elif option in ("-z","--zip"):
         strictly_cli_context_only = True
@@ -182,7 +179,7 @@ for option, argument in opts:
 
     else:
         ## We should not reach here at all.
-        print _("Weirdo error. Please panic.")
+        print _("Weirdo error. Keep calm and panic.")
         raise SystemExit
 
 ##Switch on the cli context
@@ -229,9 +226,10 @@ if strictly_cli_context_only:
 
     ## Install ALL fonts in folder to given pog.
     ## the def wants: 1=foldername, 2=pogname. 3=recurseflag
-    if situation.allfromfolder: clifuncs.installall( situation.allfromfolder,
-                                                                                situation.alltargetpog,
-                                                                                situation.allrecurse )
+    if situation.allfromfolder: clifuncs.installall( 
+            situation.allfromfolder,
+            situation.alltargetpog,
+            situation.allrecurse )
 
     ## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
     ## context has no meaning, so we'll simply ignore them.
