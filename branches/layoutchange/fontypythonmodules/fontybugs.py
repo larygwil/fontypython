@@ -145,34 +145,34 @@ class FolderHasNoFonts ( Errors ):
 ## (Probably an OSError of some kind.)
 class NoFontypythonDir(Errors):
     def __init__(self,path, associated_err):
-        self.path = path #LSP.ensure_unicode(path)
-        self.associated_err = associated_err #LSP.ensure_unicode(associated_err)
+        self.path = path
+        self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"The \"fontypython\" directory within %(path)s cannot be \
-                created or found.\nFonty cannot run until it exists. \
-                Please create it, and start me again.\
-                \n\nExample:\n\tcd %(path)s\n\tmkdir fontypython\
-                \n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+        return _(u"The \"fontypython\" directory within %(path)s cannot be" \
+                "created or found.\nFonty cannot run until it exists." \
+                "Please create it, and start me again." \
+                "\n\nExample:\n\tcd %(path)s\n\tmkdir fontypython" \
+                "\n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
 
 class NoFontsDir(Errors):
     def __init__(self,path, associated_err):
-        self.path = path # LSP.ensure_unicode(path)
+        self.path = path
     def __unicode__(self):
-        return _(u"The main \"fonts\" directory within \
-                %(path)s is missing.\nFonts cannot be installed until it exists.\
-                Please create it, and start me again.\
-                \n\nExample:\n\tcd %(path)s\n\tmkdir fonts\
-                \n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+        return _(u"The main \"fonts\" directory within" \
+                "%(path)s is missing.\nFonts cannot be installed until it exists." \
+                "Please create it, and start me again." \
+                "\n\nExample:\n\tcd %(path)s\n\tmkdir fonts" \
+                "\n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+    def short_unicode_of_error(self):
+        return iPC.LSP.to_unicode(
+                _("Missing \"{}\" directory. See Help.").format(self.path) )
 
 class UpgradeFail(Errors):
     """
     Any and all UpgradeFail errors should end the app after being caught.
     """
     def __init__(self, msg, associated_err):
-        self.msg = msg #LSP.ensure_unicode(msg)
-        self.associated_err = associated_err # LSP.ensure_unicode(associated_err)
+        self.msg = msg
+        self.associated_err = associated_err
     def __unicode__(self):
         return _(u"Upgrade Error.\n{}\n\n[Extra:{}]").format(self.msg, associated_err)
-
-
-

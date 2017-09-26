@@ -158,10 +158,10 @@ class PathControl:
 
     ## Private Interface:
     def __try_test_make_dir( self, path, errkey ):
-    """
-    Path exists? No: make it. Catch and cache errors.
-    Returns nothing or raises the error.
-    """
+        """
+        Path exists? No: make it. Catch and cache errors.
+        Returns nothing or raises the error.
+        """
         if not os.path.exists(path):
             try:
                 os.makedirs(path)
@@ -202,50 +202,60 @@ class PathControl:
         except OSError as old_fp_rm_err:
             ## Ah, it's not empty: ergo upgrade.
             if old_fp_rm_err.errno == errno.ENOTEMPTY:
+                
                 ## Move each .pog file over, or raise error.
-                pl = self.getPogNames(old_fp)
-                for fle in pl:
-                    fle += ".pog"
-                    try:
-                        oldpogpaf=os.path.join(old_fp, fle)
-                        newpogpaf=os.path.hoin(new_fp, fle)
-                        os.rename( oldpogpaf, newpogpaf )
-                    except Exception as e:
-                        ## We are going to be printing these pafs, so force them into unicode:
-                        self.__ERROR_STATE["UpgradeFail::ImmovablePog"] = \
-                                fontybugs.UpgradeFail(
-                            _("Could not move {} to {} while trying to upgrade Fonty. \
-                               Please resolve this and start me again."
-                               ).format(oldpogpaf,newpogpaf), e)
-                        raise
+                #pl = self.getPogNames(old_fp)
+                #for fle in pl:
+                #    fle += ".pog"
+                #    try:
+                #        oldpogpaf=os.path.join(old_fp, fle)
+                #        newpogpaf=os.path.join(new_fp, fle)
+                #        os.rename( oldpogpaf, newpogpaf )
+                #    except Exception as e:
+                #        ## We are going to be printing these pafs, so force them into unicode:
+                #        self.__ERROR_STATE["UpgradeFail::ImmovablePog"] = \
+                #                fontybugs.UpgradeFail(
+                #            _("Could not move {} to {} while trying to upgrade Fonty. \
+                #               Please resolve this and start me again."
+                #               ).format(oldpogpaf,newpogpaf), e)
+                #        raise
 
                 ## Move fp.conf, or raise error.
-                try: 
-                    oldfpconfpaf=os.path.join(old_fp, "fp.conf")
-                    newfpconfpaf=os.path.join(new_fp, "fp.conf")
-                    os.rename( os.path.join(oldfpconfpaf, newfpconfpaf)
+                #try: 
+                #    oldfpconfpaf=os.path.join(old_fp, "fp.conf")
+                #    newfpconfpaf=os.path.join(new_fp, "fp.conf")
+                #    os.rename( os.path.join(oldfpconfpaf, newfpconfpaf)
+                #except Exception as e:
+                #    self.__ERROR_STATE["UpgradeFail::ImmovableFpConf"] = fontybugs.UpgradeFail(
+                #        _("Could not move the config file {} to {}. \
+                #            Pleas resolve the problem and start me again."
+                #            ).format(oldfpconfpaf,newfpconfpaf), e)
+                #    raise
+
+                #TODO
+                #WHAT ABOUT overlap_counts ????!!!
+
+                # Let's just MOVE ALL FILES *.* 
+                import shutil
+
+                try:
+                    files = os.listdir(old_fp)
+                    print files
+                    print old_fp
+
+                    for f in files:
+                        print "move ",f
+                        shutil.move(os.path.join(old_fp, f), new_fp)
+                except:
+                    --> Destination path '/home/donn/.local/share/fontypython/overlap_counts' already exists
                 except Exception as e:
-                    self.__ERROR_STATE["UpgradeFail::ImmovableFpConf"] = fontybugs.UpgradeFail(
-                        _("Could not move the config file {} to {}. \
-                            Pleas resolve the problem and start me again."
-                            ).format(oldfpconfpaf,newfpconfpaf), e)
+                    print e
+                    print
+                    self.__ERROR_STATE["UpgradeFail"] = fontybugs.UpgradeFail(
+                        _("Could not move \"{}\"  from \"{}\" to \"{}\"." \
+                          "Please resolve the problem and start me again.").format(f, old_fp, new_fp),
+                        e)
                     raise
-
-                TODO
-                WHAT ABOUT overlap_counts ????!!!
-                WHY NOT MOVE ALL FILES *.* ? 
-
-            else: # on rm old_fp -> old_fp_rm_err.errno was some *other* OSError code...
-                self.__ERROR_STATE["UpgradeFail::CannotRemoveOldDotFontypython"] = \
-                        fontybugs.UpgradeFail(posserrmsg, old_fp_rm_err)
-                raise
-
-        ## Part of the os.rmdir(old_fp) try-block
-        except Exception as e: #And whatver the hell else may thwart us...
-            self.__ERROR_STATE["UpgradeFail::CannotRemoveOldDotFontypython"] = \
-                    fontybugs.UpgradeFail(posserrmsg, e)
-            raise
-
 
         ## Now that we've moved all the guts over to the new fp path..
         ## Let's, once again, attempt to rm the old fp dir...
@@ -253,7 +263,7 @@ class PathControl:
             os.rmdir(old_fp)
         except Exception as e:
             #Just could not kill the beast!
-            self.__ERROR_STATE["UpgradeFail::CannotRemoveOldDotFontypython"] = \
+            self.__ERROR_STATE["UpgradeFail"] = \
                     fontybugs.UpgradeFail(posserrmsg, e)
             raise
 
@@ -308,9 +318,10 @@ class PathControl:
         Most serious first. The last one means fonts can be viewed, but not installed.
         """
         self.__raiseOrContinue("NoFontypythonDir")
-        self.__raiseOrContinue("UpgradeFail::ImmovableFpConf")
-        self.__raiseOrContinue("UpgradeFail::ImmovablePog")
-        self.__raiseOrContinue("UpgradeFail::CannotRemoveOldDotFontypython")
+        self.__raiseOrContinue("UpgradeFail")
+        #self.__raiseOrContinue("UpgradeFail::ImmovableFpConf")
+        #self.__raiseOrContinue("UpgradeFail::ImmovablePog")
+        #self.__raiseOrContinue("UpgradeFail::CannotRemoveOldDotFontypython")
         self.__raiseOrContinue("NoFontsDir")
 
     def appPath(self):

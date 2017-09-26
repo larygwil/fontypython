@@ -16,7 +16,7 @@
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 ## test modules etc.
-import fontypythonmodules.sanitycheck
+import sanitycheck
 
 import fpsys # The first import means the code in there gets RUN.
 ## That's where we create iPC (the single instance of PathControl).
@@ -27,7 +27,7 @@ import cli2
 ## "raise SystemExit" inside cli
 ## between here and ..
 ## The GUI
-import fontypythonmodules.wxgui
+import wxgui
 
 ## End, clean up
 fpsys.config.Save()

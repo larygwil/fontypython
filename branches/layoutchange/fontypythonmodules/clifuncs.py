@@ -33,7 +33,7 @@ def checkfonts( dirtocheck ):
             pstr = fpsys.LSP.to_unicode( pstr )
         print pstr
 
-    THIS SHOULD TRY:
+    ##TODO ?? SHOULD this TRY/EXC
     fpsys.checkFonts( dirtocheck, printer )
     raise SystemExit
 

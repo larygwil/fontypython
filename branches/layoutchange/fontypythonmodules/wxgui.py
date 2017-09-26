@@ -70,8 +70,9 @@ class StatusBar(wx.StatusBar):
         ## Test if there's a need to warn about missing .fonts dir.
         try:
             fpsys.iPC.probeNoFontsDirError()
-        except:
+        except fontybugs.NoFontsDir as e:
             no_fonts_dir = True
+            shorterr = e.short_unicode_of_error()
         else:
             no_fonts_dir = False
 
@@ -84,7 +85,7 @@ class StatusBar(wx.StatusBar):
         self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
 
         if no_fonts_dir:
-            self.SetStatusText( strings.missingDotFontsMessages["statusbar"], 2)
+            self.SetStatusText( _("Missing \"{}\" directory. See Help.").format(thedabdirname), 2)
             self.SetStatusWidths([300,-2,-1,32])
             #self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
         else:
