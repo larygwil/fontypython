@@ -1,28 +1,25 @@
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
-##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+## Fonty Python Copyright (C) 2017 Donn.C.Ingle
+## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
-##	This file is part of Fonty Python.
-##	Fonty Python is free software: you can redistribute it and/or modify
-##	it under the terms of the GNU General Public License as published by
-##	the Free Software Foundation, either version 3 of the License, or
-##	(at your option) any later version.
+## This file is part of Fonty Python.
+## Fonty Python is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-##	Fonty Python is distributed in the hope that it will be useful,
-##	but WITHOUT ANY WARRANTY; without even the implied warranty of
-##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##	GNU General Public License for more details.
+## Fonty Python is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-##	You should have received a copy of the GNU General Public License
-##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License
+## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
 import strings
 import fontybugs
-
 import fpsys # Global objects
-
 import fpversion
-
 ## Now, bring in all those big modules
 import wx
 
@@ -71,15 +68,22 @@ class StatusBar(wx.StatusBar):
 
         ##Sept2017
         ## Test if there's a need to warn about missing .fonts dir.
+        try:
+            fpsys.iPC.probeNoFontsDirError()
+        except:
+            no_fonts_dir = True
+        else:
+            no_fonts_dir = False
+
         ## Field 1 is Welcome...
         ## Field 2 is normal conversation.
         ## Field 3 <if missing .fonts> is the warning message.
         ## Last field "gripper" (32px)
-        self.SetFieldsCount( 4 if fpsys.iPC.no_fonts_dir_found else 3 )
+        self.SetFieldsCount( 4 if no_fonts_dir else 3 )
 
         self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
 
-        if fpsys.iPC.no_fonts_dir_found:
+        if no_fonts_dir:
             self.SetStatusText( strings.missingDotFontsMessages["statusbar"], 2)
             self.SetStatusWidths([300,-2,-1,32])
             #self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
@@ -572,8 +576,8 @@ class MainFrame(wx.Frame):
         dlg = wx.MessageDialog(self,_("Do you want to purge %s?\n\nPurging means all the fonts in the pog\nthat are not pointing to actual files\nwill be removed from this pog.") % pogname, _("Purge font?"), wx.YES_NO | wx.ICON_INFORMATION )
         if dlg.ShowModal() == wx.ID_YES:
             ## pog.purge() Raises
-            ##		  PogEmpty
-            ##		  PogInstalled
+            ## 	  PogEmpty
+            ## 	  PogInstalled
             try:
                 fpsys.state.viewobject.purge()
             except(fontybugs.PogEmpty, fontybugs.PogInstalled),e:
@@ -611,11 +615,11 @@ class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
         ## Probe for delayed errors in PathControl
         ## and show them in message boxes.
         try:
-            fpsys.iPC.probeErrors()
+            fpsys.iPC.probeAllErrors()
 
         ## App stopping errors:
         except (fontybugs.NoFontypythonDir, fontybugs.UpgradeFail) as e:
-            wx.MessageBox( unicode(e),
+            wx.MessageBox( e.unicode_of_error(),
                 caption=_("FATAL ERROR"),
                 style=wx.OK | wx.ICON_ERROR )
             ## This one is unrecoverable:
@@ -623,7 +627,7 @@ class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
 
         ## Warning only
         except fontybugs.NoFontsDir as e:
-            wx.MessageBox( unicode(e),
+            wx.MessageBox( e.unicode_of_error(),
                 caption=_("WARNING"),
                 style=wx.OK | wx.ICON_ERROR )
 

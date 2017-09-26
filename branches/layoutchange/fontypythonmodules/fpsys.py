@@ -1,19 +1,19 @@
-##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
-##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+## Fonty Python Copyright (C) 2017 Donn.C.Ingle
+## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
-##	This file is part of Fonty Python.
-##	Fonty Python is free software: you can redistribute it and/or modify
-##	it under the terms of the GNU General Public License as published by
-##	the Free Software Foundation, either version 3 of the License, or
-##	(at your option) any later version.
+## This file is part of Fonty Python.
+## Fonty Python is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-##	Fonty Python is distributed in the hope that it will be useful,
-##	but WITHOUT ANY WARRANTY; without even the implied warranty of
-##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##	GNU General Public License for more details.
+## Fonty Python is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-##	You should have received a copy of the GNU General Public License
-##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License
+## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 ## fpsys : fonty python system.
 ## I debated calling it fpglobals.
@@ -22,14 +22,15 @@
 
 import sys, os, pickle
 import linux_safe_path_library
-LSP = linux_safe_path_library.linuxSafePath()
 import fontybugs
 import fontcontrol
 import charmaps
 import subprocess
-
 ##Sept 2017 - Trying to get XDG compliance going.
 from gi.repository import GLib
+
+
+## See end of file
 
 class PathControl:
     """
@@ -66,8 +67,13 @@ class PathControl:
 
     ## All these vars contain/return BYTE STRING paths and files.
     __HOME = os.environ["HOME"] # Is a byte string under Linux.
-    __fp_dir = None
-    __fonts_dir = None
+
+    ## Convenient to use an "" empty string in these
+    ## vars, because they are often used in
+    ## os.path.exists which chokes on None.
+    ## This way: os.path.exists("") is False, which is useful.
+    __fp_dir = ""
+    __fonts_dir = ""
 
     def __init__( self ):
 
@@ -84,7 +90,7 @@ class PathControl:
             XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
 
             ## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
-            ## I don't know if this is even a possibility... :|
+            ## I don't know if this is even a possibility, because the docs are horrible.. :|
             if not os.path.exists(XDG_DATA_HOME):
 
                 ## We are in fallback to the old fonty dirs etc.
@@ -160,28 +166,22 @@ class PathControl:
             try:
                 os.makedirs(path)
             except Exception as associated_err:
+                ## Let's decide what to raise
                 if errkey=="NoFontypythonDir":
                     e = fontybugs.NoFontypythonDir(path, associated_err)
                 elif errkey=="NoFontsDir":
                     e = fontybugs.NoFontsDir(path, associated_err)
                 else:
-                    # bad arg case:
-                    print "Bad key in PathControl.__try_errors_in_priority_order:", errkey
+                    # Unknown key
+                    print "Bad key in PathControl.__try_test_make_dir on key:", errkey
                     raise SystemExit
+
                 self.__ERROR_STATE[errkey] = e
                 raise e # Let's use our error to communicate with the caller.
 
     def __raiseOrContinue(self, errkey):
         e = self.__ERROR_STATE.get( errkey, False )
         if e: raise e
-
-    def __try_errors_in_priority_order(self):
-        """Most serious first. The last one means fonts can be viewed, but not installed."""
-        self.__raiseOrContinue("NoFontypythonDir")
-        self.__raiseOrContinue("UpgradeFail::ImmovableFpConf")
-        self.__raiseOrContinue("UpgradeFail::ImmovablePog")
-        self.__raiseOrContinue("UpgradeFail::CannotRemoveOldDotFontypython")
-        self.__raiseOrContinue("NoFontsDir")
 
     def __upgrade_fp_dir(self, old_fp, new_fp):
         """
@@ -230,6 +230,11 @@ class PathControl:
                             Pleas resolve the problem and start me again."
                             ).format(oldfpconfpaf,newfpconfpaf), e)
                     raise
+
+                TODO
+                WHAT ABOUT overlap_counts ????!!!
+                WHY NOT MOVE ALL FILES *.* ? 
+
             else: # on rm old_fp -> old_fp_rm_err.errno was some *other* OSError code...
                 self.__ERROR_STATE["UpgradeFail::CannotRemoveOldDotFontypython"] = \
                         fontybugs.UpgradeFail(posserrmsg, old_fp_rm_err)
@@ -294,26 +299,31 @@ class PathControl:
         """For outside probing of missing fonts dir. E.g. see fontcontrol.py"""
         self.__raiseOrContinue("NoFontsDir")
 
-    def probeErrors(self):
-        """For outsiders to probe these errors."""
-        self.__try_errors_in_priority_order()
+    def probeNoFontypythonDirError(self):
+        self.__raiseOrContinue("NoFontypythonDir")
 
-    def appPath(self, doerrortest=False):
-        """Supplies the "fontypython" application directory.
-        * By default, without testing for errors."""
-        if doerrortest: self.__try_errors_in_priority_order()
+    def probeAllErrors(self):
+        """
+        For outsiders to probe these errors.
+        Most serious first. The last one means fonts can be viewed, but not installed.
+        """
+        self.__raiseOrContinue("NoFontypythonDir")
+        self.__raiseOrContinue("UpgradeFail::ImmovableFpConf")
+        self.__raiseOrContinue("UpgradeFail::ImmovablePog")
+        self.__raiseOrContinue("UpgradeFail::CannotRemoveOldDotFontypython")
+        self.__raiseOrContinue("NoFontsDir")
+
+    def appPath(self):
+        """Supplies the "fontypython" application directory."""
         return PathControl.__fp_dir
 
-    def appConf(self, doerrortest=False):
-        """Supplies paf of "fp.conf"
-        * By default, without testing for errors."""
-        if doerrortest: self.__try_errors_in_priority_order()
+    def appConf(self):
+        """Supplies paf of "fp.conf" or empty string."""
+        if PathControl.__fp_dir=="": return ""
         return PathControl.__fp_dir + "/fp.conf"
 
-    def userFontPath(self, doerrortest=False):
-        """Supplies the user's "fonts" directory.
-        * By default, without testing for errors."""
-        if doerrortest: self.__try_errors_in_priority_order()
+    def userFontPath(self):
+        """Supplies the user's "fonts" directory."""
         return PathControl.__fonts_dir
 
     def home(self):
@@ -325,39 +335,9 @@ class PathControl:
         ## returns a LIST OF BYTE STRINGS.
         # Not going to test for path errors. Anything outside of the 
         # basic path get methods is presumed safe.
-        # i.e. no self.__try_errors_in_priority_order()
         p = PathControl.__fp_dir if not someotherpath else someotherpath
         return [ f[0:-4] for f in os.listdir(p) if f.endswith(".pog") ]
 
-
-## Oct 2009 Default Font Family (System font)
-DFAM=None # Set in wxgui.py in class App()
-
-## Sept 2017
-## ===
-## Ensure we have "fontypython" and "fonts" dirs.
-iPC = None # Start with None so we can catch weird paths into this module
-
-## I Manually call this from start.py
-def CreatePathControlInstance():
-    global iPC
-    iPC = PathControl()
-
-
-
-
-
-## Borrowed from wxglade.py
-## The reason for this is to find the path of this file
-## when it's called from an import somewhere else.
-## There is no sys.argv[0] in this case.
-root = __file__
-if os.path.islink(root):
-    root = os.path.realpath(root)
-fontyroot = os.path.dirname(os.path.abspath(root))
-
-## Where my images and things are.
-mythingsdir = os.path.join(fontyroot,"things/")
 
 
 ## Sept 2009
@@ -399,7 +379,7 @@ class Overlaperize(object):
                 #self.report(key)
                 return True # It still overlaps
 
-        # It gets if the font is totally unknown to the OVERLAP_COUNT_DICT
+        # It gets here if the font is totally unknown to the OVERLAP_COUNT_DICT
         return False #It therefore does NOT overlap.
 
     def report(self,key):
@@ -412,6 +392,7 @@ class Overlaperize(object):
         if not self.OVERLAP_COUNT_DICT:
             self.OVERLAP_COUNT_DICT={} # Ensure there is a blank overlap_counts file!
 
+        ## At app's close, there *must* be a valid appPath. No try/except
         paf = os.path.join(iPC.appPath(),"overlap_counts")
         fr = open( paf, 'wb' ) # pickle says use 'binary' files, but only Windows makes this distinction. I use it to be safe...
         pickle.dump( self.OVERLAP_COUNT_DICT, fr, protocol=pickle.HIGHEST_PROTOCOL )
@@ -421,25 +402,39 @@ class Overlaperize(object):
         '''Restore the OVERLAP_COUNT_DICT from a file (if any). Called as app starts.'''
         if self.DISABLE_THIS: return
 
+        ## iPC __init__ may have encountered errors.
+        ## Since this method runs soon after, I should be cautious
+        ## of those errors: so I do a probe:
+        try:
+            iPC.probeNoFontsDirError()
+        except: 
+            return
+        
         paf = os.path.join(iPC.appPath(),"overlap_counts")
-        if os.path.exists( paf ):
-            fr = open( paf, "rb" )
-            self.OVERLAP_COUNT_DICT = pickle.load( fr )
-            fr.close()
-## start it up!
-Overlap = Overlaperize()
-Overlap.wakeup()
+        try:
+            if os.path.exists( paf ):
+                fr = open( paf, "rb" )
+                self.OVERLAP_COUNT_DICT = pickle.load( fr )
+                fr.close()
+        except:
+            ##TODO ??
+            raise
 
 
-
-## Jan 18 2008
-segfonts = []# Global var
 
 def getSegfontsList():
-    """Runs (below) on startup"""
-    ## On startup, open the 'segfonts' file and keeps it handy.
-    ## This file is written by the 'check' routine.
+    """
+    On startup, open the 'segfonts' file and keep it handy in a global list.
+    This list is written to 'segfonts' file by the 'checkFonts' func in this module.
+    """
     global segfonts
+    try:
+        ## appPath() may be bad.
+        iPC.probeNoFontypythonDirError()
+    except:
+        ## Bail
+        return
+    
     paf = os.path.join(iPC.appPath(),"segfonts")
     try:
         if os.path.exists( paf ):
@@ -447,10 +442,8 @@ def getSegfontsList():
             segfonts = fr.read().split("\n")
             fr.close()
     except:
-        ## CORNER CASE: Some error or other.
+        ##TODO ??
         raise
-## Call it.		
-getSegfontsList()
 
 
 def checkFonts( dirtocheck, printer ):
@@ -519,8 +512,9 @@ except:
         tmp =  list( set( segfonts ) )
         segfonts = tmp
         del (tmp)
+
         ## Now save it.
-        
+        ##TODO ?? try/except on iPC appPath here?
         paf = os.path.join(iPC.appPath(),"segfonts")
         fw = open( paf, "w" ) # byte string ascii
         bytestring = "".join([line + "\n" for line in segfonts if line != ""])
@@ -533,10 +527,12 @@ except:
     printer()
     printer(_("The process is complete."))
 
+
 def isFolder(thing):
     """True if a folder. False if not - but that does not mean it's a pog."""
     if os.path.isdir(thing): return True
     return False
+
 
 def isPog(thing):
     """True if a Pog. False if not."""
@@ -579,15 +575,15 @@ class FPState:
         self.numticks = 0
 
 
-state = FPState() #The only instance of the state object -- app-wide
-
 
 ####
 ## Save and Load the conf file
 class Configure:
-    """Makes/Loads the conf file.
-    Supplies size, pos, numinpage, text string and point size to other objects."""
-    def __init__(self) :
+    """
+    Makes/Loads the conf file.
+    Supplies size, pos, numinpage, text string and point size to other objects.
+    """
+    def __init__(self):
         ## Private vars
         self.__dontSaveNumInPage = False
 
@@ -619,6 +615,12 @@ class Configure:
         ## Oct 2009 -- The Character Map Controller.
         self.CMC = charmaps.CharMapController(  self.app_char_map_set )
 
+
+        try:
+            iPC.probeNoFontypythonDirError()
+        except:
+            ## Can't access the appConf file at all, so bounce.
+            return
 
         if os.path.exists(iPC.appConf()):
             try:
@@ -701,6 +703,7 @@ class Configure:
             self.numinpage = self.__data["numinpage"]
         self.__setData()
         try:
+            ## At this point, we have a good appPath. No try/except
             pf = open( iPC.appConf(), "wb" )
             pickle.dump(self.__data, pf, protocol = pickle.HIGHEST_PROTOCOL )
             pf.close()
@@ -710,9 +713,7 @@ class Configure:
         Overlap.sleep() #sept 2009 : Save the OVERLAP_COUNT_DICT
 
 
-## Our config instance - it will have one instance across
-## all the modules that use it.
-config = Configure()
+
 
 def instantiateViewFolder( foldername, recurse=None ):
     """
@@ -751,6 +752,7 @@ def instantiateViewFolder( foldername, recurse=None ):
     state.viewpattern = "F"
     markInactive()
     flushTicks()
+
 
 def instantiateViewPog( newpog_name ):
     """
@@ -798,6 +800,7 @@ def instantiateViewPog( newpog_name ):
 
     return empty # this return is only used in cli.py
 
+
 def instantiateTargetPog( newpog_name ):
     """
     The app could begin with NO TARGET POG chosen.
@@ -828,6 +831,7 @@ def instantiateTargetPog( newpog_name ):
     flushTicks()
     return quickinstalledflag
 
+
 def markInactive():
     """
     INACTIVE means the font displayed is already inside the
@@ -853,22 +857,28 @@ def markInactive():
                 iA.inactive = True
         del pafBlist
 
+
 def SetTargetPogToNone():
     state.targetobject = None
     state.targetpattern = "N"
+
+
 def SetViewPogToEmpty():
     state.viewobject = fontcontrol.EmptyView()
     state.viewpattern = "E"
+
 
 def flushTicks():
     for fi in state.viewobject:
         fi.ticked = False
     state.numticks = 0
 
+
 def logSegfaulters( lastPaf ):
     """
     Writes a string to ~/.fontypython/lastFontBeforeSegfault
     """
+    ## No need to try/except appPath.
     paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
     try:
         f = open( paf, "w" )
@@ -876,4 +886,48 @@ def logSegfaulters( lastPaf ):
         f.write( lastPaf + "\n" )
         f.close()
     except:
+        ## TODO ??
         raise
+
+
+######      #######
+## Setup globals ##
+######      #######
+
+LSP = linux_safe_path_library.linuxSafePath()
+
+## Ensure we have "fontypython" and "fonts" dirs.
+iPC = PathControl()
+
+
+## Oct 2009 Default Font Family (System font)
+DFAM=None # Set in wxgui.py in class App()
+
+## Borrowed from wxglade.py
+## The reason for this is to find the path of this file
+## when it's called from an import somewhere else.
+## There is no sys.argv[0] in this case.
+root = __file__
+if os.path.islink(root):
+    root = os.path.realpath(root)
+fontyroot = os.path.dirname(os.path.abspath(root))
+
+## Where my images and things are.
+mythingsdir = os.path.join(fontyroot,"things/")
+
+
+## Instance the Overlaperizer (once)
+Overlap = Overlaperize()
+Overlap.wakeup()
+
+## Prepare the list of fonts that have caused segfaults.
+## Jan 18 2008
+segfonts = []# Global var
+getSegfontsList()
+
+
+state = FPState() #The only instance of the state object -- app-wide
+
+## Our config instance - it will have one instance across
+## all the modules that use it.
+config = Configure()

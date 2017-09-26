@@ -1,21 +1,19 @@
-##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
-##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+## Fonty Python Copyright (C) 2017 Donn.C.Ingle
+## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
-##	This file is part of Fonty Python.
-##	Fonty Python is free software: you can redistribute it and/or modify
-##	it under the terms of the GNU General Public License as published by
-##	the Free Software Foundation, either version 3 of the License, or
-##	(at your option) any later version.
+## This file is part of Fonty Python.
+## Fonty Python is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-##	Fonty Python is distributed in the hope that it will be useful,
-##	but WITHOUT ANY WARRANTY; without even the implied warranty of
-##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##	GNU General Public License for more details.
+## Fonty Python is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-##	You should have received a copy of the GNU General Public License
-##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
-
-
+## You should have received a copy of the GNU General Public License
+## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
 import strings
@@ -87,8 +85,8 @@ def purgepog(pogtopurge):
             e.print_error_and_quit()
         try:
             ## pog.purge() Raises
-            ##		  PogEmpty
-            ##		  PogInstalled			
+            ## 	  PogEmpty
+            ## 	  PogInstalled			
             pog.purge()
         except (fontybugs.PogEmpty, fontybugs.PogInstalled), e:
             e.print_error()
@@ -101,7 +99,7 @@ def purgepog(pogtopurge):
 
 
 def installpogs( listofpogs ):
-    ####	
+    #### 
     ## Install:
     for pogtoinstall in listofpogs:
         if fpsys.isPog(pogtoinstall):
@@ -112,10 +110,10 @@ def installpogs( listofpogs ):
                 e.print_error_and_quit()
             try:
             ## pog.install() Raises:
-            ##		  PogEmpty
-            ##		  PogAllFontsFailedToInstall
-            ##		  PogSomeFontsDidNotInstall			
-            ##		  NoFontsDir
+            ## 	  PogEmpty
+            ## 	  PogAllFontsFailedToInstall
+            ## 	  PogSomeFontsDidNotInstall			
+            ## 	  NoFontsDir
                 print _("Installing (%s)") % pogtoinstall
                 pog.install()
             except ( fontybugs.PogEmpty,
@@ -141,9 +139,9 @@ def uninstallpogs( listofpogs ):
                 e.print_error_and_quit()
             try:
             ## Raises:
-            ##		  PogEmpty
-            ##		  PogLinksRemain
-            ##		  PogNotInstalled			
+            ## 	  PogEmpty
+            ## 	  PogLinksRemain
+            ## 	  PogNotInstalled			
                 print _("Removing (%s)") % pogtouninstall
                 pog.uninstall()
             except (fontybugs.PogEmpty,
