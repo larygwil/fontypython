@@ -19,7 +19,7 @@
 import sys, locale, os
 import strings
 import fontybugs
-import fpsys ## NB: Will not be *run* because this is not the first import.
+import fpsys
 import fontcontrol
 import clifuncs #Split out the hard work to shorten this file
 
@@ -210,7 +210,7 @@ if strictly_cli_context_only:
     if situation.list: clifuncs.listpogs()
 
     ## Sep 2009: ZIP
-    if situation.zip: clifuncs.zippog( situation.pog )
+    if situation.zip: clifuncs.zip( situation.pog )
 
     ## Purge
     if situation.purge: clifuncs.purgepog( situation.purge )

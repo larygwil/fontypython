@@ -20,7 +20,8 @@
 import fpversion
 import os
 
-copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
+##copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
+copyright = "Fonty Python Copyright (C) 2017 Donn.C.Ingle"
 contact = "email: donn.ingle@gmail.com"
 done = "Done."
 
@@ -28,12 +29,9 @@ done = "Done."
 
 version = _("Fonty Python version %s") % fpversion.version
 
-warranty = """This program is distributed in the
-hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the GNU General Public License for
-more details."""
+warranty = """This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the GNU General Public License for more details."""
 
 copy_warranty_contact = u"{}\n\n{}\n\n{}".format(copyright, warranty, contact)
 
@@ -42,195 +40,141 @@ aboutText = "%s\n%s\nWritten on Gnu\Linux, using wxPython.\n\n%s" % (copyright, 
 
 fonts_supported = _("""Fonts supported: TTF, OTF, TTC, WOFF, Type1 (PFB, PFA).""")
 
+yaddayadda = _("""The basic format is:
+%(c)s [OPTIONS] || [VIEW] [TARGET]
+OPTIONS: Various flags for use on the command-line. See -h or --help for more.
+Or:
+Two arguments which will determine what you see in the graphical user interface:
+VIEW   : A place where fonts are. A Pog or a folder where fonts are located.
+TARGET : A Pog. If this Pog does not exist, it will be created.
+
+Neither argument is required. When there's only one it's assumed to be a VIEW. 
+When there are two, it's VIEW then TARGET.
+
+NB: Try not to use spaces in Pog names. If you must, then "quote the name"."""
+) % { "c":"fontypython" }
+
+
+
+
 basic_idea = _("""Manage your fonts on GNU/Linux
 ==============================
-Many designers have collections of font files in big
-directories. Fonty Python will help you gather these
-fonts and structure them into collections that I call
+Many designers have collections of font files in big directories. Fonty Python
+will help you gather these fonts and structure them into collections we'll call
 "Pogs" -- a place to keep tyPOGraphy. Well, why not?
 
-Fonty lets you you select fonts visually and place
-links to them in a Pog, which you can install or
-remove as you require.
+Fonty lets you you select fonts visually and put them into Pogs which you can
+install or remove as you require.
 
-(Your font files never move from where they are. No
-copies of your fonts are made. Only links to the
-original files are used.)
+(Your font files never move from where they are. No copies of your fonts
+are made. Only links to them are used.)
 
-For example, you might have a Pog called 'logos'
-into which you place fonts of company logos.
-Thereafter, when you want to use those logos, simply
-install the 'logos' Pog and start your design app!
+For example, you might have a Pog called 'logos' into which you place fonts of
+company logos. Thereafter, when you want to use those logos, simply install the
+'logos' Pog and start your design app!
 
-When you are done, remove the 'logos' Pog, and all
-those linked-fonts will go away.
+When you're done, remove the 'logos' Pog, and the fonts will go away.
 
-FP is also great for just looking at fonts wherever
-they are on your computer, without having to install
-them system-wide.""")
+Fonty is also great for just looking at fonts, wherever they are, without having 
+to install them.""")
 
-options=_("""Options:
-  -v --version  Show program's version number and exit.
-  -h --help     Show this help message and exit.
-  -d --dir      Shows you where the fontypython directory
-                exists on your drive.
-  -e --examples
-                Show some %$@#$ examples!
-  -i Pog --install=Pog
-                Install the fonts in this Pog to your
-                fonts folder.
-  -u Pog --uninstall=Pog
-                Uninstall the fonts in this Pog.
-  -l --list
-                List the names of all the Pogs.
-  -s num --size=num
-                Set a new default point size.
-  -n num --number=num
-                Set a new default for how many fonts
-                to view at one go. Don't overdo this.
-  -p Pog --purge=Pog
-                Purge the Pog of font files that are no
-                longer really there.
-  -c folder --check=folder
-                Check for bad fonts that crash Fonty.
-                It will recurse through sub-folders.
-                This will build a file:
-                ~/.fontypython/segfonts
-                After using this tool you should be
-                able to browse folders that crashed
-                Fonty. (The reason it's not done
-                by default is that it's very slow.)
-                * NOTE: The fonts that crash Fonty
-                are probably still perfectly good
-                and can be used in other apps. It's
-                simply a bug in the library we use to
-                access fonts that chokes things. This
-                will (hopefully) improve in the future.
-  -a Folder Pog --all Folder Pog
-                Puts all fonts in this folder into the Pog.
-                If the Pog already exists, it will add
-                only *new* fonts, this means fonts are not
-                repeated in that Pog.
-  -A Folder Pog --all-recurse Folder Pog
-                Puts all fonts in this folder and *all*
-                sub-folders into the Pog. Rest same as -a.
-  -z Pog --zip=Pog
-                All the fonts inside Pog will be zipped
-                and the zipfile will be named after the Pog.
-                The file will be placed in the current
-                directory.""")
 
-use = _("""%(c)s [OPTIONS] [VIEW] [TARGET]
-%(version)s
-
-VIEW   : A place where fonts are. (A Pog or a Folder.)
-TARGET : A "Pog". A place to keep those fonts.
-
-("%(c)s" on its own will start the GUI.)
-
-NB: Try not to use spaces in Pog names. If you must,
-then "quote the name."
-
+use = _("""%(yadda)s
 Please use -e to see more info.
 
 %(fonts_supported)s
 
-%(basic_idea)s""" ) % { "c":"fontypython", "version":version, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
+%(basic_idea)s""" ) % { "yadda":yaddayadda, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
+
+options=_("""Options:
+  -v --version  Show program's version number and exit.
+  -h --help     Show this help message and exit.
+  -d --dir      Show the "fontypython" path.
+  -e --examples
+                Show some %$@#$ examples!
+  -i Pog --install=Pog
+                Install the fonts in this Pog.
+  -u Pog --uninstall=Pog
+                Uninstall the fonts in this Pog.
+  -l --list
+                List the names of all your Pogs.
+  -s num --size=num
+                Set a new default point size (you'll see it in the gui).
+  -n num --number=num
+                Set a new default for how many fonts to view at one go in the gui.
+                (Don't overdo this.)
+  -p Pog --purge=Pog
+                Clean the Pog of fonts that are missing.
+  -c folder --check=folder
+                Check for bad fonts that crash Fonty. After using this tool you 
+                should be able to use Fonty again.
+                * NOTE: The fonts that crash Fonty are probably still perfectly
+                useable in other apps. 
+  -a Folder Pog --all Folder Pog
+                Puts all fonts in Folder into Pog.
+  -A Folder Pog --all-recurse Folder Pog
+                Puts all fonts in Folder and *all* sub-folders into Pog.
+  -z Pog --zip=Pog
+                All the fonts inside Pog will be zipped and the zipfile will be 
+                named after the Pog. The file will be placed in the current
+                directory.""")
 
 
-examples = _("""The basic format is:
-%(c)s [OPTIONS] | [VIEW] [TARGET]
-    OPTIONS = Various flags for use on the command-line.
-                        See -h or --help for more.
 
-    Or:
-    Two arguments which will determine what you see in the
-    graphical user interface:
-
-  VIEW = A place where fonts are. A Pog or a folder
-                where fonts are located.
-
-  TARGET = A Pog.	If this Pog does not exist, it will
-                    be created.
-
-    Neither argument is required. When there's only one
-    it's assumed to be a VIEW. When there are two, the
-    second is assumed to be a TARGET.
-
-Tips:
-=====
-* Don't use spaces in Pog names. If you absolutely
-  must then use quotes around the name, e.g. "Pogs
-  of Ni"
-* If your design apps (for example The Gimp) do not
-  reflect the fonts that you have installed, restart
-  the app. Sometimes the system needs a while to
-  reflect the new fonts in your fonts folder.
-
+examples = _("""%(yadda)s
 Examples: All using short options, see -h
 =========
 %(c)s /path/to/fonts/ttfs/a
   This will start off showing the fonts in that path.
 
 %(c)s /path/to/fonts/ttfs/b Trouser
-  This will let you view and choose fonts from the
-  path and it will store them in a Pog named "Trouser".
-  The Pog will be created if it's not already there.
+  This will let you view and choose fonts from the path and it will store them 
+  in a Pog named Trouser. The Pog will be created if it's not already there.
 
 %(c)s Lumberjack
-  This will let you see the fonts in the Pog named
-  "Lumberjack". You can also uninstall individual
-  fonts by selecting them. A cross will appear
-  indicating the fonts that will be uninstalled.
+  This will let you see the fonts in the Pog named Lumberjack. You can also 
+  uninstall individual fonts by selecting them. A cross will appear indicating 
+  the fonts that will be uninstalled.
 
 %(c)s Camelot Spamalot
-  This will let you see and choose fonts in
-  "Camelot" and it will store them in "Spamalot"
-  It lets you copy fonts between Pogs.
+  This will let you see and choose fonts in Camelot and it will store them 
+  in "Spamalot". It lets you copy fonts between Pogs.
 
 %(c)s -i Cheese
-  Will install the fonts in Pog Cheese so you can
-  use them in other apps.
+  Will install the fonts in Cheese so you can use them in other apps.
 
 %(c)s -u Trouser
-  Will uninstall the fonts listed in Pog Trouser,
-  so you can't use 'em anymore.( You Naughty thing)
+  Will uninstall the fonts listed in Trouser.
 
 %(c)s -s 128
-  Will set the point size to 128 - Crazy man!
+  Will set the point size in the gui to 128 - Crazy man!
 
 %(c)s -n 25
-  Will show 25 fonts at a time. Beware large numbers!
+  Will show 25 fonts at a time, in the gui. Beware large numbers!
 
 %(c)s -s 64 -v 10 Pimple
-  Will set the point size to 64, the number of fonts
-  to view is 10 and then display the Pimple Pog.
+  Will set the point size to 64, paging to 10 and display Pimple.
 
 %(c)s -p Glutton
-  Purging a font. If there are any fonts in "Glutton"
-    that are not really on your drive/media anymore
-    (perhaps you deleted them or the cat did) this
-    will go through the Pog and cull them.
+  Purging a font. If there are any fonts in Glutton that are not really on your 
+  drive/media anymore (perhaps you deleted them or the cat did) this will go 
+  through the Pog and cull them.
 
 %(c)s -c /some/path/to/fonts
-  If Fonty keeps crashing on /some/path/to/fonts
-  then you should run a check on that folder.
-  This will 'mark' the dangerous fonts and let
-  you use that folder in the future.
+  If Fonty keeps crashing on /some/path/to/fonts then you should run a check on
+  that folder. This will mark the dangerous fonts and let you use that folder 
+  in the future.
 
 %(c)s -a /some/path HolyHandGrenade
-  This will put all the fonts in that path into
-  the Pog called HolyHandGrenade.
+  This will put all the fonts in that path into the Pog called HolyHandGrenade.
 
 %(c)s -A /some/path Tutto
-  This will do the same as -a above: start in that
-  path, but it will then walk down recursivly
-  through all sub-folders too. The fonts will
-  be placed in Tutto.
+  This will do the same as -a: starting in some path, but it will then walk 
+  down through *all* sub-folders too. The fonts will be placed in Tutto.
 
 %(contact)s
 
-%(copy)s""") % { "c":"fontypython", "contact":contact, "copy":copyright }
+%(copy)s""") % { "yadda":yaddayadda, "c":"fontypython", "contact":contact, "copy":copyright }
 
 fontyfolder = _("""Your fontypython folder is:
 {}""")
