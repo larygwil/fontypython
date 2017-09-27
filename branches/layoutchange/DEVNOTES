@@ -80,6 +80,22 @@ NB::Don't forget to remove the wx debug stuff on the app object
 * Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
 
 
+
+TOFIX
+==
+% outside brackets _("") % out here, not inside.
+_("text {}").format(stuff)
+comments in fontcontrol are stale
+copyright dates replace
+man page
+pyc files in svn
+PEP8 all up in da hizzle - well, the tabs to spaces part.
+it's, its ...
+Fix remarks - lots of refs to files and line numbers that are long gone
+
+
+
+
 TODO
 ==
 * UPDATE CHANGELOG
@@ -94,6 +110,10 @@ TODO
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
 * Do we need the wrapper and the segfonts stuff?
 
+
+
+SHORT-TERM MEMORY NOTES (Sadly now lost to time)
+==
 * In MainFontViewUpdate, put the TICKMAP into fpsys.state !
 * Then .. can state itself detect if it's changed? We can test an fpsys.state change directly in MinimalCreateFitmaps...
 

@@ -153,7 +153,7 @@ class PathControl:
                 if hasnewfontsdir and os.path.exists(old_fonts_dir):
                     ## Okay, both dirs exist.
                     ## This method ignores all errors, hence no try:
-                    self.__upgrade_fonts_dir( old_fp_dir, old_fonts_dir, x_fonts_dir )
+                    self.__upgrade_fonts_dir( old_fonts_dir, x_fonts_dir )
 
 
     ## Private Interface:
@@ -183,77 +183,41 @@ class PathControl:
         e = self.__ERROR_STATE.get( errkey, False )
         if e: raise e
 
-    def __upgrade_fp_dir(self, old_fp, new_fp):
+    def __upgrade_fp_dir(self,  old_fp, new_fp):
         """
-        Seeks to:
-        1. Move all .pog files in the old ~/.fontypython dir to the new.
-        2. Move the fp.conf file too.
-        3. Rm the old ~/.fontypython dir.
+        There are quie a few files to move:
+          fp.conf
+          overlap_counts
+          segfonts
+          *.pog
+
+        Let's just move all the files!
+
+        Then, rm the old ~/.fontypython dir.
+
         On any error, it records and raises an UpgradeFail error.
         """
 
         import errno
 
-        posserrmsg = _("Could not remove the old {} directory.\
-                Please try this yourself.").format(old_fp)
+        posserrmsg = _("Could not remove the old {} directory." \
+                        "Please try this yourself.").format(old_fp)
         try:
             ## Start out cocky - just up and kill old_fp
             os.rmdir(old_fp)
         except OSError as old_fp_rm_err:
             ## Ah, it's not empty: ergo upgrade.
             if old_fp_rm_err.errno == errno.ENOTEMPTY:
-                
-                ## Move each .pog file over, or raise error.
-                #pl = self.getPogNames(old_fp)
-                #for fle in pl:
-                #    fle += ".pog"
-                #    try:
-                #        oldpogpaf=os.path.join(old_fp, fle)
-                #        newpogpaf=os.path.join(new_fp, fle)
-                #        os.rename( oldpogpaf, newpogpaf )
-                #    except Exception as e:
-                #        ## We are going to be printing these pafs, so force them into unicode:
-                #        self.__ERROR_STATE["UpgradeFail::ImmovablePog"] = \
-                #                fontybugs.UpgradeFail(
-                #            _("Could not move {} to {} while trying to upgrade Fonty. \
-                #               Please resolve this and start me again."
-                #               ).format(oldpogpaf,newpogpaf), e)
-                #        raise
-
-                ## Move fp.conf, or raise error.
-                #try: 
-                #    oldfpconfpaf=os.path.join(old_fp, "fp.conf")
-                #    newfpconfpaf=os.path.join(new_fp, "fp.conf")
-                #    os.rename( os.path.join(oldfpconfpaf, newfpconfpaf)
-                #except Exception as e:
-                #    self.__ERROR_STATE["UpgradeFail::ImmovableFpConf"] = fontybugs.UpgradeFail(
-                #        _("Could not move the config file {} to {}. \
-                #            Pleas resolve the problem and start me again."
-                #            ).format(oldfpconfpaf,newfpconfpaf), e)
-                #    raise
-
-                #TODO
-                #WHAT ABOUT overlap_counts ????!!!
-
-                # Let's just MOVE ALL FILES *.* 
                 import shutil
-
                 try:
                     files = os.listdir(old_fp)
-                    print files
-                    print old_fp
-
+                    f="YetToBegin"
                     for f in files:
-                        print "move ",f
-                        shutil.move(os.path.join(old_fp, f), new_fp)
-                except:
-                    --> Destination path '/home/donn/.local/share/fontypython/overlap_counts' already exists
+                        shutil.move(os.path.join(old_fp, f), os.path.join(new_fp, f))
                 except Exception as e:
-                    print e
-                    print
                     self.__ERROR_STATE["UpgradeFail"] = fontybugs.UpgradeFail(
-                        _("Could not move \"{}\"  from \"{}\" to \"{}\"." \
-                          "Please resolve the problem and start me again.").format(f, old_fp, new_fp),
+                        _("Could not move \"{what}\" from \"{src}\" to \"{dest}\" while upgrading Fonty." \
+                          "Please resolve the problem and start me again.").format(what=f, src=old_fp, dest=new_fp),
                         e)
                     raise
 
@@ -267,42 +231,30 @@ class PathControl:
                     fontybugs.UpgradeFail(posserrmsg, e)
             raise
 
-
     def __upgrade_fonts_dir(self, old_fonts_dir, new_fonts_dir):
         """
-        This will re-link fonts to the new directory for all pogs that are installed.
+        Find all symlinks in ~/.fonts and re-link them in new_fonts_dir. Delete old link.
         This method ignores all errors.
-        Also, ~/.fonts ain't gonna be rmdir by me!
+        
+        (I tried to re-link fonts to the new directory for all pogs that are installed, but
+        this is still the __init__ of PathControl and I can't make Pog objects yet.)
+
+        The ~/.fonts directory will not be removed.
         """
+        def movelink(src, dst):
+            try:
+                linkto = os.readlink(src)
+                os.symlink(linkto, dst)
+                os.unlink(src)
+            except:
+                pass #don't care
 
-        pl = self.getPogNames()
-        if not pl: return #No pogs, nothing to do!
+        links = [ f for f in os.listdir(old_fonts_dir) if os.path.islink( os.path.join(old_fonts_dir, f) ) ]
+        if not links: return
 
-        for p in pl: # 'p' is a byte string.
-            ipog = fontcontrol.Pog(p)
-            try: #isInstalled raises various errors:
-                if not ipog.isInstalled(): continue # pog is not installed, loop to next one.
-            except: # e.g. fontybugs.PogInvalid
-                pass # Suppress.
-            else: #Okay, we have an installed pog.
-                ## Let's loop its fonts and create new links in the new fonts dir:
-                for fi in ipog:
-                    font_filename = os.path.basename(fi.glyphpaf)
-                    new_link_paf = os.path.join(new_fonts_dir, font_filename)
-                    ## symlink requires fullpaf, fullpaf
-                    try:
-                        os.symlink(fi.glyphpaf, new_link_paf)
-                    except:
-                        ## Files may have been unlinked in this loop: pogs can repeat fonts.
-                        pass
-                    else:
-                        # The font has been symlinked in the new dir
-                        # Let's remove the original link in old_fonts_dir
-                        old_link_paf = os.path.join(old_fonts_dir, font_filename)
-                        try:
-                            os.unlink(old_link_paf)
-                        except:
-                            pass #Meh :) 
+        for f in links:
+            movelink( os.path.join(old_fonts_dir, f), os.path.join(new_fonts_dir, f) )
+
 
     ## Public Interface:
     def probeNoFontsDirError(self):
