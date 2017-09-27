@@ -94,7 +94,7 @@ class PathControl:
             if not os.path.exists(XDG_DATA_HOME):
 
                 ## We are in fallback to the old fonty dirs etc.
-                fp_dir = PathControl.__HOME + "/.fontypython"
+                fp_dir = PathControl.__HOME + "/.fontypython/"
                 try:
                     self.__try_test_make_dir(fp_dir, "NoFontypythonDir")
                 except:
@@ -102,7 +102,7 @@ class PathControl:
                 else:
                     PathControl.__fp_dir = fp_dir # Record it for use.
 
-                fonts_dir = PathControl.__HOME + "/.fonts"
+                fonts_dir = PathControl.__HOME + "/.fonts/"
                 try:
                     self.__try_test_make_dir(fonts_dir, "NoFontsDir")
                 except:
@@ -114,7 +114,7 @@ class PathControl:
             else:
                 ## We are in valid XDG terrain: ~/.local/share/ (or whatever) exists.
                 ## We may hit perm errors within there, I guess..
-                x_fp_dir = XDG_DATA_HOME + "/fontypython"
+                x_fp_dir = XDG_DATA_HOME + "/fontypython/"
                 try:
                     self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
                 except:
@@ -123,7 +123,7 @@ class PathControl:
                     PathControl.__fp_dir = x_fp_dir
 
 
-                x_fonts_dir = XDG_DATA_HOME + "/fonts"
+                x_fonts_dir = XDG_DATA_HOME + "/fonts/"
                 try:
                     self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
                 except:
@@ -135,8 +135,8 @@ class PathControl:
                 # If new fp_dir exists *and* old fp_dir exists, then we can upgrade.
                 # Since, by now, x_fp_dir does exist, we need only look for the old.
 
-                old_fp_dir = PathControl.__HOME + "/.fontypython"
-                old_fonts_dir = PathControl.__HOME + "/.fonts"
+                old_fp_dir = PathControl.__HOME + "/.fontypython/"
+                old_fonts_dir = PathControl.__HOME + "/.fonts/"
 
                 ## fontypython dir.
                 ## After an upgrade, the old_fp_dir will be deleted, making

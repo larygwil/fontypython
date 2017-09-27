@@ -71,9 +71,9 @@ them system-wide.""")
 
 options=_("""Options:
   -v --version  Show program's version number and exit.
-  -h --help  Show this help message and exit.
-    -d --dir Shows you where the fontypython directory is
-                on your drive.
+  -h --help     Show this help message and exit.
+  -d --dir      Shows you where the fontypython directory
+                exists on your drive.
   -e --examples
                 Show some %$@#$ examples!
   -i Pog --install=Pog
@@ -233,9 +233,7 @@ Examples: All using short options, see -h
 %(copy)s""") % { "c":"fontypython", "contact":contact, "copy":copyright }
 
 fontyfolder = _("""Your fontypython folder is:
-%(folder)s
-If you want to backup your Pogs, that's where ya go.
-""")
+{}""")
 
 ## These two are used in setup.py
 description = _("Fonty Python - view and manage all kinds of fonts on Gnu/Linux")

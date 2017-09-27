@@ -91,7 +91,7 @@ for option, argument in opts:
     if option in ("-h", "--help"):
         print strings.use
         print
-        print strings.situation
+        print strings.options
         print
         print strings.copy_warranty_contact
         raise SystemExit
@@ -200,7 +200,7 @@ if strictly_cli_context_only:
 
     if situation.showdir:
         ## E.g. of PathControl being trusted: we don't need to test appPath for errors here.
-        print strings.fontyfolder % fpsys.LSP.to_unicode(fpsys.iPC.appPath())
+        print strings.fontyfolder.format(fpsys.LSP.to_unicode(fpsys.iPC.appPath()))
         print
 
     ## Check fonts

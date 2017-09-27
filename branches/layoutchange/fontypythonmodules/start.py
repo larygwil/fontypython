@@ -23,6 +23,9 @@ import fpsys # The first import means the code in there gets RUN.
 
 ## Process the command line stuff...
 import cli2
+
+raise SystemExit
+
 ## What keeps the cli and the gui apart is any 
 ## "raise SystemExit" inside cli
 ## between here and ..
