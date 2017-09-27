@@ -44,6 +44,8 @@ except:
     XDG_DATA_HOME = ""
     pass 
 
+## debug test
+##XDG_DATA_HOME = ""
 
 ## See end of file
 

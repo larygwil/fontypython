@@ -62,6 +62,16 @@ def listpogs():
         print "%s %s" % (s,pog)
     raise SystemExit
 
+def lsfonts():
+    import subprocess
+    try:
+        p = fpsys.iPC.userFontPath()
+        ls = subprocess.check_output(['ls', '-l', p ])
+    except:
+        print _("Could not ls the font path.")
+        raise
+    print _("Contents of {}:").format(fpsys.LSP.to_unicode(p))
+    print ls
 
 def zip( pog ):
     ## Sep 2009 : ZIP

@@ -98,6 +98,9 @@ options=_("""Options:
                 Uninstall the fonts in this Pog.
   -l, --list
                 List the names of all your Pogs.
+  -f, --lsfonts
+                Lists the contents of your user fonts directory. Here, you'll
+                find the links that Fonty is managing for you.
   -s num, --size=num
                 Set a new default point size (you'll see it in the gui).
   -n num, --number=num

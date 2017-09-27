@@ -57,7 +57,7 @@ class Errors ( Exception ):
         ## As of Python 2.6 e.message has been deprecated.
         ## Turn 'self' into a 'string like object' by calling __unicode__ above.
         msg = unicode(self)
-        msg = fpsys.LSP.to_bytes( msg )
+        msg = LSP.to_bytes( msg )
         return msg
 
     def unicode_of_error(self):

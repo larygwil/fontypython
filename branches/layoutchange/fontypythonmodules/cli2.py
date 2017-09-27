@@ -33,7 +33,8 @@ class situation(object):
     A class that won't instantiate. It's a small packet of
     values that are set as-per the command line's arguments.
     """
-    list = False
+    ls = False
+    lsfonts = False
     showdir=False
     points = None
     numinpage = None
@@ -67,8 +68,8 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-    opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldc:ei:u:s:n:p:a:A:z:",\
-    ["help", "version", "list", "dir", "check=","examples","install=",\
+    opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldfc:ei:u:s:n:p:a:A:z:",\
+    ["help", "version", "list", "dir", "lsfonts", "check=","examples","install=",\
     "uninstall=","size=","number=","purge=","all=","all-recurse=","zip="])
 except getopt.GetoptError, err:
     print _("Your arguments amuse me :) Please read the help.")
@@ -109,7 +110,11 @@ for option, argument in opts:
     ## Now the rest:
     if option in ("-l", "--list"):
         strictly_cli_context_only = True
-        situation.list = True
+        situation.ls = True
+
+    elif option in ("-f", "--lsfonts"):
+        strictly_cli_context_only = True
+        situation.lsfonts = True
 
     elif option in ("-d", "--dir"):
         strictly_cli_context_only = True
@@ -207,7 +212,10 @@ if strictly_cli_context_only:
     if situation.checkdir: clifuncs.checkfonts( situation.checkdir )
 
     ## List
-    if situation.list: clifuncs.listpogs()
+    if situation.ls: clifuncs.listpogs()
+
+    ## Sep 2017
+    if situation.lsfonts: clifuncs.lsfonts()
 
     ## Sep 2009: ZIP
     if situation.zip: clifuncs.zip( situation.pog )
