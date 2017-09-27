@@ -87,34 +87,34 @@ Please use -e to see more info.
 %(basic_idea)s""" ) % { "yadda":yaddayadda, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 options=_("""Options:
-  -v --version  Show program's version number and exit.
-  -h --help     Show this help message and exit.
-  -d --dir      Show the "fontypython" path.
-  -e --examples
+  -v, --version Show program's version number and exit.
+  -h, --help    Show this help message and exit.
+  -d, --dir     Show the "fontypython" path. Add this to your backup process!
+  -e, --examples
                 Show some %$@#$ examples!
-  -i Pog --install=Pog
+  -i Pog, --install=Pog
                 Install the fonts in this Pog.
-  -u Pog --uninstall=Pog
+  -u Pog, --uninstall=Pog
                 Uninstall the fonts in this Pog.
-  -l --list
+  -l, --list
                 List the names of all your Pogs.
-  -s num --size=num
+  -s num, --size=num
                 Set a new default point size (you'll see it in the gui).
-  -n num --number=num
+  -n num, --number=num
                 Set a new default for how many fonts to view at one go in the gui.
                 (Don't overdo this.)
-  -p Pog --purge=Pog
+  -p Pog, --purge=Pog
                 Clean the Pog of fonts that are missing.
-  -c folder --check=folder
+  -c folder, --check=folder
                 Check for bad fonts that crash Fonty. After using this tool you 
                 should be able to use Fonty again.
                 * NOTE: The fonts that crash Fonty are probably still perfectly
                 useable in other apps. 
-  -a Folder Pog --all Folder Pog
+  -a Folder Pog, --all Folder Pog
                 Puts all fonts in Folder into Pog.
-  -A Folder Pog --all-recurse Folder Pog
+  -A Folder Pog, --all-recurse Folder Pog
                 Puts all fonts in Folder and *all* sub-folders into Pog.
-  -z Pog --zip=Pog
+  -z Pog, --zip=Pog
                 All the fonts inside Pog will be zipped and the zipfile will be 
                 named after the Pog. The file will be placed in the current
                 directory.""")
@@ -162,7 +162,7 @@ Examples: All using short options, see -h
 
 %(c)s -c /some/path/to/fonts
   If Fonty keeps crashing on /some/path/to/fonts then you should run a check on
-  that folder. This will mark the dangerous fonts and let you use that folder 
+  that folder. This will mark the dangerous fonts and let you view that folder 
   in the future.
 
 %(c)s -a /some/path HolyHandGrenade
@@ -251,7 +251,7 @@ http://www.pythonware.com/products/pil/index.htm
 """)
 
 ##Sept 2017
-giError = _("""I cannot fond "Python-gi"
+giError = _("""I cannot find "Python-gi"
 Please install this package.
 
 TIP

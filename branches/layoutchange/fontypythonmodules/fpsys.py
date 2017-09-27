@@ -26,8 +26,23 @@ import fontybugs
 import fontcontrol
 import charmaps
 import subprocess
-##Sept 2017 - Trying to get XDG compliance going.
-from gi.repository import GLib
+try:
+    ## Sept 2017 - Trying to get XDG compliance going.
+    ## ===
+    ## Freedesktop specs and GLib.
+    ## https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+    ## https://developer.gnome.org/glib/2.40/glib-Miscellaneous-Utility-Functions.html#g-get-user-data-dir
+
+    ## >>>from gi.repository import GLib
+    ## >>>GLib.get_user_data_dir()
+    ## '/home/donn/.local/share'
+    from gi.repository import GLib
+    XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
+except:
+    # Bad things happened.
+    # "" vs None. When os.path.exists happens (later), None chokes. os.path.exists("") gives False, which is good.
+    XDG_DATA_HOME = ""
+    pass 
 
 
 ## See end of file
@@ -40,42 +55,23 @@ class PathControl:
     ===
     . Sets an error dict and *returns* on failure, does not raise.
     . Switches on whether there exists a valid XDG_DATA_HOME directory.
-       No : Falls-back to old ~/.fontypython and ~/.fonts (makes both if must)
-       Yes: Makes new fontypython and fonts (if must)
-            Moves all pogs, the fp.conf into fontypython
-            Moves all links that were in ~/.fonts into fonts
+       No : Falls-back to old ~/.fontypython and ~/.fonts (makes both if needs).
+       Yes: Starts an "upgrade"
+            Makes new fontypython and fonts (if needs).
+            Moves all old contents into new fontypython.
+            Moves all symlinks that were in ~/.fonts into new fonts.
     . Provides methods to look for what errors happened after __init__
-    . Provide paths for fontypython on Linux
-    . Provide list of pog names (without the .pog extension)
-
-    NOTE
-    ===
-    TODO: Evaluate need: This class is imported and used in the 'fontypython' wrapper too - when
-    there has been a segfault.
-
-    Sept 2017
-    ===
-    Freedesktop specs and GLib.
-    https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-    https://developer.gnome.org/glib/2.40/glib-Miscellaneous-Utility-Functions.html#g-get-user-data-dir
-
-    >>>from gi.repository import GLib
-    >>>GLib.get_user_data_dir()
-    '/home/donn/.local/share'
+    . Provide paths for fontypython.
+    . Provide list of pog names (without the .pog extension).
     """
     __FIRSTRUN = True
 
     ## All these vars contain/return BYTE STRING paths and files.
     __HOME = os.environ["HOME"] # Is a byte string under Linux.
-
-    ## Convenient to use an "" empty string in these
-    ## vars, because they are often used in
-    ## os.path.exists which chokes on None.
-    ## This way: os.path.exists("") is False, which is useful.
-    __fp_dir = ""
+    __fp_dir = "" # "" vs None. When os.path.exists happens, None chokes. "" gives False.
     __fonts_dir = ""
 
-    def __init__( self ):
+    def __init__( self, XDG_DATA_HOME ):
 
         self.__ERROR_STATE={}
 
@@ -85,9 +81,6 @@ class PathControl:
             raise SystemExit
         else:
             PathControl.__FIRSTRUN = False
-
-            ## Use Glib to get the XDG data path:
-            XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
 
             ## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
             ## I don't know if this is even a possibility, because the docs are horrible.. :|
@@ -860,7 +853,7 @@ def logSegfaulters( lastPaf ):
 LSP = linux_safe_path_library.linuxSafePath()
 
 ## Ensure we have "fontypython" and "fonts" dirs.
-iPC = PathControl()
+iPC = PathControl(XDG_DATA_HOME)
 
 
 ## Oct 2009 Default Font Family (System font)
