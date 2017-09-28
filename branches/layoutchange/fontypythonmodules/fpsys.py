@@ -113,7 +113,8 @@ class PathControl:
 
                 x_fp_dir = os.path.join(XDG_DATA_HOME, "fontypython")
                 try:
-                    self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
+                    #self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
+                    self.__try_test_make_dir("/root/bar", "NoFontypythonDir")
                 except:
                     return #Serious error
                 else:
@@ -292,11 +293,18 @@ class PathControl:
         return PathControl.__HOME
 
     def getPogNames(self, someotherpath=None):
-        ## We pass a byte string path to os.listdir therefore this function
-        ## returns a LIST OF BYTE STRINGS.
-        # Not going to test for path errors. Anything outside of the 
-        # basic path get methods is presumed safe.
+        """
+        We pass a byte string path to os.listdir therefore this function
+        returns a LIST OF BYTE STRINGS.
+        """
         p = PathControl.__fp_dir if not someotherpath else someotherpath
+        
+        # So, it turns out that during startup (in cli.py), there is a place
+        # that uses this and __fp_dir may be "" because of an error state.
+        # Thus a truthy test helps:
+        if not p: return []
+
+        # all okay, make a list:
         return [ f[0:-4] for f in os.listdir(p) if f.endswith(".pog") ]
 
 
