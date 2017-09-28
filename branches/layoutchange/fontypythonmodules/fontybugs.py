@@ -180,9 +180,11 @@ class NoFontsDir(Errors):
 class UpgradeFail(Errors):
     """
     Any and all UpgradeFail errors should end the app after being caught.
+    Slightly diff in that I pass a message in - because it differs as
+    per context called.
     """
     def __init__(self, msg, associated_err):
         self.msg = msg
         self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"Upgrade Error.\n{msg}\nThe python error was: {assocerr}\n\n").format(msg = self.msg,assocerr = self.associated_err)
+        return _(u"Failure during upgrade:\n{msg}\n\nThe python error was: {assocerr}\n\n").format(msg = self.msg,assocerr = self.associated_err)

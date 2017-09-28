@@ -23,6 +23,13 @@ import fpversion
 ## Now, bring in all those big modules
 import wx
 
+#Sept 2017
+#from wx.lib.splitter import MultiSplitterWindow
+
+## AUG 2017
+## Massive gui hacking. See wxgui.orig.py if you need to roll back.
+
+
 
 ## June 25th 2016
 ## Remarking these two lines because they are causing a segfault:
@@ -182,55 +189,158 @@ class MainFrame(wx.Frame):
         ## A temporary switch to test out various ideas
         self.whatgui = 4
 
-        MINSCREENWIDTH = 800 #old skool
+        MINSCREENWIDTH = 800
 
-        ## PRIMARY GUI
-        ## ===========
-        ## No splitters at all.
-        ## Box across: two
-        ## Left box: Box vertical: two (source/target)
-        ## Right box: Fontview
-        ## :- kind of shape.
+        if self.whatgui == 1:
+            ## Sept 2017: Using a multi splitter window
+            self.msw = MultiSplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+            self.msw.SetMinimumPaneSize(150)
 
-        ## NOTE:
-        ## =====
-        ## I tried a splitter window of 2 across
-        ## left: a panel with sizer of two high of: source, then target guis
-        ## right: fontview
-        ## This one freezes the app when you resize to the right... :(
-        ## Hard to reproduce. I used gdb and got it to crash, then
-        ## did a 'bt' and saw some complaints about get text extents
-        ## might be a bug in my font drawing code..?
+            framewidth = self.GetSizeTuple()[0]
 
-        minw = 320
-        fvminw = MINSCREENWIDTH - minw
-        ms = wx.Size(minw,1)
-
-        self.panelFontSources = FontSourcesPanel(self)
-        self.panelFontSources.SetMinSize(ms)
-
-        self.panelTargetPogChooser = TargetPogChooser(self)
-        self.panelTargetPogChooser.SetMinSize(ms)
-
-        self.fontViewPanel = FontViewPanel(self)
-        self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
-
-        stsizer = wx.BoxSizer(wx.VERTICAL)
-        stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
-        stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
+            ## SASHZERO is the left-most sash, it's x pixels from the left:
+            SASHZERO = fpsys.config.leftSash # Has a minimum val in that code
 
 
-        lrsizer = wx.BoxSizer(wx.HORIZONTAL)
-        lrsizer.Add( stsizer, 0, wx.EXPAND)
-        lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
+            ## LEFT HAND SIDE GUI
+            ## -------------------------------------------------------------------
+            ## The Font Source notebook, etc.
+            self.panelFontSources = FontSourcesPanel(self.msw)
+            self.panelFontSources.SetMinSize(wx.Size(SASHZERO,100))
+            ## Put the panelNotebook into the first pane of the splitter
+            self.msw.AppendWindow(self.panelFontSources, SASHZERO)
 
-        self.SetSizer(lrsizer)
 
-        ## Idle/resize idea from here:
-        ##https://stackoverflow.com/questions/13479831/what-is-the-simplest-way-of-monitoring-when-a-wxpython-frame-has-been-resized
-        self.resized = False
-        self.Bind(wx.EVT_IDLE, self.onIdle)
-        self.Bind(wx.EVT_SIZE, self.onFrameSize)
+            ## CENTRE GUI
+            ## -------------------------------------------------------------------
+            ## Font View Panel Control. No sizer.
+            self.fontViewPanel = FontViewPanel(self.msw)
+            ## Have a minimum for the fontviewpanel
+            minfontvwidth = framewidth/3 #randomly set it as a third.
+            self.fontViewPanel.SetMinSize(wx.Size(minfontvwidth,1))
+            ## To get it to display, don't set that min in AppendWindow!
+            self.msw.AppendWindow(self.fontViewPanel)
+
+
+            ## THE FAR RIGHT HAND SIDE GUI
+            ## --------------------------------------------------------------------
+            ## The TargetPogChooser. No sizer.
+            self.panelTargetPogChooser = TargetPogChooser(self.msw)
+
+            ## Set the minimum width between the strict minimum in the config
+            ## and the actual size the panel happens to be right now.
+            rightminwidth = max(fpsys.config.rightSash, self.panelTargetPogChooser.GetBestSize()[0])
+
+            ## SASHONE is the right-hand splitter (it's index 1)
+            ## It's the whole window minus the left panel (SASHZERO) minus the right panel.
+            ## It's x pixels across from SASHZERO, not the left-edge of the frame!
+            SASHONE = framewidth - SASHZERO - rightminwidth
+
+            # Sept 2017: Adding sizer to the right causes a SEGFAULT. H.A.N.D.
+            # Without a sizer, I don't think I can properly control the width
+            # of the right hand side. It tends to go off the window.
+            # Hence all the other stuff to try constraining it.
+            #self.sizerRight = wx.BoxSizer(wx.HORIZONTAL)
+            #self.sizerRight.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+            ## Stick the rhs into the splitter window:
+            self.msw.AppendWindow(self.panelTargetPogChooser, rightminwidth )
+
+            ## Forcibly set the sashes - which forcibly splits and sizes stuff
+            self.msw.SetSashPosition(0,SASHZERO)
+            self.msw.SetSashPosition(1,SASHONE)
+
+            # Thanks to the multiSplitterWindow code from the demo:
+            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)#present tense
+            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterChanged)#past tense
+
+        if self.whatgui == 2:
+            #splitter window of 2 across
+            #left: a panel with sizer of two across of: source, then target guis
+            #right: fontview
+            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+            self.spw.SetMinimumPaneSize(300)
+
+
+            p1 = wx.Panel(self.spw)
+            self.panelFontSources = FontSourcesPanel(p1)
+            self.panelTargetPogChooser = TargetPogChooser(p1)
+
+            twosizer = wx.BoxSizer(wx.HORIZONTAL)
+            twosizer.Add(self.panelFontSources, 1, wx.EXPAND)
+            twosizer.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+            p1.SetSizer(twosizer)
+
+            self.fontViewPanel = FontViewPanel(self.spw)
+
+            self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
+
+        if self.whatgui == 3:
+            #splitter window of 2 across
+            #left: a panel with sizer of two high of: source, then target guis
+            #right: fontview
+            ##This one freezes the app when you resize to the right... :(
+            ## Hard to reproduce. I used gdb and got it to crash, then
+            ## did a 'bt' and saw some complaints about get text extents
+            ## might be a bug in my font drawing code..?
+            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+            self.spw.SetMinimumPaneSize(300)
+
+            p1 = wx.Panel(self.spw)
+            self.panelFontSources = FontSourcesPanel(p1)
+            self.panelTargetPogChooser = TargetPogChooser(p1)
+
+            twosizer = wx.BoxSizer(wx.VERTICAL)
+            twosizer.Add(self.panelFontSources, 1, wx.EXPAND)
+            twosizer.Add(self.panelTargetPogChooser, 1, wx.EXPAND)
+
+            p1.SetSizer(twosizer)
+
+            self.fontViewPanel = FontViewPanel(self.spw)
+
+            self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
+            # Thanks to the multiSplitterWindow code from the demo:
+            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
+            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterPosChanged)
+
+        if self.whatgui == 4:
+            #No splitters at all.
+            # box across two
+            # left box down two (source/target), right = fontview
+            # :- kind of shape.
+
+            minw = 320
+            fvminw = MINSCREENWIDTH - minw
+            ms = wx.Size(minw,1)
+
+            self.panelFontSources = FontSourcesPanel(self)
+            self.panelFontSources.SetMinSize(ms)
+
+            self.panelTargetPogChooser = TargetPogChooser(self)
+            self.panelTargetPogChooser.SetMinSize(ms)
+
+            self.fontViewPanel = FontViewPanel(self)
+            self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
+
+            stsizer = wx.BoxSizer(wx.VERTICAL)
+            stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
+            stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
+
+
+            lrsizer = wx.BoxSizer(wx.HORIZONTAL)
+            lrsizer.Add( stsizer, 0, wx.EXPAND)
+            lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
+
+            self.SetSizer(lrsizer)
+
+            ## Idle/resize idea from here:
+            ##https://stackoverflow.com/questions/13479831/what-is-the-simplest-way-of-monitoring-when-a-wxpython-frame-has-been-resized
+            self.resized = False
+            self.Bind(wx.EVT_IDLE, self.onIdle)
+            self.Bind(wx.EVT_SIZE, self.onFrameSize)
+
+
 
 
         ## GUI ENDS
@@ -262,6 +372,46 @@ class MainFrame(wx.Frame):
         ## This is to draw the correct icons depending on cli params.
         self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
+
+    def onSplitterPosChanging(self,evt):
+        """
+        A Splitter is moving - PRESENT TENSE. Let's do the least work poss.
+        """
+        if self.whatgui == 1:
+            ## Filter the second splitter - the right hand side:
+            if evt.GetSashIdx() == 1:
+                ## Let's (at least) try to constrain the width of the rhs panel
+                esp = evt.GetSashPosition()
+
+                framewidth = self.GetSizeTuple()[0]
+                rightminwidth = self.panelTargetPogChooser.GetBestSize()[0]
+                sashzero = self.msw.GetSashPosition(0)
+
+                # esp is pixels relative to sashzero, thus we must
+                # subtract sashzero away to get it relative to 0.
+
+                # So, if the second splitter is too far across, then veto the event.
+                # This has the effect of stopping the drag when the rhs panel
+                # is getting smaller than its minimum.
+                # Again, taken from the wx-demo code.
+                if esp > framewidth - rightminwidth - sashzero:
+                    evt.Veto()
+                return
+
+        if self.whatgui == 3:
+            esp = evt.GetSashPosition()
+            if esp > 300:
+                evt.Veto()
+            return
+
+    def onSplitterPosChanged( self, evt ):
+        """
+        A Splitter has been moved - PAST TENSE.
+        We only want to redraw the fonts when the splitter dragging is over.
+        """
+        ps.pub( update_font_view ) # starts a HUGE chain of calls.
+
+
     def onFrameSize(self,evt):
         self.resized = True
         evt.Skip()
@@ -273,8 +423,17 @@ class MainFrame(wx.Frame):
             ps.pub( update_font_view )
             self.resized = False
 
+    def getSashesPos( self, args=None ):
+        ## For saving/restoring the sashes to where we bloody left them :\
+        if self.whatgui == 1:
+            return ( self.msw.GetSashPosition(0), self.panelTargetPogChooser.GetClientSize()[0])
+        return (200,200)
+
+
+
     def OnAccelKey(self,evt):
         ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_FontView.py
+
 
     def toggleSelectionMenuItem(self, onoff):
         #HIG says to leave top menu alone and only toggle sub-items.
@@ -307,9 +466,13 @@ class MainFrame(wx.Frame):
         Save app's vital statistics and exit.
         See the end of start.py where it's actually saved.
         """
+
         ## Dec 2007 - I was using the wrong func and the
         ## main window kept getting smaller!
         fpsys.config.size = self.GetSizeTuple()
+
+        #Sept 2017
+        fpsys.config.leftSash, fpsys.config.rightSash = self.getSashesPos()
 
         ##June 2009 - fetch and record the value of the recurse folders checkbox.
         fpsys.config.recurseFolders = app.GetTopWindow().panelFontSources.nb.recurseFolders.GetValue()

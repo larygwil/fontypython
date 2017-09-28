@@ -72,6 +72,7 @@ class PathControl:
     __HOME = os.environ["HOME"] # Is a byte string under Linux.
     __fp_dir = "" # "" vs None. When os.path.exists happens, None chokes. "" gives False.
     __fonts_dir = ""
+    __app_conf = ""
 
     def __init__( self, XDG_DATA_HOME ):
 
@@ -113,8 +114,8 @@ class PathControl:
 
                 x_fp_dir = os.path.join(XDG_DATA_HOME, "fontypython")
                 try:
-                    #self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
-                    self.__try_test_make_dir("/root/bar", "NoFontypythonDir")
+                    self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
+                    ##TESTER: self.__try_test_make_dir("/root/bar", "NoFontypythonDir")
                 except:
                     return #Serious error
                 else:
@@ -123,8 +124,8 @@ class PathControl:
 
                 x_fonts_dir = os.path.join(XDG_DATA_HOME, "fonts")
                 try:
-                    #self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
-                    self.__try_test_make_dir("/root/foo", "NoFontsDir")
+                    self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
+                    ##TESTER: self.__try_test_make_dir("/root/foo", "NoFontsDir")
                 except:
                     pass
                 else:   
@@ -154,6 +155,7 @@ class PathControl:
                     ## This method ignores all errors, hence no try:
                     self.__upgrade_fonts_dir( old_fonts_dir, x_fonts_dir )
 
+            PathControl.__app_conf = os.path.join(PathControl.__fp_dir, "fp.conf")
 
     ## Private Interface:
     def __try_test_make_dir( self, path, errkey ):
@@ -199,35 +201,50 @@ class PathControl:
 
         import errno
 
-        posserrmsg = _("Could not remove the old {} directory." \
-                        "Please try this yourself.").format(old_fp)
         try:
             ## Start out cocky - just up and kill old_fp
+            ## Only fails if the dir is not empty
             os.rmdir(old_fp)
+            return
+
         except OSError as old_fp_rm_err:
             ## Ah, it's not empty: ergo upgrade.
+
             if old_fp_rm_err.errno == errno.ENOTEMPTY:
                 import shutil
                 try:
                     files = os.listdir(old_fp)
                     f="YetToBegin"
                     for f in files:
-                        shutil.move(os.path.join(old_fp, f), os.path.join(new_fp, f))
+                        oldpaf = os.path.join(old_fp, f)
+                        newpaf = os.path.join(new_fp, f)
+                        ##TESTER: newpaf = os.path.join("/root/", f)
+                        shutil.move(oldpaf, newpaf)
                 except Exception as e:
                     self.__ERROR_STATE["UpgradeFail"] = fontybugs.UpgradeFail(
-                        _("Could not move \"{what}\" from \"{src}\" to \"{dest}\" while upgrading Fonty." \
-                          "Please resolve the problem and start me again.").format(what=f, src=old_fp, dest=new_fp),
+                        _("Could not move \"{what}\" from \"{src}\" to \"{dest}\"\n" \
+                          "Please resolve the problem and start me again.").format(
+                              what=f,
+                              src=old_fp,
+                              dest=new_fp),
                         e)
                     raise
+        except: # unknown sundry
+            pass # We repeat the rmdir soon..
 
         ## Now that we've moved all the guts over to the new fp path..
-        ## Let's, once again, attempt to rm the old fp dir...
         try:
+            ## Let's, once again, attempt to rm the old fp dir...
             os.rmdir(old_fp)
+            ##TESTER: os.rmdir("/root/foo")
         except Exception as e:
             #Just could not kill the beast!
             self.__ERROR_STATE["UpgradeFail"] = \
-                    fontybugs.UpgradeFail(posserrmsg, e)
+                    fontybugs.UpgradeFail(
+                        _("Could not remove the old \"{oldfontydir}\" directory.\n" \
+                          "Please remove it and start me again.").format(
+                              oldfontydir = old_fp),
+                        e)
             raise
 
     def __upgrade_fonts_dir(self, old_fonts_dir, new_fonts_dir):
@@ -270,9 +287,6 @@ class PathControl:
         """
         self.__raiseOrContinue("NoFontypythonDir")
         self.__raiseOrContinue("UpgradeFail")
-        #self.__raiseOrContinue("UpgradeFail::ImmovableFpConf")
-        #self.__raiseOrContinue("UpgradeFail::ImmovablePog")
-        #self.__raiseOrContinue("UpgradeFail::CannotRemoveOldDotFontypython")
         self.__raiseOrContinue("NoFontsDir")
 
     def appPath(self):
@@ -282,7 +296,7 @@ class PathControl:
     def appConf(self):
         """Supplies paf of "fp.conf" or empty string."""
         if PathControl.__fp_dir=="": return ""
-        return PathControl.__fp_dir + "/fp.conf"
+        return PathControl.__app_conf
 
     def userFontPath(self):
         """Supplies the user's "fonts" directory."""
@@ -566,12 +580,6 @@ class Configure:
         self.usegui = "wxgui"
         self.max = True
         self.lastdir = iPC.home()
-        ## Sept 2017
-        self.leftSashMin = 180
-        self.rightSashMin = 180
-        ## Added Dec 2007
-        self.leftSash = self.leftSashMin
-        self.rightSash = self.rightSashMin
         ## Added June 2009
         self.recurseFolders = False
         ## Added Sept 2009
@@ -618,10 +626,6 @@ class Configure:
             self.usegui = self.__data['usegui']
             self.max = self.__data['max']
             self.lastdir = self.__data['lastdir']
-            #Sept 2017
-            self.leftSash = max( self.leftSashMin, self.__data['leftSash'] )
-            #Sept 2017
-            self.rightSash = max( self.rightSashMin, self.__data['rightSash'] )
             self.recurseFolders = self.__data['recurseFolders']
             self.ignore_adjustments = self.__data['ignore_adjustments']
             self.app_char_map = self.__data['app_char_map']
@@ -653,8 +657,6 @@ class Configure:
                                 "usegui" : self.usegui,
                                 "max" : self.max,
                                 "lastdir" : self.lastdir,
-                                "leftSash" : self.leftSash,
-                                "rightSash" : self.rightSash,
                                 "recurseFolders": self.recurseFolders,
                                 "ignore_adjustments": self.ignore_adjustments,
                                 "app_char_map" : self.app_char_map,
