@@ -65,20 +65,21 @@ class Pencil(object):
     def __init__( self, id, x, y ):
         self.id = id
         self.x = x; self.y = y
-    def Draw(self, memdc):
+
+    def measure(self):
         pass
 
-    #TODO
-    #....
-    #def __eq__(self, other, *attributes):
-    #	if not isinstance(other, type(self)):
-    #			return NotImplemented
-    #
-    #		if attributes:
-    #				d = float('NaN')  # default that won't compare equal, even with itself
-    #				return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes)
-    #
-    #		return self.__dict__ == other.__dict__
+    def draw(self, memdc):
+        pass
+
+    ## Yet another stackoverflow gem:
+    def __eq__(self, other, *attributes):
+        if not isinstance(other, type(self)):
+            return NotImplemented
+        if attributes:
+            d = float('NaN')  # default that won't compare equal, even with itself
+            return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes)
+        return self.__dict__ == other.__dict__
 
 
 class FontPencil(Pencil):
@@ -87,8 +88,11 @@ class FontPencil(Pencil):
         self.txt = txt
         self.fcol = fcol
         self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
-        self.width = self.__mf()[0]
-    def __mf(self):
+
+        #Defer this... don't do it in __init__
+        self.width = 0 #self.__mf()[0]
+
+    def measure(self):
         """
         Measure a line of text in my font. Return a wx.Size
         Cache these widths in Pencil class variable.
@@ -104,8 +108,11 @@ class FontPencil(Pencil):
         except:
             sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
         Pencil.textExtentsDict[self.txt] = sz # cache it in my parent
-        return sz
-    def Draw(self, memdc):
+        
+        self.width = sz[0]
+        #return sz[0]
+
+    def draw(self, memdc):
         memdc.SetTextForeground( self.fcol )
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )
@@ -115,7 +122,8 @@ class BitmapPencil(Pencil):
         Pencil.__init__(self, id, x, y)
         self.bitmap = bitmap
         self.width = width
-    def Draw(self, memdc):
+
+    def draw(self, memdc):
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
 
@@ -227,6 +235,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Point to the handler for the signal re charmap button
         self.cmb_overout = OverOutSignal( self.charmap_button_signal )
 
+        self.entire_fitmap_unchanged = False
 
         ## Go draw the fitmap into a memory dc
         #self.drawlist = []
@@ -301,8 +310,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #for pencil in self.drawlist:
         #	pencil.Draw(memDc)
         for pencil in self.drawDict.values():
-            pencil.Draw(memDc)
-            print "drawing:", pencil.id
+            pencil.draw(memDc)
+            #print "drawing:", pencil.id
 
         ## Now empty the drawlist
         #del self.drawDict
@@ -329,15 +338,16 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         oldpencil = self.drawDict.get(pencil.id, None)
         if oldpencil:
             #cmp oldpencil to new pencil
-            #if same:	
-            #		return early
-            #else:
-                #replace or delete the entry in the dict! del(od[key])
-            self.drawDict.update([(pencil.id, pencil)])
-            #	return
+            if pencil == oldpencil:
+                return
+            else:
+                self.entire_fitmap_unchanged = False
+                #call stage 2 of the pencil (to do actual work)
+                pencil.measure()
+                # Replace the old one in the dict.
+                self.drawDict.update([(pencil.id, pencil)])
 
         self.drawDict[pencil.id] = pencil
-        #self.drawlist.append( pencil )
 
 
     def openCharacterMap( self ):
@@ -551,11 +561,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         maxwidth = [Fitmap.MIN_FITEM_WIDTH]
 
         ## NOTE: generatePilFont sets the colour of the font bitmap!
+        ## The color comes from fitem.inactive t/f
         points, text = fpsys.config.points, " " + fpsys.config.text + "  "
         for pilimage in self.fitem.generatePilFont( points, text ):
             pilList.append( pilimage )
             totheight += pilimage.size[1] + Fitmap.SPACER
             maxwidth.append(pilimage.size[0])
+
+        #??
+        #for pilimage in self.fitem.something
+        #    gather state
+        #    is state == state of last pil something?
+        #    yes: cont
+        #    no: generatePilFont and replace it in list (flag pilListNew)
+
 
         ## Limit the minimum we allow.
         if totheight < Fitmap.MIN_FITEM_HEIGHT:
@@ -587,6 +606,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             mainy = 10
             i = 0
 
+            #only if pilListNew:
             for pilimage in pilList:
                 pilwidth, glyphHeight = pilimage.size
                 state = 0
@@ -657,7 +677,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
         ## NB: FILE_NOT_FOUND is not available for installation!
         if self.fitem.badstyle != "FILE_NOT_FOUND":
-            print "self.fitem.name ticked:", self.fitem.ticked
+            #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
                 #print " tickmap is tick:", self.TICKMAP
 
@@ -668,11 +688,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Draw it all - via the pencils. Also makes the memDc and returns
         ## it so we can do some last-minute stuff later.
         ## NOTE: By drawing into memDc, we are drawing into self.bitmap
-        memDc = self.usePencils( totheight )
 
-        ## Now a dividing line
-        memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-        memDc.DrawLine( 0, self.height-1, self.widestpilimage, self.height-1 )
+        if not self.entire_fitmap_unchanged:
+            self.entire_fitmap_unchanged = True
+
+            memDc = self.usePencils( totheight )
+
+            ## Now a dividing line
+            memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
+            memDc.DrawLine( 0, self.height-1, self.widestpilimage, self.height-1 )
         #print "prepareBitmap ends for:", self
 
     def setStyle( self ):

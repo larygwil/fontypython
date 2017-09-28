@@ -254,7 +254,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         show the state. E.g. the tickmap ...
         This might not be worth it...
 
-        Disabled for now.
         """
         print "MinimalCreateFitmaps runs"
         ## Sept2017:
