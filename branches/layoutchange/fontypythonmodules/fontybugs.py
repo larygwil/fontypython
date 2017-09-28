@@ -15,6 +15,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 import locale
+import os
 import strings
 import linux_safe_path_library
 LSP = linux_safe_path_library.linuxSafePath()
@@ -148,24 +149,33 @@ class NoFontypythonDir(Errors):
         self.path = path
         self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"The \"fontypython\" directory within %(path)s cannot be" \
-                "created or found.\nFonty cannot run until it exists." \
+
+        #import pdb; pdb.set_trace()
+        return _(u"The {path} directory cannot be created or found.\n" \
+                "Fonty cannot run until it exists. " \
                 "Please create it, and start me again." \
-                "\n\nExample:\n\tcd %(path)s\n\tmkdir fontypython" \
-                "\n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+                "\nExample:\n\tcd {subpath}\n\tmkdir fontypython" \
+                "\nThe python error was: {assocerr}\n\n").format(
+                        path = self.path,
+                        subpath = os.path.dirname(self.path),
+                        assocerr = self.associated_err)
 
 class NoFontsDir(Errors):
     def __init__(self,path, associated_err):
         self.path = path
+        self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"The main \"fonts\" directory within" \
-                "%(path)s is missing.\nFonts cannot be installed until it exists." \
+        return _(u"WARNING:\nThe {path} directory cannot be created or found.\n" \
+                "Fonts cannot be installed until it exists. " \
                 "Please create it, and start me again." \
-                "\n\nExample:\n\tcd %(path)s\n\tmkdir fonts" \
-                "\n\n[Extra: %(assocerr)s]") % {"path":self.path, "assocerr":associated_err}
+                "\nExample:\n\tcd {subpath}\n\tmkdir fonts" \
+                "\nThe python error was: {assocerr}\n\n").format(
+                        path = self.path,
+                        subpath = os.path.dirname(self.path),
+                        assocerr = self.associated_err)
     def short_unicode_of_error(self):
-        return iPC.LSP.to_unicode(
-                _("Missing \"{}\" directory. See Help.").format(self.path) )
+        """Used in gui; see the statusbar code."""
+        return _(u"Missing fonts directory. See Help.")
 
 class UpgradeFail(Errors):
     """
@@ -175,4 +185,4 @@ class UpgradeFail(Errors):
         self.msg = msg
         self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"Upgrade Error.\n{}\n\n[Extra:{}]").format(self.msg, associated_err)
+        return _(u"Upgrade Error.\n{msg}\nThe python error was: {assocerr}\n\n").format(msg = self.msg,assocerr = self.associated_err)

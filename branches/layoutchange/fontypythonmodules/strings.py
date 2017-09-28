@@ -67,11 +67,11 @@ Fonty lets you you select fonts visually and put them into Pogs which you can
 install or remove as you require.
 
 (Your font files never move from where they are. No copies of your fonts
-are made. Only links to them are used.)
+are made; only links.)
 
 For example, you might have a Pog called 'logos' into which you place fonts of
-company logos. Thereafter, when you want to use those logos, simply install the
-'logos' Pog and start your design app!
+company logos. When you want to use those logos, simply install the 'logos' Pog 
+and start your design app!
 
 When you're done, remove the 'logos' Pog, and the fonts will go away.
 
@@ -156,7 +156,8 @@ Examples: All using short options, see -h
   Will show 25 fonts at a time, in the gui. Beware large numbers!
 
 %(c)s -s 64 -v 10 Pimple
-  Will set the point size to 64, paging to 10 and display Pimple.
+  Will set the point size to 64, paging to 10,open the gui and display the fonts
+  in Pimple.
 
 %(c)s -p Glutton
   Purging a font. If there are any fonts in Glutton that are not really on your 
@@ -255,7 +256,9 @@ http://www.pythonware.com/products/pil/index.htm
 
 ##Sept 2017
 giError = _("""I cannot find "Python-gi"
-Please install this package.
+This package is not required; although if you
+have it, modern Linux desktop standards can be
+implemented by Fonty.
 
 TIP
 ===

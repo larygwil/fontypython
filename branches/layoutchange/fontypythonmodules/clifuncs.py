@@ -62,16 +62,19 @@ def listpogs():
         print "%s %s" % (s,pog)
     raise SystemExit
 
+
+## Sept 2017: Added this because I was doing ls in testing so much.
 def lsfonts():
     import subprocess
     try:
         p = fpsys.iPC.userFontPath()
-        ls = subprocess.check_output(['ls', '-l', p ])
+        ls = subprocess.check_output(['ls','--color=always', '-l', p ])
     except:
         print _("Could not ls the font path.")
         raise
     print _("Contents of {}:").format(fpsys.LSP.to_unicode(p))
-    print ls
+    print ls ## is this already unicode?
+
 
 def zip( pog ):
     ## Sep 2009 : ZIP

@@ -85,7 +85,7 @@ class StatusBar(wx.StatusBar):
         self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
 
         if no_fonts_dir:
-            self.SetStatusText( _("Missing \"{}\" directory. See Help.").format(thedabdirname), 2)
+            self.SetStatusText( shorterr, 2)
             self.SetStatusWidths([300,-2,-1,32])
             #self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
         else:

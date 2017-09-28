@@ -89,49 +89,52 @@ class PathControl:
             if not os.path.exists(XDG_DATA_HOME):
 
                 ## We are in fallback to the old fonty dirs etc.
-                fp_dir = PathControl.__HOME + "/.fontypython/"
+                fp_dir = os.path.join(PathControl.__HOME, ".fontypython")
                 try:
                     self.__try_test_make_dir(fp_dir, "NoFontypythonDir")
                 except:
                     return #Serious error, bail.
                 else:
-                    PathControl.__fp_dir = fp_dir # Record it for use.
+                    PathControl.__fp_dir = fp_dir + "/" # Record it for use.
 
-                fonts_dir = PathControl.__HOME + "/.fonts/"
+                fonts_dir = os.path.join(PathControl.__HOME, ".fonts")
                 try:
                     self.__try_test_make_dir(fonts_dir, "NoFontsDir")
                 except:
                     pass # Not too bad. Fonts dir will be None.
                 else:
-                    PathControl.__fonts_dir = fonts_dir
+                    PathControl.__fonts_dir = fonts_dir +"/"
                 ## End of old fonty fallback
 
             else:
                 ## We are in valid XDG terrain: ~/.local/share/ (or whatever) exists.
+
                 ## We may hit perm errors within there, I guess..
-                x_fp_dir = XDG_DATA_HOME + "/fontypython/"
+
+                x_fp_dir = os.path.join(XDG_DATA_HOME, "fontypython")
                 try:
                     self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
                 except:
                     return #Serious error
                 else:
-                    PathControl.__fp_dir = x_fp_dir
+                    PathControl.__fp_dir = x_fp_dir + "/"
 
 
-                x_fonts_dir = XDG_DATA_HOME + "/fonts/"
+                x_fonts_dir = os.path.join(XDG_DATA_HOME, "fonts")
                 try:
-                    self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
+                    #self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
+                    self.__try_test_make_dir("/root/foo", "NoFontsDir")
                 except:
                     pass
                 else:   
-                    PathControl.__fonts_dir = x_fonts_dir
+                    PathControl.__fonts_dir = x_fonts_dir + "/"
 
                 ## Decide on what can be upgraded..
                 # If new fp_dir exists *and* old fp_dir exists, then we can upgrade.
                 # Since, by now, x_fp_dir does exist, we need only look for the old.
 
-                old_fp_dir = PathControl.__HOME + "/.fontypython/"
-                old_fonts_dir = PathControl.__HOME + "/.fonts/"
+                old_fp_dir = os.path.join(PathControl.__HOME, ".fontypython")
+                old_fonts_dir = os.path.join(PathControl.__HOME, ".fonts")
 
                 ## fontypython dir.
                 ## After an upgrade, the old_fp_dir will be deleted, making
