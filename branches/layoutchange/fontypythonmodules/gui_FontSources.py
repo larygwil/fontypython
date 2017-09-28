@@ -37,304 +37,304 @@ from pubsub import * #I want all the topics.
 import fontybugs
 
 try:
-	import fpsys
+    import fpsys
 except fontybugs.NoXDG_DATA_HOME, e:
-	print e.print_error_and_quit()
+    print e.print_error_and_quit()
 
 from wxgui import ps
 from gui_PogChooser import *
 import fontyfilter
 
 class FontSourcesPanel(wx.Panel):
-	"""
-	A panel to represent the entire Source GUI.
-	"""
-	def __init__(self, parent):
-		wx.Panel.__init__(self, parent, id = -1)#, style = wx.BORDER_RAISED)
+    """
+    A panel to represent the entire Source GUI.
+    """
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id = -1)#, style = wx.BORDER_RAISED)
 
-		## Notebook label and icon
-		self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
-		self.viewLabel = wx.StaticText( self, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
-		self.viewLabel.SetFont( wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
+        ## Notebook label and icon
+        self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
+        self.viewLabel = wx.StaticText( self, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
+        self.viewLabel.SetFont( wx.Font(10, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD) )
 
-		## A horiz sizer to hold the icon and text
-		self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-		self.sizer_iconandtext.Add( (8, 1), 0 )
-		self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4 )
-		self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
+        ## A horiz sizer to hold the icon and text
+        self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
+        self.sizer_iconandtext.Add( (8, 1), 0 )
+        self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM, border = 4 )
+        self.sizer_iconandtext.Add( self.viewLabel, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
 
-		## Now the actual notebook
-		self.nb = NoteBook(self, name="notebook")
+        ## Now the actual notebook
+        self.nb = NoteBook(self, name="notebook")
 
-		## Make a Vertical sizer to hold them.
-		self.sizerNotebook = wx.BoxSizer(wx.VERTICAL)
+        ## Make a Vertical sizer to hold them.
+        self.sizerNotebook = wx.BoxSizer(wx.VERTICAL)
 
-		## Add them to the sizer.
-		self.sizerNotebook.Add(self.sizer_iconandtext, 0, wx.EXPAND)
-		self.sizerNotebook.Add(self.nb,1,wx.EXPAND)
+        ## Add them to the sizer.
+        self.sizerNotebook.Add(self.sizer_iconandtext, 0, wx.EXPAND)
+        self.sizerNotebook.Add(self.nb,1,wx.EXPAND)
 
-		self.SetSizer(self.sizerNotebook)
-		self.Layout()
+        self.SetSizer(self.sizerNotebook)
+        self.Layout()
 
 
 
 class DirControl(wx.GenericDirCtrl) :
-	"""
-	The Directory tree view. Note: Directory names are all UNICODE!
-	"""
-	def __init__(self, parent):
-		if fpsys.state.viewpattern == "F":
-			startdir = fpsys.state.viewobject.path
-		else:
-			##Let's get it from the config object
-			lastdir = fpsys.config.lastdir
+    """
+    The Directory tree view. Note: Directory names are all UNICODE!
+    """
+    def __init__(self, parent):
+        if fpsys.state.viewpattern == "F":
+            startdir = fpsys.state.viewobject.path
+        else:
+            ##Let's get it from the config object
+            lastdir = fpsys.config.lastdir
 
-			if os.path.exists(lastdir):
-				startdir = lastdir
-			else:
-				startdir = os.environ['HOME']
+            if os.path.exists(lastdir):
+                startdir = lastdir
+            else:
+                startdir = os.environ['HOME']
 
-		wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
-		self.SelectPath( startdir, True )
+        wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
+        self.SelectPath( startdir, True )
 
 
 
-		# create the image list:
-		isz = (16,16)
-		il = wx.ImageList(isz[0], isz[1])
+        # create the image list:
+        isz = (16,16)
+        il = wx.ImageList(isz[0], isz[1])
 
-		# Add images to list. You need to keep the same order in order for
-		# this to work!
+        # Add images to list. You need to keep the same order in order for
+        # this to work!
 
-		# closed folder:
-		il.Add( wx.Bitmap( fpsys.mythingsdir + "/icon_closed_folder.png",wx.BITMAP_TYPE_PNG) )
+        # closed folder:
+        il.Add( wx.Bitmap( fpsys.mythingsdir + "/icon_closed_folder.png",wx.BITMAP_TYPE_PNG) )
 
-		# open folder:
-		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_open_folder.png",wx.BITMAP_TYPE_PNG))
+        # open folder:
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_open_folder.png",wx.BITMAP_TYPE_PNG))
 
-		# root of filesystem (linux):
-		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_root.png",wx.BITMAP_TYPE_PNG))
+        # root of filesystem (linux):
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_root.png",wx.BITMAP_TYPE_PNG))
 
-		# drive letter (windows):
-		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+        # drive letter (windows):
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
 
-		# cdrom drive:
-		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_cdrom.png",wx.BITMAP_TYPE_PNG))
+        # cdrom drive:
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_cdrom.png",wx.BITMAP_TYPE_PNG))
 
-		# removable drive on win98:
-		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+        # removable drive on win98:
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
 
-		# removable drive (floppy, flash, etc) Does not seem to work on Kubuntu Jaunty (2009)
-		il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+        # removable drive (floppy, flash, etc) Does not seem to work on Kubuntu Jaunty (2009)
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
 
-		# assign image list:
-		self.il = il
-		self.GetTreeCtrl().SetImageList(il)
+        # assign image list:
+        self.il = il
+        self.GetTreeCtrl().SetImageList(il)
 
-		## NOTE: The click event is bound in the Notebook.
+        ## NOTE: The click event is bound in the Notebook.
 
 class NoteBook(wx.Notebook):
-	"""
-	Used in the left part of the splitter in mainframe.
-	Has two tabs - Folders and Pogs
-	THIS IS THE VIEW or SOURCE of fonts.
-	"""
-	def __init__(self, parent, name="notebook_not_named"):
-		wx.Notebook.__init__(self, parent, style=wx.NB_TOP, name = name)
-		self.imlist = wx.ImageList(16, 16)
+    """
+    Used in the left part of the splitter in mainframe.
+    Has two tabs - Folders and Pogs
+    THIS IS THE VIEW or SOURCE of fonts.
+    """
+    def __init__(self, parent, name="notebook_not_named"):
+        wx.Notebook.__init__(self, parent, style=wx.NB_TOP, name = name)
+        self.imlist = wx.ImageList(16, 16)
 
-		pan1 = wx.Panel(self)
+        pan1 = wx.Panel(self)
 
-		## THE DIR CONTROL
-		self.dircontrol = DirControl(pan1)
+        ## THE DIR CONTROL
+        self.dircontrol = DirControl(pan1)
 
-		# Get a ref to the dircontrol.
-		self.tree = self.dircontrol.GetTreeCtrl()
+        # Get a ref to the dircontrol.
+        self.tree = self.dircontrol.GetTreeCtrl()
 
-		## Sept 2017
-		## Trying to ensure the tree is scrolled to the start dir. No go so far.
-		#s = self.tree.GetSelection()
-		#print s
-		#print dir(s)
-		#import pdb; pdb.set_trace()
-		#self.tree.EnsureVisible(s)
-		#self.tree.ScrollTo(s)
+        ## Sept 2017
+        ## Trying to ensure the tree is scrolled to the start dir. No go so far.
+        #s = self.tree.GetSelection()
+        #print s
+        #print dir(s)
+        #import pdb; pdb.set_trace()
+        #self.tree.EnsureVisible(s)
+        #self.tree.ScrollTo(s)
 
-		## The Recurse check-box
-		self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
-		self.recurseFolders.SetToolTipString(_("Caution: This will crash Fonty if the folder is deep."))
-		self.recurseFolders.SetValue( fpsys.config.recurseFolders )
-		self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
+        ## The Recurse check-box
+        self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
+        self.recurseFolders.SetToolTipString(_("Caution: This will crash Fonty if the folder is deep."))
+        self.recurseFolders.SetValue( fpsys.config.recurseFolders )
+        self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
 
-		## Add them to a sizer
-		box = wx.BoxSizer(wx.VERTICAL)
-		box.Add( self.recurseFolders,0,wx.EXPAND )
-		box.Add( self.dircontrol,1, wx.EXPAND )
-		pan1.SetSizer(box)
-		box.Layout()
+        ## Add them to a sizer
+        box = wx.BoxSizer(wx.VERTICAL)
+        box.Add( self.recurseFolders,0,wx.EXPAND )
+        box.Add( self.dircontrol,1, wx.EXPAND )
+        pan1.SetSizer(box)
+        box.Layout()
 
-		self.pogindexselected = 0
+        self.pogindexselected = 0
 
-		## The SOURCE POG control
-		pan2 = wx.Panel(self)
-		page = 0
-		s = None
-		if fpsys.state.viewpattern  == "P":
-			s = fpsys.state.viewobject.name
-			if s == "EMPTY": s= None #Very first run, the view will be an EMPTY object.
-			page = 1
-		self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
+        ## The SOURCE POG control
+        pan2 = wx.Panel(self)
+        page = 0
+        s = None
+        if fpsys.state.viewpattern  == "P":
+            s = fpsys.state.viewobject.name
+            if s == "EMPTY": s= None #Very first run, the view will be an EMPTY object.
+            page = 1
+        self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
 
-		## Spet 2017
-		## Started to make a purge button under the source pog thing, but
-		## changed my mind. It's going to stay in the Tools menu.
-		#vbox = wx.BoxSizer(wx.VERTICAL)
-		#self.idpurge = wx.NewId()
-		## Yeah baby, BUTT PURGE! :D
-		#self.buttPurge = wx.Button(pan2, label = _("Purge Pog"), id = self.idpurge )
-		#self.buttPurge.SetToolTipString(_("Cleans this Pog of fonts that are missing."))
+        ## Spet 2017
+        ## Started to make a purge button under the source pog thing, but
+        ## changed my mind. It's going to stay in the Tools menu.
+        #vbox = wx.BoxSizer(wx.VERTICAL)
+        #self.idpurge = wx.NewId()
+        ## Yeah baby, BUTT PURGE! :D
+        #self.buttPurge = wx.Button(pan2, label = _("Purge Pog"), id = self.idpurge )
+        #self.buttPurge.SetToolTipString(_("Cleans this Pog of fonts that are missing."))
 
-		#vbox.Add( self.ctrlPogSource, 1, wx.EXPAND )
-		#vbox.Add( self.buttPurge, 0, wx.EXPAND )
-		#pan2.SetSizer(vbox)
-		#vbox.Layout()
+        #vbox.Add( self.ctrlPogSource, 1, wx.EXPAND )
+        #vbox.Add( self.buttPurge, 0, wx.EXPAND )
+        #pan2.SetSizer(vbox)
+        #vbox.Layout()
 
-		ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
-		ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
-		ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
-		ps.sub( remove_pog_item_from_source, self.RemoveItem ) #DND: class NoteBook
-
-
-		## Dud tree events, causing bad behaviour:
-		## EVT_LIST_ITEM_SELECTED
-		## EVT_LEFT_UP
-
-		## Bind to another event solve the problem of EVT_LEFT_UP firing when the little
-		## open-branch/tree arrow was pressed.
-		## 5.3.2009 Michael Hoeft
-		self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
-
-		## Had a context menu, but not using it.
-		#self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-
-		box2 = wx.BoxSizer(wx.HORIZONTAL)
-		box2.Add(self.ctrlPogSource,1,wx.EXPAND)
-		pan2.SetSizer(box2)
-		box2.Layout()
-
-		self.AddPage(pan1, _("Source Folders"))
-		self.AddPage(pan2, _("Source Pogs"))
-
-		source_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
-
-		target_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
-
-		self.AssignImageList(self.imlist)
-		self.SetPageImage(1, source_pog_icon)
-		self.SetPageImage(0, target_pog_icon)
-
-		self.SetSelection(page)
-
-		self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
-
-		## If the app is started with a Folder as the Source, then
-		## check if we must recurse. If so, fake a click to kick that off.
-		## Sept 2017
-		## Can't figure out why this depended on the recursion check box. Took it out.
-		## TODO: Expect fail...
-		if fpsys.state.viewpattern  == "F":
-			#if self.recurseFolders.GetValue():
-			self.__onDirCtrlClick(None) # Fake an event
+        ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
+        ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
+        ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
+        ps.sub( remove_pog_item_from_source, self.RemoveItem ) #DND: class NoteBook
 
 
-	def onPageChanged(self, e):
-		self.ctrlPogSource.ClearLastIndex()
-		if self.GetSelection() == 0: # The dircontrol
-			## I want to force the dir control to clear the selection.
-			## Reason: When you return to this control (from Pog page), the selection
-			## from last visit is still there. Clicking on it again does NOT UPDATE
-			## the font view. This is wierd. So, clearing the selection makes this moot.
-			self.tree.UnselectAll() # Found this method in the wxpython book.
+        ## Dud tree events, causing bad behaviour:
+        ## EVT_LIST_ITEM_SELECTED
+        ## EVT_LEFT_UP
 
-	#def OnContextMenu(self, event):
-	#	# only do this part the first time so the events are only bound once
-	#	if not hasattr(self, "popupID1"):
-	#		self.popupID1 = wx.NewId()
-	#		self.popupID2 = wx.NewId()
-	#
-	#		self.Bind(wx.EVT_MENU, self.OnPopupOne, id=self.popupID1)
-	#		self.Bind(wx.EVT_MENU, self.OnPopupTwo, id=self.popupID2)
+        ## Bind to another event solve the problem of EVT_LEFT_UP firing when the little
+        ## open-branch/tree arrow was pressed.
+        ## 5.3.2009 Michael Hoeft
+        self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
 
-	#	# make a menu
-	#	menu = wx.Menu()
-		# Show how to put an icon in the menu
-		#item = wx.MenuItem(menu, self.popupID1,"One")
-		#bmp = images.getSmilesBitmap()
-		#item.SetBitmap(bmp)
-		#menu.AppendItem(item)
-		# add some other items
-	#	menu.Append(self.popupID1, _("Add fonts in this folder to a Pog.") )
-	#	menu.Append(self.popupID2, _("Add fonts in this folder and sub-folders to a Pog.") )
+        ## Had a context menu, but not using it.
+        #self.tree.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
-		# Popup the menu.  If an item is selected then its handler
-		# will be called before PopupMenu returns.
-	#	self.PopupMenu(menu)
-	#	menu.Destroy()
+        box2 = wx.BoxSizer(wx.HORIZONTAL)
+        box2.Add(self.ctrlPogSource,1,wx.EXPAND)
+        pan2.SetSizer(box2)
+        box2.Layout()
 
-	#def OnPopupOne(self, event):
-	#	print "\n"
+        self.AddPage(pan1, _("Source Folders"))
+        self.AddPage(pan2, _("Source Pogs"))
 
-	#def OnPopupTwo(self, event):
-	#	print "Popup one\n"
+        source_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
 
-	def __onDirCtrlClick(self, e):
-		wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
-		p = self.dircontrol.GetPath()
+        target_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
 
-		try:
-			fpsys.instantiateViewFolder(p,self.recurseFolders.GetValue() )
-			fpsys.config.lastdir = p
-		except fontybugs.FolderHasNoFonts, e:
-			pass # update_font_view handles this with a std message.
+        self.AssignImageList(self.imlist)
+        self.SetPageImage(1, source_pog_icon)
+        self.SetPageImage(0, target_pog_icon)
 
-		ps.pub(reset_to_page_one)# reset before updating!		  
-		ps.pub(update_font_view)
+        self.SetSelection(page)
 
-		wx.EndBusyCursor()
-		wx.CallAfter( self.SetFocus )
+        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
 
-	def OnViewPogClick(self, args):
-		"""
-		args[0] is pogname, args[1] is pognochange
-		"""
-		## Check pognochange, it means this is the same pog as last time.
-		if args[1]: return
+        ## If the app is started with a Folder as the Source, then
+        ## check if we must recurse. If so, fake a click to kick that off.
+        ## Sept 2017
+        ## Can't figure out why this depended on the recursion check box. Took it out.
+        ## TODO: Expect fail...
+        if fpsys.state.viewpattern  == "F":
+            #if self.recurseFolders.GetValue():
+            self.__onDirCtrlClick(None) # Fake an event
 
-		## instantiateViewPog calls pog.genList which bubbles:
-		## PogInvalid
-		## BUT - this error only makes sense from the
-		## cli pov. By the time the gui is running, that
-		## pog has been renamed .badpog and therefore 
-		## won't even appear in the list. So, don't bother
-		## catching it.
-		fpsys.instantiateViewPog(args[0])
 
-		if fpsys.state.samepogs: #forbid same pogs selection
-			ps.pub(clear_targetpog_selection)
-		else:
-			ps.pub(reset_to_page_one)
-		ps.pub(update_font_view)
+    def onPageChanged(self, e):
+        self.ctrlPogSource.ClearLastIndex()
+        if self.GetSelection() == 0: # The dircontrol
+            ## I want to force the dir control to clear the selection.
+            ## Reason: When you return to this control (from Pog page), the selection
+            ## from last visit is still there. Clicking on it again does NOT UPDATE
+            ## the font view. This is wierd. So, clearing the selection makes this moot.
+            self.tree.UnselectAll() # Found this method in the wxpython book.
 
-	def AddItem(self, pogname):
-		self.ctrlPogSource.AddItem(pogname[0]) #[0] bit is because pogname is a tuple from pubsub.
+    #def OnContextMenu(self, event):
+    #	# only do this part the first time so the events are only bound once
+    #	if not hasattr(self, "popupID1"):
+    #		self.popupID1 = wx.NewId()
+    #		self.popupID2 = wx.NewId()
+    #
+    #		self.Bind(wx.EVT_MENU, self.OnPopupOne, id=self.popupID1)
+    #		self.Bind(wx.EVT_MENU, self.OnPopupTwo, id=self.popupID2)
 
-	def RemoveItem(self, pogname):
-		self.ctrlPogSource.RemoveItem(pogname[0])
+    #	# make a menu
+    #	menu = wx.Menu()
+        # Show how to put an icon in the menu
+        #item = wx.MenuItem(menu, self.popupID1,"One")
+        #bmp = images.getSmilesBitmap()
+        #item.SetBitmap(bmp)
+        #menu.AppendItem(item)
+        # add some other items
+    #	menu.Append(self.popupID1, _("Add fonts in this folder to a Pog.") )
+    #	menu.Append(self.popupID2, _("Add fonts in this folder and sub-folders to a Pog.") )
 
-	def SelectNoView(self):
-		## Purpose: To select no viewobject and clear view pog list selections
-		## Called when a TARGET item is clicked AND samepogs it True
-		wx.BeginBusyCursor()
-		self.ctrlPogSource.ClearSelection()
-		fpsys.SetViewPogToEmpty()
-		wx.EndBusyCursor()
+        # Popup the menu.  If an item is selected then its handler
+        # will be called before PopupMenu returns.
+    #	self.PopupMenu(menu)
+    #	menu.Destroy()
+
+    #def OnPopupOne(self, event):
+    #	print "\n"
+
+    #def OnPopupTwo(self, event):
+    #	print "Popup one\n"
+
+    def __onDirCtrlClick(self, e):
+        wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
+        p = self.dircontrol.GetPath()
+
+        try:
+            fpsys.instantiateViewFolder(p,self.recurseFolders.GetValue() )
+            fpsys.config.lastdir = p
+        except fontybugs.FolderHasNoFonts, e:
+            pass # update_font_view handles this with a std message.
+
+        ps.pub(reset_to_page_one)# reset before updating!		  
+        ps.pub(update_font_view)
+
+        wx.EndBusyCursor()
+        wx.CallAfter( self.SetFocus )
+
+    def OnViewPogClick(self, args):
+        """
+        args[0] is pogname, args[1] is pognochange
+        """
+        ## Check pognochange, it means this is the same pog as last time.
+        if args[1]: return
+
+        ## instantiateViewPog calls pog.genList which bubbles:
+        ## PogInvalid
+        ## BUT - this error only makes sense from the
+        ## cli pov. By the time the gui is running, that
+        ## pog has been renamed .badpog and therefore 
+        ## won't even appear in the list. So, don't bother
+        ## catching it.
+        fpsys.instantiateViewPog(args[0])
+
+        if fpsys.state.samepogs: #forbid same pogs selection
+            ps.pub(clear_targetpog_selection)
+        else:
+            ps.pub(reset_to_page_one)
+        ps.pub(update_font_view)
+
+    def AddItem(self, pogname):
+        self.ctrlPogSource.AddItem(pogname[0]) #[0] bit is because pogname is a tuple from pubsub.
+
+    def RemoveItem(self, pogname):
+        self.ctrlPogSource.RemoveItem(pogname[0])
+
+    def SelectNoView(self):
+        ## Purpose: To select no viewobject and clear view pog list selections
+        ## Called when a TARGET item is clicked AND samepogs it True
+        wx.BeginBusyCursor()
+        self.ctrlPogSource.ClearSelection()
+        fpsys.SetViewPogToEmpty()
+        wx.EndBusyCursor()

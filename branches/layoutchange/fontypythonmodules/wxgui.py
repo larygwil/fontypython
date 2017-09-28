@@ -71,7 +71,7 @@ class StatusBar(wx.StatusBar):
 
         ## Field 1 is Welcome...
         ## Field 2 is normal conversation.
-        ## Field 3 <if missing .fonts> is the warning message.
+        ## Field 3 <if missing user fonts dir> is the warning message.
         ## Last field "gripper" (32px)
         self.SetFieldsCount( 4 if no_fonts_dir else 3 )
 
@@ -443,7 +443,7 @@ class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
     def OnInit(self):
         #self.Init()  # initialize the inspection tool
 
-        ## Initial dialogue to inform user about their potential fate:
+        ## Initial dialogue to inform user about wx unicode version.
         if not "unicode" in wx.PlatformInfo:
             wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."),
                 caption=_("SORRY: UNICODE MUST BE SUPPORTED"),
