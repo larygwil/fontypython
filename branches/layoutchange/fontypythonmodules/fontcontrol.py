@@ -253,7 +253,7 @@ class FontItem( object ):
 
                 w,h = font.getsize( text )
                 ## Some fonts (50SDINGS.ttf) return a 0 width.
-                ## I don't know exactly why, it could be it could not render
+                ## I don't know exactly why; maybe it could not render
                 ## any of the chars in text.
                 if int(w) == 0:
                     w = 1
