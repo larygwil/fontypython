@@ -63,22 +63,25 @@ class Pencil(object):
     ## A class var
     textExtentsDict = {}
     def __init__( self, id, x, y ):
-        self.id = id
-        self.x = x; self.y = y
+        self.id = id; self.x = x; self.y = y
 
-    def measure(self):
+    def dowork(self):
         pass
 
     def draw(self, memdc):
         pass
 
     ## Yet another stackoverflow gem:
-    def __eq__(self, other, *attributes):
+    ## https://stackoverflow.com/questions/20498436/most-efficient-way-of-comparing-the-contents-of-two-class-instances-in-python
+    ## I had to alter it somewhat.
+    def __eq__(self, other):
         if not isinstance(other, type(self)):
             return NotImplemented
+        attributes = self.__dict__
         if attributes:
-            d = float('NaN')  # default that won't compare equal, even with itself
-            return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes)
+            d = float('NaN') # d won't compare equal, even with itself
+            # exclude underscore attributes and compare all others
+            return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes if not a.startswith("_"))
         return self.__dict__ == other.__dict__
 
 
@@ -92,7 +95,7 @@ class FontPencil(Pencil):
         #Defer this... don't do it in __init__
         self.width = 0 #self.__mf()[0]
 
-    def measure(self):
+    def dowork(self):
         """
         Measure a line of text in my font. Return a wx.Size
         Cache these widths in Pencil class variable.
@@ -125,6 +128,32 @@ class BitmapPencil(Pencil):
 
     def draw(self, memdc):
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
+
+
+class PilPencil(Pencil):
+    def __init__(self, points, text, fitem):
+        self.points = points
+        self.text = text
+        self.fitem = fitem
+        #private attrs
+        self._totheight = 0
+        self._maxwidth = 0
+        self._pillist=[]
+
+    def dowork(self):
+        ## NOTE: generatePilFont sets the colour of the font bitmap!
+        ## The color comes from fitem.inactive t/f
+        for pilimage in self.fitem.generatePilFont( self.points, self.text ):
+            #Only fitems that have a successful pilimage appear in this loop
+            #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
+            self._pillist.append( pilimage )
+            self._totheight += pilimage.size[1] + Fitmap.SPACER
+            self._maxwidth.append(pilimage.size[0])
+
+    def totheight(self): return self._totheight
+
+    def widestpilimage(self): return max(self._maxwidth)
+
 
 
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
@@ -343,7 +372,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             else:
                 self.entire_fitmap_unchanged = False
                 #call stage 2 of the pencil (to do actual work)
-                pencil.measure()
+                pencil.dowork()
                 # Replace the old one in the dict.
                 self.drawDict.update([(pencil.id, pencil)])
 
@@ -560,27 +589,26 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         totheight = 0
         maxwidth = [Fitmap.MIN_FITEM_WIDTH]
 
-        ## NOTE: generatePilFont sets the colour of the font bitmap!
-        ## The color comes from fitem.inactive t/f
         points, text = fpsys.config.points, " " + fpsys.config.text + "  "
-        for pilimage in self.fitem.generatePilFont( points, text ):
-            pilList.append( pilimage )
-            totheight += pilimage.size[1] + Fitmap.SPACER
-            maxwidth.append(pilimage.size[0])
 
-        #??
-        #for pilimage in self.fitem.something
-        #    gather state
-        #    is state == state of last pil something?
-        #    yes: cont
-        #    no: generatePilFont and replace it in list (flag pilListNew)
+        pilpencil = PilPencil( points, text, self ) 
+        totheight = pilpencil.totheight()
+        
+        self.prepDraw( self.pilpencil )
 
+        #for pilimage in self.fitem.generatePilFont( points, text ):
+            #Only fitems that have a successful pilimage appear in this loop
+            #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
+            
+        #    pilList.append( pilimage )
+        #    totheight += pilimage.size[1] + Fitmap.SPACER
+        #    maxwidth.append(pilimage.size[0])
 
         ## Limit the minimum we allow.
         if totheight < Fitmap.MIN_FITEM_HEIGHT:
             totheight = Fitmap.MIN_FITEM_HEIGHT
 
-        self.widestpilimage = max(maxwidth) # find it.
+        self.widestpilimage = pilpencil.widestpilimage() #max(maxwidth) # find it.
 
         ## BADFONT cases
         ##  Badfonts are still available for installation, it's just that I can't
