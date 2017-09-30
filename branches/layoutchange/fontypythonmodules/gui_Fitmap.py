@@ -64,8 +64,12 @@ class Pencil(object):
     textExtentsDict = {}
     def __init__( self, id, x, y ):
         self.id = id; self.x = x; self.y = y
+        self._old = False
+    def setold(self,tf):
+        self._old=tf
+    def isold(self): return self._old
     def getwidth(self): pass
-    def dowork(self): pass
+    def deploy(self): pass
     def draw(self, memdc): pass
 
     ## Yet another stackoverflow gem:
@@ -94,7 +98,7 @@ class DrawTextPencil(Pencil):
 
     def getwidth(self): return self._width
 
-    def dowork(self):
+    def deploy(self):
         """
         Measure a line of text in my font. Return a wx.Size
         Cache these widths in Pencil class variable.
@@ -130,46 +134,101 @@ class DrawBitmapPencil(Pencil):
 
 
 class PilFontPencil(Pencil):
-    def __init__(self, points, text, fitem):
+    def __init__(self, id, points, text, parentfitmap):
         Pencil.__init__(self, id, 0, 0)
         self.points = points
         self.text = text
-        self.inactive = fitem.inactive
+        self.parent = parentfitmap
+        self.inactive = parentfitmap.fitem.inactive
         #private attrs
-        self._fitem = fitem
+        self._fitem = parentfitmap.fitem
         self._totheight = 0
-        self._maxwidth = 0
+        self._maxpilwidth = 0
         self._pillist=[]
+        self._drawlist=[] #my own pencils
 
-    def dowork(self):
+    def deploy(self):
+        ## Get a list of pilimages, for each subface: Some fonts 
+        ## have multiple faces, and their heights.
+        ## (For example TTC files.)
+        ## REMEMBER: This loop is all FOR THIS ONE FONT ITEM.
+        ## It only supplies pilimages for fonts it could open and
+        ## render. So this font may indeed have nothing in the pilList[]
+        ## after this loop.
         ## NOTE: generatePilFont sets the colour of the font bitmap!
         ## The color comes from fitem.inactive t/f
-        for pilimage in self._fitem.generatePilFont( self.points, self.text ):
+        myfitem = self._fitem 
+
+        self._maxpilwidth = [Fitmap.MIN_FITEM_WIDTH]
+        for pilimage in myfitem.generatePilFont( self.points, self.text ):
             #Only fitems that have a successful pilimage appear in this loop
             #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
             self._pillist.append( pilimage )
             self._totheight += pilimage.size[1] + Fitmap.SPACER
-            self._maxwidth.append(pilimage.size[0])
+            self._maxpilwidth.append(pilimage.size[0])
 
-        ## BADFONT cases
-        ##  Badfonts are still available for installation, it's just that I can't
-        ##  display their glyph or fam/style info (until PIL is patched).
-        self._fitem.setStyle() #Go set the self.style
-        fcol = self.style['fcol']
-        bcol = self.style['bcol']
+        self.parent.setStyle() # reaches into the fitem to do this.
+        fcol = self.parent.style['fcol']
+        bcol = self.parent.style['bcol']
 
-        if not self._fitem.badfont:
+        if not myfitem.badfont:
+            mainy = 10
+            i = 0
+            for pilimage in self._pillist:
+                ## We don't need pilwidth here as we already have the max
+                ## from up-code in the for loop.
+                ## We do use the glyphHeight
+                pilwidth, glyphHeight = pilimage.size
+                try:
+                    ## Get the data from PIL into wx.
+                    ## Now with alpha! Thanks to:
+                    ## http://nedbatchelder.com/blog/200801/truly_transparent_text_with_pil.html
+                    ## http://wiki.wxpython.org/WorkingWithImages
+                    image=None
+                    #image = apply( wx.EmptyImage, pilimage.size )
+                    image = wx.EmptyImage(*pilimage.size)
+                    image.SetData(pilimage.convert( "RGB").tobytes() )
+                    image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
 
+                    fx,fy = myfitem.CalculateTopLeftAdjustments( image, i, pilimage )
 
+                    faceBitmap = image.ConvertToBitmap()
+                    #forcederror() #to test the except
+                except:
+                    ## Some new error that I've not seen before...
+                    ## It may also be a bad sub-face from a ttc font.
+                    txt = _("This text cannot be drawn. Hey, it happens...")
+                    cannotdraw = DrawTextPencil( "cannotdraw", 10, mainy+2, txt, fcol,
+                                    fpsys.config.points, style=wx.ITALIC)
+                    self._drawlist.append(cannotdraw)
+                else:
+                    ## Place it into the main image, down a tad so it looks better.
+                    x = 16
+                    if i > 0: x *= 3 # Shift sub-faces over a little
+                    fontbitmap = DrawBitmapPencil( "facebitmap", x-fx, mainy-fy,
+                                    faceBitmap, width = max(self._maxpilwidth) )
+                    self._drawlist.append( fontbitmap )
 
-            
+                ## The font name/fam/style : fnfs
+                txt = "%s - %s - [%s]" % (myfitem.family[i],
+                                          myfitem.style[i], myfitem.name)
+                nfs = DrawTextPencil( "namefamstyle", 28,
+                                    mainy + glyphHeight + 8, txt, fcol, points=8 )
+                self._drawlist.append( nfs )
 
+                ## Move TOP down to next BOTTOM (for next sub-face)
+                mainy += glyphHeight +  Fitmap.SPACER
+
+                ## Goto next face, if any.
+                i += 1
 
     def totheight(self): return self._totheight
 
-    def getwidth(self): return max(self._maxwidth)
+    def getwidth(self): return max(self._maxpilwidth)
 
-    def draw(self, memdc=None): return # does not draw
+    def draw(self, memdc):
+        for pencil in self._drawlist:
+            pencil.draw(memdc)
 
 
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
@@ -286,7 +345,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #self.drawlist = []
         self.drawDict = collections.OrderedDict()
 
-        self.dcw = []
+        #self.dcw = []
         self.bitmap = None
         self.prepareBitmap()
         sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
@@ -342,7 +401,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Clears the dcw (dc width list)
         Returns a memdc for sundry use.
         """
-        w = max(self.dcw)
+
+        #if all(the pencils are old) then return
+        if all( p.isold() for p in self.drawDict.values()): return None
+
+        #w = max(self.dcw)
+        w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
 
         bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
@@ -352,22 +416,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.bitmap = bitmap #record this for the init
 
         ## Draw it all - via the pencils
-        #for pencil in self.drawlist:
-        #	pencil.Draw(memDc)
         for pencil in self.drawDict.values():
             pencil.draw(memDc)
             #print "drawing:", pencil.id
 
         ## Now empty the drawlist
         #del self.drawDict
-       ??? self.drawDict.clear()
+        #??? self.drawDict.clear()
 
         ## Also empty the dcw list
-        del self.dcw[:]
+        #del self.dcw[:]
 
         return memDc
 
-    def prepDraw(self, pencil):
+    def prepDraw(self, newpencil):
         """
         Given a pencil, this will append it to the drawDict.
         If there's a width in the pencil, that goes into the
@@ -375,31 +437,31 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         n times the x coord added to the width)
         """
         
-        def _growdcw(pencil):
-            w = pencil.getwidth()
-            if w > 0: self.dcw.append( w + int(1.5 * pencil.x) )
+        #def _growdcw(pencil):
+        #    w = pencil.getwidth()
+        #    if w > 0: self.dcw.append( w + int(1.5 * pencil.x) )
 
-        # possible point in which to cmp old pencil vs new pencil
-        # to see if it needs drawing at all
-        #import pdb; pdb.set_trace()
-        oldpencil = self.drawDict.get(pencil.id, None)
+        oldpencil = self.drawDict.get(newpencil.id, None)
         if oldpencil:
-            #cmp oldpencil to new pencil
-            if pencil == oldpencil:
-                del pencil
-                _growdcw(oldpencil)
+            ## And.. they are the same...
+            if newpencil == oldpencil:
+                oldpencil.setold(True)
+                #_growdcw(oldpencil)
+                del newpencil
                 return
             else:
-                self.entire_fitmap_unchanged = False
-                #call stage 2 of the pencil (to do actual work)
-                pencil.dowork()
-                _growdcw(pencil)
-                # Replace the old one in the dict.
-                self.drawDict.update( {oldpencil.id : pencil} )
-        else:
-            pencil.dowork()
-            _growdcw(pencil)
-            self.drawDict[pencil.id] = pencil
+                del oldpencil
+                
+        ## So, there' no oldpencil or the newpencil differs
+        ## This: deploy(), and add it to my drawDict.
+        newpencil.deploy()
+        #_growdcw(newpencil)
+        ## .update will also add if key is not found.
+        ## The oldpencil's slot in the dict is held by the .id
+        ## therefore we are gonna replace it by update.
+        self.drawDict.update( {newpencil.id : newpencil} )
+        #print self.drawDict
+        #import pdb; pdb.set_trace()
 
 
 
@@ -602,103 +664,35 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.usePencils(Fitmap.MIN_FITEM_HEIGHT + 20)
             return
 
-        ## Get a list of pilimages, for each subface: Some fonts 
-        ## have multiple faces, and their heights.
-        ## (For example TTC files.)
-        ## REMEMBER: This loop is all FOR THIS ONE FONT ITEM.
-        ## It only supplies pilimages for fonts it could open and
-        ## render. So this font may indeed have nothing in the pilList[]
-        ## after this loop.
-        pilList=[]
-        totheight = 0
-        maxwidth = [Fitmap.MIN_FITEM_WIDTH]
-
-
-
-        ## Must do this block to know if badfont is true or false
         points, text = fpsys.config.points, " " + fpsys.config.text + "  "
         pilpencil = PilFontPencil( "pilpencil", points, text, self ) 
+
+        # prepDraw will cause PilFontPencil to draw the entire shebang
+        # into a bitmap.
         self.prepDraw(pilpencil)
+
         totheight = pilpencil.totheight()
-        #for pilimage in self.fitem.generatePilFont( points, text ):
-            #Only fitems that have a successful pilimage appear in this loop
-            #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
-        #    pilList.append( pilimage )
-        #    totheight += pilimage.size[1] + Fitmap.SPACER
-        #    maxwidth.append(pilimage.size[0])
 
         ## Limit the minimum we allow.
         if totheight < Fitmap.MIN_FITEM_HEIGHT:
             totheight = Fitmap.MIN_FITEM_HEIGHT
 
-        ## BADFONT cases
-        ##  Badfonts are still available for installation, it's just that I can't
-        ##  display their glyph or fam/style info (until PIL is patched).
-        self.setStyle() #Go set the self.style
-        fcol = self.style['fcol']
-        bcol = self.style['bcol']
-
+        # badfont has been set by the PilFontPencil
         if self.fitem.badfont:
             ## We have a badstyle to help us differentiate these.
             totheight = Fitmap.MIN_FITEM_HEIGHT
             if self.fitem.inactive: totheight += 5 #Need more space
             self.drawInfoOrError( )
-        ## It's *not* a badfont
-        else:
-            
 
-            self.widestpilimage = pilpencil.getwidth()
-
-            if self.fitem.inactive:
-                totheight += (Fitmap.SPACER-10) #want room for 'is in pog' message.
-
-            #TODO self.bottomFadeEffect( memDc, totheight, maxwidth )
-
-            mainy = 10
-            i = 0
-            for pilimage in pilList:
-                pilwidth, glyphHeight = pilimage.size
-                state = 0
-                try:
-                    ## Get the data from PIL into wx.
-                    ## Now with alpha! Thanks to:
-                    ## http://nedbatchelder.com/blog/200801/truly_transparent_text_with_pil.html
-                    ## http://wiki.wxpython.org/WorkingWithImages
-                    image=None
-                    #image = apply( wx.EmptyImage, pilimage.size )
-                    image = wx.EmptyImage(*pilimage.size)
-                    image.SetData( pilimage.convert( "RGB").tobytes() )
-                    image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
-
-                    fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
-
-                    faceBitmap = image.ConvertToBitmap()
-                    #forcederror() #to test the except
-                except:
-                    #debug: raise
-                    ## Some new error that I have not caught before has happened.
-                    ## It may also be a bad sub-face from a ttc font.
-                    txt=_("This text cannot be drawn. Hey, it happens...")
-                    self.prepDraw( DrawTextPencil( "cannotdraw", 10, mainy+2, txt, fcol, fpsys.config.points, style=wx.ITALIC) )
-
-                else:
-                    ## Place it into the main image, down a tad so it looks better.
-                    x = 16
-                    if i > 0: x *= 3 # Shift sub-faces over a little
-                    self.prepDraw( DrawBitmapPencil( "facebitmap", x-fx, mainy-fy, faceBitmap, width=self.widestpilimage) )
-
-                ## The font name/fam/style : fnfs
-                txt = "%s - %s - [%s]" % (self.fitem.family[i], self.fitem.style[i], self.name)
-                self.prepDraw( DrawTextPencil( "namefamstyle", 28, mainy + glyphHeight + 8, txt, fcol, points=8 ) )
-
-                ## Move TOP down to next BOTTOM (for next sub-face)
-                mainy += glyphHeight +  Fitmap.SPACER
-
-                ## Goto next face, if any.
-                i += 1
+        if self.fitem.inactive:
+            totheight += (Fitmap.SPACER-10) #want room for 'is in pog' message.
 
         ## Record the calculated height
         self.height = totheight
+        
+        #self.setStyle() # was done in PilFontPencil's deploy() method
+        fcol = self.style['fcol']
+        bcol = self.style['bcol']
 
         ## Special INACTIVE (Font already in...) message:
         if self.fitem.inactive:
@@ -723,14 +717,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## it so we can do some last-minute stuff later.
         ## NOTE: By drawing into memDc, we are drawing into self.bitmap
 
-        if not self.entire_fitmap_unchanged:
-            self.entire_fitmap_unchanged = True
 
-            memDc = self.usePencils( totheight )
-
+        memDc = self.usePencils( totheight )
+        
+        if memDc:
             ## Now a dividing line
             memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-            memDc.DrawLine( 0, self.height-1, self.widestpilimage, self.height-1 )
+            memDc.DrawLine( 0, self.height-1, pilpencil.getwidth(), self.height-1 )
         #print "prepareBitmap ends for:", self
 
     def setStyle( self ):

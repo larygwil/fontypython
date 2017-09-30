@@ -263,6 +263,12 @@ class FontItem( object ):
                 pilheight += 10
 
                 ## Sept 2009 : Fiddled this to produce alpha (ish) images.
+                ## pilimage is of type PIL.Image.Image. 
+                ## python
+                ## >>> from PIL import Image
+                ## >>> pi = Image("RGBA",(10,10))
+                ## >>> dir(pi)
+
                 pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))
 
                 if self.inactive:
