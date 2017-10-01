@@ -65,12 +65,32 @@ class Pencil(object):
     def __init__( self, id, x, y ):
         self.id = id; self.x = x; self.y = y
         self._old = False
+        self._drawlist=[] #my own pencils
+
+    def queue(self, pencil):
+        pencil.deploy()
+        self._drawList.append(pencil)
+
     def setold(self,tf):
         self._old=tf
     def isold(self): return self._old
     def getwidth(self): pass
     def deploy(self): pass
     def draw(self, memdc): pass
+
+    def _inspect(self, you):
+        print "Inspecting:", self.__class__
+        print '{:>20} {:>20} {:>20}'.format("","self", "other")
+        for k,v in self.__dict__.iteritems():
+            if not k.startswith("_"):
+                youv = you.__dict__.get(k)
+                if k=="parent": v=id(v); youv=id(youv)
+                tf = v==youv
+                v = u"{}".format(v)
+                v = v[-1*min(max(len(v),20),20):]
+                youv = u"{}".format(youv)
+                youv = youv[-1*min(max(len(youv),20),20):]
+                print '{:>20}={:>20} {:>20} :{}'.format(k, v, youv, tf)
 
     ## Yet another stackoverflow gem:
     ## https://stackoverflow.com/questions/20498436/most-efficient-way-of-comparing-the-contents-of-two-class-instances-in-python
@@ -80,6 +100,7 @@ class Pencil(object):
             return NotImplemented
         attributes = self.__dict__
         if attributes:
+            self._inspect(other)
             d = float('NaN') # d won't compare equal, even with itself
             # exclude underscore attributes and compare all others
             return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes if not a.startswith("_"))
@@ -132,20 +153,41 @@ class DrawBitmapPencil(Pencil):
     def draw(self, memdc):
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
+class InactiveMessagePencil(Pencil):
 
+class TickMapPencil(Pencil):
+    def __init__(self,id, fitmap):
+        Pencil.__init__(self, id, 0, 0)
+        # private
+        self._fitem = fitmap.fitem
+        self._fitmap = fitmap
+        # state comparable
+        self.badfont = self._fitem.badfont
+        self.inactive = self._fitem.inactive
+    def deploy(self):
+        fm = self.fitmap; fi = self._fitem
+        fcol = fm.fcol
+        bitmap = fm.TICKSMALL
+        if fi.inactive:
+            self.x, self.y = (25, fm.height-20) if fi.badfont else (48, fm.height-26)
+
+            self._drawlist.append( DrawBitmapPencil( "bmpinactive", x-16, y-1, self.bitmap) )
+
+            txt = self.txt
+            self._drawlist.append( DrawTextPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
+        
 class PilFontPencil(Pencil):
-    def __init__(self, id, points, text, parentfitmap):
+    def __init__(self, id, points, text, fitmap):
         Pencil.__init__(self, id, 0, 0)
         self.points = points
         self.text = text
-        self.parent = parentfitmap
-        self.inactive = parentfitmap.fitem.inactive
+        self.parent = fitmap
+        self.inactive = fitmap.fitem.inactive
         #private attrs
-        self._fitem = parentfitmap.fitem
+        self._fitem = fitmap.fitem
         self._totheight = 0
-        self._maxpilwidth = 0
+        self._maxpilwidth = []
         self._pillist=[]
-        self._drawlist=[] #my own pencils
 
     def deploy(self):
         ## Get a list of pilimages, for each subface: Some fonts 
@@ -190,31 +232,31 @@ class PilFontPencil(Pencil):
                     image.SetData(pilimage.convert( "RGB").tobytes() )
                     image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
 
-                    fx,fy = myfitem.CalculateTopLeftAdjustments( image, i, pilimage )
+                    fx,fy = self.parent.CalculateTopLeftAdjustments( image, i, pilimage )
 
                     faceBitmap = image.ConvertToBitmap()
                     #forcederror() #to test the except
-                except:
-                    ## Some new error that I've not seen before...
-                    ## It may also be a bad sub-face from a ttc font.
+                except Exception as e:
+                    ## Oddballs or possible bad sub-face in a ttc font.
+                    ##TODO: Include the error message somehow.
                     txt = _("This text cannot be drawn. Hey, it happens...")
                     cannotdraw = DrawTextPencil( "cannotdraw", 10, mainy+2, txt, fcol,
                                     fpsys.config.points, style=wx.ITALIC)
-                    self._drawlist.append(cannotdraw)
+                    self.queue( cannotdraw )
                 else:
                     ## Place it into the main image, down a tad so it looks better.
                     x = 16
                     if i > 0: x *= 3 # Shift sub-faces over a little
                     fontbitmap = DrawBitmapPencil( "facebitmap", x-fx, mainy-fy,
                                     faceBitmap, width = max(self._maxpilwidth) )
-                    self._drawlist.append( fontbitmap )
+                    self.queue( fontbitmap )
 
                 ## The font name/fam/style : fnfs
                 txt = "%s - %s - [%s]" % (myfitem.family[i],
                                           myfitem.style[i], myfitem.name)
                 nfs = DrawTextPencil( "namefamstyle", 28,
                                     mainy + glyphHeight + 8, txt, fcol, points=8 )
-                self._drawlist.append( nfs )
+                self.queue( nfs )
 
                 ## Move TOP down to next BOTTOM (for next sub-face)
                 mainy += glyphHeight +  Fitmap.SPACER
@@ -381,17 +423,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #if self.fitem.inactive:
         #	self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 
-    def xxxDoGetBestSize(self):
-        """
-        I can't get this right. Best to leave it out.
-        xxx in front means it never gets called.
-        """
-        try:
-            sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
-        except:
-            sz = (Fitmap.MIN_FITEM_WIDTH, Fitmap.MIN_FITEM_HEIGHT)
-        print "DoGetBestSize:", sz
-        return sz
+
 
     def usePencils(self, h):
         """
@@ -429,26 +461,30 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         return memDc
 
-    def prepDraw(self, newpencil):
+    def queue(self, newpencil):
         """
         Given a pencil, this will append it to the drawDict.
         If there's a width in the pencil, that goes into the
         dcw list (a space on the right-hand side is calculated by
         n times the x coord added to the width)
         """
-        
+        print
+        print "queue with:{} id:{}".format( newpencil, newpencil.id)
         #def _growdcw(pencil):
         #    w = pencil.getwidth()
         #    if w > 0: self.dcw.append( w + int(1.5 * pencil.x) )
 
         oldpencil = self.drawDict.get(newpencil.id, None)
         if oldpencil:
+            print "  has an oldpencil"
             ## And.. they are the same...
             if newpencil == oldpencil:
+                print "Keeping oldpencil:", oldpencil.id
+                #print "_maxpilwidth:", oldpencil._maxpilwidth
                 oldpencil.setold(True)
                 #_growdcw(oldpencil)
-                del newpencil
-                return
+                #del newpencil
+                return oldpencil
             else:
                 del oldpencil
                 
@@ -459,10 +495,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## .update will also add if key is not found.
         ## The oldpencil's slot in the dict is held by the .id
         ## therefore we are gonna replace it by update.
+        print "Using newpencil:{} id:{}".format(newpencil, newpencil.id)
         self.drawDict.update( {newpencil.id : newpencil} )
-        #print self.drawDict
+        print "drawDict is:"
+        print self.drawDict
         #import pdb; pdb.set_trace()
-
+        return newpencil
 
 
     def openCharacterMap( self ):
@@ -652,7 +690,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ##  if isinstance(o, (set, tuple, list)): return tuple([make_hash(e) for e in o])
 
 
-        print "prepareBitmap runs for:", self
+        #print "prepareBitmap runs for:", self
         ## Is this a normal FontItem, or an InfoFontItem?
         ## InfoFontItem is a fake font item for the purposes
         ## of saying "There are no fonts to see here."
@@ -665,13 +703,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             return
 
         points, text = fpsys.config.points, " " + fpsys.config.text + "  "
-        pilpencil = PilFontPencil( "pilpencil", points, text, self ) 
+        #pilpencil = PilFontPencil( "pilpencil", points, text, self ) 
 
-        # prepDraw will cause PilFontPencil to draw the entire shebang
+        # queue will cause PilFontPencil to draw the entire shebang
         # into a bitmap.
-        self.prepDraw(pilpencil)
+        pilpencil = self.queue(PilFontPencil( "pilpencil", points, text, self ))
 
         totheight = pilpencil.totheight()
+
+        print
+        print pilpencil#.getwidth()
+        print 
 
         ## Limit the minimum we allow.
         if totheight < Fitmap.MIN_FITEM_HEIGHT:
@@ -695,12 +737,31 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         bcol = self.style['bcol']
 
         ## Special INACTIVE (Font already in...) message:
+        #self.queue(InactiveMessagePencil('imp', self.height, self.fitem.badfont, self.fitem.inactive, fcol, self.fitem.activeInactiveMsg, self.TICKSMALL))
+        self.queue(InactiveMessagePencil('imp', self ))
         if self.fitem.inactive:
             x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-            self.prepDraw( DrawBitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
+
+            self.queue( DrawBitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
 
             txt = self.fitem.activeInactiveMsg
-            self.prepDraw( DrawTextPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
+            self.queue( DrawTextPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
         ## NB: FILE_NOT_FOUND is not available for installation!
@@ -710,7 +771,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 #print " tickmap is tick:", self.TICKMAP
 
                 self.TICKMAP = self.parent.parent.TICKMAP
-                self.prepDraw( DrawBitmapPencil( "tickmap", 20, 5, self.TICKMAP) )
+                self.queue( DrawBitmapPencil( "tickmap", 20, 5, self.TICKMAP) )
 
         ## Make one big bitmap to house one or more faces (subfaces)
         ## Draw it all - via the pencils. Also makes the memDc and returns
@@ -724,7 +785,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ## Now a dividing line
             memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
             memDc.DrawLine( 0, self.height-1, pilpencil.getwidth(), self.height-1 )
-        #print "prepareBitmap ends for:", self
 
     def setStyle( self ):
         """
@@ -809,7 +869,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ix,iy = (6,10) if isinfo else (2,6)
 
             ix += offx
-            self.prepDraw( DrawBitmapPencil( "infoicon", ix, iy, Icon) )
+            self.queue( DrawBitmapPencil( "infoicon", ix, iy, Icon) )
 
         ## Prep and measure the texts to be drawn. Add them to drawlist.
         fcol = self.style['fcol']
@@ -820,9 +880,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx,ty = (46,15) if isinfo else (38 , 20)
 
         tx += offx
-        self.prepDraw( DrawTextPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
+        self.queue( DrawTextPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD) )
 
         tx,ty = (46,40) if isinfo else (5 ,40)
 
         tx += offx
-        self.prepDraw( DrawTextPencil( "tup1", tx, ty, textTup[1], fcol, points=10 ) )
+        self.queue( DrawTextPencil( "tup1", tx, ty, textTup[1], fcol, points=10 ) )
