@@ -33,7 +33,7 @@ ndi=(227,226,219) # No Draw Inactive => "ndi"
 black=(0,0,0)
 white=(255,255,255)
 
-class OverOutSignal(object):
+class xxxOverOutSignal(object):
     """
     Signal an external function when a state has CHANGED from
     True to False or vice-vera
@@ -48,9 +48,25 @@ class OverOutSignal(object):
             return True
         return False
     def set( self, truth ):
-        if self.state == truth:	return
+        if self.state == truth: return #shortcut return if same val
         self.state = truth
         if self.__changed(): self.announce()
+
+
+class OverOutSignal(object):
+    """
+    Signal an external function when a state has CHANGED from
+    True to False or vice-vera
+    """
+    def __init__( self, func_to_signal ):
+        self.announce = func_to_signal
+        self.state = False
+    def set( self, newtruth ):
+        if self.state == newtruth: return # no change
+        # implies there's now an actual change, thus:
+        self.state = newtruth
+        self.announce()
+
 
 
 class Pencil(object):
@@ -292,7 +308,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     'backcol': (255,214,57),
                     'fcol'   : black,
                     'bcol'   : white,
-                    'icon'	 : "NOT_FOUND",
+                    'icon'   : "NOT_FOUND",
                     'ndi'    : ndi
                     },
             'PIL_SEGFAULT_ERROR':
@@ -300,53 +316,53 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     'backcol': (152,147,157), #255,140,20),
                     'fcol'   : black,
                     'bcol'   : white,
-                    'icon'	 : "SEGFAULT",
-                    'ndi'	 : (216,193,193)
+                    'icon'   : "SEGFAULT",
+                    'ndi'    : (216,193,193)
                     },
             'PIL_IO_ERROR':
                 {
                     'backcol': ndc,
                     'fcol'   : black,
                     'bcol'   : white,
-                    'icon'	 : "NO_DRAW",
-                    'ndi'	 : ndi
+                    'icon'   : "NO_DRAW",
+                    'ndi'    : ndi
                     },
             'PIL_UNICODE_ERROR':
                 {
                     'backcol': ndc,
                     'fcol'   : black,
                     'bcol'   : white,
-                    'icon'	 : "NO_DRAW",
-                    'ndi'	 : ndi
+                    'icon'   : "NO_DRAW",
+                    'ndi'    : ndi
                     },
             'PIL_CANNOT_RENDER':
                 {
                     'backcol': ndc,
                     'fcol'   : black,
                     'bcol'   : white,
-                    'icon'	 : "NO_DRAW",
-                    'ndi'	 : ndi
+                    'icon'   : "NO_DRAW",
+                    'ndi'    : ndi
                     },
             'ACTIVE':
                 {
                     'backcol': white,
                     'fcol'   : black,
                     'bcol'   : (200,200,200),
-                    'icon'	 : None,
+                    'icon'   : None,
                 },
             'INACTIVE':
                 {
                     'backcol': white,
                     'fcol'   : (98,98,98), #128,128,128), 
                     'bcol'   : white,
-                    'icon'	 : None,
+                    'icon'   : None,
                     'ndi'    : ndi
                 },
             'INFO_FONT_ITEM':
                 {
                     'backcol': white,
                     'fcol'   : black,
-                    'icon'	 : "INFO_ITEM",
+                    'icon'   : "INFO_ITEM",
                 }
             }
     MIN_FITEM_WIDTH = 450
@@ -386,6 +402,31 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Go draw the fitmap into a memory dc
         #self.drawlist = []
         self.drawDict = collections.OrderedDict()
+
+
+        #States: when or-ed together indicate they were SET
+        #These states are related to other state variables
+        #like "inactive" (in an fitem) but live in this object.
+        #We would say:
+        # When the font item becomes inactive, the fitmap's activechanged status bit must be set.
+        # Then we react on that fact and clear the bit for that status.
+        activechanged =      1
+        pointsizechanged =   2
+        textchanged =        4
+        selectedchanged =    8
+
+        ## AND masks to extract block info out of the state byte
+        ## Multiple states can land one in a single block.
+        ## A combo of activechanged plus pointsizechanged -> both go in block A
+        ## because the two flags overlap in their intentions.
+        ## activechanged means all new face bitmaps and more.
+        ## pointsizechanged means much the same
+        ## Therefore we gather them into "blocks" of work.
+
+        blockA = 1
+        blockB = 3
+        blockC = 7
+        blockD = 8
 
         #self.dcw = []
         self.bitmap = None
@@ -701,6 +742,38 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ## the info text. See class InfoFontItem in fontcontrol.py
             self.usePencils(Fitmap.MIN_FITEM_HEIGHT + 20)
             return
+
+        if state == 0: 
+            No change...
+        else:
+            # Blocks A,B,C are exclusive
+            if state & blockA == 1:
+                #Block A
+                # active/inactive state has changed
+                # New - Face bitmaps
+                # New - Captions
+                # New - Green tick (position)
+                # New - "This font is already in ___" position, and string?
+
+            elif state & blockB == 2:
+                #Block B
+                # point size of font has changed
+                # New - face bitmaps
+                # New - Captions
+            elif state & blockC == 4:
+                #Block C
+                # text of the font bitmaps has changed
+                # New - Face bitmaps
+
+            ## Block D can happen alongside A,B or C
+            if state & blockD == 8:
+                # BlockD
+                # select has changed - item is selected, or it's not
+                # New - Tick/Cross or Nothing
+        
+            # Remove all the flags
+            state = 0
+
 
         points, text = fpsys.config.points, " " + fpsys.config.text + "  "
         #pilpencil = PilFontPencil( "pilpencil", points, text, self ) 
