@@ -60,13 +60,109 @@ class OverOutSignal(object):
     """
     def __init__( self, func_to_signal ):
         self.announce = func_to_signal
-        self.state = False
+        self.truthstate = False
     def set( self, newtruth ):
-        if self.state == newtruth: return # no change
+        if self.truthstate == newtruth: return # no change
         # implies there's now an actual change, thus:
-        self.state = newtruth
+        self.struthstate = newtruth # Orwell would be proud! :D
         self.announce()
 
+class Ricordi(object):
+    """A variable that remembers its last value."""
+    def __init__(self):
+        self._prevvalue = None
+        self._first = True
+    def differs(self, something):
+        """
+        Sets the value and tests if it differs from
+        the last value. 
+        Returns: True or False
+        (If first run, it sets and returns true)
+        """
+        if self._first: 
+            self._first = False
+            tf = True
+        else:
+            tf = self._prevvalue != something
+
+        self._prevvalue = something
+        return tf
+
+class DrawState(object):
+    """TODO: comment better
+    States: when or-ed together indicate they were SET..
+    Not what they are set-to, just *that* they changed.
+    #These states are related to other state variables
+    #like "inactive" (in an fitem) but live in this object.
+    #We would say:
+    # When the font item becomes inactive, the fitmap's
+    #  activechanged status bit must be set.
+    # Then we react on that fact and clear the bit for 
+    #  that status.
+
+    ## AND masks to extract block info out of the state byte
+    ## Multiple states can land one in a single block.
+    ## A combo of activechanged plus pointsizechanged -> 
+    ## both go in block A
+    ## because the two flags overlap in their intentions.
+    ## activechanged means all new face bitmaps and more.
+    ## pointsizechanged means much the same
+    ## Therefore we gather them into "blocks" of work.
+    """
+    inactivemask =  1
+    pointsmask =    2
+    textmask =      4
+    tickedmask =    8
+
+    blocks=
+      {"A":(1, 1), # Block "A" AND test is & 1 == 1
+       "B":(3, 2), # "B" is & 3 == 2
+       "C":(7, 4), # etc.
+       "D":(8, 8),
+       "Z":(0, 0)}
+   
+    def __init__(self, fitmap):
+        self.parent = fitmap
+        self.state = 0
+        self.laststate = self.state
+        #
+        self._points = Ricordi() 
+        self._text = Ricordi() 
+        self._inactive = Ricordi() 
+        self._ticked = Ricordi() 
+
+    def determine(self):
+        """
+        Looking at very specific variables which 
+        influence how we will draw the font bitmap.
+        We OR the values onto state as we go.
+        On first run, the state will be 15, i.e.
+        blocks A and D; which means make everything
+        from scratch.
+        """
+        self.state = 0
+        if self._points.differs(fpsys.config.points):
+            self.state |= DrawState.pointsmask
+
+        if self._text.differs(fpsys.config.text):
+            self.state |= DrawState.textmask
+
+        if self._inactive.differs(self.parent.fitem.inactive):
+            self.state |= DrawState.inactivemask
+
+        if self._ticked.differ(self.parent.fitem.ticked):
+            self.state |= DrawState.tickedmask
+
+    def isblock(self, c):
+        """
+        This looks at the state and determines 
+        which block it's in.
+        E.g. if xx.isblock("A"):
+        """
+        return self._state & DrawState.blocks[c][0] == \
+                DrawState.blocks[c][1]
+
+        
 
 
 class Pencil(object):
@@ -404,29 +500,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.drawDict = collections.OrderedDict()
 
 
-        #States: when or-ed together indicate they were SET
-        #These states are related to other state variables
-        #like "inactive" (in an fitem) but live in this object.
-        #We would say:
-        # When the font item becomes inactive, the fitmap's activechanged status bit must be set.
-        # Then we react on that fact and clear the bit for that status.
-        activechanged =      1
-        pointsizechanged =   2
-        textchanged =        4
-        selectedchanged =    8
 
-        ## AND masks to extract block info out of the state byte
-        ## Multiple states can land one in a single block.
-        ## A combo of activechanged plus pointsizechanged -> both go in block A
-        ## because the two flags overlap in their intentions.
-        ## activechanged means all new face bitmaps and more.
-        ## pointsizechanged means much the same
-        ## Therefore we gather them into "blocks" of work.
 
-        blockA = 1
-        blockB = 3
-        blockC = 7
-        blockD = 8
+        self.drawstate = DrawState(self)
 
         #self.dcw = []
         self.bitmap = None
@@ -714,22 +790,23 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         This is where all the drawing code goes. It gets the font rendered
         from the FontItems (via PIL) and then draws a single Fitmap.
+Normal Font item:
+Layer #	
+0	Gradient gray up to white
+1	Each face bitmap
+2	Each caption under it
+3	The Green tick
+4	The “This font is in ___” text
+5	Red tick or cross or nothing
+6	Charmap button
+
+Info or Bad Font item:
+Layer #	
+0	Colour gradient bottom to top
+1	Font info text
+2	Icon and message
+
         """
-
-        ##Sept 2017
-        ## My thinking is that:
-        ## If this routine can somehow determine that the visual state is about to change
-        ## (from what it was last time), then we can know if we can return early -- i.e.
-        ## reuse the current bitmap as-is.
-        ## If so, then we can save a lot of time in creating fitmaps in the MinimalCreateFitmaps
-        ## method of gui_ScrolledFontView
-        ##
-        ## Idea - What if the pencils can make a state "stamp" we can match on?
-        ## It's not ideal because the pencils happen after a lot of work
-        ## on x,y coords and colours and so on..
-        ## Esp problematic with faceBitmap ... Damn ...
-        ##  if isinstance(o, (set, tuple, list)): return tuple([make_hash(e) for e in o])
-
 
         #print "prepareBitmap runs for:", self
         ## Is this a normal FontItem, or an InfoFontItem?
@@ -743,36 +820,34 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.usePencils(Fitmap.MIN_FITEM_HEIGHT + 20)
             return
 
-        if state == 0: 
-            No change...
-        else:
-            # Blocks A,B,C are exclusive
-            if state & blockA == 1:
-                #Block A
-                # active/inactive state has changed
-                # New - Face bitmaps
-                # New - Captions
-                # New - Green tick (position)
-                # New - "This font is already in ___" position, and string?
+        # Blocks A,B,C are exclusive
+        # Initial run has state set to block A and D (i.e. do it all anew)
+        if self.drawstate.isblock("A"):
+            #Block A
+            # active/inactive state has changed
+            # New - Face bitmaps
+            # New - Captions
+            # New - Green tick (position)
+            # New - "This font is already in ___" position, and string?
 
-            elif state & blockB == 2:
-                #Block B
-                # point size of font has changed
-                # New - face bitmaps
-                # New - Captions
-            elif state & blockC == 4:
-                #Block C
-                # text of the font bitmaps has changed
-                # New - Face bitmaps
+        elif state & blockB == 2:
+            #Block B
+            # point size of font has changed
+            # New - face bitmaps
+            # New - Captions
+        elif state & blockC == 4:
+            #Block C
+            # text of the font bitmaps has changed
+            # New - Face bitmaps
 
-            ## Block D can happen alongside A,B or C
-            if state & blockD == 8:
-                # BlockD
-                # select has changed - item is selected, or it's not
-                # New - Tick/Cross or Nothing
-        
-            # Remove all the flags
-            state = 0
+        ## Block D can happen alongside A,B or C
+        if state & blockD == 8:
+            # BlockD
+            # select has changed - item is selected, or it's not
+            # New - Tick/Cross or Nothing
+    
+        # Remove all the flags
+        state = 0
 
 
         points, text = fpsys.config.points, " " + fpsys.config.text + "  "
