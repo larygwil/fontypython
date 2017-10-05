@@ -176,64 +176,21 @@ class Pencil(object):
     textExtentsDict = {}
     def __init__( self, id, x=0, y=0 ):
         self.id = id; self.x = x; self.y = y
-        self._old = False
-        self._drawlist=[] #my own pencils
-
-    def queue(self, pencil):
-        pencil.deploy()
-        self._drawList.append(pencil)
-
-    def setold(self,tf):
-        self._old=tf
-    def isold(self): return self._old
-    def getwidth(self): pass
     def deploy(self): pass
+    def getwidth(self): pass
     def draw(self, memdc): pass
-
-    def _inspect(self, you):
-        print "Inspecting:", self.__class__
-        print '{:>20} {:>20} {:>20}'.format("","self", "other")
-        for k,v in self.__dict__.iteritems():
-            if not k.startswith("_"):
-                youv = you.__dict__.get(k)
-                if k=="parent": v=id(v); youv=id(youv)
-                tf = v==youv
-                v = u"{}".format(v)
-                v = v[-1*min(max(len(v),20),20):]
-                youv = u"{}".format(youv)
-                youv = youv[-1*min(max(len(youv),20),20):]
-                print '{:>20}={:>20} {:>20} :{}'.format(k, v, youv, tf)
-
-    ## Yet another stackoverflow gem:
-    ## https://stackoverflow.com/questions/20498436/most-efficient-way-of-comparing-the-contents-of-two-class-instances-in-python
-    ## I had to alter it somewhat.
-    def __eq__(self, other):
-        if not isinstance(other, type(self)):
-            return NotImplemented
-        attributes = self.__dict__
-        if attributes:
-            self._inspect(other)
-            d = float('NaN') # d won't compare equal, even with itself
-            # exclude underscore attributes and compare all others
-            return all(self.__dict__.get(a, d) == other.__dict__.get(a, d) for a in attributes if not a.startswith("_"))
-        return self.__dict__ == other.__dict__
-
-
-class EmptyPencil(Pencil):
-    def __init__(self):
-        Pencil.__init__(self,"empty")
 
 
 
 class DrawTextPencil(Pencil):
-    def __init__( self, id, x, y, txt, fcol, points, style=wx.NORMAL, weight=wx.NORMAL, encoding = wx.FONTENCODING_DEFAULT ):
+    def __init__( self, id, x, y, txt, fcol, points, 
+            style=wx.NORMAL, weight=wx.NORMAL, 
+            encoding = wx.FONTENCODING_DEFAULT ):
         Pencil.__init__(self, id, x, y)
         self.txt = txt
         self.fcol = fcol
         self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
-
-        #Defer this... don't do it in __init__
-        self._width = 0 #self.__mf()[0]
+        self._width = 0
 
     def getwidth(self): return self._width
 
@@ -262,8 +219,10 @@ class DrawTextPencil(Pencil):
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )
 
+
+
 class DrawBitmapPencil(Pencil):
-    def __init__( self, id, x, y, bitmap, width=0 ):
+    def __init__( self, id, x, y, bitmap, width = 0 ):
         Pencil.__init__(self, id, x, y)
         self.bitmap = bitmap
         self.width = width
@@ -271,28 +230,8 @@ class DrawBitmapPencil(Pencil):
     def draw(self, memdc):
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
-class InactiveMessagePencil(Pencil):
 
-class TickMapPencil(Pencil):
-    def __init__(self,id, fitmap):
-        Pencil.__init__(self, id, 0, 0)
-        # private
-        self._fitem = fitmap.fitem
-        self._fitmap = fitmap
-        # state comparable
-        self.badfont = self._fitem.badfont
-        self.inactive = self._fitem.inactive
-    def deploy(self):
-        fm = self.fitmap; fi = self._fitem
-        fcol = fm.fcol
-        bitmap = fm.TICKSMALL
-        if fi.inactive:
-            self.x, self.y = (25, fm.height-20) if fi.badfont else (48, fm.height-26)
 
-            self._drawlist.append( DrawBitmapPencil( "bmpinactive", x-16, y-1, self.bitmap) )
-
-            txt = self.txt
-            self._drawlist.append( DrawTextPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
         
 
 
@@ -458,15 +397,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         Makes a new mem dc with the best size.
         Loops the drawlist and uses the Pencils to draw text and bitmaps
-        Clears the drawlist.
-        Clears the dcw (dc width list)
         Returns a memdc for sundry use.
         """
-
-        #if all(the pencils are old) then return
-        #if all( p.isold() for p in self.drawDict.values()): return None
-
-        #w = max(self.dcw)
         w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
 
         bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
@@ -477,77 +409,69 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.bitmap = bitmap #record this for the init
 
         ## Draw it all - via the pencils
-        for pencil in self.drawDict.values():
-            if pencil: # catch the Nones.
-                pencil.draw(memDc)
-            #print "drawing:", pencil.id
-
-        ## Now empty the drawlist
-        #del self.drawDict
-        #??? self.drawDict.clear()
-
-        ## Also empty the dcw list
-        #del self.dcw[:]
+        for pencil in self.drawDict.values(): pencil.draw(memDc)
 
         return memDc
 
-    def xxqueue(self, newpencil):
+    def qpencils(self, whatever):
         """
-        Given a pencil, this will append it to the drawDict.
-        If there's a width in the pencil, that goes into the
-        dcw list (a space on the right-hand side is calculated by
-        n times the x coord added to the width)
+        Queues pencils in a dict. 
+        The keys allow items to be added and replaced. 
+        This list sticks-around, so we can use what came before- or replace old 
+        slots with new pencils.
         """
-        print
-        print "queue with:{} id:{}".format( newpencil, newpencil.id)
-        #def _growdcw(pencil):
-        #    w = pencil.getwidth()
-        #    if w > 0: self.dcw.append( w + int(1.5 * pencil.x) )
-
-        oldpencil = self.drawDict.get(newpencil.id, None)
-        if oldpencil:
-            print "  has an oldpencil"
-            ## And.. they are the same...
-            if newpencil == oldpencil:
-                print "Keeping oldpencil:", oldpencil.id
-                #print "_maxpilwidth:", oldpencil._maxpilwidth
-                oldpencil.setold(True)
-                #_growdcw(oldpencil)
-                #del newpencil
-                return oldpencil
-            else:
-                del oldpencil
-                
-        ## So, there' no oldpencil or the newpencil differs
-        ## This: deploy(), and add it to my drawDict.
-        newpencil.deploy()
-        #_growdcw(newpencil)
-        ## .update will also add if key is not found.
-        ## The oldpencil's slot in the dict is held by the .id
-        ## therefore we are gonna replace it by update.
-        print "Using newpencil:{} id:{}".format(newpencil, newpencil.id)
-        self.drawDict.update( {newpencil.id : newpencil} )
-        print "drawDict is:"
-        print self.drawDict
-        #import pdb; pdb.set_trace()
-        return newpencil
-
-    def qpencils(self, whateverpencil):
-
         #print
         #print "queue with:{} id:{}".format( newpencil, newpencil.id)
-        if not isinstance(listofpencils, list): 
-            listofpencils = [whateverpencil]
+        if not isinstance(whatever, list): 
+            listofpencils = [whatever]
         else:
-            listofpencils = whateverpencil
+            listofpencils = whatever
 
         for p in listofpencils: 
-            p.deploy()
-            self.drawDict.update( { p.id : p } )
+            if p: # filter-out Nones
+                p.deploy()
+                self.drawDict.update( { p.id : p } )
         print "drawDict is:"
         print self.drawDict
 
-    def drawFontBitmap(self):
+    def info_or_badfont_pencils( self, isinfo = False ):
+        """
+        Draw the Info Font block, or an Error message block. Much clearer than it was before.
+        """
+        #import pdb; pdb.set_trace()
+
+        #Sept 2017: Move it all over by an offset
+        offx = 20
+
+        icon = self.style['icon']
+
+        iconpencil = None
+        if icon:
+            Icon = self.FVP.__dict__[icon] #See gui_FontView.py ~line 97
+            ix,iy = (6,10) if isinfo else (2,6)
+
+            ix += offx
+            iconpencil = DrawBitmapPencil( "infoicon", ix, iy, Icon)
+
+        ## Prep and measure the texts to be drawn. Add them to drawlist.
+        fcol = self.style['fcol']
+
+        textTup = self.fitem.InfoOrErrorText()
+
+        ## prep the two lines of text
+        tx,ty = (46,15) if isinfo else (38 , 20)
+
+        tx += offx
+        text0 = DrawTextPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD)
+
+        tx,ty = (46,40) if isinfo else (5 ,40)
+
+        tx += offx
+        text1 = DrawTextPencil( "tup1", tx, ty, textTup[1], fcol, points=10 )
+
+        return [ iconpencil, text0, text1 ]
+
+    def font_bitmap_pencils(self):
         ## Get a list of pilimages, for each subface: Some fonts 
         ## have multiple faces, and their heights.
         ## (For example TTC files.)
@@ -559,7 +483,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## The color comes from fitem.inactive t/f
         pillist = []
         totheight = 0
-        fcol = self.style['fcol']
 
         widths = [Fitmap.MIN_FITEM_WIDTH]
         for pilimage in self.fitem.generatePilFont():
@@ -569,15 +492,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             totheight += pilimage.size[1] + Fitmap.SPACER
             widths.append(pilimage.size[0])
 
+        ## Now that badfont is determined, we can fetch a colour:
+        fcol = self.style['fcol']
+
         ## Limit the minimum we allow.
-        if totheight < Fitmap.MIN_FITEM_HEIGHT:
-            totheight = Fitmap.MIN_FITEM_HEIGHT
+        #if totheight < Fitmap.MIN_FITEM_HEIGHT:
+        #    totheight = Fitmap.MIN_FITEM_HEIGHT
+        totheight = max(totheight, Fitmap.MIN_FITEM_HEIGHT) # right?
 
         if self.fitem.badfont:
             ## We have a badstyle to help us differentiate these.
-            totheight = Fitmap.MIN_FITEM_HEIGHT
+            #totheight = Fitmap.MIN_FITEM_HEIGHT
             if self.fitem.inactive: totheight += 5 #Need more space
-            retlist = self.drawInfoOrError()
+            retlist = self.info_or_badfont_pencils()
 
         ## It's *not* a badfont
         else:
@@ -602,7 +529,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     image.SetData(pilimage.convert( "RGB").tobytes() )
                     image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
 
-                    fx,fy = self.CalculateTopLeftAdjustments( image, i, pilimage )
+                    fx,fy = self.calculate_top_left_adjustments( image, i, pilimage )
 
                     faceBitmap = image.ConvertToBitmap()
                     #forcederror() #to test the except
@@ -639,7 +566,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         return retlist
 
-    def drawFontIsInactiveAndWhy(self):
+    def active_inactive_pencils(self):
         ## Special INACTIVE (Font already in...) message:
         if self.fitem.inactive:
             x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
@@ -650,7 +577,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             return [ greentick, act_inact_message ]
         return None
 
-    def drawSelectedAndHow(self):
+    def selected_and_how_pencils(self):
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
         ## NB: FILE_NOT_FOUND is not available for installation!
         if self.fitem.badstyle != "FILE_NOT_FOUND":
@@ -784,7 +711,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             else:
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, True )
 
-    def CalculateTopLeftAdjustments(self, image, i, pilimage):
+    def calculate_top_left_adjustments(self, image, i, pilimage):
         ## Sept 2009
         ## Find the first pixel from the top-left of the image (if it's not stored)
         ## Using this pixel as the x,y I can draw fonts from where their actual data
@@ -833,42 +760,52 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         This is where all the drawing code goes. It gets the font rendered
         from the FontItems (via PIL) and then draws a single Fitmap.
-Normal Font item:
-Layer #	
-0	Gradient gray up to white
-1	Each face bitmap
-2	Each caption under it
-3	The Green tick
-4	The “This font is in ___” text
-5	Red tick or cross or nothing
-6	Charmap button
 
-Info or Bad Font item:
-Layer #	
-0	Colour gradient bottom to top
-1	Font info text
-2	Icon and message
+        Info or Bad Font item layers:
+        Layer #	
+        0	Colour gradient bottom to top
+        1	Font info text
+        2	Icon and message
 
+        For the actual font bitmaps:
+        Normal Font item layers:
+        Layer #	
+        0	Gradient gray up to white
+        1	Each face bitmap, and the caption under it.
+        2	The Green tick and “This font is in ___” text
+        3	Red tick or cross or nothing
+        4	Charmap button
+
+        Blocks relate to these layers like this:
+        Layer   Variable/thing  Set
+                to watch.       mask
+        L 1,2   activechanged   A
+        L 1     textchanged     B
+        L 1     pointschanged   B
+        L 3     tickedchanged   C
+
+        Layer 0 is composed in usePencils()
+        Layer 4 is composed in onPaint()
+
+        The entire bitmap is reset in usePencils()
+
+        onPaint() --> draws if there's a self.bitmap
+
+        The flow is prepareBitmap() --> usePencils() --> onPaint()
+        I am not sure exactly when/how onPaint fires.
         """
 
         #print "prepareBitmap runs for:", self
-        ## Is this a normal FontItem, or an InfoFontItem?
+
         ## InfoFontItem is a fake font item for the purposes
         ## of saying "There are no fonts to see here."
         if isinstance( self.fitem, fontcontrol.InfoFontItem ):
             self.style=Fitmap.styles['INFO_FONT_ITEM']
-            infolist = self.drawInfoOrError( isinfo=True )
-            self.qpencils(infolist)
-            ##Sept 2017:Added some to height to cater for newlines in 
-            ## the info text. See class InfoFontItem in fontcontrol.py
+            self.qpencils(self.info_or_badfont_pencils( isinfo=True ))
             self.usePencils(Fitmap.MIN_FITEM_HEIGHT + 20)
             return
 
-        self.setStyle() # reaches into the fitem to do this.
-        fcol = self.style['fcol']
-        bcol = self.style['bcol']
-
-        
+        ## Go determine my draw state. 
         self.drawstate.determine()
 
         # Blocks A,B,C are exclusive
@@ -877,16 +814,16 @@ Layer #
             #Block A
             # active/inactive state has changed
             # New - Face bitmaps
-            p1,p2 = self.drawFontBitmap()
+            p1,p2 = self.font_bitmap_pencils()
             self.qpencils([p1,p2])
             # New - Active/Inactive message and Green tick (position)
-            self.qpencils( self.drawFontIsInactiveAndWhy() )
+            self.qpencils( self.active_inactive_pencils() )
 
         elif self.drawstate.isblock("B"):
             #Block B
             # point size of font, or text has changed:
             # New - face bitmaps
-            p1,p2 = self.drawFontBitmap()
+            p1,p2 = self.font_bitmap_pencils()
             self.qpencils([p1,p2])
 
         ## Block C can happen alongside A,B or C
@@ -894,7 +831,7 @@ Layer #
             # BlockD
             # select has changed - item is selected, or it's not
             # New - Tick/Cross or Nothing
-            self.qpencils( drawSelectedAndHow() )
+            self.qpencils( selected_and_how_pencils() )
     
         # Remove all the flags
         self.drawstate.state = 0
@@ -978,39 +915,4 @@ Layer #
         dc.GradientFillLinear( rect, col, tob, nDirection=wx.SOUTH )
 
 
-    def drawInfoOrError( self, isinfo=False ):
-        """
-        Draw the Info Font block, or an Error message block. Much clearer than it was before.
-        """
-        #import pdb; pdb.set_trace()
 
-        #Sept 2017: Move it all over by an offset
-        offx = 20
-
-        icon = self.style['icon']
-
-        iconpencil = None
-        if icon:
-            Icon = self.FVP.__dict__[icon] #See gui_FontView.py ~line 97
-            ix,iy = (6,10) if isinfo else (2,6)
-
-            ix += offx
-            iconpencil = DrawBitmapPencil( "infoicon", ix, iy, Icon)
-
-        ## Prep and measure the texts to be drawn. Add them to drawlist.
-        fcol = self.style['fcol']
-
-        textTup = self.fitem.InfoOrErrorText()
-
-        ## prep the two lines of text
-        tx,ty = (46,15) if isinfo else (38 , 20)
-
-        tx += offx
-        text0 = DrawTextPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD)
-
-        tx,ty = (46,40) if isinfo else (5 ,40)
-
-        tx += offx
-        text1 = DrawTextPencil( "tup1", tx, ty, textTup[1], fcol, points=10 )
-
-        return [ iconpencil, text0, text1 ]
