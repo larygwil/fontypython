@@ -217,7 +217,7 @@ class FontItem( object ):
 
         self.numFaces = i
 
-    def generatePilFont( self, points, text, enc="unicode" ):
+    def generatePilFont( self, enc="unicode" ):
         ## self is a FontItem
         """
         This function seems too similar to the __queryFontFamilyStyleFlagBad one
@@ -242,8 +242,7 @@ class FontItem( object ):
 
         """
         ## text gets extra spaces at the end to cater for cut-off characters.
-        #paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
-        paf = self.glyphpaf
+        paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
         generatorgo=True
         while (generatorgo):
