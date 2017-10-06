@@ -409,7 +409,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values(): 
-            print "Drawing pencil:", pencil
+            #print "Drawing pencil:", pencil
             pencil.draw(memDc)
 
         return memDc
@@ -432,8 +432,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             if p: # filter-out Nones
                 p.deploy()
                 self.drawDict.update( { p.id : p } )
-        print "drawDict is:"
-        print self.drawDict
+        #print "drawDict is:"
+        #print self.drawDict
 
     def info_or_badfont_pencils( self, isinfo = False ):
         """
@@ -565,7 +565,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             retlist = [ fontbitmap, nfs ]
 
         self.height = totheight
-        print self.fitem, self.height
+        #print self.fitem, self.height
 
         return retlist
 
@@ -576,16 +576,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             greentick = BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL)
 
             txt = self.fitem.activeInactiveMsg
+            fcol = self.style['fcol']
             act_inact_message = TextPencil( "fntinactive", x+2, y, txt, fcol, points=10)
             return [ greentick, act_inact_message ]
         return None
 
     def selected_and_how_pencils(self):
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
-        print "self.fitem.ticked:", self.fitem.ticked
+        #print "self.fitem.ticked:", self.fitem.ticked
         ## NB: FILE_NOT_FOUND is not available for installation!
         if self.fitem.badstyle != "FILE_NOT_FOUND":
-            #print "self.fitem.name ticked:", self.fitem.ticked
+            print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
                 self.TICKMAP = self.parent.parent.TICKMAP
                 return BitmapPencil( "tickmap", 20, 5, self.TICKMAP)
@@ -655,7 +656,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.overout.set( True )
 
     def charmap_button_signal( self ):
-        if self.cmb_overout.state:
+        if self.cmb_overout.truthstate:
             self.SetCursor(wx.StockCursor(wx.CURSOR_MAGNIFIER))
         self.Refresh() # Force onPaint()
 
@@ -814,7 +815,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # Blocks A,B,C are exclusive
         # Initial run has state set to block A and D (i.e. do it all anew)
         if self.drawstate.isblock("A"):
-            print "A"
+            #print "A"
             #Block A
             # active/inactive state has changed
             # New - Face bitmaps
@@ -823,7 +824,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.qpencils( self.active_inactive_pencils() )
 
         elif self.drawstate.isblock("B"):
-            print "B"
+            #print "B"
             #Block B
             # point size of font, or text has changed:
             # New - face bitmaps
