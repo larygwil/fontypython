@@ -847,19 +847,26 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             # New - Tick/Cross or Nothing
             self.qpencils( self.selected_and_how_pencils() )
     
-        # Remove all the flags
+        ## If we actually have something to draw...
+        if self.drawstate > 0:
+            ## Make one big bitmap to house one or more faces (subfaces)
+            ## Draw it all - via the pencils. Also makes the memDc and returns
+            ## it so we can do some last-minute stuff later.
+            ## NOTE: By drawing into memDc, we are drawing into self.bitmap
+            memDc = self.usePencils(self.height)
+            
+            if memDc:
+                ## Now a dividing line
+                memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
+                memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
+
+        # Capture the state
+        ds = self.drawstate
+        # Reset the state
         self.drawstate.state = 0
 
-        ## Make one big bitmap to house one or more faces (subfaces)
-        ## Draw it all - via the pencils. Also makes the memDc and returns
-        ## it so we can do some last-minute stuff later.
-        ## NOTE: By drawing into memDc, we are drawing into self.bitmap
-        memDc = self.usePencils(self.height)
-        
-        if memDc:
-            ## Now a dividing line
-            memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-            memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
+        #Return the state. See MinimalCreateFitmaps in gui_ScrolledFontView.py
+        return ds
 
     def setStyle( self ):
         """
