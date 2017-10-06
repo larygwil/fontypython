@@ -320,8 +320,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 for fitem in viewobject:
                     ## Create a Fitmap out of the FontItem we have at hand.
                     fm = Fitmap( self, fitem )
-                    print "Made fitmap:", fm
-                    print " height:",fm.height
+                    #print "Made fitmap:", fm
+                    #print " height:",fm.height
                     self.fitmaps.append( fm )
                     #w.append(fm.GetBestSize()[0])
                     w.append(fm.bitmap.GetWidth())
@@ -337,10 +337,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 self.colw = int( sum(w) / max( len(w), 1) )
             else:
                 for fitmap in self.fitmaps:
-                    print "refresh:",fitmap
-                    print " height:",fitmap.height
+                    #print "refresh:",fitmap
+                    #print " height:",fitmap.height
                     fitmap.prepareBitmap()
-                    fitmap.Refresh()
+
+                    # Force a redraw of the bitmap. 
+                    # Without this, nothing appears to change...
+                    fitmap.Refresh() 
 
             cols = 1
 
