@@ -426,6 +426,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ctx.SetBrush (b)
         ctx.DrawRectangle(0,0,w,h)
 
+
+        ## Thinking of drawing with a bitmap brush onto a larger bg image somehow
+        ## want to get all the fitmaps equal width...
+        # brush1 = wx.BrushFromBitmap(wx.Bitmap('pattern1.png'))
+        # dc.SetBrush(brush1)
+        # dc.DrawRectangle(10, 15, 90, 60)
+
         return memDc
 
     def bottomFadeEffect( self, dc, height, width, step=1.13):
