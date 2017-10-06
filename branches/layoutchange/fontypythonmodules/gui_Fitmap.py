@@ -175,10 +175,12 @@ class Pencil(object):
     def __init__( self, id, x=0, y=0 ):
         self.id = id; self.x = x; self.y = y
     def deploy(self): pass
-    def getwidth(self): pass
+    def getwidth(self): return 0 
     def draw(self, memdc): pass
 
-
+class EmptyPencil(Pencil):
+    def __init__(self,id):
+        Pencil.__init__(self,id)
 
 class TextPencil(Pencil):
     textExtentsDict = {}
@@ -406,7 +408,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.bitmap = bitmap #record this for the init
 
         ## Draw it all - via the pencils
-        for pencil in self.drawDict.values(): pencil.draw(memDc)
+        for pencil in self.drawDict.values(): 
+            print "Drawing pencil:", pencil
+            pencil.draw(memDc)
 
         return memDc
 
@@ -578,15 +582,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def selected_and_how_pencils(self):
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
+        print "self.fitem.ticked:", self.fitem.ticked
         ## NB: FILE_NOT_FOUND is not available for installation!
         if self.fitem.badstyle != "FILE_NOT_FOUND":
             #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
-                #print " tickmap is tick:", self.TICKMAP
-
                 self.TICKMAP = self.parent.parent.TICKMAP
                 return BitmapPencil( "tickmap", 20, 5, self.TICKMAP)
-        return None
+        return EmptyPencil(id = "tickmap")
         
 
     def openCharacterMap( self ):
@@ -674,7 +677,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         This refreshes the underlying bitmap and DOES NOT cause the
         chain update_font_view (in gui_FontView) to run.
         """
-        if self.cmb_overout.state and self.can_have_button():
+        if self.cmb_overout.truthstate and self.can_have_button():
             self.openCharacterMap()
             return
 
@@ -815,8 +818,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             #Block A
             # active/inactive state has changed
             # New - Face bitmaps
-            p1,p2 = self.font_bitmap_pencils()
-            self.qpencils([p1,p2])
+            self.qpencils( self.font_bitmap_pencils() )
             # New - Active/Inactive message and Green tick (position)
             self.qpencils( self.active_inactive_pencils() )
 
@@ -825,8 +827,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             #Block B
             # point size of font, or text has changed:
             # New - face bitmaps
-            p1,p2 = self.font_bitmap_pencils()
-            self.qpencils([p1,p2])
+            self.qpencils( self.font_bitmap_pencils() )
 
         ## Block C can happen alongside A,B or C
         if self.drawstate.isblock("C"):
@@ -834,7 +835,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             # BlockD
             # select has changed - item is selected, or it's not
             # New - Tick/Cross or Nothing
-            self.qpencils( selected_and_how_pencils() )
+            self.qpencils( self.selected_and_how_pencils() )
     
         # Remove all the flags
         self.drawstate.state = 0
