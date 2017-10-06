@@ -340,7 +340,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     print "refresh:",fitmap
                     print " height:",fitmap.height
                     fitmap.prepareBitmap()
-                    #fitmap.Refresh()
+                    fitmap.Refresh()
 
             cols = 1
 
