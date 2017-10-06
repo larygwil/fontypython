@@ -714,6 +714,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             else:
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, True )
 
+
+    def crop(self, newwidth):
+        print "Cropping:",self.name
+        h = self.bitmap.GetHeight()
+        img = self.bitmap.ConvertToImage().Resize( (newwidth, h),(0,0),255,255,255 )
+        self.bitmap = img.ConvertToBitmap()
+        self.SetBestSize((newwidth, h))        
+        print "crop done..."
+
     def calculate_top_left_adjustments(self, image, i, pilimage):
         ## Sept 2009
         ## Find the first pixel from the top-left of the image (if it's not stored)

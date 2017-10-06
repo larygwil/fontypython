@@ -60,6 +60,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
         ## At least this one works.
         self.wheelValue = fpsys.config.points
+        self._sizechangedflag=True
         self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
         ## July 2016
@@ -101,7 +102,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             #self.CreateFitmaps( self._last_viewobject, force = True )
             #Yeah... that didn't go so well ...
 
+            self._sizechangedflag=True
             ps.pub( update_font_view ) # starts a chain of calls.
+            self._sizechangedflag=False
 
             return
         ## Keep the wheel event going
@@ -230,7 +233,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 ## -------------
 ## Various older attempts at the create fitmap thing:
 
-    def MinimalCreateFitmaps( self, viewobject, force = False ) :
+    def MinimalCreateFitmaps( self, viewobject):#, force = False ) :
         """
         July 16, 2016
         =============
@@ -255,6 +258,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         This might not be worth it...
 
         """
+        print "-------------------------"
         print "MinimalCreateFitmaps runs"
         ## Sept2017:
         ## WIP. Seeking a way to detect whether what we showed last time
@@ -262,6 +266,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## On wheel zoom -> it should recreate fitmaps,for e.g.
         ## But, on a mere resize of the window, why bother?
         allsame = False
+        force = self._sizechangedflag
         if not force:
             if self._last_viewobject == viewobject:
                 allsame = True
@@ -315,7 +320,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             yld = fpsys.config.numinpage > 20
             if not self.fitmaps:# or not allsame:
-                #print "Making fitmap from:", viewobject
+                print "Making fitmap from:", viewobject
                 w = []
                 for fitem in viewobject:
                     ## Create a Fitmap out of the FontItem we have at hand.
@@ -337,7 +342,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 self.colw = int( sum(w) / max( len(w), 1) )
             else:
                 for fitmap in self.fitmaps:
-                    #print "refresh:",fitmap
+                    print "refresh:",fitmap
                     #print " height:",fitmap.height
                     fitmap.prepareBitmap()
 
@@ -368,21 +373,26 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 ## IDEA: Do a fade to white instead of a hard cut on the right.
                 ##
                 if fm.bitmap.GetWidth() > self.colw:
-                    print "Cropping:",fm.name
-                    h = fm.bitmap.GetHeight()
-                    img = fm.bitmap.ConvertToImage().Resize( (self.colw, h),(0,0),255,255,255 )
-                    fm.bitmap = img.ConvertToBitmap()
-                    fm.SetBestSize((self.colw,h))
+                    fm.crop(self.colw)
+                    #print "Cropping:",fm.name
+                    #h = fm.bitmap.GetHeight()
+                    #img = fm.bitmap.ConvertToImage().Resize( (self.colw, h),(0,0),255,255,255 )
+                    #fm.bitmap = img.ConvertToBitmap()
+                    #fm.SetBestSize((self.colw,h))
 
                 ## Add fm to the sizer
+                print "adding to sizer"
+                #fgs.Add(fm, 0, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM)
                 fgs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
 
-                ## This yield is ok. No flickering of bitmaps on the panel.
-                if yld: wx.Yield()
+                ## This yield causes a recursion of the current method...
+                ## so weird.
+                #if yld: wx.Yield()
 
+            print "   for loop done."
             self.SetSizer(fgs)
             fgs.FitInside(self)
-
+            print "====EXIT MinimalCreateFitmaps====="
 
 
 
