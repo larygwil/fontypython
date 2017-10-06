@@ -576,7 +576,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             greentick = BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL)
 
             txt = self.fitem.activeInactiveMsg
-            act_inact_message = FontPencil( "fntinactive", x+2, y, txt, fcol, points=10)
+            act_inact_message = TextPencil( "fntinactive", x+2, y, txt, fcol, points=10)
             return [ greentick, act_inact_message ]
         return None
 
