@@ -406,13 +406,25 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         memDc.SelectObject( bitmap )
         memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
         memDc.Clear()
-        self.bottomFadeEffect( memDc, h, w )
+        
+        #self.bottomFadeEffect( memDc, h, w )
+
+        ctx = wx.GraphicsContext.Create(memDc)
+        b = ctx.CreateLinearGradientBrush(0,h,0,0,"#eeeeeeff", "#ffffffff")
+        ctx.SetBrush (b)
+        ctx.DrawRectangle(0,0,w,h)
+
         self.bitmap = bitmap #record this for the init
 
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values(): 
             #print "Drawing pencil:", pencil
             pencil.draw(memDc)
+        gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
+        gstops.Add(wx.Colour(255,255,255,255), 0.8)
+        b = ctx.CreateLinearGradientBrush(w,0,w-(w/8),0, gstops )
+        ctx.SetBrush (b)
+        ctx.DrawRectangle(0,0,w,h)
 
         return memDc
 
