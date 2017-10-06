@@ -352,6 +352,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.height =  0
         self.drawstate = DrawState(self)
 
+
         #self.dcw = []
         self.bitmap = None
         self.prepareBitmap()
@@ -405,6 +406,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         memDc.SelectObject( bitmap )
         memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
         memDc.Clear()
+        self.bottomFadeEffect( memDc, h, w )
         self.bitmap = bitmap #record this for the init
 
         ## Draw it all - via the pencils
@@ -413,6 +415,58 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             pencil.draw(memDc)
 
         return memDc
+
+    def bottomFadeEffect( self, dc, height, width, step=1.13):
+        """
+        Baptiste's idea! New implementation : June 2009
+        "Now a dividing gradient, you can say "wow" ;-)"
+        Donn says, "..Wow!" :-D
+
+        It goes from backcol and darkens it a little as it draws downwards.
+        """
+        #TODO : Pre-calc all these colours.
+        ctx = wx.GraphicsContext.Create(dc)
+        b = ctx.CreateLinearGradientBrush(0,height,0,0,"#eeeeeeff", "#ffffffff")
+        ctx.SetBrush (b)
+        ctx.DrawRectangle(0,0,width,height)
+        b = ctx.CreateLinearGradientBrush(width,0,width/2,0, "#ffffffff", "#ffffff00")
+        ctx.SetBrush (b)
+        ctx.DrawRectangle(0,0,width,height)
+
+        return
+
+        def clamp(self,v):
+            if v > 1.0: v=1.0
+            if v < 0.0: v=0.0
+            return v
+
+        def rgb_to_hsv(self,rgb):
+            #Go from int colour to float colour (0 to 1 range)
+            sr = rgb[0]/255.0
+            sg = rgb[1]/255.0
+            sb = rgb[2]/255.0
+            return colorsys.rgb_to_hsv(sr,sg,sb)
+
+        def hsv_to_rgb(self,hsv):
+            rgb = colorsys.hsv_to_rgb( hsv[0],hsv[1],hsv[2] )
+            # back to int
+            sr = int(rgb[0]*255.0)
+            sg = int(rgb[1]*255.0)
+            sb = int(rgb[2]*255.0)
+            return ( sr,sg,sb )
+
+
+        if self.fitem.inactive:
+            return
+            #step=1.08 #inactive fonts get a lighter colour.
+
+        col = self.style["backcol"] #from
+        hsv = self.rgb_to_hsv(col)
+        tob=self.hsv_to_rgb((hsv[0],hsv[1],hsv[2]/step)) #to a darker brightness.
+        sy=height-self.gradientheight
+        rect=wx.Rect(0, sy, width, self.gradientheight)
+        dc.GradientFillLinear( rect, col, tob, nDirection=wx.SOUTH )
+        dc.GradientFillLinear( rect, "#ffffff", tob, nDirection=wx.SOUTH )
 
     def qpencils(self, whatever):
         """
@@ -439,8 +493,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         Draw the Info Font block, or an Error message block. Much clearer than it was before.
         """
-        #import pdb; pdb.set_trace()
-
         #Sept 2017: Move it all over by an offset
         offx = 20
 
@@ -891,49 +943,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.style = Fitmap.styles['ACTIVE']
 
 
-    #TODO : Pre-calc all these colours.
 
-    def clamp(self,v):
-        if v > 1.0: v=1.0
-        if v < 0.0: v=0.0
-        return v
-
-    def rgb_to_hsv(self,rgb):
-        #Go from int colour to float colour (0 to 1 range)
-        sr = rgb[0]/255.0
-        sg = rgb[1]/255.0
-        sb = rgb[2]/255.0
-        return colorsys.rgb_to_hsv(sr,sg,sb)
-
-    def hsv_to_rgb(self,hsv):
-        rgb = colorsys.hsv_to_rgb( hsv[0],hsv[1],hsv[2] )
-        # back to int
-        sr = int(rgb[0]*255.0)
-        sg = int(rgb[1]*255.0)
-        sb = int(rgb[2]*255.0)
-        return ( sr,sg,sb )
-
-    def bottomFadeEffect( self, dc, height, width, step=1.13):
-        #TODO
-        return
-        """
-        Baptiste's idea! New implementation : June 2009
-        "Now a dividing gradient, you can say "wow" ;-)"
-        Donn says, "..Wow!" :-D
-
-        It goes from backcol and darkens it a little as it draws downwards.
-        """
-
-        if self.fitem.inactive:
-            return
-            #step=1.08 #inactive fonts get a lighter colour.
-
-        col = self.style["backcol"] #from
-        hsv = self.rgb_to_hsv(col)
-        tob=self.hsv_to_rgb((hsv[0],hsv[1],hsv[2]/step)) #to a darker brightness.
-        sy=height-self.gradientheight
-        rect=wx.Rect(0, sy, width, self.gradientheight)
-        dc.GradientFillLinear( rect, col, tob, nDirection=wx.SOUTH )
 
 
 
