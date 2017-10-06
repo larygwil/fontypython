@@ -64,7 +64,7 @@ class OverOutSignal(object):
     def set( self, newtruth ):
         if self.truthstate == newtruth: return # no change
         # implies there's now an actual change, thus:
-        self.struthstate = newtruth # Orwell would be proud! :D
+        self.truthstate = newtruth # Orwell would be proud! :D
         self.announce()
 
 class Ricordi(object):
@@ -113,8 +113,8 @@ class DrawState(object):
     mask_B = 2
     mask_C = 4
 
-    blocks=
-      {"A":(1, 1), # Block "A" AND test is & 1 == 1
+    blocks = {
+       "A":(1, 1), # Block "A" AND test is & 1 == 1
        "B":(3, 2), # "B" is & 3 == 2
        "C":(7, 4), # etc.
        #"D":(8, 8),
@@ -150,7 +150,7 @@ class DrawState(object):
         if self._text.differs(fpsys.config.text):
             self.state |= DrawState.mask_B
 
-        if self._ticked.differ(self.parent.fitem.ticked):
+        if self._ticked.differs(self.parent.fitem.ticked):
             self.state |= DrawState.mask_C
 
     def isblock(self, c):
@@ -159,7 +159,7 @@ class DrawState(object):
         which block it's in.
         E.g. if xx.isblock("A"):
         """
-        return self._state & DrawState.blocks[c][0] == \
+        return self.state & DrawState.blocks[c][0] == \
                 DrawState.blocks[c][1]
 
         
@@ -172,8 +172,6 @@ class Pencil(object):
     ordering in time and overlapping too.
     I can loop and draw them all in one go.
     """
-    ## A class var
-    textExtentsDict = {}
     def __init__( self, id, x=0, y=0 ):
         self.id = id; self.x = x; self.y = y
     def deploy(self): pass
@@ -182,7 +180,8 @@ class Pencil(object):
 
 
 
-class DrawTextPencil(Pencil):
+class TextPencil(Pencil):
+    textExtentsDict = {}
     def __init__( self, id, x, y, txt, fcol, points, 
             style=wx.NORMAL, weight=wx.NORMAL, 
             encoding = wx.FONTENCODING_DEFAULT ):
@@ -199,17 +198,16 @@ class DrawTextPencil(Pencil):
         Measure a line of text in my font. Return a wx.Size
         Cache these widths in Pencil class variable.
         """
-        ## Do we have a cached size for this txt?
-        if self.txt in Pencil.textExtentsDict:
-            #print "Got from cache:",  Pencil.textExtentsDict[self.txt]
-            return Pencil.textExtentsDict[self.txt] #yep!
+        ## Do we have a cached measurement for this txt?
+        if self.txt in TextPencil.textExtentsDict:
+            return TextPencil.textExtentsDict[self.txt] #yep!
         dc = wx.ScreenDC()
         dc.SetFont( self.font )
         try:
             sz = dc.GetTextExtent( self.txt )
         except:
             sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
-        Pencil.textExtentsDict[self.txt] = sz # cache it in my parent
+        TextPencil.textExtentsDict[self.txt] = sz # cache it in my parent
         
         self._width = sz[0]
         #return sz[0]
@@ -221,7 +219,7 @@ class DrawTextPencil(Pencil):
 
 
 
-class DrawBitmapPencil(Pencil):
+class BitmapPencil(Pencil):
     def __init__( self, id, x, y, bitmap, width = 0 ):
         Pencil.__init__(self, id, x, y)
         self.bitmap = bitmap
@@ -344,15 +342,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Point to the handler for the signal re charmap button
         self.cmb_overout = OverOutSignal( self.charmap_button_signal )
 
-        self.entire_fitmap_unchanged = False
 
         ## Go draw the fitmap into a memory dc
-        #self.drawlist = []
         self.drawDict = collections.OrderedDict()
 
 
-
-
+        self.height =  0
         self.drawstate = DrawState(self)
 
         #self.dcw = []
@@ -362,7 +357,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Now I can calc the y value of the button.
         self.cmb_rect=wx.Rect(0,sz[1]-40,19,32)
-        self.height =  0
 
         ## init my parent class 
         ## This also sets the SIZE of the fitmap widget.
@@ -401,7 +395,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
 
-        bitmap = wx.EmptyImage( w,h ).ConvertToBitmap()
+        #import pdb; pdb.set_trace()
+        #print "w, height:",w, h #self.height
+        #if h == 0: raise SystemExit
+        bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
         memDc.SelectObject( bitmap )
         memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
@@ -415,7 +412,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def qpencils(self, whatever):
         """
-        Queues pencils in a dict. 
+        stuffs pencils into an ordered dict. 
         The keys allow items to be added and replaced. 
         This list sticks-around, so we can use what came before- or replace old 
         slots with new pencils.
@@ -451,7 +448,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ix,iy = (6,10) if isinfo else (2,6)
 
             ix += offx
-            iconpencil = DrawBitmapPencil( "infoicon", ix, iy, Icon)
+            iconpencil = BitmapPencil( "infoicon", ix, iy, Icon)
 
         ## Prep and measure the texts to be drawn. Add them to drawlist.
         fcol = self.style['fcol']
@@ -462,12 +459,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx,ty = (46,15) if isinfo else (38 , 20)
 
         tx += offx
-        text0 = DrawTextPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD)
+        text0 = TextPencil( "tup0", tx, ty, textTup[0], fcol, points=12, weight=wx.BOLD)
 
         tx,ty = (46,40) if isinfo else (5 ,40)
 
         tx += offx
-        text1 = DrawTextPencil( "tup1", tx, ty, textTup[1], fcol, points=10 )
+        text1 = TextPencil( "tup1", tx, ty, textTup[1], fcol, points=10 )
 
         return [ iconpencil, text0, text1 ]
 
@@ -493,6 +490,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             widths.append(pilimage.size[0])
 
         ## Now that badfont is determined, we can fetch a colour:
+        self.setStyle() #Go set the self.style
         fcol = self.style['fcol']
 
         ## Limit the minimum we allow.
@@ -537,21 +535,21 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     ## Oddballs or possible bad sub-face in a ttc font.
                     ##TODO: Include the error message somehow.
                     txt = _("This text cannot be drawn. Hey, it happens...")
-                    fontbitmap = DrawTextPencil( "cannotdraw", 10, mainy+2, txt, fcol,
+                    fontbitmap = TextPencil( "cannotdraw", 10, mainy+2, txt, fcol,
                                     fpsys.config.points, style=wx.ITALIC)
                     #self.queue( cannotdraw )
                 else:
                     ## Place it into the main image, down a tad so it looks better.
                     x = 16
                     if i > 0: x *= 3 # Shift sub-faces over a little
-                    fontbitmap = DrawBitmapPencil( "facebitmap", x-fx, mainy-fy,
+                    fontbitmap = BitmapPencil( "facebitmap", x-fx, mainy-fy,
                                     faceBitmap, width = max(widths) )
                     #self.queue( fontbitmap )
 
                 ## The font name/fam/style : fnfs
                 txt = "%s - %s - [%s]" % (self.fitem.family[i],
                                           self.fitem.style[i], self.fitem.name)
-                nfs = DrawTextPencil( "namefamstyle", 28,
+                nfs = TextPencil( "namefamstyle", 28,
                                     mainy + glyphHeight + 8, txt, fcol, points=8 )
                 #self.queue( nfs )
 
@@ -563,6 +561,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             retlist = [ fontbitmap, nfs ]
 
         self.height = totheight
+        print self.fitem, self.height
 
         return retlist
 
@@ -658,7 +657,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.Refresh() # Force onPaint()
 
     def overout_signal( self ):
-        if self.overout.state:
+        if self.overout.truthstate:
             self.SetCursor( self.CURSOR )
 
     def onLeave(self, event):
@@ -706,7 +705,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             # Draw the charmap button
             x,y = self.cmb_rect[0],self.cmb_rect[1]
-            if self.cmb_overout.state:
+            if self.cmb_overout.truthstate:
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OVER, x, y, True )
             else:
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, True )
@@ -772,7 +771,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Layer #	
         0	Gradient gray up to white
         1	Each face bitmap, and the caption under it.
-        2	The Green tick and “This font is in ___” text
+        2	The Green tick and "This font is in __" text
         3	Red tick or cross or nothing
         4	Charmap button
 
@@ -807,10 +806,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Go determine my draw state. 
         self.drawstate.determine()
+        print "drawstate is:", self.drawstate.state
 
         # Blocks A,B,C are exclusive
         # Initial run has state set to block A and D (i.e. do it all anew)
         if self.drawstate.isblock("A"):
+            print "A"
             #Block A
             # active/inactive state has changed
             # New - Face bitmaps
@@ -820,6 +821,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.qpencils( self.active_inactive_pencils() )
 
         elif self.drawstate.isblock("B"):
+            print "B"
             #Block B
             # point size of font, or text has changed:
             # New - face bitmaps
@@ -828,6 +830,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Block C can happen alongside A,B or C
         if self.drawstate.isblock("C"):
+            print "C"
             # BlockD
             # select has changed - item is selected, or it's not
             # New - Tick/Cross or Nothing
@@ -840,12 +843,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Draw it all - via the pencils. Also makes the memDc and returns
         ## it so we can do some last-minute stuff later.
         ## NOTE: By drawing into memDc, we are drawing into self.bitmap
-        memDc = self.usePencils( totheight )
+        memDc = self.usePencils(self.height)
         
         if memDc:
             ## Now a dividing line
             memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-            memDc.DrawLine( 0, self.height-1, pilpencil.getwidth(), self.height-1 )
+            memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
 
     def setStyle( self ):
         """
