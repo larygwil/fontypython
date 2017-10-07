@@ -340,10 +340,12 @@ class MainFrame(wx.Frame):
             if points != lastpoints:
                 fpsys.config.points = int(points)
                 #Crucial flag to force a redraw of font bitmaps later
-                fpsys.state.point_size_changed_flag = True
+                #fpsys.state.point_size_changed_flag = True
+                fpsys.state.reflow_only = False
                 stuffchanged = True
             if ignore_adjust != lastias:
                 fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
+                fpsys.state.reflow_only = False
                 stuffchanged = True
 
             fpsys.config.CMC.SET_CURRENT_APPNAME( dlg.CHOSEN_CHARACTER_MAP) # Oct 2009

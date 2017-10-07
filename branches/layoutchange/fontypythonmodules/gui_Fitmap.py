@@ -48,7 +48,7 @@ class OverOutSignal(object):
         self.truthstate = newtruth # Orwell would be proud! :D
         self.announce()
 
-class Ricordi(object):
+class xxRicordi(object):
     """
     A variable that remembers its last value.
     You set it while checking for a difference.
@@ -71,6 +71,32 @@ class Ricordi(object):
 
         self._prevvalue = something
         return tf
+
+class Ricordi(object):
+    """
+    A variable that remembers its last value.
+    You set it while checking for a difference.
+    """
+    def __init__(self):
+        self._first = True
+        self._d = {}
+    def differs(self, something):
+        """
+        Sets the value and tests if it differs from
+        the last value. 
+        Returns: True or False
+        (If first run, it sets and returns true)
+        """
+        if self._first: 
+            self._first = False
+            tf = True
+        else:
+            tf = self._d[something] != something
+
+        self._d[something] = something
+        return tf
+
+
 
 class DrawState(object):
     """TODO: comment better
@@ -108,10 +134,13 @@ class DrawState(object):
         self.state = 0
         self.laststate = self.state
         #
-        self._points = Ricordi() 
-        self._text = Ricordi() 
-        self._inactive = Ricordi() 
-        self._ticked = Ricordi() 
+        #self._points = Ricordi() 
+        #self._text = Ricordi() 
+        #self._inactive = Ricordi() 
+        #self._ticked = Ricordi() 
+        #self._ignore_adjustments = Ricordi()
+
+        self._history = Ricordi()
 
     def determine(self):
         """
@@ -123,16 +152,24 @@ class DrawState(object):
         from scratch.
         """
         self.state = 0
-        if self._inactive.differs(self.parent.fitem.inactive):
+        #if self._inactive.differs(self.parent.fitem.inactive):
+        if self._history.differs(self.parent.fitem.inactive):
             self.state |= DrawState.mask_A
 
-        if self._points.differs(fpsys.config.points):
+        #if self._points.differs(fpsys.config.points):
+        if self._history.differs(fpsys.config.points):
             self.state |= DrawState.mask_B
 
-        if self._text.differs(fpsys.config.text):
+        #if self._text.differs(fpsys.config.text):
+        if self._history.differs(fpsys.config.text):
             self.state |= DrawState.mask_B
 
-        if self._ticked.differs(self.parent.fitem.ticked):
+        #if self._ignore_adjustments.differs(fpsys.config.ignore_adjustments):
+        if self._history.differs(fpsys.config.ignore_adjustments):
+            self.state |= DrawState.mask_B
+
+        #if self._ticked.differs(self.parent.fitem.ticked):
+        if self._history.differs(self.parent.fitem.ticked):
             self.state |= DrawState.mask_C
 
     def isblock(self, c):
@@ -904,12 +941,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Go determine my draw state. 
         self.drawstate.determine()
-        print "drawstate is:", self.drawstate.state
+        #print "drawstate is:", self.drawstate.state
 
         # Blocks A,B,C are exclusive
         # Initial run has state set to block A and D (i.e. do it all anew)
         if self.drawstate.isblock("A"):
-            print "A"
+            #print "A"
             #Block A
             # active/inactive state has changed
             # New - Face bitmaps
@@ -918,7 +955,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.qpencils( self.active_inactive_pencils() )
 
         elif self.drawstate.isblock("B"):
-            print "B"
+            #print "B"
             #Block B
             # point size of font, or text has changed:
             # New - face bitmaps
@@ -926,7 +963,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Block C can happen alongside A,B or C
         if self.drawstate.isblock("C"):
-            print "C"
+            #print "C"
             # BlockD
             # select has changed - item is selected, or it's not
             # New - Tick/Cross or Nothing

@@ -63,6 +63,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## July 2016
         ## Sep 2017. New hacks. Might not need this...
         #self.Bind(wx.EVT_SIZE, self.onSize)
+        
+        self.fitmap_sizer = wx.FlexGridSizer( cols = 1 )
+        self.SetSizer(self.fitmap_sizer)
 
         self.SetupScrolling(rate_y=5, scroll_x=False)
 
@@ -95,9 +98,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ##xPos, yPos = self.GetViewStart()
             self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
 
-            fpsys.state.point_size_changed_flag = True
+            #fpsys.state.point_size_changed_flag = True
+            fpsys.state.reflow_only = False 
             ps.pub( update_font_view ) # starts a chain of calls.
-            fpsys.state.point_size_changed_flag = False
+            #fpsys.state.point_size_changed_flag = False
+            fpsys.state.reflow_only = True
 
             return
         ## Keep the wheel event going
@@ -146,36 +151,31 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## is different from what we must show now.
         ## On wheel zoom -> it should recreate fitmaps,for e.g.
         ## But, on a mere resize of the window, why bother?
-        allsame = False
-        if not fpsys.state.point_size_changed_flag:
-            if self._last_viewobject == viewobject:
-                allsame = True
 
-        #print "allsame:", allsame
+        hmmm.
+        I need to connect fitmaps and fitems
+        . to replace old fitmaps 
+        . to make new ones
+        . to remove fitmaps who's fitems i don't have any more
+        viewobject is the latest list of fitems
+        _last_viewobject is the past
+
+        w=[]
+        for fi in viewobject
+            # If the new stuff is not one we already know about, instance it:
+            if fi not in self._last_viewobject:
+                fm = Fitmap(self,fi) # make a new fitmap
+                fm.generate_pil_bitmaps()
+                self.fitmaps.append(fm)
+                w.append(fm.pilwidth)
 
         self._last_viewobject = viewobject
 
-
-        ## Uncertain: Feel I should strive to delete previous sizers..
-        sz = self.GetSizer()
-        if sz:
-            print "Found old sizer:", sz
-            # remove all the items
-            #print "  Before clear: Children:", self.GetChildren()
-            sz.Clear() # Unsure ... Does not seem to actually remove children, but it all works okay... :|
-            #print "  After clear: Children:", self.GetChildren()
-            # destroy it
-            #self.SetSizer(None) # (vim) ddp here, and run - fonty segfaults!
-            #sz.Destroy() # This errors out.
-            #del sz
-        else:
-            print " *** MAKING THE SIZER ***"
-            self.fgs = wx.FlexGridSizer( cols=1 ) #, hgap=hgap, vgap=2 )
-            self.SetSizer(self.fgs)
-
-        ## I think that sizer is at least suffering and will soon die. RIP!
+        self.fitmap_sizer.Clear()
 
         self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
+
+
 
         if not allsame:
             ## Ensure we destroy all old fitmaps -- and I mean it.

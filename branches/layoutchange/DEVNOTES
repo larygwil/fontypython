@@ -111,7 +111,9 @@ TODO
 * Do we need the wrapper and the segfonts stuff?
 
 
-* Problem with changing num in page via settings in gui..
+* Problem with changing num in page via settings in gui.. Seems ok now.
+* Fontitems that error have width issues
+* Topleft adjustment toggle not redrawing properly
 * Button to put fonts into pog --> not redrawing fitems properly. The ticks stay on screen.
 
 
