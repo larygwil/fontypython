@@ -58,7 +58,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         self._last_viewobject = None
 
         self.wheelValue = fpsys.config.points
-        self._point_size_changed_flag = False
         self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
         ## July 2016
@@ -96,9 +95,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ##xPos, yPos = self.GetViewStart()
             self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
 
-            self._point_size_changed_flag=True
+            fpsys.state.point_size_changed_flag = True
             ps.pub( update_font_view ) # starts a chain of calls.
-            self._point_size_changed_flag=False
+            fpsys.state.point_size_changed_flag = False
 
             return
         ## Keep the wheel event going
@@ -148,7 +147,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## On wheel zoom -> it should recreate fitmaps,for e.g.
         ## But, on a mere resize of the window, why bother?
         allsame = False
-        if not self._point_size_changed_flag:
+        if not fpsys.state.point_size_changed_flag:
             if self._last_viewobject == viewobject:
                 allsame = True
 
@@ -160,6 +159,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## Uncertain: Feel I should strive to delete previous sizers..
         sz = self.GetSizer()
         if sz:
+            print "Found old sizer:", sz
             # remove all the items
             sz.Clear()
             # destroy it
@@ -200,12 +200,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 w = []
                 for fitem in viewobject:
                     ## Create a Fitmap out of the FontItem we have at hand.
-                    print "Fitmap instance."
+                    #print "Fitmap instance."
                     fm = Fitmap( self, fitem )
-                    print "generate_pil_bitmaps"
+                    #print "generate_pil_bitmaps"
                     fm.generate_pil_bitmaps()
-                    print "Made fitmap:", fm
-                    print " height:",fm.height
+                    print "Made fitmap:", fm.name
+                    #print " height:",fm.height
                     self.fitmaps.append( fm )
                     #w.append(fm.GetBestSize()[0])
                     w.append(fm.pilwidth)
@@ -218,8 +218,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             # Let's redraw whatever may have changed within
             # each fitmap's drawing state:
             for fitmap in self.fitmaps:
-                print "refresh:",fitmap
-                print " height:",fitmap.height
+                print "refresh:",fitmap.name
+                #print " height:",fitmap.height
                 ds = fitmap.prepareBitmap()
                 # If there was some change in the draw state, refresh the bitmap.
                 if ds > 0:
@@ -228,6 +228,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     fitmap.Refresh() 
 
             cols = 1
+            print "*** self.colw:", self.colw#max(w)
 
             panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
@@ -239,7 +240,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             hgap = (panelwidth - (cols * self.colw)) / 2
 
             ## Make the new FlexGridSizer
-            fgs = wx.FlexGridSizer( cols=cols, hgap=hgap, vgap=2 )
+            #fgs = wx.FlexGridSizer( cols=cols, hgap=hgap, vgap=2 )
+            self.fgs = wx.BoxSizer(wx.VERTICAL)
             print "New sizer cols %s" % cols
 
             ## Loop again and plug them into the sizer
@@ -253,13 +255,14 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     fm.crop(self.colw)
 
                 ## Add fm to the sizer
-                print "adding to sizer"
+                print "adding to sizer:", fm.name, (fm.height, fm.width)
                 #fgs.Add(fm, 0, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM)
-                fgs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+                #fgs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+                self.fgs.Add(fm)
 
             print "   for loop done."
-            self.SetSizer(fgs)
-            fgs.FitInside(self)
+            self.SetSizer(self.fgs)
+            self.fgs.FitInside(self)
             print "====EXIT MinimalCreateFitmaps====="
 
 

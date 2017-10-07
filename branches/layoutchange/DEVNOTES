@@ -111,6 +111,9 @@ TODO
 * Do we need the wrapper and the segfonts stuff?
 
 
+* Problem with changing num in page via settings in gui..
+* Button to put fonts into pog --> not redrawing fitems properly. The ticks stay on screen.
+
 
 SHORT-TERM MEMORY NOTES (Sadly now lost to time)
 ==

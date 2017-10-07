@@ -557,6 +557,8 @@ class FPState:
         ## How many tick marks.
         self.numticks = 0
 
+        self.point_size_changed_flag = False
+
 
 
 ####

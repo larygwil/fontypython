@@ -316,7 +316,11 @@ class MainFrame(wx.Frame):
         self.Destroy()
 
     def menuSettings(self, e):
-        lastnuminpage, lastpoints, lasttext = fpsys.config.numinpage ,fpsys.config.text, fpsys.config.points
+        lastnuminpage = fpsys.config.numinpage
+        lastpoints = fpsys.config.points
+        lasttext = fpsys.config.text
+        lastias = fpsys.config.ignore_adjustments
+
         dlg = dialogues.DialogSettings(self)
         val = dlg.ShowModal()
         if val == wx.ID_OK:
@@ -324,19 +328,30 @@ class MainFrame(wx.Frame):
             num = int(dlg.inputPageLen.GetValue())
             points = int(dlg.inputPointSize.GetValue())
             txt = dlg.inputSampleString.GetValue()
-            ignoreAdjust = dlg.chkAdjust.GetValue() #Sept 2009
-            if (num, txt, points) != (lastnuminpage, lastpoints, lasttext):
-                fpsys.config.numinpage = int(num)
-                fpsys.config.points = int(points)
-                if len(txt) > 0: fpsys.config.text =  txt
+            ignore_adjust = dlg.chkAdjust.GetValue() #Sept 2009
 
-            fpsys.config.ignore_adjustments = ignoreAdjust #Sept 2009
+            stuffchanged = False
+            if num != lastnuminpage:
+                fpsys.config.numinpage = int(num)
+                stuffchanged = True
+            if txt != lasttext:
+                if len(txt) > 0: fpsys.config.text =  txt
+                stuffchanged = True
+            if points != lastpoints:
+                fpsys.config.points = int(points)
+                #Crucial flag to force a redraw of font bitmaps later
+                fpsys.state.point_size_changed_flag = True
+                stuffchanged = True
+            if ignore_adjust != lastias:
+                fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
+                stuffchanged = True
+
             fpsys.config.CMC.SET_CURRENT_APPNAME( dlg.CHOSEN_CHARACTER_MAP) # Oct 2009
 
             ## Now to refresh things:
-            ## Sept 2009 : size change means we need new values for fitmaps
-            ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
-            ps.pub( update_font_view )
+            if stuffchanged: 
+                ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
+                ps.pub( update_font_view )
         dlg.Destroy()
 
     def menuAbout(self, e):
@@ -434,14 +449,14 @@ class MainFrame(wx.Frame):
 # Code for debugging:
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-#import wx.lib.mixins.inspection
+import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
+class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
     """
     The main wxPython app starts here
     """
     def OnInit(self):
-        #self.Init()  # initialize the inspection tool
+        self.Init()  # initialize the inspection tool
 
         ## Initial dialogue to inform user about wx unicode version.
         if not "unicode" in wx.PlatformInfo:

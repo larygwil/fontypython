@@ -49,7 +49,10 @@ class OverOutSignal(object):
         self.announce()
 
 class Ricordi(object):
-    """A variable that remembers its last value."""
+    """
+    A variable that remembers its last value.
+    You set it while checking for a difference.
+    """
     def __init__(self):
         self._prevvalue = None
         self._first = True
@@ -319,12 +322,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.pilbitmaps=[]
         self.pilwidth = 0
+        self.pilheight = 0
 
         ## The charmap button
         self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
         self.CHARMAP_BUTTON_OUT = self.FVP.BUTTON_CHARMAP
         ## Point to the handler for the signal re charmap button
         self.cmb_overout = OverOutSignal( self.charmap_button_signal )
+        self.cmb_rect = None
 
 
         ## Go draw the fitmap into a memory dc
@@ -335,13 +340,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.drawstate = DrawState(self)
 
 
-        #self.dcw = []
         self.bitmap = None
-        #self.prepareBitmap()
-        #sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
 
-        ## Now I can calc the y value of the button.
-        self.cmb_rect = None#wx.Rect(0,0,4,4)
 
         ## init my parent class 
         ## Give it a fake size. It has issues...
@@ -385,15 +385,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
         memDc.SelectObject( bitmap )
-        memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
+        #memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
         memDc.Clear()
         
         #self.bottomFadeEffect( memDc, h, w )
 
-        ctx = wx.GraphicsContext.Create(memDc)
-        b = ctx.CreateLinearGradientBrush(0,h,0,0,"#eeeeeeff", "#ffffffff")
-        ctx.SetBrush (b)
-        ctx.DrawRectangle(0,0,w,h)
+        #ctx = wx.GraphicsContext.Create(memDc)
+        #b = ctx.CreateLinearGradientBrush(0,h,0,0,"#eeeeeeff", "#ffffffff")
+        #ctx.SetBrush (b)
+        #ctx.DrawRectangle(0,0,w,h)
 
         self.bitmap = bitmap #record this for the init
 
@@ -401,11 +401,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         for pencil in self.drawDict.values(): 
             #print "Drawing pencil:", pencil
             pencil.draw(memDc)
-        gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
-        gstops.Add(wx.Colour(255,255,255,255), 0.8)
-        b = ctx.CreateLinearGradientBrush(w,0,w-(w/8),0, gstops )
-        ctx.SetBrush (b)
-        ctx.DrawRectangle(0,0,w,h)
+
+        #gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
+        #gstops.Add(wx.Colour(255,255,255,255), 0.8)
+        #b = ctx.CreateLinearGradientBrush(w,0,w-(w/8),0, gstops )
+        #ctx.SetBrush (b)
+        #ctx.DrawRectangle(0,0,w,h)
 
 
         ## Thinking of drawing with a bitmap brush onto a larger bg image somehow
@@ -413,6 +414,11 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # brush1 = wx.BrushFromBitmap(wx.Bitmap('pattern1.png'))
         # dc.SetBrush(brush1)
         # dc.DrawRectangle(10, 15, 90, 60)
+
+        self.width = w
+        
+        # Vital line: I can't tell you ... Man. The suffering.
+        self.SetBestSize((w, h))        
 
         return memDc
 
@@ -526,6 +532,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def generate_pil_bitmaps(self):
         totheight = 0
+        del self.pilbitmaps[:]
+        self.pilbitmaps = []
 
         widths = [Fitmap.MIN_FITEM_WIDTH]
         for pilimage in self.fitem.generatePilFont():
@@ -535,6 +543,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             totheight += pilimage.size[1] + Fitmap.SPACER
             widths.append(pilimage.size[0])
         self.pilwidth = max(widths)
+        self.pilheight = totheight
 
     def font_bitmap_pencils(self):
         ## Get a list of pilimages, for each subface: Some fonts 
@@ -546,16 +555,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## after this loop.
         ## NOTE: generatePilFont sets the colour of the font bitmap!
         ## The color comes from fitem.inactive t/f
-        pillist = []
-        totheight = 0
+        #pillist = []
+        #totheight = 0
 
-        widths = [Fitmap.MIN_FITEM_WIDTH]
-        for pilimage in self.fitem.generatePilFont():
-            #Only fitems that have a successful pilimage appear in this loop
-            #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
-            pillist.append( pilimage )
-            totheight += pilimage.size[1] + Fitmap.SPACER
-            widths.append(pilimage.size[0])
+        #widths = [Fitmap.MIN_FITEM_WIDTH]
+        #for pilimage in self.fitem.generatePilFont():
+        #    #Only fitems that have a successful pilimage appear in this loop
+        #    #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
+        #    pillist.append( pilimage )
+        #    totheight += pilimage.size[1] + Fitmap.SPACER
+        #    widths.append(pilimage.size[0])
+
+        #TODO -- back to doing too much.... fix me
+        self.generate_pil_bitmaps()
 
         ## Now that badfont is determined, we can fetch a colour:
         self.setStyle() #Go set the self.style
@@ -564,7 +576,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Limit the minimum we allow.
         #if totheight < Fitmap.MIN_FITEM_HEIGHT:
         #    totheight = Fitmap.MIN_FITEM_HEIGHT
-        totheight = max(totheight, Fitmap.MIN_FITEM_HEIGHT) # right?
+        totheight = max(self.pilheight, Fitmap.MIN_FITEM_HEIGHT) # right?
 
         if self.fitem.badfont:
             ## We have a badstyle to help us differentiate these.
@@ -579,11 +591,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             mainy = 10
             i = 0
-            for pilimage in pillist:
-                ## We don't need pilwidth here as we already have the max
-                ## from up-code in the for loop.
-                ## We do use the glyphHeight
-                pilwidth, glyphHeight = pilimage.size
+            #print "fam:", self.fitem.family
+            for pilimage in self.pilbitmaps:
+                #print "!! :", pilimage
+                glyphHeight = pilimage.size[1]
                 try:
                     ## Get the data from PIL into wx.
                     ## Now with alpha! Thanks to:
@@ -611,7 +622,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     x = 16
                     if i > 0: x *= 3 # Shift sub-faces over a little
                     fontbitmap = BitmapPencil( "facebitmap", x-fx, mainy-fy,
-                                    faceBitmap, width = max(widths) )
+                                    faceBitmap, width = self.pilwidth )
                     #self.queue( fontbitmap )
 
                 ## The font name/fam/style : fnfs
@@ -791,10 +802,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     def crop(self, newwidth):
         print "Cropping:",self.name
         h = self.bitmap.GetHeight()
+        print " Before w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
         img = self.bitmap.ConvertToImage().Resize( (newwidth, h),(0,0),255,255,255 )
         self.bitmap = img.ConvertToBitmap()
         self.SetBestSize((newwidth, h))        
-        print "crop done..."
+        print " After w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
+        print " After (my vars) w,h:", newwidth, h
 
     def calculate_top_left_adjustments(self, image, i, pilimage):
         ## Sept 2009
