@@ -98,11 +98,9 @@ class DrawState(object):
     mask_C = 4
 
     blocks = {
-       "A":(1, 1), # Block "A" AND test is & 1 == 1
-       "B":(3, 2), # "B" is & 3 == 2
-       "C":(7, 4), # etc.
-       #"D":(8, 8),
-       #"Z":(0, 0)
+       "A":(1, 1), # "A" is state & 1 == 1
+       "B":(3, 2), # "B" is state & 3 == 2
+       "C":(4, 4), # "C" is state & 4 == 4
        }
    
     def __init__(self, fitmap):
@@ -143,6 +141,7 @@ class DrawState(object):
         which block it's in.
         E.g. if xx.isblock("A"):
         """
+        #print "TEST: state {} & block {}{} = {}".format(self.state, c, self.state & DrawState.blocks[c][0], DrawState.blocks[c][1])
         return self.state & DrawState.blocks[c][0] == \
                 DrawState.blocks[c][1]
 
@@ -800,14 +799,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
     def crop(self, newwidth):
-        print "Cropping:",self.name
+        #print "Cropping:",self.name
         h = self.bitmap.GetHeight()
-        print " Before w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
+        #print " Before w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
         img = self.bitmap.ConvertToImage().Resize( (newwidth, h),(0,0),255,255,255 )
         self.bitmap = img.ConvertToBitmap()
         self.SetBestSize((newwidth, h))        
-        print " After w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
-        print " After (my vars) w,h:", newwidth, h
+        #print " After w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
+        #print " After (my vars) w,h:", newwidth, h
 
     def calculate_top_left_adjustments(self, image, i, pilimage):
         ## Sept 2009
@@ -910,7 +909,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # Blocks A,B,C are exclusive
         # Initial run has state set to block A and D (i.e. do it all anew)
         if self.drawstate.isblock("A"):
-            #print "A"
+            print "A"
             #Block A
             # active/inactive state has changed
             # New - Face bitmaps
@@ -919,7 +918,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.qpencils( self.active_inactive_pencils() )
 
         elif self.drawstate.isblock("B"):
-            #print "B"
+            print "B"
             #Block B
             # point size of font, or text has changed:
             # New - face bitmaps
