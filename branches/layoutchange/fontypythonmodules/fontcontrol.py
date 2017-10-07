@@ -134,6 +134,7 @@ class FontItem( object ):
                 raise
             try:
                 font = ImageFont.truetype(self.glyphpaf, 16, index=i, encoding="unicode" )
+                #Tester: raise IOError
             except IOError:
                 """
                 Means the ttf file cannot be opened or rendered by PIL !
@@ -164,8 +165,9 @@ class FontItem( object ):
                 ## What next on the error pile?
                 print "CORNER CASE in FontItem.__queryFontFamilyStyleFlagBad:", [self.glyphpaf]
                 print sys.exc_info()
-                raise
                 ## Abort the app because this is an unhandled PIL error of some kind.
+                raise
+
             if not self.badfont:
                 ## *If* 'check' is run, there will be a file containing pafs of the
                 ## fonts that segfault PIL. (To my best knowledge, at least.)

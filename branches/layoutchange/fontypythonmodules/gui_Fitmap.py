@@ -33,25 +33,6 @@ ndi=(227,226,219) # No Draw Inactive => "ndi"
 black=(0,0,0)
 white=(255,255,255)
 
-class xxxOverOutSignal(object):
-    """
-    Signal an external function when a state has CHANGED from
-    True to False or vice-vera
-    """
-    def __init__( self, func_to_signal ):
-        self.announce = func_to_signal
-        self.state = False
-        self.last_state = False
-    def __changed( self ):
-        if self.state != self.last_state:
-            self.last_state = self.state
-            return True
-        return False
-    def set( self, truth ):
-        if self.state == truth: return #shortcut return if same val
-        self.state = truth
-        if self.__changed(): self.announce()
-
 
 class OverOutSignal(object):
     """
@@ -336,7 +317,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # Some values for drawing
         self.gradientheight = 50
 
-        self.widestpilimage = 0 # July 2016: The final, drawn, width of this fitem.
+        self.pilbitmaps=[]
+        self.pilwidth = 0
 
         ## The charmap button
         self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
@@ -355,16 +337,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         #self.dcw = []
         self.bitmap = None
-        self.prepareBitmap()
-        sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
+        #self.prepareBitmap()
+        #sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
 
         ## Now I can calc the y value of the button.
-        self.cmb_rect=wx.Rect(0,sz[1]-40,19,32)
+        self.cmb_rect = None#wx.Rect(0,0,4,4)
 
         ## init my parent class 
-        ## This also sets the SIZE of the fitmap widget.
-        ## Calling DoGetBestSize on it will return that size.
-        wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, (0,0), sz)
+        ## Give it a fake size. It has issues...
+        wx.lib.statbmp.GenStaticBitmap.__init__(self, parent, -1, self.bitmap, size=(2,2))
 
         ## Fitmap's over out signal
         self.overout = OverOutSignal( self.overout_signal )
@@ -543,6 +524,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         return [ iconpencil, text0, text1 ]
 
+    def generate_pil_bitmaps(self):
+        totheight = 0
+
+        widths = [Fitmap.MIN_FITEM_WIDTH]
+        for pilimage in self.fitem.generatePilFont():
+            #Only fitems that have a successful pilimage appear in this loop
+            #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
+            self.pilbitmaps.append( pilimage )
+            totheight += pilimage.size[1] + Fitmap.SPACER
+            widths.append(pilimage.size[0])
+        self.pilwidth = max(widths)
+
     def font_bitmap_pencils(self):
         ## Get a list of pilimages, for each subface: Some fonts 
         ## have multiple faces, and their heights.
@@ -705,7 +698,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Because I just can't guarantee that there is a family name
         and because bad fonts that can't draw (but do not segfault)
         are so rare that I can't bloody find any to test with (grrr)
-        I make the sweeping fiat that no badfonts will get a button.
+        I make the sweeping fiat that FILE_NOT_FOUND badfonts will 
+        not get a button.
 
         Other fitems like info and FILE_NOT_FOUND don't get buttons.
         """
@@ -719,12 +713,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         if not self.can_have_button():
             self.overout.set ( True )
             return
-        if self.cmb_rect.Contains( e.GetPositionTuple() ):
-            self.cmb_overout.set( True )
-            self.overout.set( False ) #Not 'on' fitmap
-        else:
-            self.cmb_overout.set ( False )
-            self.overout.set( True )
+        if self.cmb_rect: # It's None when a Fitmap is first instanced.
+            if self.cmb_rect.Contains( e.GetPositionTuple() ):
+                self.cmb_overout.set( True )
+                self.overout.set( False ) #Not 'on' fitmap
+            else:
+                self.cmb_overout.set ( False )
+                self.overout.set( True )
 
     def charmap_button_signal( self ):
         if self.cmb_overout.truthstate:
@@ -777,6 +772,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
             if not self.can_have_button(): return
+
+            #sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
+
+            #self.SetBestSize((sz[0], sz[1]))        
+            
+            ## Now I can calc the y value of the button.
+            self.cmb_rect=wx.Rect(0,self.bitmap.GetHeight()-40,19,32)
 
             # Draw the charmap button
             x,y = self.cmb_rect[0],self.cmb_rect[1]
