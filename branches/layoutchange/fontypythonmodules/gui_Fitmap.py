@@ -48,29 +48,7 @@ class OverOutSignal(object):
         self.truthstate = newtruth # Orwell would be proud! :D
         self.announce()
 
-class xxRicordi(object):
-    """
-    A variable that remembers its last value.
-    You set it while checking for a difference.
-    """
-    def __init__(self):
-        self._prevvalue = None
-        self._first = True
-    def differs(self, something):
-        """
-        Sets the value and tests if it differs from
-        the last value. 
-        Returns: True or False
-        (If first run, it sets and returns true)
-        """
-        if self._first: 
-            self._first = False
-            tf = True
-        else:
-            tf = self._prevvalue != something
 
-        self._prevvalue = something
-        return tf
 
 class History(object):
     """
@@ -131,13 +109,6 @@ class DrawState(object):
         self.parent = fitmap
         self.state = 0
         self.laststate = self.state
-        #
-        #self._points = History() 
-        #self._text = History() 
-        #self._inactive = History() 
-        #self._ticked = History() 
-        #self._ignore_adjustments = History()
-
         self._history = History()
 
     def determine(self):
@@ -150,23 +121,18 @@ class DrawState(object):
         from scratch.
         """
         self.state = 0
-        #if self._inactive.differs(self.parent.fitem.inactive):
         if self._history.differs("ai", self.parent.fitem.inactive):
             self.state |= DrawState.mask_A
 
-        #if self._points.differs(fpsys.config.points):
         if self._history.differs("pnts", fpsys.config.points):
             self.state |= DrawState.mask_B
 
-        #if self._text.differs(fpsys.config.text):
         if self._history.differs("txt", fpsys.config.text):
             self.state |= DrawState.mask_B
 
-        #if self._ignore_adjustments.differs(fpsys.config.ignore_adjustments):
         if self._history.differs("ia", fpsys.config.ignore_adjustments):
             self.state |= DrawState.mask_B
 
-        #if self._ticked.differs(self.parent.fitem.ticked):
         if self._history.differs("tix", self.parent.fitem.ticked):
             self.state |= DrawState.mask_C
 
@@ -264,6 +230,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     Oct 2009
     Added a 'button' to open a character map viewer.
+
+    Sept/Oct 2017
+    Lots of work. A total overhaul. Arguably worthless. Dunno.
     """
 
     ## This class-level dict is a kind of "style sheet" to use in fitmap drawing.
@@ -358,24 +327,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.pilwidth = 0
         self.pilheight = 0
 
+        # To keep all the pencils in a stack
+        self.drawDict = collections.OrderedDict()
+
+        self.height =  0
+        self.drawstate = DrawState(self)
+
+        self.bitmap = None
+
         ## The charmap button
         self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
         self.CHARMAP_BUTTON_OUT = self.FVP.BUTTON_CHARMAP
         ## Point to the handler for the signal re charmap button
         self.cmb_overout = OverOutSignal( self.charmap_button_signal )
         self.cmb_rect = None
-
-
-        ## Go draw the fitmap into a memory dc
-        self.drawDict = collections.OrderedDict()
-
-
-        self.height =  0
-        self.drawstate = DrawState(self)
-
-
-        self.bitmap = None
-
 
         ## init my parent class 
         ## Give it a fake size. It has issues...
@@ -601,6 +566,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #    widths.append(pilimage.size[0])
 
         #TODO -- back to doing too much.... fix me
+        ## IF I can alter the grey/alpha *after* the pil bitmaps are drawn,
+        ## then I can divorce the active/inactive thing form the rendering.
+        ## That means I won't need to call it here... (because I call it
+        ## manually in MinimalCreateFitmaps up in gui_Fitmap.py)
         self.generate_pil_bitmaps()
 
         ## Now that badfont is determined, we can fetch a colour:
@@ -637,10 +606,16 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     image=None
                     #image = apply( wx.EmptyImage, pilimage.size )
                     image = wx.EmptyImage(*pilimage.size)
-                    image.SetData(pilimage.convert( "RGB").tobytes() )
-                    image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
-
+                    #opil = pilimage
+                    #if self.fitem.inactive:
+                    #    opil.putalpha(128) # not working as expected..
+                    image.SetData(pilimage.convert("RGB").tobytes() )
+                    #image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
+                    image.SetAlphaData(pilimage.tobytes()[3::4])
+                    #image.Blur(2)
+working here
                     fx,fy = self.calculate_top_left_adjustments( image, i, pilimage )
+                    image = image.AdjustChannels(0,0,0,factor_alpha = 0.2)
 
                     faceBitmap = image.ConvertToBitmap()
                     #forcederror() #to test the except
@@ -650,6 +625,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     txt = _("This text cannot be drawn. Hey, it happens...")
                     fontbitmap = TextPencil( "cannotdraw", 10, mainy+2, txt, fcol,
                                     fpsys.config.points, style=wx.ITALIC)
+                    raise
                     #self.queue( cannotdraw )
                 else:
                     ## Place it into the main image, down a tad so it looks better.
