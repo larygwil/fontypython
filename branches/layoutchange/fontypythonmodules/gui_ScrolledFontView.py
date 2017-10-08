@@ -33,6 +33,8 @@ from pubsub import *
 ##langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 ##mylocale = wx.Locale( langid )
 
+import collections
+
 import fpsys # Global objects
 
 from gui_Fitmap import * #Also brings in 'ps' variable
@@ -53,9 +55,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.SetBackgroundColour('white')
 
-        self.fitmaps = []
+        # An od. Hold the fitmaps we know about.
+        # It's ordered so it keeps the same order as the viewobject (list)
+        # which comes into the MinimalCreateFitmaps method.
+        self.fitmaps = collections.OrderedDict()
+        self.tod = collections.OrderedDict() # works alongside.
 
-        self._last_viewobject = None
+        self._last_viewobject_list = None
 
         self.wheelValue = fpsys.config.points
         self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
@@ -64,10 +70,10 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## Sep 2017. New hacks. Might not need this...
         #self.Bind(wx.EVT_SIZE, self.onSize)
         
-        self.fitmap_sizer = wx.FlexGridSizer( cols = 1 )
+        self.fitmap_sizer = wx.FlexGridSizer(cols = 1)
         self.SetSizer(self.fitmap_sizer)
 
-        self.SetupScrolling(rate_y=5, scroll_x=False)
+        self.SetupScrolling(rate_y = 5, scroll_x = False)
 
         ps.sub( reset_top_left_adjustments, self.ResetTopLeftAdjustFlag ) ##DND: class ScrolledFontView 
 
@@ -151,80 +157,47 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## is different from what we must show now.
         ## On wheel zoom -> it should recreate fitmaps,for e.g.
         ## But, on a mere resize of the window, why bother?
-
-        hmmm.
-        I need to connect fitmaps and fitems
-        . to replace old fitmaps 
-        . to make new ones
-        . to remove fitmaps who's fitems i don't have any more
-        viewobject is the latest list of fitems
-        _last_viewobject is the past
-
-        w=[]
-        for fi in viewobject
-            # If the new stuff is not one we already know about, instance it:
-            if fi not in self._last_viewobject:
-                fm = Fitmap(self,fi) # make a new fitmap
-                fm.generate_pil_bitmaps()
-                self.fitmaps.append(fm)
-                w.append(fm.pilwidth)
-
-        self._last_viewobject = viewobject
-
-        self.fitmap_sizer.Clear()
-
-        self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
-
-
-
-        if not allsame:
-            ## Ensure we destroy all old fitmaps -- and I mean it.
-            for f in self.fitmaps:
-                print "Destroying fitmap:", f
-                f.Destroy()  #Ah, nailed ya! You bastard! I fart in your general direction!
-
-            ## Yes, die. Die!
-            del self.fitmaps[:]
-
+        
         ## If our viewobject has NO FONTS inside it (i.e. it's an EmptyView object)
         ## then setup a fake FontItem so we can have a dud Fitmap to show.
         if len(viewobject) == 0:
-            ## We only need a simple box sizer
-            bs = wx.BoxSizer(wx.VERTICAL)
-
             empty_fitem = fontcontrol.InfoFontItem()
             fm = Fitmap( self, empty_fitem )
-            self.fitmaps.append(fm) # I MUST add it to the list so that it can get destroyed when this func runs again next round.
-
-            bs.Add( fm )
-            self.SetSizer(bs)
-            bs.FitInside(self)
-
+            fm.prepareBitmap()
+            self.fitmap_sizer.Add( fm )
+            self.fitmap_sizer.FitInside(self)
         else:
-            ## Okay - let's make fonts!
-            if not self.fitmaps:
-                #print "Making fitmap from:", viewobject
-                w = []
-                for fitem in viewobject:
-                    ## Create a Fitmap out of the FontItem we have at hand.
-                    #print "Fitmap instance."
-                    fm = Fitmap( self, fitem )
-                    #print "generate_pil_bitmaps"
+            w=[] # widths
+            self.tod.clear()
+            for fi in viewobject:
+                # Seek it in my dict of fitmaps that already exist
+                fm = self.fitmaps.get(fi, None)
+                if fm:
+                    self.tod[ fi ] = fm # found one, so bring it across to the tmp od
+                else:
+                    # the fi key was not found, it's new
+                    fm = Fitmap(self, fi) # so, make it.
                     fm.generate_pil_bitmaps()
-                    print "Made fitmap:", fm.name
-                    #print " height:",fm.height
-                    self.fitmaps.append( fm )
-                    #w.append(fm.GetBestSize()[0])
-                    w.append(fm.pilwidth)
+                    # put it into the tmp od
+                    self.tod[ fi ] = fm
+                w.append(fm.pilwidth) # rec width
 
-                ## I am getting an AVERAGE of all the widths
-                ## This cuts the super-long bitmaps down to
-                ## a more-or-less size with the others.
-                self.colw = int( sum(w) / max( len(w), 1) )
+            # Now, replace the last od with the one we just filled:
+            self.fitmaps = self.tod
+
+            # Clear the sizer. This seems to work, even thought the sizer
+            # (when I look at it in the wx inspection tool) shows all the
+            # children before and after the call. 
+            self.fitmap_sizer.Clear(True)
+
+            self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
+
+            self.colw = int( sum(w) / max( len(w), 1) )
 
             # Let's redraw whatever may have changed within
             # each fitmap's drawing state:
-            for fitmap in self.fitmaps:
+            print self.fitmaps
+            for fitmap in self.fitmaps.values():
                 print "refresh:",fitmap.name
                 #print " height:",fitmap.height
                 ds = fitmap.prepareBitmap()
@@ -234,41 +207,36 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     # Without this, nothing appears to change...
                     fitmap.Refresh() 
 
-            cols = 1
-            print "*** self.colw:", self.colw#max(w)
+            #cols = 1
+            #print "*** self.colw:", self.colw#max(w)
 
             panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
             ## Can we afford some columns?
-            if self.colw < panelwidth:
-                cols = int(panelwidth / self.colw)
+            cols = int(panelwidth / self.colw) if self.colw < panelwidth else 1
 
             ## Let's also divvy-up the hgap
             hgap = (panelwidth - (cols * self.colw)) / 2
 
-            ## Make the new FlexGridSizer
-            #fgs = wx.FlexGridSizer( cols=cols, hgap=hgap, vgap=2 )
-            self.fgs.SetCols(cols) # = wx.BoxSizer(wx.VERTICAL)
+            self.fitmap_sizer.SetCols(cols)
             print "   Set cols %s" % cols
 
             ## Loop again and plug them into the sizer
-            for fm in self.fitmaps:
+            for fm in self.fitmaps.values():
                 ## JULY 2016
                 ## =========
                 ## If the bitmap is wider than a column, we will crop it
                 ## IDEA: Do a fade to white instead of a hard cut on the right.
-                ##
                 if fm.bitmap.GetWidth() > self.colw:
                     fm.crop(self.colw)
 
                 ## Add fm to the sizer
                 print "adding to sizer:", fm.name, (fm.height, fm.width)
-                #fgs.Add(fm, 0, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM)
-                #fgs.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
-                self.fgs.Add(fm)
+                #self.fitmap_sizer.Add(fm, 0, wx.ALIGN_LEFT | wx.ALIGN_BOTTOM)
+                #self.fitmap_sizer.Add(fm,0,wx.ALIGN_LEFT|wx.ALIGN_BOTTOM)
+                self.fitmap_sizer.Add(fm)
 
-            print "   for loop done."
-            self.fgs.FitInside(self)
+            self.fitmap_sizer.FitInside(self)
             print "====EXIT MinimalCreateFitmaps====="
 
 

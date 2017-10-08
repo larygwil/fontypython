@@ -116,6 +116,19 @@ TODO
 * Topleft adjustment toggle not redrawing properly
 * Button to put fonts into pog --> not redrawing fitems properly. The ticks stay on screen.
 
+Oct 2017: A new Segfault!
+===
+/home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
+MinimalCreateFitmaps runs
+OrderedDict([(<fontypythonmodules.fontcontrol.TruetypeItem object at 0x7f3d556e20d0>, <fontypythonmodules.gui_Fitmap.Fitmap; proxy of <Swig Object of type 'wxPyControl *' at 0x29384b0> >)])
+refresh: ANUDI___.ttf
+self.fitem.name ticked: False
+   Set cols 0
+adding to sizer: ANUDI___.ttf (94, 1047)
+Floating point exception (core dumped)
+
+
+
 
 SHORT-TERM MEMORY NOTES (Sadly now lost to time)
 ==

@@ -72,28 +72,26 @@ class xxRicordi(object):
         self._prevvalue = something
         return tf
 
-class Ricordi(object):
+class History(object):
     """
-    A variable that remembers its last value.
+    A history that remembers a key's last value.
     You set it while checking for a difference.
     """
     def __init__(self):
-        self._first = True
         self._d = {}
-    def differs(self, something):
+    def differs(self, key, something):
         """
         Sets the value and tests if it differs from
         the last value. 
         Returns: True or False
         (If first run, it sets and returns true)
         """
-        if self._first: 
-            self._first = False
+        if key not in self._d:
             tf = True
         else:
-            tf = self._d[something] != something
+            tf = self._d[key] != something
 
-        self._d[something] = something
+        self._d[key] = something
         return tf
 
 
@@ -134,13 +132,13 @@ class DrawState(object):
         self.state = 0
         self.laststate = self.state
         #
-        #self._points = Ricordi() 
-        #self._text = Ricordi() 
-        #self._inactive = Ricordi() 
-        #self._ticked = Ricordi() 
-        #self._ignore_adjustments = Ricordi()
+        #self._points = History() 
+        #self._text = History() 
+        #self._inactive = History() 
+        #self._ticked = History() 
+        #self._ignore_adjustments = History()
 
-        self._history = Ricordi()
+        self._history = History()
 
     def determine(self):
         """
@@ -153,23 +151,23 @@ class DrawState(object):
         """
         self.state = 0
         #if self._inactive.differs(self.parent.fitem.inactive):
-        if self._history.differs(self.parent.fitem.inactive):
+        if self._history.differs("ai", self.parent.fitem.inactive):
             self.state |= DrawState.mask_A
 
         #if self._points.differs(fpsys.config.points):
-        if self._history.differs(fpsys.config.points):
+        if self._history.differs("pnts", fpsys.config.points):
             self.state |= DrawState.mask_B
 
         #if self._text.differs(fpsys.config.text):
-        if self._history.differs(fpsys.config.text):
+        if self._history.differs("txt", fpsys.config.text):
             self.state |= DrawState.mask_B
 
         #if self._ignore_adjustments.differs(fpsys.config.ignore_adjustments):
-        if self._history.differs(fpsys.config.ignore_adjustments):
+        if self._history.differs("ia", fpsys.config.ignore_adjustments):
             self.state |= DrawState.mask_B
 
         #if self._ticked.differs(self.parent.fitem.ticked):
-        if self._history.differs(self.parent.fitem.ticked):
+        if self._history.differs("tix", self.parent.fitem.ticked):
             self.state |= DrawState.mask_C
 
     def isblock(self, c):
