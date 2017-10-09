@@ -98,12 +98,10 @@ class DrawState(object):
     mask_A = 1
     mask_B = 2
     mask_C = 4
+    mask_D = 8
+    mask_E = 16
 
-    blocks = {
-       "A":(1, 1), # "A" is state & 1 == 1
-       "B":(3, 2), # "B" is state & 3 == 2
-       "C":(4, 4), # "C" is state & 4 == 4
-       }
+    blocks = {"A":1,"B":2,"C":4,"D":8,"E":16}
    
     def __init__(self, fitmap):
         self.parent = fitmap
@@ -116,25 +114,26 @@ class DrawState(object):
         Looking at very specific variables which 
         influence how we will draw the font bitmap.
         We OR the values onto state as we go.
-        On first run, the state will be maxed, i.e.
-        blocks A and C; which means make everything
-        from scratch.
+        
+        Because of the way History.differs works, on first 
+        run, the state will be maxed, all blocks are on.
         """
         self.state = 0
-        if self._history.differs("ai", self.parent.fitem.inactive):
-            self.state |= DrawState.mask_A
-
-        if self._history.differs("pnts", fpsys.config.points):
+        # A, B
+        if self._history.differs("pointschanged", fpsys.config.points):
+            self.state |= DrawState.mask_A | DrawState.mask_B
+        # A, B
+        if self._history.differs("textchanged", fpsys.config.text):
+            self.state |= DrawState.mask_A | DrawState.mask_B
+        # B
+        if self._history.differs("tlchanged", fpsys.config.ignore_adjustments):
             self.state |= DrawState.mask_B
-
-        if self._history.differs("txt", fpsys.config.text):
-            self.state |= DrawState.mask_B
-
-        if self._history.differs("ia", fpsys.config.ignore_adjustments):
-            self.state |= DrawState.mask_B
-
-        if self._history.differs("tix", self.parent.fitem.ticked):
-            self.state |= DrawState.mask_C
+        # B, C, D
+        if self._history.differs("activechanged", self.parent.fitem.inactive):
+            self.state |= DrawState.mask_B | DrawState.mask_C | DrawState.mask_D
+        # E
+        if self._history.differs("tickedchanged", self.parent.fitem.ticked):
+            self.state |= DrawState.mask_E
 
     def isblock(self, c):
         """
@@ -142,9 +141,8 @@ class DrawState(object):
         which block it's in.
         E.g. if xx.isblock("A"):
         """
-        #print "TEST: state {} & block {}{} = {}".format(self.state, c, self.state & DrawState.blocks[c][0], DrawState.blocks[c][1])
-        return self.state & DrawState.blocks[c][0] == \
-                DrawState.blocks[c][1]
+        return self.state & DrawState.blocks[c] == \
+                DrawState.blocks[c]
 
         
 
@@ -369,7 +367,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #	self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
 
 
-
     def usePencils(self, h):
         """
         Makes a new mem dc with the best size.
@@ -529,7 +526,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         return [ iconpencil, text0, text1 ]
 
-    def generate_pil_bitmaps(self):
+    def gen_face_samples(self):
         totheight = 0
         del self.pilbitmaps[:]
         self.pilbitmaps = []
@@ -914,34 +911,47 @@ working here
             return
 
         ## Go determine my draw state. 
+        # Initial run has all set.
         self.drawstate.determine()
         #print "drawstate is:", self.drawstate.state
 
-        # Blocks A,B,C are exclusive
-        # Initial run has state set to block A and D (i.e. do it all anew)
         if self.drawstate.isblock("A"):
             #print "A"
             #Block A
+            # Generate the raw "font sample" bitmaps from new.
+            
             # active/inactive state has changed
             # New - Face bitmaps
-            self.qpencils( self.font_bitmap_pencils() )
+            self.qpencils( self.gen_face_samples() )
             # New - Active/Inactive message and Green tick (position)
             self.qpencils( self.active_inactive_pencils() )
 
-        elif self.drawstate.isblock("B"):
+        if self.drawstate.isblock("B"):
             #print "B"
             #Block B
+            # Touch "font sample" pencils.
+            # i.e. Make/update them.
+
             # point size of font, or text has changed:
             # New - face bitmaps
             self.qpencils( self.font_bitmap_pencils() )
 
-        ## Block C can happen alongside A,B or C
+        ## Block C 
         if self.drawstate.isblock("C"):
             #print "C"
+            # Touch the "face caption" pencils.
+
             # BlockD
             # select has changed - item is selected, or it's not
             # New - Tick/Cross or Nothing
             self.qpencils( self.selected_and_how_pencils() )
+
+        if self.drawstate.isblock("D"):
+            #Block D: Touch "footer" pencil.
+            # They show the inactive message, or nothing.
+
+        if self.drawstate.isblock("E"):
+            #Block E: Touch the "ticked" pencils.
     
         ## If we actually have something to draw...
         if self.drawstate > 0:
