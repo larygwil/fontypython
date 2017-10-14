@@ -101,7 +101,7 @@ class DrawState(object):
     mask_D = 8
     mask_E = 16
 
-    blocks = {"A":1,"B":2,"C":4,"D":8,"E":16}
+    blocks = {"A":1,"B":2,"C":4,"D":8}
    
     def __init__(self, fitmap):
         self.parent = fitmap
@@ -119,21 +119,21 @@ class DrawState(object):
         run, the state will be maxed, all blocks are on.
         """
         self.state = 0
-        # A, B
+        # A
         if self._history.differs("pointschanged", fpsys.config.points):
-            self.state |= DrawState.mask_A | DrawState.mask_B
-        # A, B
+            self.state |= DrawState.mask_A
+        # A
         if self._history.differs("textchanged", fpsys.config.text):
-            self.state |= DrawState.mask_A | DrawState.mask_B
+            self.state |= DrawState.mask_A
         # B
-        if self._history.differs("tlchanged", fpsys.config.ignore_adjustments):
-            self.state |= DrawState.mask_B
-        # B, C, D
         if self._history.differs("activechanged", self.parent.fitem.inactive):
-            self.state |= DrawState.mask_B | DrawState.mask_C | DrawState.mask_D
-        # E
+            self.state |= DrawState.mask_B
+        # C
         if self._history.differs("tickedchanged", self.parent.fitem.ticked):
-            self.state |= DrawState.mask_E
+            self.state |= DrawState.mask_C
+        # D
+        if self._history.differs("tlchanged", fpsys.config.ignore_adjustments):
+            self.state |= DrawState.mask_D
 
     def isblock(self, c):
         """
@@ -166,12 +166,12 @@ class EmptyPencil(Pencil):
 
 class TextPencil(Pencil):
     textExtentsDict = {}
-    def __init__( self, id, x, y, txt, fcol, points, 
+    def __init__( self, id, x, y, txt, styleptr, points, 
             style=wx.NORMAL, weight=wx.NORMAL, 
             encoding = wx.FONTENCODING_DEFAULT ):
         Pencil.__init__(self, id, x, y)
         self.txt = txt
-        self.fcol = fcol
+        self.styleptr = styleptr
         self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
         self._width = 0
 
@@ -197,24 +197,123 @@ class TextPencil(Pencil):
         #return sz[0]
 
     def draw(self, memdc):
-        memdc.SetTextForeground( self.fcol )
+        memdc.SetTextForeground( self.styleptr["fcol"] )
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )
 
 
 
 class BitmapPencil(Pencil):
-    def __init__( self, id, x, y, bitmap, width = 0 ):
+    def __init__( self, id, x, y, bitmap):
         Pencil.__init__(self, id, x, y)
         self.bitmap = bitmap
-        self.width = width
-    def getwidth(self): return self.width
+    def getwidth(self): return self.bitmap.GetWidth()
     def draw(self, memdc):
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
 
+class FacemapPencil(BitmapPencil):
+    def __init__( self, id, pilimage, x, y):
+        self._pilimage = pilimage
+        self.wximage = self._make_wximage(pilimage)
+        self.bitmap = self.image_to_bitmap()
+        BitmapPencil.__init__(self,id,x,y, bitmap, self.bitmap.GetWidth())
+    def _make_wximage(self,pilimage):
 
+
+    def bitmap(self):
+        return self.wximage.ConvertToBitmap()
+    def get_lightened_bitmap(self,n):
+        i = self.wximage.AdjustChannels(0,0,0,factor_alpha = n)
+                    #    opil.putalpha(128) # not working as expected..
+
+        self.bitmap = i...
+        return i
         
+
+class FaceErrorPencil(TextPencil):
+    def __init__(self, id, x, y, styleptr, err):
+        txt = _("Bad things happened. Original error:{}").format(fpsys.LSP.to_unicode(err))
+        TextPencil.__init__(self, id, x, y, txt, styleptr, points, style=wx.ITALIC )
+
+
+class FaceImagePencil(Pencil):
+    def __init__(self, id, x, y, wximage, fitmap):
+        self.bitmap = wximage.ConvertToBitmap()
+        Pencil.__init__(self, id, x, y)
+        self.fitmap = fitmap
+        self.wxi = wximage
+        self.bmp_inactive = None
+        self.tlcache = ()
+    def draw(self, memdc):
+        # determine tl_adjustment stuff
+        fx,fy = 0,0
+        if not fpsys.config.ignore_adjustments:
+            # i.e. We have to calculate the tl
+            if not self.tlcache():
+                # We don't have the coords cached
+                fx, fy = self.calculate_top_left_adjustments()
+                self.tlcache = (fx,fy) #cache 'em!
+            else:
+                fx, fy = self.tlcache
+        # Are we inactive?
+        if self.fitmap.fitem.inactive:
+            if not self.bmp_inactive:
+                ##http://xoomer.virgilio.it/infinity77/wxPython/Widgets \
+                ##/wx.Image.html#AdjustChannels
+                tmp = self.wxi.AdjustChannels(0,0,0,factor_alpha = 0.5)
+                self.bmp_inactive = tmp.ConvertToBitmap()
+            b = self.bmp_inactive
+        else:
+            b = self.bitmap
+        memdc.DrawBitmap( b, self.x-fx, self.y-fy, True )
+        memdc.DrawCheckMark(0, 0, 10,10)# what will it do?
+
+    def calculate_top_left_adjustments(self):
+        ## Sept 2009
+        ## Find the first pixel from the top-left of the image (if it's not stored)
+        ## Using this pixel as the x,y I can draw fonts from where their actual data
+        ## begins and not where the pilimage *thinks* it does (leaving big white spaces
+        ## to the left of many fonts.)
+        wx.BeginBusyCursor()
+        fx,fy=0,0
+        W,H = self.wxi.GetSize()#pilimage.size
+        fx=fy=0
+        esc = False
+        # Scan ACROSS WIDTH and repeatedly DOWN looking for a pixel.
+        for tx in xrange(W):
+            for ty in xrange(H):
+                ap=image.GetAlpha(tx,ty)
+                #image.SetRGB(tx,ty,0,255,0)
+                #image.SetAlpha(tx,ty,255)
+                if ap != 0: #Found X coord, let's kill both loops
+                    fx=tx
+                    esc = True
+                    break
+            if esc: break #uses fact that 0 is False
+        # Scan DOWN the HEIGHT and repeatedly ACROSS.
+        esc = False
+        for ty in xrange(H):
+            for tx in xrange(W):
+                ap=image.GetAlpha(tx,ty)
+                if ap != 0:
+                    fy=ty # Found Y coord
+                    esc = True
+                    break
+            if esc: break
+        wx.EndBusyCursor()
+        return fx,fy
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -321,9 +420,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # Some values for drawing
         self.gradientheight = 50
 
-        self.pilbitmaps=[]
+        self.pilbitmaps = []
         self.pilwidth = 0
         self.pilheight = 0
+        self.wxImages = []
 
         # To keep all the pencils in a stack
         self.drawDict = collections.OrderedDict()
@@ -365,7 +465,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #	self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
         #if self.fitem.inactive:
         #	self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+    
+    def addPencil(self,pencil):
+        if not isinstance(pencil, list): 
+            listofpencils = [whatever]
+        else:
+            listofpencils = whatever        
+        # beware, this does not preserve the order of the
+        # input list!
+        d = dict((o.id, o) for o in listofpencils)
 
+        self.drawDict.update(d)# {id:pencil})
 
     def usePencils(self, h):
         """
@@ -526,20 +636,85 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         return [ iconpencil, text0, text1 ]
 
+
+
+    
+
     def gen_face_samples(self):
         totheight = 0
-        del self.pilbitmaps[:]
-        self.pilbitmaps = []
-
+        pilbitmaps = []
         widths = [Fitmap.MIN_FITEM_WIDTH]
         for pilimage in self.fitem.generatePilFont():
             #Only fitems that have a successful pilimage appear in this loop
             #Broken pil images set badfont on the fitem, and do not yield a pilgimge.
-            self.pilbitmaps.append( pilimage )
+            pilbitmaps.append( pilimage )
             totheight += pilimage.size[1] + Fitmap.SPACER
             widths.append(pilimage.size[0])
-        self.pilwidth = max(widths)
-        self.pilheight = totheight
+        pilwidth = max(widths)
+        pilheight = totheight
+
+        totheight = max(pilheight, Fitmap.MIN_FITEM_HEIGHT)
+        
+        self.setStyle()
+
+        if self.fitem.badfont:
+            self.addPencil( self.info_or_badfont_pencils() )
+            return
+
+        if self.fitem.inactive:
+            totheight += (Fitmap.SPACER-10) #want room for 'is in pog' message.
+        mainy = 10
+        for i,pilimage in enumerate(pilbitmaps):
+            glyphHeight = pilimage.size[1]
+            ## The Face Sample:
+            try:
+                ## Get the data from RGBA PIL into wx.
+                ## Thx, http://nedbatchelder.com/blog/200801/ \
+                ## truly_transparent_text_with_pil.html
+                image = wx.EmptyImage(*pilimage.size)
+                image.SetData(pilimage.convert("RGB").tobytes() )
+                #image.SetAlphaData(pilimage.convert("RGBA").tobytes()[3::4])
+                image.SetAlphaData(pilimage.tobytes()[3::4])
+
+                x = 16
+                if i > 0: x *= 3 # Shift sub-faces over a little
+                self.addPencil(
+                    FaceImagePencil(
+                        "face-{}".format(i),
+                        x,
+                        mainy,
+                        image,
+                        self)
+                    )
+                
+                #forcederror() #to test the except
+            except Exception as e:
+                self.addPencil(
+                    FaceErrorPencil(
+                        "face-{}-error".format(i),
+                        10,
+                        mainy + 2,
+                        e)
+                    )
+
+            ## The Caption: fam, style, name
+            self.addPencil( 
+                TextPencil( 
+                    "face-{}-caption".format(i),
+                    28,
+                    mainy + glyphHeight + 8,
+                    "{} - {} - [{}]".format(
+                        self.fitem.family[i],
+                        self.fitem.style[i],
+                        self.fitem.name
+                    ),
+                    self.style,
+                    points = 8)
+                )
+
+            ## Move TOP down to next BOTTOM (for next sub-face)
+            mainy += glyphHeight +  Fitmap.SPACER
+
 
     def font_bitmap_pencils(self):
         ## Get a list of pilimages, for each subface: Some fonts 
@@ -816,7 +991,7 @@ working here
         #print " After w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
         #print " After (my vars) w,h:", newwidth, h
 
-    def calculate_top_left_adjustments(self, image, i, pilimage):
+    def xxx_calculate_top_left_adjustments(self, image, i, pilimage):
         ## Sept 2009
         ## Find the first pixel from the top-left of the image (if it's not stored)
         ## Using this pixel as the x,y I can draw fonts from where their actual data
@@ -900,6 +1075,9 @@ working here
         I am not sure exactly when/how onPaint fires.
         """
 
+
+
+
         #print "prepareBitmap runs for:", self
 
         ## InfoFontItem is a fake font item for the purposes
@@ -913,45 +1091,29 @@ working here
         ## Go determine my draw state. 
         # Initial run has all set.
         self.drawstate.determine()
-        #print "drawstate is:", self.drawstate.state
+        
+
+        self.drawstate.watch(
+                {"textchanged": lambda: fpsys.config.text,
+                    "pointschanged", lambda: fpsys.config.points,
+                    "tlchanged", lambda: fpsys.config.ignore_adjustments,
+                    "activechanged", lambda: self.fitem.inactive,
+                    "tickedchanged", lambda: self.fitem.ticked})
+
 
         if self.drawstate.isblock("A"):
-            #print "A"
-            #Block A
-            # Generate the raw "font sample" bitmaps from new.
-            
-            # active/inactive state has changed
-            # New - Face bitmaps
-            self.qpencils( self.gen_face_samples() )
-            # New - Active/Inactive message and Green tick (position)
-            self.qpencils( self.active_inactive_pencils() )
+            # Block A: Always erase and make new face sample pencils
+            self.gen_face_samples()
 
         if self.drawstate.isblock("B"):
-            #print "B"
-            #Block B
-            # Touch "font sample" pencils.
-            # i.e. Make/update them.
+            # Block B: Reuse if, else make new footer pencil
+            if "footer" not in self.drawDict:
+                self.genFooter()
 
-            # point size of font, or text has changed:
-            # New - face bitmaps
-            self.qpencils( self.font_bitmap_pencils() )
-
-        ## Block C 
         if self.drawstate.isblock("C"):
-            #print "C"
-            # Touch the "face caption" pencils.
-
-            # BlockD
-            # select has changed - item is selected, or it's not
-            # New - Tick/Cross or Nothing
-            self.qpencils( self.selected_and_how_pencils() )
-
-        if self.drawstate.isblock("D"):
-            #Block D: Touch "footer" pencil.
-            # They show the inactive message, or nothing.
-
-        if self.drawstate.isblock("E"):
-            #Block E: Touch the "ticked" pencils.
+            # Block C: Resuse if, else make new ticked pencil
+            if "ticked" not in self.drawDict:
+                self.genTicked()
     
         ## If we actually have something to draw...
         if self.drawstate > 0:

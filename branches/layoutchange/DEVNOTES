@@ -116,6 +116,21 @@ TODO
 * Topleft adjustment toggle not redrawing properly
 * Button to put fonts into pog --> not redrawing fitems properly. The ticks stay on screen.
 
+
+Fitmap & ScrolledFontView notes
+==
+After a lot of time and experiments, here's my summary:
+1. Each fitmap will do its best to be efficient - it will cache and buffer and all that stuff.
+2. In ScrolledFontView, make new fitmaps for the viewobject except where a prior fitmap is still valid.
+3. Do not export efficiency into higher layers. Keep it all in the fitmap class.
+Point 3 means I won't be trying to pre-make/pre-measure in order to get widths; in order to divide
+up the space into columns. I will simply make the entire fitmap - draw the whole bitmap - and then
+measure that. The fitmap must be as efficient as possible; not the code higher-up that uses fitmaps.
+
+Reasoning: It's a false economy to optimize outside of Fitmap. One starts to build more state things
+and then to estimate widths and do pre-pre-prep stuff. It's fucking insane.
+
+
 Oct 2017: A new Segfault!
 ===
 /home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf

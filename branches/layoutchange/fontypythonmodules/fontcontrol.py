@@ -272,10 +272,11 @@ class FontItem( object ):
 
                 pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))
 
-                if self.inactive:
-                    col = (0,0,0,64) #alpha makes it gray
-                else:
-                    col = (0,0,0,255)
+                #if self.inactive:
+                #    col = (0,0,0,64) #alpha makes it gray
+                #else:
+                #    col = (0,0,0,255)
+                col = (0,0,0,255)
 
                 ## Well, I have since discovered that some fonts
                 ## cause a MemoryError on the next command:
