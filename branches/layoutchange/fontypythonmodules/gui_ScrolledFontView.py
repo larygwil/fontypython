@@ -182,10 +182,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     # the fi key was not found, it's new
                     fm = Fitmap(self, fi) # so, make it.
                     # slow call: pil and bitmaps etc.
-                    fm.generate_pil_bitmaps()
+                    ds = fm.prepareBitmap()
+                    if ds > 0: fm.Refresh()
                     # put it into the tmp od
                     self.tod[ fi ] = fm
-                w.append(fm.pilwidth) # rec width
+                w.append(fm.width) # rec width
 
             # Now, replace the last od with the one we just filled:
             self.fitmaps = self.tod
@@ -196,18 +197,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
 
             self.colw = int( sum(w) / max( len(w), 1) )
-
-            # Let's redraw whatever may have changed within
-            # each fitmap's drawing state:
-            for fitmap in self.fitmaps.values():
-                print " call prepareBitmap on:",fitmap.name
-                #print " height:",fitmap.height
-                ds = fitmap.prepareBitmap()
-                # If there was some change in the draw state, refresh the bitmap.
-                if ds > 0:
-                    # Force a redraw of the bitmap. 
-                    # Without this, nothing appears to change...
-                    fitmap.Refresh() 
 
             panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
