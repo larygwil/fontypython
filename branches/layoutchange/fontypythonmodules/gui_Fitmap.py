@@ -464,7 +464,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ix,iy = (6,10) if isinfo else (2,6)
 
             ix += offx
-            iconpencil = BitmapPencil( "infoicon", Icon, x=ix, y=iy)
+            iconpencil = BitmapPencil( "infoicon", ix, iy, Icon)
 
         ## Prep and measure the texts to be drawn. Add them to drawlist.
         fcol = self.style['fcol']
@@ -698,26 +698,26 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #self.height = mainy # vs totheight
         self.accrue_height( mainy )
 
-    ## The inactive footer
-    if self.fitem.inactive:
-        x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-        self.addPencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
+        ## The inactive footer
+        if self.fitem.inactive:
+            x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
+            self.addPencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
 
-        txt = self.fitem.activeInactiveMsg
-        self.addPencil( FontPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
-        
-    ## The ticked state
-    ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
-    ## NB: FILE_NOT_FOUND is not available for installation!
-    if self.fitem.badstyle != "FILE_NOT_FOUND":
-        #print "self.fitem.name ticked:", self.fitem.ticked
-        if self.fitem.ticked:
-            self.TICKMAP = self.parent.parent.TICKMAP
-            self.addPencil( BitmapPencil( "tickmap", 20, 5, self.TICKMAP) )    
-        else:
-            self.addPencil( EmptyPencil( "tickmap" ))
+            txt = self.fitem.activeInactiveMsg
+            self.addPencil( FontPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
+            
+        ## The ticked state
+        ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
+        ## NB: FILE_NOT_FOUND is not available for installation!
+        if self.fitem.badstyle != "FILE_NOT_FOUND":
+            #print "self.fitem.name ticked:", self.fitem.ticked
+            if self.fitem.ticked:
+                self.TICKMAP = self.parent.parent.TICKMAP
+                self.addPencil( BitmapPencil( "tickmap", 20, 5, self.TICKMAP) )    
+            else:
+                self.addPencil( EmptyPencil( "tickmap" ))
 
-    self.usePencils()
+        self.usePencils()
 
     def usePencils(self):
         """
@@ -726,12 +726,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Returns a memdc for sundry use.
         """
         w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
+        h = self.height
 
         #import pdb; pdb.set_trace()
-        #print "w, height:",w, h #self.height
+        print "w, height:",w, h #self.height
         #if h == 0: raise SystemExit
-        h = self.height
-        w = self.width
+
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
         memDc.SelectObject( bitmap )
