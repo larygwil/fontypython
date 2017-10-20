@@ -183,7 +183,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     fm = Fitmap(self, fi) # so, make it.
                     # slow call: pil and bitmaps etc.
                     ds = fm.prepareBitmap()
-                    if ds > 0: fm.Refresh()
+                    ...if ds > 0: fm.Refresh()
                     # put it into the tmp od
                     self.tod[ fi ] = fm
                 w.append(fm.width) # rec width
