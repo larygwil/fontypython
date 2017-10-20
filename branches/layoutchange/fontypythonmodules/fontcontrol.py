@@ -219,7 +219,7 @@ class FontItem( object ):
 
         self.numFaces = i
 
-    def generatePilFont( self, enc="unicode" ):
+    def xxxgeneratePilFont( self, enc="unicode" ):
         ## self is a FontItem
         """
         This function seems too similar to the __queryFontFamilyStyleFlagBad one

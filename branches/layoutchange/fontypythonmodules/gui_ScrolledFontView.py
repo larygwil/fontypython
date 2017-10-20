@@ -177,13 +177,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 # Seek it in my dict of fitmaps that already exist
                 fm = self.fitmaps.get(fi, None)
                 if fm:
+                    fm.prepareBitmap()
                     self.tod[ fi ] = fm # found one, so bring it across to the tmp od
                 else:
                     # the fi key was not found, it's new
                     fm = Fitmap(self, fi) # so, make it.
                     # slow call: pil and bitmaps etc.
-                    ds = fm.prepareBitmap()
-                    ...if ds > 0: fm.Refresh()
+                    fm.prepareBitmap()
                     # put it into the tmp od
                     self.tod[ fi ] = fm
                 w.append(fm.width) # rec width
