@@ -173,8 +173,8 @@ class TextPencil(Pencil):
     def __init__( self, 
             id, txt,
             x = 0, y = 0,
-            points = 10,
             fcol = (0,0,0),
+            points = 8,
             style = wx.NORMAL, weight=wx.NORMAL, 
             encoding = wx.FONTENCODING_DEFAULT ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
@@ -216,6 +216,8 @@ class BitmapPencil(Pencil):
         self.bitmap = bitmap
     def getwidth(self): return self.bitmap.GetWidth()
     def draw(self, memdc):
+        print self
+        print self.bitmap
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
 
@@ -334,7 +336,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.gradientheight = 50
 
 
-        self.face_images = []
+        self.face_image_stack = []
         self._inactive_images = {}
 
         # To keep all the pencils in a stack
@@ -470,6 +472,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         fcol = self.style['fcol']
 
         textTup = self.fitem.InfoOrErrorText()
+        print textTup
 
         ## prep the two lines of text
         tx,ty = (46,15) if isinfo else (38 , 20)
@@ -667,6 +670,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             else:
                 image = wximage
 
+            image = image.ConvertToBitmap()
+
             fx, fy = 0, 0
             if not fpsys.config.ignore_adjustments:
                 fx,fy = self.CalculateTopLeftAdjustments(wximage)
@@ -705,6 +710,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             txt = self.fitem.activeInactiveMsg
             self.addPencil( FontPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
+        else:
+            ## Better to simply remove them...TODO
+            self.addPencil( EmptyPencil("bmpinactive"))
+            self.addPencil( EmptyPencil("fntinactive"))
             
         ## The ticked state
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
@@ -749,8 +758,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values(): 
-            #print "Drawing pencil:", pencil
+            print "Drawing pencil:", pencil.id
             pencil.draw(memDc)
+            print "done"
 
         #gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
         #gstops.Add(wx.Colour(255,255,255,255), 0.8)
