@@ -19,7 +19,7 @@
 
 
 import os, sys, locale, glob, errno
-from PIL import Image, ImageFont, ImageDraw
+from PIL import ImageFont
 
 ## This import will not RUN the code in fpsys.py
 ## because it's been imported before. (It's a Python thing.)
@@ -218,105 +218,6 @@ class FontItem( object ):
                     break
 
         self.numFaces = i
-
-    def xxxgeneratePilFont( self, enc="unicode" ):
-        ## self is a FontItem
-        """
-        This function seems too similar to the __queryFontFamilyStyleFlagBad one
-        and in many ways it is. I am forced to work with PIL and it's not ideal
-        at the moment.
-
-        This function is called from the GUI in a tight loop. It provides (generates)
-        pilimage objects with the font's text rendered onto them.
-
-        Fonts that cause errors are marked 'badfont' and provide no image.
-        They can then be 'displayed' and can be put into Pogs etc., but they cannot
-        be seen.
-
-        NOTE:
-        ====
-        FontItems do not hold the bitmap thus rendered. I have another class
-        called Fitmap (in gui_Fitmap) which is a widget that handles events and
-        displays itself.
-
-        A FontItem does NOT hold a Fitmap.
-        A Fitmap does hold a FontItem.
-
-        """
-        ## text gets extra spaces at the end to cater for cut-off characters.
-        paf, points, text = self.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
-        i = 0
-        generatorgo=True
-        while (generatorgo):
-            try:
-                ## This access by i can cause an error. This is what ends the generator.
-                font = ImageFont.truetype(paf, points,index=i, encoding=enc)
-
-                w,h = font.getsize( text )
-                ## Some fonts (50SDINGS.ttf) return a 0 width.
-                ## I don't know exactly why; maybe it could not render
-                ## any of the chars in text.
-                if int(w) == 0:
-                    w = 1
-                pilheight = int(h)
-                pilwidth = int(w)
-
-                pilheight += 10
-
-                ## Sept 2009 : Fiddled this to produce alpha (ish) images.
-                ## pilimage is of type PIL.Image.Image. 
-                ## python
-                ## >>> from PIL import Image
-                ## >>> pi = Image("RGBA",(10,10))
-                ## >>> dir(pi)
-
-                pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))
-
-                #if self.inactive:
-                #    col = (0,0,0,64) #alpha makes it gray
-                #else:
-                #    col = (0,0,0,255)
-                col = (0,0,0,255)
-
-                ## Well, I have since discovered that some fonts
-                ## cause a MemoryError on the next command:
-                drawnFont = ImageDraw.Draw( pilimage ) # Draws INTO pilimage
-                drawnFont.text((0,0) , text, font=font, fill=col)
-
-                ## All is well, so we step ahead to the next *potential* sub-face
-                ## and return the font image data.
-                i += 1
-                yield pilimage#, pilheight, pilwidth
-
-            except MemoryError:
-                """
-                NOTE: Sets badfont
-
-                This one CAN ONLY BE CAUGHT HERE.
-                **IDEALLY**, it should have been caught in __queryFontFamilyStyleFlagBad
-                but for reasons explained below, it cannot.
-                So, we have a badfont flag being set here too :(
-
-                This ends the generator.
-                """
-                ## I found a font throwing a MemoryError (Onsoku Seinen Plane.ttf)
-                ## that only happens upon the .text() command.
-                ##
-                ## UPDATE: Clever tricks don't work. Onsoku *only* barfs on "TE" and not
-                ## "A" or even chr(0) to chr(255) all in a string...
-                ## So, it's virtually impossible to know at this point what will
-                ## cause the MemoryError in the rendering step.
-                self.badfontmsg = _("Font causes a memory error, it can't be drawn.")
-                self.badstyle = "PIL_CANNOT_RENDER"
-                self.badfont = True
-                #break
-                generatorgo = False
-
-            ## On any kind of error, end the generator.
-            ## One of these errors is an IOError when i is out of bounds
-            except:
-                generatorgo = False
-
 
     def __str__( self ):
         return self.glyphpaf

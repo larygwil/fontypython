@@ -55,11 +55,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.SetBackgroundColour('white')
 
-        # An od. Hold the fitmaps we know about.
+        # An od. Hold the fitmaps we know about, indexed by fitem.
         # It's ordered so it keeps the same order as the viewobject (list)
         # which comes into the MinimalCreateFitmaps method.
-        self.fitmaps = collections.OrderedDict()
-        self.tod = collections.OrderedDict() # works alongside.
+        self.fitmaps = {} #collections.OrderedDict()
+        #self.tod = collections.OrderedDict() # works alongside.
 
         self._last_viewobject_list = None
 
@@ -148,10 +148,22 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ==
         Stripped all wx.Yield() out. Too fubar to grok.
 
+        OCT 2017
+        ==
+        self.fitmap_sizer.Clear(True) sucks, and here's why:
+        1. You have to call True to get the sizer items to fuck off.
+        2. It deletes the shit out of those objects. Any other variables to them
+           now hold "wxPython wrapper for DELETED Fitmap object"s. HAND.
+        This means I cannot keep some fitmaps around if they do not need to redraw.
+        I have to make them anew and fill the sizer every time.
+        Fuck.
+
         """
         print "-------------------------"
         print "MinimalCreateFitmaps runs"
 
+        print " AND self.fitmaps:", self.fitmaps
+        print
         ## Sept2017:
         ## WIP. Seeking a way to detect whether what we showed last time
         ## is different from what we must show now.
@@ -166,33 +178,43 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             fm.prepareBitmap()
             self.fitmap_sizer.Add( fm )
         else:
+            # Clear the sizer. This seems to work. It's all right. IT'S ALL RIGHT...
+            self.fitmap_sizer.Clear()#True)
 
             # Let's compare what we had before (the fitmaps dict) with what
             # is coming in now, the viewobject list.
             # I am using an OrderedDict with fitems as keys and fitmaps as values.
             # to relate these two domains.
             w=[] # widths
-            self.tod.clear()
+            td={}
+            
             for fi in viewobject:
                 # Seek it in my dict of fitmaps that already exist
-                fm = self.fitmaps.get(fi, None)
+                print "**SEEK:", fi.name
+                print "  in:", self.fitmaps.keys()
+                fm = self.fitmaps.get(fi.name, None)
+                print "Found:", fm
                 if fm:
+                    print "Exists, calling prepareBitmap on ", fm.name
                     fm.prepareBitmap()
-                    self.tod[ fi ] = fm # found one, so bring it across to the tmp od
                 else:
                     # the fi key was not found, it's new
                     fm = Fitmap(self, fi) # so, make it.
+                    print "Making ", fm.name
                     # slow call: pil and bitmaps etc.
                     fm.prepareBitmap()
                     # put it into the tmp od
-                    self.tod[ fi ] = fm
+                td[ fi.name ] = fm
                 w.append(fm.width) # rec width
 
+            #print "td aescrawl.ttf contains:", td["aescrawl.ttf"]
             # Now, replace the last od with the one we just filled:
-            self.fitmaps = self.tod
+            self.fitmaps.clear()
+            self.fitmaps.update(td) #self.tod
+            #for k,v in td.iteritems(): self.fitmaps[k]=v
+            print " ! self.fitmaps:", self.fitmaps
 
-            # Clear the sizer. This seems to work. It's all right. IT'S ALL RIGHT...
-            self.fitmap_sizer.Clear(True)
+
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
 
@@ -209,15 +231,28 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             self.fitmap_sizer.SetCols(cols)
 
             ## Loop again and plug them into the sizer
-            for fm in self.fitmaps.values():
+            for fi in viewobject: #self.fitmaps.values():
+                print "  ! Getting fitmap for:", fi.name
+                fm = self.fitmaps[fi.name]
+                print "---", fm.name
                 ## JULY 2016
                 ## =========
                 ## If the bitmap is wider than a column, we will crop it
                 ## IDEA: Do a fade to white instead of a hard cut on the right.
                 if fm.bitmap.GetWidth() > self.colw:
                     fm.crop(self.colw)
-
+                #import copy
+                #fm2=copy.copy(fm)
                 self.fitmap_sizer.Add(fm)
+
+
+        ## trying to see how this sizer ticks. fucking fuck.
+        #for i in self.fitmap_sizer.GetItem(i):
+        kids = self.fitmap_sizer.GetChildren()
+        for kid in kids:
+            w = kid.GetWindow()
+            print "kid:", w
+
 
         self.fitmap_sizer.FitInside(self)
         print "====EXIT MinimalCreateFitmaps====="

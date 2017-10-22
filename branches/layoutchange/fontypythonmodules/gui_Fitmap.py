@@ -25,6 +25,8 @@ import fontcontrol
 import fpsys # Global objects
 from pubsub import *
 from wxgui import ps
+
+##Oct 2017 - Moved the PIL draw code into Fitmap.
 from PIL import Image, ImageFont, ImageDraw
 
 import collections
@@ -51,104 +53,6 @@ class OverOutSignal(object):
 
 
 
-class History(object):
-    """
-    A history that remembers a key's last value.
-    You set it while checking for a difference.
-    """
-    def __init__(self):
-        self._d = {}
-    def differs(self, key, something):
-        """
-        Sets the value and tests if it differs from
-        the last value. 
-        Returns: True or False
-        (If first run, it sets and returns true)
-        """
-        if key not in self._d:
-            tf = True
-        else:
-            tf = self._d[key] != something
-
-        self._d[key] = something
-        return tf
-
-
-
-class DrawState(object):
-    """TODO: comment better
-    States: when or-ed together indicate they were SET..
-    Not what they are set-to, just *that* they changed.
-    #These states are related to other state variables
-    #like "inactive" (in an fitem) but live in this object.
-    #We would say:
-    # When the font item becomes inactive, the fitmap's
-    #  activechanged status bit must be set.
-    # Then we react on that fact and clear the bit for 
-    #  that status.
-
-    ## AND masks to extract block info out of the state byte
-    ## Multiple states can land one in a single block.
-    ## A combo of activechanged plus pointsizechanged -> 
-    ## both go in block A
-    ## because the two flags overlap in their intentions.
-    ## activechanged means all new face bitmaps and more.
-    ## pointsizechanged means much the same
-    ## Therefore we gather them into "blocks" of work.
-    """
-    mask_A = 1
-    mask_B = 2
-    #mask_C = 4
-    #mask_D = 8
-
-    blocks = {"A":1,"B":2}#,"C":4,"D":8}
-   
-    def __init__(self, fitmap):
-        self.parent = fitmap
-        self.state = 0
-        self.laststate = self.state
-        self._history = History()
-
-    def determine(self):
-        """
-        Looking at very specific variables which 
-        influence how we will draw the font bitmap.
-        We OR the values onto state as we go.
-        
-        Because of the way History.differs works, on first 
-        run, the state will be maxed, all blocks are on.
-        """
-        self.state = 0
-        A = DrawState.mask_A
-        B = DrawState.mask_B
-        # A
-        if self._history.differs("pointschanged", fpsys.config.points):
-            self.state |= A | B
-        # A
-        if self._history.differs("textchanged", fpsys.config.text):
-            self.state |= A | B
-        # B
-        if self._history.differs("activechanged", self.parent.fitem.inactive):
-            self.state |= B
-        # C
-        if self._history.differs("tickedchanged", self.parent.fitem.ticked):
-            self.state |= B
-        # D
-        if self._history.differs("tlchanged", fpsys.config.ignore_adjustments):
-            self.state |= B
-
-    def isblock(self, c):
-        """
-        This looks at the state and determines 
-        which block it's in.
-        E.g. if xx.isblock("A"):
-        """
-        return self.state & DrawState.blocks[c] == \
-                DrawState.blocks[c]
-
-        
-
-
 class Pencil(object):
     """
     Used to store drawing code for DrawText and DrawBitmap.
@@ -169,42 +73,40 @@ class EmptyPencil(Pencil):
 
 
 class TextPencil(Pencil):
-    textExtentsDict = {}
-    def __init__( self, 
-            id, txt,
-            x = 0, y = 0,
-            fcol = (0,0,0),
-            points = 8,
-            style = wx.NORMAL, weight=wx.NORMAL, 
-            encoding = wx.FONTENCODING_DEFAULT ):
+    _text_extents_dict = {}
+    def __init__( self, id, txt, x = 0, y = 0, fcol = (0,0,0), points = 8,
+                    style = wx.NORMAL, weight = wx.NORMAL ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
         self.txt = txt
-        self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=encoding )
+        self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
         ## Measure a line of text in my font. Return a wx.Size
         ## Cache these widths in Pencil class variable, so that
         ## future identical strings can avoid work.
 
         ## Do we have a cached measurement for this txt?
-        if not self.txt in TextPencil.textExtentsDict:
+        #print "*** MEASURING:", self.txt
+        if not self.txt in TextPencil._text_extents_dict:
             dc = wx.ScreenDC()
             dc.SetFont( self.font )
             try:
                 sz = dc.GetTextExtent( self.txt )
+                #print "measured as:",sz
             except:
                 sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
             # cache it in the class
-            TextPencil.textExtentsDict[self.txt] = sz
+            TextPencil._text_extents_dict[self.txt] = sz
 
     def getwidth(self):
-        return TextPencil.textExtentsDict[self.txt][1]
+        #print u"##getwidth on '{}' is reporting width of {}".format(self.txt, TextPencil._text_extents_dict[self.txt][0])
+        return TextPencil._text_extents_dict[self.txt][0]
 
     def getsize(self): 
         # returns a tuple
-        return TextPencil.textExtentsDict[self.txt]
+        return TextPencil._text_extents_dict[self.txt]
 
     def draw(self, memdc):
-        print self," txt is:", self.txt
+        #print self," txt is:", self.txt
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )
@@ -217,15 +119,9 @@ class BitmapPencil(Pencil):
         self.bitmap = bitmap
     def getwidth(self): return self.bitmap.GetWidth()
     def draw(self, memdc):
-        print self
-        print self.bitmap
+        #print self
+        #print self.bitmap
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
-
-
-
-
-
-
 
 
 
@@ -316,6 +212,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     MIN_FITEM_HEIGHT = 70
     SPACER = 35 # Gap below each font bitmap
 
+
+    ## Used in state logic. See is_block and prepareBitmap
+    blocks = {"A":1,"B":2}#,"C":4,"D":8}
+
     def __init__( self, parent, fitem ) :
 
         self.name = fitem.name
@@ -346,7 +246,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.height =  Fitmap.MIN_FITEM_HEIGHT
         self.width = 0
 
-        self.drawstate = DrawState(self)
+        self.history_dict = {}
+        self.state = 0
 
         self.bitmap = None
 
@@ -382,6 +283,62 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #    self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
         #if self.fitem.inactive:
         #    self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+
+    def has_changed(self, key, something):
+        """
+        Sets the value and tests if it differs from
+        the last value. 
+        Returns: True or False
+        (If first run, it sets and returns true)
+        """
+        if key not in self.history_dict:
+            tf = True
+        else:
+            tf = self.history_dict[key] != something
+
+        self.history_dict[key] = something
+        return tf
+
+    def determine(self):
+        """
+        Looking at very specific variables which 
+        influence how we will draw the font bitmap.
+        We OR the values onto state as we go.
+        
+        Because of the way History.differs works, on first 
+        run, the state will be maxed, all blocks are on.
+        """
+        self.state = 0
+        A = 1
+        B = 2
+        # A
+        if self.has_changed("pointschanged", fpsys.config.points):
+            self.state |= A | B
+        # A
+        if self.has_changed("textchanged", fpsys.config.text):
+            self.state |= A | B
+        # B
+        if self.has_changed("activechanged", self.fitem.inactive):
+            self.state |= B
+        # C
+        if self.has_changed("tickedchanged", self.fitem.ticked):
+            self.state |= B
+        # D
+        if self.has_changed("tlchanged", fpsys.config.ignore_adjustments):
+            self.state |= B
+
+    def is_block(self, c):
+        """
+        This looks at the state and determines 
+        which block it's in.
+        E.g. if xx.is_block("A"):
+        """
+        print "state is:", self.state
+        return self.state & Fitmap.blocks[c] == Fitmap.blocks[c]
+
+
+
+
 
     def accrue_width(self,n):
         self.width = max(self.width, n)
@@ -473,7 +430,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         fcol = self.style['fcol']
 
         textTup = self.fitem.InfoOrErrorText()
-        print textTup
+        #print textTup
 
         ## prep the two lines of text
         tx,ty = (46,15) if isinfo else (38 , 20)
@@ -609,30 +566,29 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def prepareBitmap( self ):
         """
-        This is where all the drawing code goes. It gets the font rendered
-        from the FontItems (via PIL) and then draws a single Fitmap.
-
+        This prepares and draws a single fitmap
         """
 
         ## Go determine my draw state. 
         # Initial run has A and B set.
-        self.drawstate.determine()
+        self.determine()
 
-        if self.drawstate.isblock("A"):
+        if self.is_block("A"):
             # Block A: Generate new face bitmaps
+            #print "Calling gen_face_samples for ", self.name
             self.gen_face_samples()
 
-        if self.drawstate.isblock("B"):
+        if self.is_block("B"):
             # Block B: Draw the entire fitmap
-            self.draw_bitmap()
+            #print " ..calling draw_bitmap and use_pencils for ", self.name
+            self._draw_bitmap()
+            self._use_pencils()
     
-        if self.drawstate > 0:
+        if self.state > 0:
             self.Refresh()# to force onPaint()
 
-        # Reset the state
-        self.drawstate.state = 0
 
-    def draw_bitmap(self):
+    def _draw_bitmap(self):
         ## Is this a normal FontItem, or an InfoFontItem?
         ## InfoFontItem is a fake font item for the purposes
         ## of saying "There are no fonts to see here."
@@ -640,7 +596,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.style=Fitmap.styles['INFO_FONT_ITEM']
             self.gen_info_or_badfont( isinfo = True )       
             self.height = Fitmap.MIN_FITEM_HEIGHT + 20
-            self.usePencils()
             return
 
         self.setStyle()
@@ -650,7 +605,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             h = Fitmap.MIN_FITEM_HEIGHT
             if self.fitem.inactive: h += 5 #Need more space
             self.height = h
-            self.usePencils()
             return
 
         fcol = self.style['fcol']
@@ -727,9 +681,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             else:
                 self.addPencil( EmptyPencil( "tickmap" ))
 
-        self.usePencils()
 
-    def usePencils(self):
+    def _use_pencils(self):
         """
         Makes a new mem dc with the best size.
         Loops the drawlist and uses the Pencils to draw text and bitmaps
@@ -739,7 +692,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         h = self.height
 
         #import pdb; pdb.set_trace()
-        print "w, height:",w, h #self.height
+        #print "w, height:",w, h #self.height
         #if h == 0: raise SystemExit
 
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
@@ -759,9 +712,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values(): 
-            print "Drawing pencil:", pencil.id
+            #print "Drawing pencil:", pencil.id
             pencil.draw(memDc)
-            print "done"
+            #print "done"
 
         #gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
         #gstops.Add(wx.Colour(255,255,255,255), 0.8)
