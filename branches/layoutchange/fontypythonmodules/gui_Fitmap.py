@@ -204,6 +204,7 @@ class TextPencil(Pencil):
         return TextPencil.textExtentsDict[self.txt]
 
     def draw(self, memdc):
+        print self," txt is:", self.txt
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )
@@ -492,8 +493,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     def make_inactive_bitmap(self, wxim):
         if wxim in self._inactive_images:
             return self._inactive_images[wxim]
-        tmp = self.wxim.AdjustChannels(0,0,0,factor_alpha = 0.5)
-        self._inactive_images[wxim] = tmp.ConvertToBitmap()
+        tmp = wxim.AdjustChannels(0,0,0,factor_alpha = 0.5)
+        self._inactive_images[wxim] = tmp#.ConvertToBitmap()
         return tmp
      
 
@@ -709,7 +710,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.addPencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
 
             txt = self.fitem.activeInactiveMsg
-            self.addPencil( FontPencil( "fntinactive", x+2, y, txt, fcol, points=10) )
+            self.addPencil( TextPencil( "fntinactive", txt, x+2, y, fcol, points=10) )
         else:
             ## Better to simply remove them...TODO
             self.addPencil( EmptyPencil("bmpinactive"))
