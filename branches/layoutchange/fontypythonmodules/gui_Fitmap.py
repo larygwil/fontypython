@@ -462,6 +462,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
+        del self.face_image_stack[:]
         there_are_more_faces=True
         while (there_are_more_faces):
             try:
@@ -615,7 +616,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         #for i,pilimage in enumerate(pilbitmaps):
         for i,wximage in enumerate(self.face_image_stack):
-            #print i
+            print u"..draw_bitmap loop for {} i is {} wximage is {}".format(self.name,i,wximage)
             glyphHeight = wximage.GetSize()[1]
             ## The Face Sample:
             x = 16
