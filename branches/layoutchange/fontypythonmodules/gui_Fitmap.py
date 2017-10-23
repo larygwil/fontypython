@@ -83,30 +83,23 @@ class TextPencil(Pencil):
         ## Measure a line of text in my font. Return a wx.Size
         ## Cache these widths in Pencil class variable, so that
         ## future identical strings can avoid work.
-
-        ## Do we have a cached measurement for this txt?
-        #print "*** MEASURING:", self.txt
         if not self.txt in TextPencil._text_extents_dict:
             dc = wx.ScreenDC()
             dc.SetFont( self.font )
             try:
                 sz = dc.GetTextExtent( self.txt )
-                #print "measured as:",sz
             except:
                 sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
             # cache it in the class
             TextPencil._text_extents_dict[self.txt] = sz
 
     def getwidth(self):
-        #print u"##getwidth on '{}' is reporting width of {}".format(self.txt, TextPencil._text_extents_dict[self.txt][0])
         return TextPencil._text_extents_dict[self.txt][0]
 
     def getsize(self): 
-        # returns a tuple
         return TextPencil._text_extents_dict[self.txt]
 
     def draw(self, memdc):
-        #print self," txt is:", self.txt
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )

@@ -55,14 +55,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
         self.SetBackgroundColour('white')
 
-        # An od. Hold the fitmaps we know about, indexed by fitem.
-        # It's ordered so it keeps the same order as the viewobject (list)
-        # which comes into the MinimalCreateFitmaps method.
-        self.fitmaps = {} #collections.OrderedDict()
-        #self.tod = collections.OrderedDict() # works alongside.
-
-        self._last_viewobject_list = None
-
         self.wheelValue = fpsys.config.points
         self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 
@@ -132,78 +124,50 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         self.Freeze()
         if len(viewobject) == 0:
             self.fitmap_sizer.Clear(True) # Wipe-out the past
-            self.fitmaps.clear() # no need for this either
             empty_fitem = fontcontrol.InfoFontItem()
             fm = Fitmap( self, empty_fitem )
             fm.prepareBitmap()
             self.fitmap_sizer.Add( fm )
         else:
-
-            # Let's compare what we had before (the fitmaps dict) with what
-            # is coming in now, the viewobject list.
-            # I am using an OrderedDict with fitems as keys and fitmaps as values.
-            # to relate these two domains.
-            
-            #oldfitmaps=self.fitmaps.copy()
-            #print "oldfitmaps just made:", oldfitmaps
-            #for newfis in viewobject:
-            #    oldfitmaps.pop(newfis.name,None) # remove anything that's new, sans error.
-            # now, oldfitmaps is only wnatever fitmaps are not relevant
-            #print "oldfitmaps:", oldfitmaps
-
+            # Let's compare what we had before (the contents of the sizer!) with what
+            # is coming-in new, i.e. the viewobject list.
             td = {}
             for kid in self.fitmap_sizer.GetChildren():
                 fitmap = kid.GetWindow() #is the fitmap within
                 fitem = fitmap.fitem
                 if fitem not in viewobject:
+                    ## If the fitem is not one we want to show:
+                    ## 1. Remove it from the sizer
+                    ## 2. Destroy it.
                     print " ..Murdering:", fitmap.name
                     self.fitmap_sizer.Detach(fitmap)
                     fitmap.Destroy()
                 else:
+                    ## This "old" fitmap is okay, let's keep it aside.
                     td[fitem]=fitmap
             
-            ## fresh fitmaps: Only the fitmaps not deleted.
-            #ffs = {}
-            #ffs = {k:v for k,v in self.fitmaps.items() if k not in oldfitmaps}
-
-            ## Make my fitmaps list be this new fresh list:
-            #self.fitmaps.clear()
-            #self.fitmaps = ffs
-
-
             w=[] # widths
-            #td={}
-             
             for fitem in viewobject:
-                # Seek it in my dict of fitmaps that already exist
-                #print "**SEEK:", fi.name
-                #print "  in:", self.fitmaps.keys()
+                # Seek it in the dict we just made:
                 fm = td.get(fitem, None)
-                #print "Found:", fm
                 if fm:
-                    #print "Exists, calling prepareBitmap on ", fm.name
+                    ## The "old" fotmap is there. Let's refresh it.
+                    ## This avoids as much work as poss, for e.g. in the
+                    ## rendering of the font faces etc. See gui_Fitmap.py
                     fm.prepareBitmap()
                 else:
-                    # the fi key was not found, it's new
-                    fm = Fitmap(self, fitem) # so, make it.
-                    #print "Making ", fm.name
-                    # slow call: pil and bitmaps etc.
-                    fm.prepareBitmap()
-                    # put it into my fitmaps dict
-                    #self.fitmaps[fi.name] = fm
-                    td[ fitem ] = fm
-                w.append(fm.width) # rec width
+                    ## the fitmap was not found, it's must be instanced
+                    fm = Fitmap(self, fitem)
+                    fm.prepareBitmap() # Does more work on a fresh spawn.
+                    td[ fitem ] = fm # Store it for just now
+                w.append(fm.width) # record the widths
 
-            #print "td aescrawl.ttf contains:", td["aescrawl.ttf"]
-            # Now, replace the last od with the one we just filled:
-            #self.fitmaps.clear()
-            #self.fitmaps.update(td) #self.tod
-            #for k,v in td.iteritems(): self.fitmaps[k]=v
-            #print " ! self.fitmaps:", self.fitmaps
-
-
-            # Clear the sizer. This seems to work. It's all right. IT'S ALL RIGHT...
-            self.fitmap_sizer.Clear() # ..(True) murders the fitmaps. Hisssssss!
+            # Clear the sizer. Docs say this "detaches" all children.
+            # Therefore, the fitmaps that were in there, are no longer in there.
+            # (They are physically laying about in the parent - the FontViewPanel.)
+            # In a moment now, we'll re-add all the relevant fitmaps to the sizer,
+            # so everything kind of works-out. I hope...
+            self.fitmap_sizer.Clear() # ..(True) murders the fitmaps. We no like. Hisssssss!
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
 
@@ -219,24 +183,16 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             self.fitmap_sizer.SetCols(cols)
 
-            ## Loop again and plug them into the sizer
-            for fitem in viewobject: #self.fitmaps.values():
-                #print "  ! Getting fitmap for:", fi.name
-                fm = td[ fitem ]
-                #print "---", fm.name
+            ## Loop viewobject, get fitmaps and plug them into the sizer
+            for fitem in viewobject:
+                fm = td[ fitem ] # we get them from the dict
                 ## JULY 2016
                 ## =========
                 ## If the bitmap is wider than a column, we will crop it
                 ## IDEA: Do a fade to white instead of a hard cut on the right.
                 if fm.bitmap.GetWidth() > self.colw:
                     fm.crop(self.colw)
-                #import copy
-                #fm2=copy.copy(fm)
-                print u"About to add:", fm.name
-                self.fitmap_sizer.Add(fm)
-
-
-
+                self.fitmap_sizer.Add(fm) # Here we re-add the fitmaps.
 
         self.fitmap_sizer.FitInside(self)
         self.Thaw()

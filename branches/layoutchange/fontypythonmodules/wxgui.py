@@ -300,27 +300,6 @@ class MainFrame(wx.Frame):
         """
         A Splitter is moving - PRESENT TENSE. Let's do the least work poss.
         """
-        if self.whatgui == 1:
-            ## Filter the second splitter - the right hand side:
-            if evt.GetSashIdx() == 1:
-                ## Let's (at least) try to constrain the width of the rhs panel
-                esp = evt.GetSashPosition()
-
-                framewidth = self.GetSizeTuple()[0]
-                rightminwidth = self.panelTargetPogChooser.GetBestSize()[0]
-                sashzero = self.msw.GetSashPosition(0)
-
-                # esp is pixels relative to sashzero, thus we must
-                # subtract sashzero away to get it relative to 0.
-
-                # So, if the second splitter is too far across, then veto the event.
-                # This has the effect of stopping the drag when the rhs panel
-                # is getting smaller than its minimum.
-                # Again, taken from the wx-demo code.
-                if esp > framewidth - rightminwidth - sashzero:
-                    evt.Veto()
-                return
-
         if self.whatgui == 3:
             esp = evt.GetSashPosition()
             print esp
