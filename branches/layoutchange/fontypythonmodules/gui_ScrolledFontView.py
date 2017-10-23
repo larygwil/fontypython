@@ -129,7 +129,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
     def MinimalCreateFitmaps( self, viewobject):#, force = False ) :
         print "-------------------------"
         print "MinimalCreateFitmaps runs"
-        
+        self.Freeze()
         if len(viewobject) == 0:
             self.fitmap_sizer.Clear(True) # Wipe-out the past
             self.fitmaps.clear() # no need for this either
@@ -239,6 +239,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
 
         self.fitmap_sizer.FitInside(self)
+        self.Thaw()
         print "====EXIT MinimalCreateFitmaps====="
 
 
