@@ -333,7 +333,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         which block it's in.
         E.g. if xx.is_block("A"):
         """
-        print "state is:", self.state
+        print u"state of {} is {}".format(self.name, self.state)
         return self.state & Fitmap.blocks[c] == Fitmap.blocks[c]
 
 
@@ -615,6 +615,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         #for i,pilimage in enumerate(pilbitmaps):
         for i,wximage in enumerate(self.face_image_stack):
+            #print i
             glyphHeight = wximage.GetSize()[1]
             ## The Face Sample:
             x = 16
