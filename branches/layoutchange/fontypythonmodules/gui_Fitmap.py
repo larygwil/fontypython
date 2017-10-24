@@ -591,59 +591,57 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             return
 
         self.setStyle()
+        fcol = self.style['fcol']
+        mainy = Fitmap.MIN_FITEM_HEIGHT#10
 
         if self.fitem.badfont:
             self.gen_info_or_badfont()
-            h = Fitmap.MIN_FITEM_HEIGHT
-            if self.fitem.inactive: h += 5 #Need more space
-            self.height = h
-            return
+            #h = Fitmap.MIN_FITEM_HEIGHT
+            #if self.fitem.inactive: mainy += 5 #Need more space
+            #mainy = h #self.height = h
+        else:
 
-        fcol = self.style['fcol']
-        mainy = 10
+            #for i,pilimage in enumerate(pilbitmaps):
+            for i,wximage in enumerate(self.face_image_stack):
+                #print u"..draw_bitmap loop for {} i is {} wximage is {}".format(self.name,i,wximage)
+                glyphHeight = wximage.GetSize()[1]
+                ## The Face Sample:
+                x = 16
+                if i > 0: x *= 3 # Shift sub-faces over a little
 
+                if self.fitem.inactive:
+                    image = self.make_inactive_bitmap(wximage)
+                else:
+                    image = wximage
 
-        #for i,pilimage in enumerate(pilbitmaps):
-        for i,wximage in enumerate(self.face_image_stack):
-            #print u"..draw_bitmap loop for {} i is {} wximage is {}".format(self.name,i,wximage)
-            glyphHeight = wximage.GetSize()[1]
-            ## The Face Sample:
-            x = 16
-            if i > 0: x *= 3 # Shift sub-faces over a little
+                image = image.ConvertToBitmap()
 
-            if self.fitem.inactive:
-                image = self.make_inactive_bitmap(wximage)
-            else:
-                image = wximage
-
-            image = image.ConvertToBitmap()
-
-            fx, fy = 0, 0
-            if not fpsys.config.ignore_adjustments:
-                fx,fy = self.CalculateTopLeftAdjustments(wximage)
+                fx, fy = 0, 0
+                if not fpsys.config.ignore_adjustments:
+                    fx,fy = self.CalculateTopLeftAdjustments(wximage)
+                    
+                self.addPencil(
+                    BitmapPencil("face-{}".format(i),
+                        x - fx,
+                        mainy - fy,
+                        image)
+                    )
                 
-            self.addPencil(
-                BitmapPencil("face-{}".format(i),
-                    x - fx,
-                    mainy - fy,
-                    image)
-                )
-                
-            ## The Caption: fam, style, name
-            self.addPencil( 
-                TextPencil( "face-{}-caption".format(i),
-                    "{} - {} - [{}]".format(
-                        self.fitem.family[i],
-                        self.fitem.style[i],
-                        self.fitem.name ),
-                    28,
-                    mainy + glyphHeight + 8,
-                    fcol, 
-                    points = 8)
-                )
+                ## The Caption: fam, style, name
+                self.addPencil( 
+                    TextPencil( "face-{}-caption".format(i),
+                        "{} - {} - [{}]".format(
+                            self.fitem.family[i],
+                            self.fitem.style[i],
+                            self.fitem.name ),
+                        28,
+                        mainy + glyphHeight + 8,
+                        fcol, 
+                        points = 8)
+                    )
 
-            ## Move TOP down to next BOTTOM (for next sub-face)
-            mainy += glyphHeight + Fitmap.SPACER
+                ## Move TOP down to next BOTTOM (for next sub-face)
+                mainy += glyphHeight + Fitmap.SPACER
 
         if self.fitem.inactive:
             #totheight += (Fitmap.SPACER-10)
@@ -668,6 +666,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## The ticked state
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
         ## NB: FILE_NOT_FOUND is not available for installation!
+        print u"{} is {}".format(self.name,  self.fitem.badstyle)
         if self.fitem.badstyle != "FILE_NOT_FOUND":
             #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:

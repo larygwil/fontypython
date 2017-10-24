@@ -105,16 +105,24 @@ TODO
 * Fix the state config for the window size etc.
 * Fix the fugly Help cancel button and size etc.
 * Fix the fugly look of the help file.
-* YELLOW colour of the bad font icon sucks on the white backdrop.
+
+NB!* YELLOW colour of the bad font icon sucks on the white backdrop.
+
 * TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
 * Do we need the wrapper and the segfonts stuff?
 
-
-* Problem with changing num in page via settings in gui.. Seems ok now.
+FITMAP issues
+==
 * Fontitems that error have width issues
-* Topleft adjustment toggle not redrawing properly
 * Button to put fonts into pog --> not redrawing fitems properly. The ticks stay on screen.
+
+
+* When a fitmap redraws it's width gets reset and it can over-write the fitmaps alongside (in the flex sizer)
+  I must constrain the width somehow
+
+* When font size gets small enough, the fitmaps start to float in too much whitespace...
+
 
 
 Fitmap & ScrolledFontView notes
