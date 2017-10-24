@@ -96,8 +96,8 @@ class TextPencil(Pencil):
     def getwidth(self):
         return TextPencil._text_extents_dict[self.txt][0]
 
-    def getsize(self): 
-        return TextPencil._text_extents_dict[self.txt]
+    def getheight(self): 
+        return TextPencil._text_extents_dict[self.txt][1]
 
     def draw(self, memdc):
         memdc.SetTextForeground( self._fcol )
@@ -111,6 +111,7 @@ class BitmapPencil(Pencil):
         Pencil.__init__(self, id, x, y)
         self.bitmap = bitmap
     def getwidth(self): return self.bitmap.GetWidth()
+    def getheight(self): return self.bitmap.GetHeight()
     def draw(self, memdc):
         #print self
         #print self.bitmap
@@ -202,8 +203,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 }
             }
     MIN_FITEM_WIDTH = 450
-    MIN_FITEM_HEIGHT = 70
-    SPACER = 35 # Gap below each font bitmap
+    MIN_FITEM_HEIGHT = 10
+    #SPACER = 35 # Gap below each font bitmap
+    SPACER = 0# TextPencil("X", 0, 0, points=8).getheight()
 
 
     ## Used in state logic. See is_block and prepareBitmap
@@ -228,6 +230,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         # Some values for drawing
         self.gradientheight = 50
+        Fitmap.SPACER = TextPencil("X", 0, 0, points = 8).getheight()*3 #pointsize used in _draw_bitmap
+        print "**SPACER:", Fitmap.SPACER
 
 
         self.face_image_stack = []
@@ -438,6 +442,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.addPencil( iconpencil, text0, text1 )
 
+        h = sum(p.getheight() for p in [iconpencil, text0, text1])
+        return h
 
 
     def make_inactive_bitmap(self, wxim):
@@ -454,6 +460,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             return
 
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
+        #dudtextpencil = TextPencil("X", 0, 0, points=8)
+        #captionh = dudtextpencil.getheight()
+        #print "... captionh:", captionh
+
         i = 0
         del self.face_image_stack[:]
         there_are_more_faces=True
@@ -471,7 +481,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 pilheight = max(1, int(h))
                 pilwidth = max(1, int(w))
 
-                pilheight += Fitmap.SPACER
+                #pilheight += Fitmap.SPACER
 
                 ## Sept 2009 : Fiddled this to produce alpha (ish) images.
                 ## pilimage is of type PIL.Image.Image. 
@@ -592,14 +602,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.setStyle()
         fcol = self.style['fcol']
-        mainy = Fitmap.MIN_FITEM_HEIGHT#10
 
         if self.fitem.badfont:
-            self.gen_info_or_badfont()
+            bh = self.gen_info_or_badfont()
+            print "bad height:", bh
             #h = Fitmap.MIN_FITEM_HEIGHT
             #if self.fitem.inactive: mainy += 5 #Need more space
-            #mainy = h #self.height = h
+            mainy = bh + 5 #self.height = h
         else:
+            mainy = Fitmap.MIN_FITEM_HEIGHT#10
 
             #for i,pilimage in enumerate(pilbitmaps):
             for i,wximage in enumerate(self.face_image_stack):
@@ -635,7 +646,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                             self.fitem.style[i],
                             self.fitem.name ),
                         28,
-                        mainy + glyphHeight + 8,
+                        mainy + glyphHeight + (Fitmap.SPACER/3),
                         fcol, 
                         points = 8)
                     )
@@ -645,7 +656,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         if self.fitem.inactive:
             #totheight += (Fitmap.SPACER-10)
-            mainy += (Fitmap.SPACER-10) #want room for 'is in pog' message.
+            mainy += (Fitmap.SPACER)# -10) what? TODO fix #want room for 'is in pog' message.
 
         #mainy might be a better indication of the height
         #self.height = mainy # vs totheight

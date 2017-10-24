@@ -111,6 +111,7 @@ NB!* YELLOW colour of the bad font icon sucks on the white backdrop.
 * TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
 * Do we need the wrapper and the segfonts stuff?
+* Make the settings window all one panel - no more notebook "voodoo" stuff.
 
 FITMAP issues
 ==
