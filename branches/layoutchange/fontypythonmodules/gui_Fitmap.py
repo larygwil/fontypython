@@ -530,15 +530,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## to the left of many fonts.)
         wx.BeginBusyCursor()
         fx,fy=0,0
-        W,H = self.wxi.GetSize()#pilimage.size
+        W,H = wxi.GetSize()
         fx=fy=0
         esc = False
         # Scan ACROSS WIDTH and repeatedly DOWN looking for a pixel.
         for tx in xrange(W):
             for ty in xrange(H):
-                ap=image.GetAlpha(tx,ty)
-                #image.SetRGB(tx,ty,0,255,0)
-                #image.SetAlpha(tx,ty,255)
+                ap=wxi.GetAlpha(tx,ty)
                 if ap != 0: #Found X coord, let's kill both loops
                     fx=tx
                     esc = True
@@ -548,7 +546,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         esc = False
         for ty in xrange(H):
             for tx in xrange(W):
-                ap=image.GetAlpha(tx,ty)
+                ap=wxi.GetAlpha(tx,ty)
                 if ap != 0:
                     fy=ty # Found Y coord
                     esc = True
@@ -603,9 +601,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         fcol = self.style['fcol']
         mainy = 10
-        if self.fitem.inactive:
-            #totheight += (Fitmap.SPACER-10)
-            mainy += (Fitmap.SPACER-10) #want room for 'is in pog' message.
+
 
         #for i,pilimage in enumerate(pilbitmaps):
         for i,wximage in enumerate(self.face_image_stack):
@@ -648,6 +644,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             ## Move TOP down to next BOTTOM (for next sub-face)
             mainy += glyphHeight + Fitmap.SPACER
+
+        if self.fitem.inactive:
+            #totheight += (Fitmap.SPACER-10)
+            mainy += (Fitmap.SPACER-10) #want room for 'is in pog' message.
 
         #mainy might be a better indication of the height
         #self.height = mainy # vs totheight

@@ -195,6 +195,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 self.fitmap_sizer.Add(fm) # Here we re-add the fitmaps.
 
         self.fitmap_sizer.FitInside(self)
+        ## Trying this freeze/thaw thing. Not sure if there's any advantage.
         self.Thaw()
         print "====EXIT MinimalCreateFitmaps====="
 

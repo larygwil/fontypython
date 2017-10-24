@@ -180,7 +180,7 @@ class MainFrame(wx.Frame):
         ## ------------------------------------------------------------------
 
         ## A temporary switch to test out various ideas
-        self.whatgui = 3
+        self.whatgui = 1
 
         MINSCREENWIDTH = 800 #old skool
         minw = 320
@@ -197,10 +197,10 @@ class MainFrame(wx.Frame):
             ## did a 'bt' and saw some complaints about get text extents
             ## might be a bug in my font drawing code..?
             ## self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-            ## This line seems less crashy:
+            ## This line seems less crashy, but not much less:
             ## self.spw = wx.SplitterWindow(self)
 
-            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+            self.spw = wx.SplitterWindow(self)#, style=wx.SP_LIVE_UPDATE)
             self.spw.SetMinimumPaneSize(minw)
 
             p1 = wx.Panel(self.spw)
