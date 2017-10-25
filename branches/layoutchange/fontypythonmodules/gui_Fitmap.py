@@ -204,12 +204,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             }
     MIN_FITEM_WIDTH = 450
     MIN_FITEM_HEIGHT = 10
-    #SPACER = 35 # Gap below each font bitmap
-    SPACER = 0# TextPencil("X", 0, 0, points=8).getheight()
-
-
-    ## Used in state logic. See is_block and prepareBitmap
-    blocks = {"A":1,"B":2}#,"C":4,"D":8}
+    SPACER = 0
 
     def __init__( self, parent, fitem ) :
 
@@ -298,32 +293,34 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.history_dict[key] = something
         return tf
 
-    def determine(self):
+    ## Class vars for state stuff
+    blocks = {"A":1,"B":2}
+    flagA = 1
+    flagB = 2
+    def determine_draw_state(self):
         """
         Looking at very specific variables which 
         influence how we will draw the font bitmap.
         We OR the values onto state as we go.
         
-        Because of the way History.differs works, on first 
+        Fitmap.flagBecause of the way History.differs works, on first 
         run, the state will be maxed, all blocks are on.
         """
-        A = 1
-        B = 2
-        # A
+        # A | B
         if self.has_changed("pointschanged", fpsys.config.points):
-            self.state |= A | B
-        # A
+            self.state |= Fitmap.flagA | Fitmap.flagB
+        # A | B
         if self.has_changed("textchanged", fpsys.config.text):
-            self.state |= A | B
+            self.state |= Fitmap.flagA | Fitmap.flagB
         # B
         if self.has_changed("activechanged", self.fitem.inactive):
-            self.state |= B
-        # C
+            self.state |= Fitmap.flagB
+        # B
         if self.has_changed("tickedchanged", self.fitem.ticked):
-            self.state |= B
-        # D
+            self.state |= Fitmap.flagB
+        # B
         if self.has_changed("tlchanged", fpsys.config.ignore_adjustments):
-            self.state |= B
+            self.state |= Fitmap.flagB
 
     def is_block(self, c):
         """
@@ -551,28 +548,50 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         wx.EndBusyCursor()
         return fx,fy        
 
-    def measureBitmap( self ):
-        self.determine()
-        print u"measureBitmap Draw state: {} for {}".format(self.state,self.name)
+    def render_and_measure_glyphs( self ):
+        """
+        The process is split into "render/measure" and the "assemble"
+        This is step ONE: the render/measure part.
+
+        Call must happen immediately after instancing a new Fitmap. 
+        * This happens in gui_ScrolledFontView.MinimalCreateFitmaps()
+
+        If the state is appropriate, render the glyphs into wximages.
+        
+        (It's possible to call this on exisiting fitmaps, in which case
+        the state might not hold flagA, so we need not call _gen_glyphs)
+
+        We return the width so we can calculate the columns and
+        their widths in gui_ScrolledFontView.MinimalCreateFitmaps()
+        """
+        self.determine_draw_state()
+        #print u"render_and_measure_glyphs Draw state: {} for {}".format(self.state,self.name)
         if self.is_block("A"):
-            print "   gen glyphs runs"
+            #print "   gen glyphs runs"
             self._gen_glyphs()
-            self.state = self.state & ~1
+            self.state = self.state & ~Fitmap.flagA #Switch off flagA
         return self.width #accrued max glyph width
 
-    def prepareBitmap( self, colw = None ):
+    def assemble_bitmap( self, colw = None ):
         """
-        This prepares and draws a single fitmap
-        """
-        ## Go determine my draw state. 
-        # Initial run has A and B set.
-        self.determine()
-        print u"prepareBitmap Draw state: {} for {}".format(self.state,self.name)
+        This is step TWO of the process, the "assemble" part:
+        This checks state and possibly draws into the bitmap.
 
-        if self.is_block("A"):
-            # Block A: Generate new face bitmaps
-            #print "Calling gen_glyphs for ", self.name
-            self._gen_glyphs()
+        We've have already had render_and_measure_glyphs() run before arriving here; 
+        thus the glyphs are ready and waiting.
+
+        (The only internal call to assemble_bitmap() comes from self.onClick()
+        afer this fitmap already exists and has been measured, therefore
+        we don't need _gen_glyphs in this method.)
+
+        As it happens, right now, there are only two states:
+        bits 0 "A" and/or 1 "B", i.e. 
+        "A" gen_glyphs 
+        "B" draw_bitmap+use_pencils;
+        """
+        ## Go determine_draw_state my draw state. 
+        self.determine_draw_state()
+        #print u"assemble_bitmap Draw state: {} for {}".format(self.state,self.name)
 
         if self.is_block("B"):
             # Block B: Draw the entire fitmap
@@ -581,9 +600,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self._use_pencils(colw)
     
         if self.state > 0:
-            self.Refresh()# to force onPaint()
+            self.Refresh()# force onPaint()
         
         self.state = 0
+
+
+
 
     def _draw_bitmap(self):
         ## Is this a normal FontItem, or an InfoFontItem?
@@ -694,16 +716,16 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         This caused problems. I discovered that the width of a fitmap is best
         imposed from without - from the ScrolledFontView where they live.
 
-        There is one use of prepareBitmap within myself - that's in onClick.
-        In this one case, we can be certain that it's happening *after* the fitmap
+        There is one use of assemble_bitmap within myself - in self.onClick()
+        In this one method, we can be certain it's running *after* the fitmap
         has been created - and thus already has a width imposed.
-        This use-case is when colw would be None.
+        (This use-case is when colw would be None.)
 
         """
         if colw:
             w = colw
         else:
-            w = self.width# if self.width > 0 else self.initialwidth
+            w = self.width #We already exist and have a width, so use it.
         
         self.width = w
         h = self.height
@@ -897,7 +919,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         if fpsys.state.cantick and not self.fitem.inactive:
             self.fitem.ticked = not(self.fitem.ticked)
-            self.prepareBitmap() # This only redraws a single font item.
+            self.assemble_bitmap() # This only redraws a single font item.
             self.Refresh()  #forces a redraw.
 
             ## Inc or dec a counter depending on the tickedness of this item
