@@ -167,39 +167,22 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
             
-            print "***CALC"
-            self.colw = int( sum(w) / max( len(w), 1) )
-            print "sum(w):", sum(w)
-            print "averaged is: colw:", self.colw
-
             panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
-            print "panelwidth:", panelwidth
 
+            ## Get some kind of average width.
+            avw = int( sum(w) / max( len(w), 1) )
             ## Can we afford some columns?
-            #cols = int(panelwidth / self.colw) if self.colw < panelwidth else 1
-            cols = max( 1, int(panelwidth / self.colw) )
-            print "cols:",cols
-            print " vs int(/):", int(panelwidth/self.colw)
-            print "***END CALC"
-
-            self.colw = int(panelwidth/cols)
-
-            ## Let's also divvy-up the hgap
-            #hgap = (panelwidth - (cols * self.colw)) / 2
+            cols = max( 1, int(panelwidth / avw) )
+            ## Get a better actual width for the columns!
+            colw = int(panelwidth/cols)
 
             self.fitmap_sizer.SetCols(cols)
 
-            ## Loop viewobject, get fitmaps and plug them into the sizer
+            ## Loop viewobject, get fitmaps, prep them with the new width
+            ## and then plug them into the sizer
             for fitem in viewobject:
                 fm = td[ fitem ] # we get them from the dict
-                fm.prepareBitmap(self.colw)
-                ## JULY 2016
-                ## =========
-                ## If the bitmap is wider than a column, we will crop it
-                ## IDEA: Do a fade to white instead of a hard cut on the right.
-                #if fm.bitmap.GetWidth() > self.colw:
-                #if fm.width > self.colw:
-                #    fm.crop(self.colw)
+                fm.prepareBitmap(colw)
                 self.fitmap_sizer.Add(fm) # Here we re-add the fitmaps.
 
         self.fitmap_sizer.FitInside(self)

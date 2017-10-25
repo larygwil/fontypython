@@ -220,7 +220,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
 
         self.FVP = parent.parent #The Scrolled Font View Panel
-        self.initialwidth = parent.GetSize()[0]
+        #self.initialwidth = parent.GetSize()[0]
 
         #self.TICKMAP = parent.parent.TICKMAP
         self.parent = parent
@@ -233,7 +233,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.gradientheight = 50
         # measure some text - same point size used in _draw_bitmap.
         Fitmap.SPACER = TextPencil("X", 0, 0, points = 8).getheight() * 3
-        print "**SPACER:", Fitmap.SPACER
+        #print "**SPACER:", Fitmap.SPACER
 
 
         self.face_image_stack = []
@@ -244,7 +244,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.height =  Fitmap.MIN_FITEM_HEIGHT
         self.width = 0
-        self.croppedwidth = 0
 
         self.history_dict = {}
         self.state = 0
@@ -596,8 +595,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.height = Fitmap.MIN_FITEM_HEIGHT + 20
             return
 
-        self.croppedwidth = 0 # will have to re-crop from gui_ScrolledFontView
-
         self.setStyle()
         fcol = self.style['fcol']
 
@@ -685,44 +682,30 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     def _use_pencils(self, colw = None):
         """
         Makes a new mem dc with the best size.
-        Loops the drawlist and uses the Pencils to draw text and bitmaps
-        Returns a memdc for sundry use.
+        Loops the drawDict for Pencils to draw text and bitmaps.
+
+        NOTE
+        ====
+        (See gui_ScrolledFontView.MinimalCreateFitmaps for more.)
+
+        I used to tote-up the widths of my pencils to get my overall width.
+        i.e: w = max(p.getwidth() + int(1.5 * p.x) for p in self.drawDict.values())
+        This caused problems. I discovered that the width of a fitmap is best
+        imposed from without - from the ScrolledFontView where they live.
+
+        There is one use of prepareBitmap within myself - that's in onClick.
+        In this one case, we can be certain that it's happening *after* the fitmap
+        has been created - and thus already has a width imposed.
+        This use-case is when colw would be None.
+
         """
-        #if self.croppedwidth == 0:
-        #    calcw = max(p.getwidth() + int(1.5 * p.x) for p in self.drawDict.values())
-        #    wtf = self.initialwidth
-        #else:
-        #    calcw = self.croppedwidth#min(self.croppedwidth,w)
-        #    wtf = calcw
-
         if colw:
-            wtf = colw
+            w = colw
         else:
-            #calcw = max(p.getwidth() + int(1.5 * p.x) for p in self.drawDict.values())
-            #wtf = max(p.getwidth() + p.x for p in self.drawDict.values())
-            #wtf = max(self.width, self.initialwidth)
-            wtf = self.width if self.width > 0 else self.initialwidth
-            
-        #if self.croppedwidth == 0:
-            #wtf = max(calcw,self.initialwidth)
-        #    wtf = calcw# self.initialwidth
-        #else:
-        #    wtf = self.croppedwidth
-
-        #print " {}    calcw: {}".format(self.name, calcw)
-        #print "initialwidth: {}".format(self.initialwidth)
-        #print "         wtf: {}".format(wtf)
+            w = self.width# if self.width > 0 else self.initialwidth
         
+        self.width = w
         h = self.height
-        
-
-        self.width = wtf#calcw
-        w = wtf
-        #print "bitmap width will be:", w
-
-        #import pdb; pdb.set_trace()
-        #print "w, height:",w, h #self.height
-        #if h == 0: raise SystemExit
 
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
@@ -772,9 +755,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         Dump the bitmap to the screen.
         """
-        #sz = self.GetClientSize()
-        #dc = wx.PaintDC(self)
-
         if self.bitmap:
             ## Create a buffered paint DC.  It will create the real
             ## wx.PaintDC and then blit the bitmap to it when dc is
@@ -782,10 +762,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
             if not self.can_have_button(): return
-
-            #sz = (self.bitmap.GetWidth(), self.bitmap.GetHeight())
-
-            #self.SetBestSize((sz[0], sz[1]))        
             
             ## Now I can calc the y value of the button.
             self.cmb_rect=wx.Rect(0,self.bitmap.GetHeight()-40,19,32)
@@ -798,18 +774,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, True )
 
 
-    def crop(self, newwidth):
-        #print "Cropping:",self.name
-        h = self.bitmap.GetHeight()
-        #print " Before w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
-        img = self.bitmap.ConvertToImage().Resize( (newwidth, h),(0,0),255,255,255 )
-        self.bitmap = img.ConvertToBitmap()
-        self.SetBestSize((newwidth, h))
-        #self.width = newwidth
-        self.croppedwidth = newwidth
-        print "{} cropped to:{}". format(self.name, newwidth)
-        #print " After crop w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
-        #print " After (my vars) w,h:", newwidth, h
 
 
 
@@ -836,14 +800,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.style = Fitmap.styles['INACTIVE']
         else:
             self.style = Fitmap.styles['ACTIVE']
-
-
-
-
-
-
-
-
 
 
     def openCharacterMap( self ):
