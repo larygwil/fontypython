@@ -219,7 +219,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
 
-        self.FVP = parent.parent #The Font View Panel
+        self.FVP = parent.parent #The Scrolled Font View Panel
+        self.initialwidth = parent.GetSize()[0]
 
         #self.TICKMAP = parent.parent.TICKMAP
         self.parent = parent
@@ -307,7 +308,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Because of the way History.differs works, on first 
         run, the state will be maxed, all blocks are on.
         """
-        self.state = 0
         A = 1
         B = 2
         # A
@@ -465,6 +465,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
         del self.face_image_stack[:]
+        self.width = 0
         there_are_more_faces=True
         while (there_are_more_faces):
             try:
@@ -551,15 +552,23 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         wx.EndBusyCursor()
         return fx,fy        
 
+    def measureBitmap( self ):
+        self.determine()
+        print u"measureBitmap Draw state: {} for {}".format(self.state,self.name)
+        if self.is_block("A"):
+            print "   gen glyphs runs"
+            self._gen_glyphs()
+            self.state = self.state & ~1
+        return self.width #accrued max glyph width
 
-    def prepareBitmap( self ):
+    def prepareBitmap( self, colw = None ):
         """
         This prepares and draws a single fitmap
         """
         ## Go determine my draw state. 
         # Initial run has A and B set.
         self.determine()
-        print u"Draw state: {} for {}".format(self.state,self.name)
+        print u"prepareBitmap Draw state: {} for {}".format(self.state,self.name)
 
         if self.is_block("A"):
             # Block A: Generate new face bitmaps
@@ -570,11 +579,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             # Block B: Draw the entire fitmap
             #print " ..calling draw_bitmap and use_pencils for ", self.name
             self._draw_bitmap()
-            self._use_pencils()
+            self._use_pencils(colw)
     
         if self.state > 0:
             self.Refresh()# to force onPaint()
-
+        
+        self.state = 0
 
     def _draw_bitmap(self):
         ## Is this a normal FontItem, or an InfoFontItem?
@@ -662,7 +672,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## The ticked state
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
         ## NB: FILE_NOT_FOUND is not available for installation!
-        print u"{} is {}".format(self.name,  self.fitem.badstyle)
+        #print u"{} is {}".format(self.name,  self.fitem.badstyle)
         if self.fitem.badstyle != "FILE_NOT_FOUND":
             #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
@@ -672,22 +682,43 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 self.addPencil( EmptyPencil( "tickmap" ))
 
 
-    def _use_pencils(self):
+    def _use_pencils(self, colw = None):
         """
         Makes a new mem dc with the best size.
         Loops the drawlist and uses the Pencils to draw text and bitmaps
         Returns a memdc for sundry use.
         """
-        if self.croppedwidth == 0:
-            w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
+        #if self.croppedwidth == 0:
+        #    calcw = max(p.getwidth() + int(1.5 * p.x) for p in self.drawDict.values())
+        #    wtf = self.initialwidth
+        #else:
+        #    calcw = self.croppedwidth#min(self.croppedwidth,w)
+        #    wtf = calcw
+
+        if colw:
+            wtf = colw
         else:
-            w = self.croppedwidth#min(self.croppedwidth,w)
+            #calcw = max(p.getwidth() + int(1.5 * p.x) for p in self.drawDict.values())
+            #wtf = max(p.getwidth() + p.x for p in self.drawDict.values())
+            #wtf = max(self.width, self.initialwidth)
+            wtf = self.width if self.width > 0 else self.initialwidth
+            
+        #if self.croppedwidth == 0:
+            #wtf = max(calcw,self.initialwidth)
+        #    wtf = calcw# self.initialwidth
+        #else:
+        #    wtf = self.croppedwidth
 
-        print "bitmap width will be:", w
-
+        #print " {}    calcw: {}".format(self.name, calcw)
+        #print "initialwidth: {}".format(self.initialwidth)
+        #print "         wtf: {}".format(wtf)
+        
         h = self.height
         
-        self.width = w
+
+        self.width = wtf#calcw
+        w = wtf
+        #print "bitmap width will be:", w
 
         #import pdb; pdb.set_trace()
         #print "w, height:",w, h #self.height
@@ -774,9 +805,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         img = self.bitmap.ConvertToImage().Resize( (newwidth, h),(0,0),255,255,255 )
         self.bitmap = img.ConvertToBitmap()
         self.SetBestSize((newwidth, h))
-        self.width = newwidth
+        #self.width = newwidth
         self.croppedwidth = newwidth
-        print " After crop w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
+        print "{} cropped to:{}". format(self.name, newwidth)
+        #print " After crop w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
         #print " After (my vars) w,h:", newwidth, h
 
 

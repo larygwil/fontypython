@@ -116,8 +116,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         for fi in fpsys.state.viewobject:
             fi.top_left_adjust_completed = False
 
-
-
     def MinimalCreateFitmaps( self, viewobject):#, force = False ) :
         print "-------------------------"
         print "MinimalCreateFitmaps runs"
@@ -146,12 +144,110 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     ## This "old" fitmap is okay, let's keep it aside.
                     td[fitem]=fitmap
             
+
+            w=[] # widths
+            for fitem in viewobject:
+                # Seek it in the dict we just made:
+                fm = td.get(fitem, None)
+                if not fm:
+                    ## the fitmap was not found, it must be instanced
+                    fm = Fitmap(self, fitem)
+                    td[ fitem ] = fm # Store it for just now
+
+                wid = fm.measureBitmap()
+
+                w.append(wid) # record the widths
+
+            # Clear the sizer. Docs say this "detaches" all children.
+            # Therefore, the fitmaps that were in there, are no longer in there.
+            # (They are physically laying about in the parent - the FontViewPanel.)
+            # In a moment, we'll re-add all the relevant fitmaps to the sizer,
+            # so everything kind of works-out. I hope...
+            self.fitmap_sizer.Clear() # ..(True) murders the fitmaps. We no like. Hisssssss!
+
+            self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
+            
+            print "***CALC"
+            self.colw = int( sum(w) / max( len(w), 1) )
+            print "sum(w):", sum(w)
+            print "averaged is: colw:", self.colw
+
+            panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
+            print "panelwidth:", panelwidth
+
+            ## Can we afford some columns?
+            #cols = int(panelwidth / self.colw) if self.colw < panelwidth else 1
+            cols = max( 1, int(panelwidth / self.colw) )
+            print "cols:",cols
+            print " vs int(/):", int(panelwidth/self.colw)
+            print "***END CALC"
+
+            self.colw = int(panelwidth/cols)
+
+            ## Let's also divvy-up the hgap
+            #hgap = (panelwidth - (cols * self.colw)) / 2
+
+            self.fitmap_sizer.SetCols(cols)
+
+            ## Loop viewobject, get fitmaps and plug them into the sizer
+            for fitem in viewobject:
+                fm = td[ fitem ] # we get them from the dict
+                fm.prepareBitmap(self.colw)
+                ## JULY 2016
+                ## =========
+                ## If the bitmap is wider than a column, we will crop it
+                ## IDEA: Do a fade to white instead of a hard cut on the right.
+                #if fm.bitmap.GetWidth() > self.colw:
+                #if fm.width > self.colw:
+                #    fm.crop(self.colw)
+                self.fitmap_sizer.Add(fm) # Here we re-add the fitmaps.
+
+        self.fitmap_sizer.FitInside(self)
+        ## Trying this freeze/thaw thing. Not sure if there's any advantage.
+        self.Thaw()
+        print "====EXIT MinimalCreateFitmaps====="
+
+
+
+
+
+
+
+    def xxxMinimalCreateFitmaps( self, viewobject):#, force = False ) :
+        print "-------------------------"
+        print "MinimalCreateFitmaps runs"
+        self.Freeze()
+        if len(viewobject) == 0:
+            self.fitmap_sizer.Clear(True) # Wipe-out the past
+            empty_fitem = fontcontrol.InfoFontItem()
+            fm = Fitmap( self, empty_fitem )
+            fm.prepareBitmap()
+            self.fitmap_sizer.Add( fm )
+        else:
+            # Let's compare what we had before (the contents of the sizer!) with what
+            # is coming-in new, i.e. the viewobject list.
+            td = {}
+            for kid in self.fitmap_sizer.GetChildren():
+                fitmap = kid.GetWindow() #is the fitmap within
+                fitem = fitmap.fitem
+                if fitem not in viewobject:
+                    ## If the fitem is not one we want to show:
+                    ## 1. Remove it from the sizer
+                    ## 2. Destroy it.
+                    print " ..Murdering:", fitmap.name
+                    self.fitmap_sizer.Detach(fitmap)
+                    fitmap.Destroy()
+                else:
+                    ## This "old" fitmap is okay, let's keep it aside.
+                    td[fitem]=fitmap
+            
+
             w=[] # widths
             for fitem in viewobject:
                 # Seek it in the dict we just made:
                 fm = td.get(fitem, None)
                 if fm:
-                    ## The "old" fotmap is there. Let's refresh it.
+                    ## The "old" fitmap is there. Let's refresh it.
                     ## This avoids as much work as poss, for e.g. in the
                     ## rendering of the font faces etc. See gui_Fitmap.py
                     fm.prepareBitmap()
@@ -207,6 +303,33 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## Trying this freeze/thaw thing. Not sure if there's any advantage.
         self.Thaw()
         print "====EXIT MinimalCreateFitmaps====="
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
