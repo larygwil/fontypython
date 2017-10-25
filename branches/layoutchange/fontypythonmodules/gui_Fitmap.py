@@ -622,6 +622,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 fx, fy = 0, 0
                 if not fpsys.config.ignore_adjustments:
                     fx,fy = self.CalculateTopLeftAdjustments(wximage)
+                    print "fx,fy:",fx,fy
                     
                 ## The face bitmap itself:
                 glyph = BitmapPencil("face-{}".format(i),

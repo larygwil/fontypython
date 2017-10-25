@@ -170,7 +170,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
             ## Get some kind of average width.
-            avw = int( sum(w) / max( len(w), 1) )
+            #avw = int( sum(w) / max( len(w), 1) )
+            #print "avw = int( sum(w) / max( len(w), 1) ):", avw
+            ## Going to use this "centered average" or "trimmed mean"
+            ## It's much smoother when there are wildly differing widths.
+            ## Take the sum, remove the min and max, then average:
+            avw = (sum(w) - max(w) - min(w)) / (len(w) - 2) 
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
             ## Get a better actual width for the columns!
