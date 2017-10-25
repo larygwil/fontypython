@@ -165,21 +165,29 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             # Clear the sizer. Docs say this "detaches" all children.
             # Therefore, the fitmaps that were in there, are no longer in there.
             # (They are physically laying about in the parent - the FontViewPanel.)
-            # In a moment now, we'll re-add all the relevant fitmaps to the sizer,
+            # In a moment, we'll re-add all the relevant fitmaps to the sizer,
             # so everything kind of works-out. I hope...
             self.fitmap_sizer.Clear() # ..(True) murders the fitmaps. We no like. Hisssssss!
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
-
+            
+            print "***CALC"
             self.colw = int( sum(w) / max( len(w), 1) )
+            print "sum(w):", sum(w)
+            print "averaged is: colw:", self.colw
 
             panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
+            print "panelwidth:", panelwidth
 
             ## Can we afford some columns?
-            cols = int(panelwidth / self.colw) if self.colw < panelwidth else 1
+            #cols = int(panelwidth / self.colw) if self.colw < panelwidth else 1
+            cols = max( 1, int(panelwidth / self.colw) )
+            print "cols:",cols
+            print " vs int(/):", int(panelwidth/self.colw)
+            print "***END CALC"
 
             ## Let's also divvy-up the hgap
-            hgap = (panelwidth - (cols * self.colw)) / 2
+            #hgap = (panelwidth - (cols * self.colw)) / 2
 
             self.fitmap_sizer.SetCols(cols)
 
@@ -190,7 +198,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 ## =========
                 ## If the bitmap is wider than a column, we will crop it
                 ## IDEA: Do a fade to white instead of a hard cut on the right.
-                if fm.bitmap.GetWidth() > self.colw:
+                #if fm.bitmap.GetWidth() > self.colw:
+                if fm.width > self.colw:
                     fm.crop(self.colw)
                 self.fitmap_sizer.Add(fm) # Here we re-add the fitmaps.
 
@@ -334,7 +343,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             cols = int(panelwidth / self.colw) if self.colw < panelwidth else 1
 
             ## Let's also divvy-up the hgap
-            hgap = (panelwidth - (cols * self.colw)) / 2
+            #hgap = (panelwidth - (cols * self.colw)) / 2
 
             self.fitmap_sizer.SetCols(cols)
 

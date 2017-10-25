@@ -230,7 +230,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         # Some values for drawing
         self.gradientheight = 50
-        Fitmap.SPACER = TextPencil("X", 0, 0, points = 8).getheight()*3 #pointsize used in _draw_bitmap
+        # measure some text - same point size used in _draw_bitmap.
+        Fitmap.SPACER = TextPencil("X", 0, 0, points = 8).getheight() * 3
         print "**SPACER:", Fitmap.SPACER
 
 
@@ -242,6 +243,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.height =  Fitmap.MIN_FITEM_HEIGHT
         self.width = 0
+        self.croppedwidth = 0
 
         self.history_dict = {}
         self.state = 0
@@ -448,22 +450,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def make_inactive_bitmap(self, wxim):
         if wxim in self._inactive_images:
+            print u"Cached inactive for {}".format(self.name)
             return self._inactive_images[wxim]
         tmp = wxim.AdjustChannels(0,0,0,factor_alpha = 0.5)
         self._inactive_images[wxim] = tmp#.ConvertToBitmap()
         return tmp
      
 
-    def gen_face_samples(self):
+    def _gen_glyphs(self):
 
         if isinstance(self.fitem, fontcontrol.InfoFontItem):
             return
 
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
-        #dudtextpencil = TextPencil("X", 0, 0, points=8)
-        #captionh = dudtextpencil.getheight()
-        #print "... captionh:", captionh
-
         i = 0
         del self.face_image_stack[:]
         there_are_more_faces=True
@@ -474,14 +473,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
                 w,h = font.getsize( text )
                 ## Some fonts (50SDINGS.ttf) return a 0 width.
-                ## I don't know exactly why; maybe it could not render
-                ## any of the chars in text.
-                #if int(w) == 0:
-                #    w = 1
                 pilheight = max(1, int(h))
                 pilwidth = max(1, int(w))
 
-                #pilheight += Fitmap.SPACER
 
                 ## Sept 2009 : Fiddled this to produce alpha (ish) images.
                 ## pilimage is of type PIL.Image.Image. 
@@ -489,19 +483,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 ## >>> from PIL import Image
                 ## >>> pi = Image("RGBA",(10,10))
                 ## >>> dir(pi)
-
                 pilimage = Image.new("RGBA", (pilwidth, pilheight), (0,0,0,0))
-
-                #if self.inactive:
-                #    col = (0,0,0,64) #alpha makes it gray
-                #else:
-                #    col = (0,0,0,255)
-                col = (0,0,0,255)
 
                 ## Well, I have since discovered that some fonts
                 ## cause a MemoryError on the next command:
                 drawnFont = ImageDraw.Draw( pilimage ) # Draws INTO pilimage
-                drawnFont.text((0,0) , text, font=font, fill=col)
+                drawnFont.text((0,0) , text, font=font, fill=(0,0,0,255))
 
                 ## Get the data from RGBA PIL into wx.
                 ## Thx, http://nedbatchelder.com/blog/200801/ \
@@ -514,7 +501,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 self.face_image_stack.append(image)
 
                 self.accrue_width( pilwidth )
-                #self.accrue_height( pilheight )
 
                 ## All is well, so we step ahead to the next *potential* sub-face
                 i += 1
@@ -570,15 +556,15 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         This prepares and draws a single fitmap
         """
-
         ## Go determine my draw state. 
         # Initial run has A and B set.
         self.determine()
+        print u"Draw state: {} for {}".format(self.state,self.name)
 
         if self.is_block("A"):
             # Block A: Generate new face bitmaps
-            #print "Calling gen_face_samples for ", self.name
-            self.gen_face_samples()
+            #print "Calling gen_glyphs for ", self.name
+            self._gen_glyphs()
 
         if self.is_block("B"):
             # Block B: Draw the entire fitmap
@@ -600,6 +586,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.height = Fitmap.MIN_FITEM_HEIGHT + 20
             return
 
+        self.croppedwidth = 0 # will have to re-crop from gui_ScrolledFontView
+
         self.setStyle()
         fcol = self.style['fcol']
 
@@ -612,7 +600,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         else:
             mainy = Fitmap.MIN_FITEM_HEIGHT#10
 
-            #for i,pilimage in enumerate(pilbitmaps):
             for i,wximage in enumerate(self.face_image_stack):
                 #print u"..draw_bitmap loop for {} i is {} wximage is {}".format(self.name,i,wximage)
                 glyphHeight = wximage.GetSize()[1]
@@ -625,22 +612,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 else:
                     image = wximage
 
-                image = image.ConvertToBitmap()
-
                 fx, fy = 0, 0
                 if not fpsys.config.ignore_adjustments:
                     fx,fy = self.CalculateTopLeftAdjustments(wximage)
                     
-                self.addPencil(
-                    BitmapPencil("face-{}".format(i),
+                ## The face bitmap itself:
+                glyph = BitmapPencil("face-{}".format(i),
                         x - fx,
                         mainy - fy,
-                        image)
-                    )
+                        image.ConvertToBitmap() )
+                
                 
                 ## The Caption: fam, style, name
-                self.addPencil( 
-                    TextPencil( "face-{}-caption".format(i),
+                caption = TextPencil( "face-{}-caption".format(i),
                         "{} - {} - [{}]".format(
                             self.fitem.family[i],
                             self.fitem.style[i],
@@ -649,7 +633,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                         mainy + glyphHeight + (Fitmap.SPACER/3),
                         fcol, 
                         points = 8)
-                    )
+
+                self.addPencil( glyph, caption )
 
                 ## Move TOP down to next BOTTOM (for next sub-face)
                 mainy += glyphHeight + Fitmap.SPACER
@@ -693,8 +678,16 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Loops the drawlist and uses the Pencils to draw text and bitmaps
         Returns a memdc for sundry use.
         """
-        w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
+        if self.croppedwidth == 0:
+            w = max((p.getwidth() + int(1.5 * p.x)) for p in self.drawDict.values())
+        else:
+            w = self.croppedwidth#min(self.croppedwidth,w)
+
+        print "bitmap width will be:", w
+
         h = self.height
+        
+        self.width = w
 
         #import pdb; pdb.set_trace()
         #print "w, height:",w, h #self.height
@@ -736,9 +729,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Now a dividing line
         memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
-        memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
+        #memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
+        memDc.DrawLine( 0, self.height-1, w, self.height-1 )
 
-        self.width = w
         
         # Vital line: I can't tell you ... Man. The suffering.
         self.SetBestSize((w, h))    
@@ -754,7 +747,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         if self.bitmap:
             ## Create a buffered paint DC.  It will create the real
             ## wx.PaintDC and then blit the bitmap to it when dc is
-            ## deleted.  
+            ## deleted by leaving this function.
             dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
             if not self.can_have_button(): return
@@ -780,8 +773,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #print " Before w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
         img = self.bitmap.ConvertToImage().Resize( (newwidth, h),(0,0),255,255,255 )
         self.bitmap = img.ConvertToBitmap()
-        self.SetBestSize((newwidth, h))        
-        #print " After w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
+        self.SetBestSize((newwidth, h))
+        self.width = newwidth
+        self.croppedwidth = newwidth
+        print " After crop w,h:", self.bitmap.GetWidth(), self.bitmap.GetHeight()
         #print " After (my vars) w,h:", newwidth, h
 
 
