@@ -74,11 +74,12 @@ class EmptyPencil(Pencil):
 
 class TextPencil(Pencil):
     _text_extents_dict = {}
-    def __init__( self, id, txt, x = 0, y = 0, fcol = (0,0,0), points = 8,
+    def __init__( self, id, txt, x = 0, y = 0, fcol = (0,0,0), points = 0,
                     style = wx.NORMAL, weight = wx.NORMAL ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
         self.txt = txt
-        self.font =  wx.Font( points, fpsys.DFAM, style, weight, encoding=wx.FONTENCODING_DEFAULT )
+        if points == 0: points = fpsys.SYSFONT["points_normal"]
+        self.font =  wx.Font( points, fpsys.SYSFONT["family"], style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
         ## Measure a line of text in my font. Return a wx.Size
         ## Cache these widths in Pencil class variable, so that
@@ -661,8 +662,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                             self.fitem.name ),
                         28,
                         mainy + glyphHeight + (Fitmap.SPACER/3),
-                        fcol, 
-                        points = 8)
+                        fcol,
+                        points = fpsys.SYSFONT["points_smaller"])
 
                 self.addPencil( glyph, caption )
 

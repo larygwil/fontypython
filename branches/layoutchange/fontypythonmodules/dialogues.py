@@ -211,7 +211,7 @@ class DialogSettings(wx.Dialog):
         PANE2 = wx.Panel(nb, -1)
 
         ## The layout of PANE1 begins:
-        font = wx.Font(16, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+        font = wx.Font(fpsys.SYSFONT["points_x_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
         labelHeading = wx.StaticText(self, -1, _("Settings"))
         labelHeading.SetFont(font)
 
@@ -401,7 +401,7 @@ class DialogCheckFonts( wx.Dialog ):
         ## LEFT
         leftsz = wx.BoxSizer(wx.VERTICAL)
 
-        font = wx.Font(12, fpsys.DFAM, wx.NORMAL, wx.FONTWEIGHT_BOLD)
+        font = wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
         title = wx.StaticText( self,-1,  _("Choose a directory and double click it to start"))
         title.SetFont( font )
         leftsz.Add(title,0,wx.EXPAND | wx.ALL, border=4 )

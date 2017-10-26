@@ -874,8 +874,22 @@ LSP = linux_safe_path_library.linuxSafePath()
 iPC = PathControl(XDG_DATA_HOME)
 
 
-## Oct 2009 Default Font Family (System font)
-DFAM=None # Set in wxgui.py in class App()
+## Oct 2017 Default Font Family (System font)
+## Called in showMain() in wxgui.py
+SYSFONT={}
+def set_font_dict(wxfont):
+    ps = wxfont.GetPointSize()
+    global SYSFONT
+    SYSFONT.update(
+       {"font"           : wxfont,
+        "family"         : wxfont.GetFamily(),
+        "points_smaller" : ps*0.9,
+        "points_normal"  : ps,
+        "points_large"   : ps*1.07,
+        "points_x_large" : ps*2
+        })
+    print "SYSFONT:", SYSFONT
+
 
 ## Borrowed from wxglade.py
 ## The reason for this is to find the path of this file

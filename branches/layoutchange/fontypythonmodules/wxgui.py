@@ -580,9 +580,9 @@ class FontySplash(wx.SplashScreen):
                 self.showMain()
 
         def showMain(self):
-            ## Oct 2009
-            ##  this is the only place I can get the system font family
-            fpsys.DFAM = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFamily()
+            ## Oct 2017
+            ## Setup my system font global dict called "SYSFONT"
+            fpsys.set_font_dict( wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT) )
 
             frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
             app.SetTopWindow(frame)
