@@ -120,11 +120,14 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         print "-------------------------"
         print "MinimalCreateFitmaps runs"
         self.Freeze()
+        
+        panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
+
         if len(viewobject) == 0:
             self.fitmap_sizer.Clear(True) # Wipe-out the past
             empty_fitem = fontcontrol.InfoFontItem()
             fm = Fitmap( self, empty_fitem )
-            fm.assemble_bitmap()
+            fm.assemble_bitmap( panelwidth )
             self.fitmap_sizer.Add( fm )
         else:
             # Let's compare what we had before (the contents of the sizer!) with what
@@ -167,7 +170,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
             
-            panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
 
             ## Get some kind of average width.
             #avw = int( sum(w) / max( len(w), 1) )
@@ -175,11 +177,28 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ## Going to use this "centered average" or "trimmed mean"
             ## It's much smoother when there are wildly differing widths.
             ## Take the sum, remove the min and max, then average:
-            avw = (sum(w) - max(w) - min(w)) / (len(w) - 2) 
+            ## With quite a few sanity tests between all that..
+            print w
+            l = len(w)
+            if l < 3: 
+                avw = sum(w)/l
+            else:
+                ## When the widths are all similar, it's hard to know
+                ## which to discard... Too much math for my head. :(
+                avw_tm = max( 1, (sum(w) - max(w) - min(w)) / l-2 )
+                avw_foo = sum(w)/l
+                avw = min(avw_foo, avw_tm) # a hack to choose fewer cols over more
+                #print "avw:",avw
+                #print "vs:", sum(w)/l
+
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
+            #print "cols:",cols
+
             ## Get a better actual width for the columns!
             colw = int(panelwidth/cols)
+
+            #print "colw:",colw
 
             self.fitmap_sizer.SetCols(cols)
 

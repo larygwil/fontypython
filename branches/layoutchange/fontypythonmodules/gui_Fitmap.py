@@ -82,7 +82,7 @@ class TextPencil(Pencil):
             weight = wx.NORMAL ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
         self.txt = txt
-        print points
+        ## I get point sizes from the SYSFONT dict
         points = fpsys.SYSFONT[points]
         self.font =  wx.Font( points, fpsys.SYSFONT["family"], style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
@@ -234,8 +234,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.gradientheight = 50
         # measure some text - same point size used in _draw_bitmap.
         Fitmap.SPACER = TextPencil("X", 0, 0, points = "points_smaller").getheight() * 3
-        #print "**SPACER:", Fitmap.SPACER
-
 
         self.face_image_stack = []
         self._inactive_images = {}
@@ -341,8 +339,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
 
-    def accrue_width(self,n):
-        self.width = max(self.width, n)
+    #def accrue_width(self,n):
+    #    self.width = max(self.width, n)
 
     def accrue_height(self,n):
         self.height = max(self.height, n)
@@ -437,8 +435,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx,ty = (46,15) if isinfo else (38 , 20)
 
         tx += offx
-        text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty, points="points_large", weight=wx.BOLD)
-        #text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty, points=12, weight=wx.BOLD)
+        text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty,
+                points="points_large", weight=wx.BOLD)
 
         tx,ty = (46,40) if isinfo else (5 ,40)
 
@@ -462,13 +460,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def _gen_glyphs(self):
 
-        if isinstance(self.fitem, fontcontrol.InfoFontItem):
-            return
+        #if isinstance(self.fitem, fontcontrol.InfoFontItem):
+        #    return self.parent.GetSize()[0]
 
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
         del self.face_image_stack[:]
-        self.width = 0
+        glyph_widths = [1]
         there_are_more_faces=True
         while (there_are_more_faces):
             try:
@@ -476,6 +474,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 font = ImageFont.truetype(paf, points,index = i, encoding = "unicode")
 
                 w,h = font.getsize( text )
+                print u"{} {},{}".format(paf,w,h)
                 ## Some fonts (50SDINGS.ttf) return a 0 width.
                 pilheight = max(1, int(h))
                 pilwidth = max(1, int(w))
@@ -504,7 +503,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
                 self.face_image_stack.append(image)
 
-                self.accrue_width( pilwidth )
+                #self.accrue_width( pilwidth )
+                glyph_widths.append(pilwidth)
+
 
                 ## All is well, so we step ahead to the next *potential* sub-face
                 i += 1
@@ -521,6 +522,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 self.fitem.badstyle = "PIL_CANNOT_RENDER"
                 self.fitem.badfont = True
                 there_are_more_faces = False
+
+        return max(glyph_widths)
 
     def CalculateTopLeftAdjustments(self, wxi):
         ## Sept 2009
@@ -572,12 +575,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         their widths in gui_ScrolledFontView.MinimalCreateFitmaps()
         """
         self.determine_draw_state()
-        #print u"render_and_measure_glyphs Draw state: {} for {}".format(self.state,self.name)
+        #print u"measure Draw state: {} for {}".format(self.state,self.name)
+        max_glyph_width = self.width
         if self.is_block("A"):
-            #print "   gen glyphs runs"
-            self._gen_glyphs()
+            max_glyph_width = self._gen_glyphs()
             self.state = self.state & ~Fitmap.flagA #Switch off flagA
-        return self.width #accrued max glyph width
+        return max_glyph_width
 
     def assemble_bitmap( self, colw = None ):
         """
@@ -604,7 +607,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             # Block B: Draw the entire fitmap
             #print " ..calling draw_bitmap and use_pencils for ", self.name
             self._draw_bitmap()
-            self._use_pencils(colw)
+            self._use_pencils( colw )
     
         if self.state > 0:
             self.Refresh()# force onPaint()
@@ -620,8 +623,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## of saying "There are no fonts to see here."
         if isinstance( self.fitem, fontcontrol.InfoFontItem ):
             self.style=Fitmap.styles['INFO_FONT_ITEM']
-            self.gen_info_or_badfont( isinfo = True )       
-            self.height = Fitmap.MIN_FITEM_HEIGHT + 20
+            h = self.gen_info_or_badfont( isinfo = True )       
+            self.height = Fitmap.MIN_FITEM_HEIGHT + h + 20
             return
 
         self.setStyle()
@@ -691,6 +694,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             txt = self.fitem.activeInactiveMsg
             self.addPencil( TextPencil( "fntinactive", txt, x+2, y, fcol) )
+            
         else:
             ## Better to simply remove them...TODO
             self.addPencil( EmptyPencil("bmpinactive"))
@@ -736,6 +740,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         
         self.width = w
         h = self.height
+        print w,h
 
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
@@ -776,7 +781,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
         memDc.DrawLine( 0, self.height-1, w, self.height-1 )
 
-        
+        #memDc.DrawCheckMark(50, 50, 20,20) # a liiitle fugly. Not gonna lie.
+
+
         # Vital line: I can't tell you ... Man. The suffering.
         self.SetBestSize((w, h))    
 
