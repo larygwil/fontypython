@@ -156,10 +156,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     ## the fitmap was not found, it must be instanced
                     fm = Fitmap(self, fitem)
                     td[ fitem ] = fm # Store it for just now
-
+                ## Since their states may have changed, we do the
+                ## render_and_measure_glyphs on all fitmaps again:
                 wid = fm.render_and_measure_glyphs()
-
                 w.append(wid) # record the widths
+
 
             # Clear the sizer. Docs say this "detaches" all children.
             # Therefore, the fitmaps that were in there, are no longer in there.
@@ -187,7 +188,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 ## which to discard... Too much math for my head. :(
                 avw_tm = max( 1, (sum(w) - max(w) - min(w)) / l-2 )
                 avw_foo = sum(w)/l
-                avw = min(avw_foo, avw_tm) # a hack to choose fewer cols over more
+                avw = min(avw_foo, avw_tm) # a hack to prefer fewer cols
                 #print "avw:",avw
                 #print "vs:", sum(w)/l
 

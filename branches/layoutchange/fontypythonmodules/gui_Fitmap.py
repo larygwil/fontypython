@@ -31,10 +31,7 @@ from PIL import Image, ImageFont, ImageDraw
 
 import collections
 
-ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
-ndi=(227,226,219) # No Draw Inactive => "ndi"
-black=(0,0,0)
-white=(255,255,255)
+
 
 
 class OverOutSignal(object):
@@ -56,7 +53,7 @@ class OverOutSignal(object):
 class Pencil(object):
     """
     Used to store drawing code for DrawText and DrawBitmap.
-    I make them and store them in a list. This gives an
+    I make them and store them in a dict. This gives an
     ordering in time and overlapping too.
     I can loop and draw them all in one go.
     """
@@ -67,9 +64,9 @@ class Pencil(object):
     def draw(self, memdc): pass
 
 
-class EmptyPencil(Pencil):
-    def __init__(self,id):
-        Pencil.__init__(self,id)
+#class EmptyPencil(Pencil):
+#    def __init__(self,id):
+#        Pencil.__init__(self,id)
 
 
 class TextPencil(Pencil):
@@ -84,11 +81,13 @@ class TextPencil(Pencil):
         self.txt = txt
         ## I get point sizes from the SYSFONT dict
         points = fpsys.SYSFONT[points]
-        self.font =  wx.Font( points, fpsys.SYSFONT["family"], style, weight, encoding=wx.FONTENCODING_DEFAULT )
+        self.font =  wx.Font( points, fpsys.SYSFONT["family"],
+                style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
-        ## Measure a line of text in my font. Return a wx.Size
+        ## Measure a line of text in my font.
         ## Cache these widths in Pencil class variable, so that
         ## future identical strings can avoid work.
+        ## Turned out I don't use this much.
         if not self.txt in TextPencil._text_extents_dict:
             dc = wx.ScreenDC()
             dc.SetFont( self.font )
@@ -127,7 +126,10 @@ class BitmapPencil(Pencil):
 
 
 
-
+ndc=(200,190,183) # No Draw Color: colour of background for the fonts I can't draw
+ndi=(227,226,219) # No Draw Inactive => "ndi"
+black=(0,0,0)
+white=(255,255,255)
 
 class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     """
@@ -232,6 +234,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         # Some values for drawing
         self.gradientheight = 50
+
         # measure some text - same point size used in _draw_bitmap.
         Fitmap.SPACER = TextPencil("X", 0, 0, points = "points_smaller").getheight() * 3
 
@@ -284,8 +287,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def has_changed(self, key, something):
         """
-        Sets the value and tests if it differs from
-        the last value. 
+        Sets the dict key's value to something
+        and tests if it differs from the last value. 
         Returns: True or False
         (If first run, it sets and returns true)
         """
@@ -307,7 +310,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         influence how we will draw the font bitmap.
         We OR the values onto state as we go.
         
-        Fitmap.flagBecause of the way History.differs works, on first 
+        Fitmap.flagBecause of the way has_changed works, on first 
         run, the state will be maxed, all blocks are on.
         """
         # A | B
@@ -336,23 +339,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         return self.state & Fitmap.blocks[c] == Fitmap.blocks[c]
 
 
-
-
-
     #def accrue_width(self,n):
     #    self.width = max(self.width, n)
 
     def accrue_height(self,n):
         self.height = max(self.height, n)
 
-    def addPencil(self, *pencils):
-        # beware, this does not preserve the order of the
+    def add_pencil(self, *pencils):
+        # Beware, this does not preserve the order of the
         # input list!
         d = dict((o.id, o) for o in pencils)
+        self.drawDict.update(d)
 
-        self.drawDict.update(d)# {id:pencil})
-
-    
+    def remove_pencil(self, *ids):
+        [ self.drawDict.pop(id, None) for id in ids ]
 
     def bottomFadeEffect( self, dc, height, width, step=1.13):
         """
@@ -443,7 +443,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx += offx
         text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty )
 
-        self.addPencil( iconpencil, text0, text1 )
+        self.add_pencil( iconpencil, text0, text1 )
 
         h = sum(p.getheight() for p in [iconpencil, text0, text1])
         return h
@@ -518,7 +518,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             ## Whatever else goes wrong, just set badfont.
             except Exception as e: 
-                self.fitem.badfontmsg = _("Font causes a memory error, it can't be drawn.\nError was:{}").format(e)
+                self.fitem.badfontmsg = _("Font causes a memory error, it can't be drawn.\nOriginal error was:\n{}").format(e)
                 self.fitem.badstyle = "PIL_CANNOT_RENDER"
                 self.fitem.badfont = True
                 there_are_more_faces = False
@@ -674,7 +674,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                         fcol,
                         points = "points_smaller")
 
-                self.addPencil( glyph, caption )
+                self.add_pencil( glyph, caption )
 
                 ## Move TOP down to next BOTTOM (for next sub-face)
                 mainy += glyphHeight + Fitmap.SPACER
@@ -690,15 +690,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## The inactive footer
         if self.fitem.inactive:
             x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-            self.addPencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
+            self.add_pencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
 
             txt = self.fitem.activeInactiveMsg
-            self.addPencil( TextPencil( "fntinactive", txt, x+2, y, fcol) )
+            self.add_pencil( TextPencil( "fntinactive", txt, x+2, y, fcol) )
             
         else:
-            ## Better to simply remove them...TODO
-            self.addPencil( EmptyPencil("bmpinactive"))
-            self.addPencil( EmptyPencil("fntinactive"))
+            self.remove_pencil("bmpinactive", "fntinactive")
             
         ## The ticked state
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
@@ -708,9 +706,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
                 self.TICKMAP = self.parent.parent.TICKMAP
-                self.addPencil( BitmapPencil( "tickmap", 20, 5, self.TICKMAP) )    
+                self.add_pencil( BitmapPencil( "tickmap", 20, 5, self.TICKMAP) )    
             else:
-                self.addPencil( EmptyPencil( "tickmap" ))
+                self.remove_pencil("tickmap")
 
 
     def _use_pencils(self, colw = None):
@@ -822,21 +820,17 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         # InfoFontItem does not use this, all others do.
         if self.fitem.badfont:
-            self.style=Fitmap.styles[self.fitem.badstyle].copy() #damn! this was tricky!
+            ## Make a copy because I'm going to alter it a bit:
+            self.style=Fitmap.styles[self.fitem.badstyle].copy()
             if self.fitem.inactive:
-                ## July 2016
-                ## =========
-                ## Happened on cases where 'ndi' key was not in styles dict. 
-                ## Added them in.
                 self.style['fcol'] = Fitmap.styles['INACTIVE']['fcol']
-                self.style['backcol'] = Fitmap.styles[self.fitem.badstyle]['ndi'] #ndi = No Draw Inactive
-            return
-
-        # Not bad font, just get vals from style sheet.
-        if self.fitem.inactive:
-            self.style = Fitmap.styles['INACTIVE']
+                self.style['backcol'] = Fitmap.styles[self.fitem.badstyle]['ndi']
         else:
-            self.style = Fitmap.styles['ACTIVE']
+            # Not bad font, just get vals from style sheet.
+            if self.fitem.inactive:
+                self.style = Fitmap.styles['INACTIVE']
+            else:
+                self.style = Fitmap.styles['ACTIVE']
 
 
     def openCharacterMap( self ):
