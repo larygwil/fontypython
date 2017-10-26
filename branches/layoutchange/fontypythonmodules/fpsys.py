@@ -886,7 +886,8 @@ def set_font_dict(wxfont):
         "points_smaller" : ps*0.9,
         "points_normal"  : ps,
         "points_large"   : ps*1.07,
-        "points_x_large" : ps*2
+        "points_x_large" : ps*1.2,
+        "points_xx_large": ps*2
         })
     print "SYSFONT:", SYSFONT
 

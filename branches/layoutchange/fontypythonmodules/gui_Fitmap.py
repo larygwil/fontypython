@@ -74,11 +74,16 @@ class EmptyPencil(Pencil):
 
 class TextPencil(Pencil):
     _text_extents_dict = {}
-    def __init__( self, id, txt, x = 0, y = 0, fcol = (0,0,0), points = 0,
-                    style = wx.NORMAL, weight = wx.NORMAL ):
+    def __init__( self, id, txt, 
+            x = 0, y = 0, 
+            fcol = (0,0,0),
+            points = "points_normal",
+            style = wx.NORMAL, 
+            weight = wx.NORMAL ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
         self.txt = txt
-        if points == 0: points = fpsys.SYSFONT["points_normal"]
+        print points
+        points = fpsys.SYSFONT[points]
         self.font =  wx.Font( points, fpsys.SYSFONT["family"], style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
         ## Measure a line of text in my font. Return a wx.Size
@@ -228,7 +233,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # Some values for drawing
         self.gradientheight = 50
         # measure some text - same point size used in _draw_bitmap.
-        Fitmap.SPACER = TextPencil("X", 0, 0, points = 8).getheight() * 3
+        Fitmap.SPACER = TextPencil("X", 0, 0, points = "points_smaller").getheight() * 3
         #print "**SPACER:", Fitmap.SPACER
 
 
@@ -432,12 +437,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx,ty = (46,15) if isinfo else (38 , 20)
 
         tx += offx
-        text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty, points=12, weight=wx.BOLD)
+        text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty, points="points_large", weight=wx.BOLD)
+        #text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty, points=12, weight=wx.BOLD)
 
         tx,ty = (46,40) if isinfo else (5 ,40)
 
         tx += offx
-        text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty, points=10 )
+        text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty )
 
         self.addPencil( iconpencil, text0, text1 )
 
@@ -663,7 +669,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                         28,
                         mainy + glyphHeight + (Fitmap.SPACER/3),
                         fcol,
-                        points = fpsys.SYSFONT["points_smaller"])
+                        points = "points_smaller")
 
                 self.addPencil( glyph, caption )
 
@@ -684,7 +690,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.addPencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
 
             txt = self.fitem.activeInactiveMsg
-            self.addPencil( TextPencil( "fntinactive", txt, x+2, y, fcol, points=10) )
+            self.addPencil( TextPencil( "fntinactive", txt, x+2, y, fcol) )
         else:
             ## Better to simply remove them...TODO
             self.addPencil( EmptyPencil("bmpinactive"))
