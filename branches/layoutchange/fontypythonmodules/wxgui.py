@@ -51,6 +51,23 @@ from gui_FontSources import *
 from gui_FontView import *
 from gui_PogTargets import *
 
+def setup_fonts_and_colours():
+    fpsys.SYSCOLS.update(
+    {"gray"  : wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT),
+     "shadow": wx.SystemSettings.GetColour(wx.wx.SYS_COLOUR_BTNSHADOW),
+    })
+
+    wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+    ps = wxfont.GetPointSize()
+    fpsys.SYSFONT.update(
+       {"font"           : wxfont,
+        "family"         : wxfont.GetFamily(),
+        "points_smaller" : ps*0.9,
+        "points_normal"  : ps,
+        "points_large"   : ps*1.07,
+        "points_x_large" : ps*1.2,
+        "points_xx_large": ps*2
+        })
 
 class StatusBar(wx.StatusBar):
     """
@@ -581,8 +598,8 @@ class FontySplash(wx.SplashScreen):
 
         def showMain(self):
             ## Oct 2017
-            ## Setup my system font global dict called "SYSFONT"
-            fpsys.set_font_dict( wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT) )
+            ## Setup my system fonts and colours
+            setup_fonts_and_colours()
 
             frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
             app.SetTopWindow(frame)

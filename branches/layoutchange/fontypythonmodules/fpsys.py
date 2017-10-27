@@ -875,21 +875,10 @@ iPC = PathControl(XDG_DATA_HOME)
 
 
 ## Oct 2017 Default Font Family (System font)
-## Called in showMain() in wxgui.py
+## And colours from the user's gui settings:
+## Setup in showMain() in wxgui.py
 SYSFONT={}
-def set_font_dict(wxfont):
-    ps = wxfont.GetPointSize()
-    global SYSFONT
-    SYSFONT.update(
-       {"font"           : wxfont,
-        "family"         : wxfont.GetFamily(),
-        "points_smaller" : ps*0.9,
-        "points_normal"  : ps,
-        "points_large"   : ps*1.07,
-        "points_x_large" : ps*1.2,
-        "points_xx_large": ps*2
-        })
-    print "SYSFONT:", SYSFONT
+SYSCOLS={}
 
 
 ## Borrowed from wxglade.py

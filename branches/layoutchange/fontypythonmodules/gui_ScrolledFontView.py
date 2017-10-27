@@ -56,6 +56,26 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         #self.SetBackgroundColour(shadowcolor)#'white')
         self.SetBackgroundColour('white')
 
+        ## Stops to use in fitmap drawing code.
+        self.gstops = {}
+        white_full = wx.Colour(255,255,255,255)
+        white_zero = wx.Colour(255,255,255,0)
+        black_zero = wx.Colour(0,0,0,0)
+        c=255
+        ucl = wx.Colour(c,c,c,255)
+        ucd = wx.Colour(c-30,c-30,c-30,255)
+
+        self.gstops.update(
+            {"white_to_alpha" : wx.GraphicsGradientStops( 
+                            startCol=white_full, endCol=white_zero ),
+             "baptiste" : wx.GraphicsGradientStops(
+                            startCol = wx.Colour(238,238,238,255), endCol = white_full ),
+             "underline": wx.GraphicsGradientStops( 
+                            startCol = ucd, endCol = ucl)
+        })
+        self.gstops["white_to_alpha"].Add(wx.Colour(255,255,255,128), 0.5)
+        self.gstops["underline"].Add( ucd, 0.4)
+
         self.wheelValue = fpsys.config.points
         self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
 

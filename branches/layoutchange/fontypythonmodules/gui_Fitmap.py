@@ -355,49 +355,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         It goes from backcol and darkens it a little as it draws downwards.
         """
-        #TODO : Pre-calc all these colours.
-        ctx = wx.GraphicsContext.Create(dc)
-        b = ctx.CreateLinearGradientBrush(0,height,0,0,"#eeeeeeff", "#ffffffff")
-        ctx.SetBrush (b)
-        ctx.DrawRectangle(0,0,width,height)
-        b = ctx.CreateLinearGradientBrush(width,0,width/2,0, "#ffffffff", "#ffffff00")
-        ctx.SetBrush (b)
-        ctx.DrawRectangle(0,0,width,height)
 
-        return
-
-        def clamp(self,v):
-            if v > 1.0: v=1.0
-            if v < 0.0: v=0.0
-            return v
-
-        def rgb_to_hsv(self,rgb):
-            #Go from int colour to float colour (0 to 1 range)
-            sr = rgb[0]/255.0
-            sg = rgb[1]/255.0
-            sb = rgb[2]/255.0
-            return colorsys.rgb_to_hsv(sr,sg,sb)
-
-        def hsv_to_rgb(self,hsv):
-            rgb = colorsys.hsv_to_rgb( hsv[0],hsv[1],hsv[2] )
-            # back to int
-            sr = int(rgb[0]*255.0)
-            sg = int(rgb[1]*255.0)
-            sb = int(rgb[2]*255.0)
-            return ( sr,sg,sb )
-
-
-        if self.fitem.inactive:
-            return
-            #step=1.08 #inactive fonts get a lighter colour.
-
-        col = self.style["backcol"] #from
-        hsv = self.rgb_to_hsv(col)
-        tob=self.hsv_to_rgb((hsv[0],hsv[1],hsv[2]/step)) #to a darker brightness.
-        sy=height-self.gradientheight
-        rect=wx.Rect(0, sy, width, self.gradientheight)
-        dc.GradientFillLinear( rect, col, tob, nDirection=wx.SOUTH )
-        dc.GradientFillLinear( rect, "#ffffff", tob, nDirection=wx.SOUTH )
 
 
 
@@ -434,7 +392,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx,ty = (46,40) if isinfo else (5 ,40)
 
         tx += offx
-        text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty )
+        text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty, points="points_smaller" )
 
         self.add_pencil( iconpencil, text0, text1 )
 
@@ -736,9 +694,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         memDc.Clear()
         
         #self.bottomFadeEffect( memDc, h, w )
-
+        
+        ## Baptiste's idea! New implementation: Oct 2017
+        ## "Now a dividing gradient, you can say "wow" ;-)"
+        ## Donn says, "..Wow!" :-D
         ctx = wx.GraphicsContext.Create(memDc)
-        b = ctx.CreateLinearGradientBrush(0,h,0,0,"#eeeeeeff", "#ffffffff")
+        b = ctx.CreateLinearGradientBrush(0,h,0,0, self.parent.gstops["baptiste"])# 
         ctx.SetBrush (b)
         ctx.DrawRectangle(0,0,w,h)
 
@@ -746,34 +707,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values(): 
-            #print "Drawing pencil:", pencil.id
             pencil.draw(memDc)
-            #print "done"
 
-
-        gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
-        gstops.Add(wx.Colour(255,255,255,128), 0.5)
-        b = ctx.CreateLinearGradientBrush(w,0,w-(w/7),0, gstops )
+        fr = w/7
+        b = ctx.CreateLinearGradientBrush(w,0,w-fr,0, self.parent.gstops["white_to_alpha"] )
         ctx.SetBrush (b)
-        ctx.DrawRectangle(0,0,w,h)
-
-
-        ## Thinking of drawing with a bitmap brush onto a larger bg image somehow
-        ## want to get all the fitmaps equal width...
-        # brush1 = wx.BrushFromBitmap(wx.Bitmap('pattern1.png'))
-        # dc.SetBrush(brush1)
-        # dc.DrawRectangle(10, 15, 90, 60)
+        ctx.DrawRectangle(w-fr,0,w,h) #0,0,w,h)
 
         ## Now a dividing line
-        dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT)
-        memDc.SetPen( wx.Pen( dark, 1) )#(180,180,180),1 ) )#black, 1 ) ) 
-        #memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
-        #memDc.DrawLine( 0, self.height-1, w, self.height-1 )
-        memDc.DrawLine( 0, h-1,  w, h-1 )
-
+        #b = ctx.CreateLinearGradientBrush(0,h,w,h,self.parent.gstops["underline"])
+        b = ctx.CreateLinearGradientBrush(0,0,w,0,self.parent.gstops["underline"])
+        ctx.SetBrush(b)
+        ctx.DrawRectangle(0,h-1,w,h-1)
 
         #memDc.DrawCheckMark(50, 50, 20,20) # a liiitle fugly. Not gonna lie.
-
 
         # Vital line: I can't tell you ... Man. The suffering.
         self.SetBestSize((w, h))    
