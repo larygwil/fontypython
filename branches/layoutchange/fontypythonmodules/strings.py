@@ -284,8 +284,8 @@ thanks = u"""Many thanks to:
 
 8. savannah.nongnu.org - For the hosting.
 
-9. Michael Moller - For pointing me in the direction of the
-   standard-mean which I used in the font layout.
+9. Michael Moller - For pointing me in the right math direction of
+   the "standard-deviation" which I used in the font layout.
 
 10. And all those I've forgotten!
 """
