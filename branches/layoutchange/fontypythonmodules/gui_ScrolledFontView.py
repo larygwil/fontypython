@@ -171,59 +171,25 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
             
-            ## Trying various algorithms. Number 3 is the winner. Credit to 
-            ## Michael Moller for telling me about "standard deviation".
-            alg=3
-            if alg==1:
-                percent = .2 # == 10%
+            ## Credit to Michael Moller for clueing me onto "standard deviation".
+            ## My soluition: Take the mean of the widths and add a bit "more".
+            lw = len(w)
+            sw = sum(w)
 
-                def trimmed_mean(data, percent):
-                    # sort list
-                    data = sorted(data)
-                    # number of elements to remove from both ends of list
-                    outliers = int(percent * len(data))
-                    # remove elements
-                    data = data[outliers:-outliers]
-                    return sum(data) / len(data)
-                avw = trimmed_mean(w, percent)                
+            ## 1. Standard Deviation
+            ##    Calc the variance by subtracting each width from the 
+            ##    average and then taking the square summing along. 
+            ##    Calc the std deviation by sqrting that variance.
+            a = sw / lw # the average
+            sd = ( sum( ( a - i ) **2 for i in w ) / lw ) ** 0.5
 
-            elif alg==2:
-                ## Get some kind of average width.
-                #avw = int( sum(w) / max( len(w), 1) )
-                #print "avw = int( sum(w) / max( len(w), 1) ):", avw
-                ## Going to use this "centered average" or "trimmed mean"
-                ## It's much smoother when there are wildly differing widths.
-                ## Take the sum, remove the min and max, then average:
-                ## With quite a few sanity tests between all that..
-                print w
-                l = len(w)
-                if l < 3: 
-                    avw = sum(w)/l
-                else:
-                    ## When the widths are all similar, it's hard to know
-                    ## which to discard... Too much math for my head. :(
-                    avw_tm = max( 1, (sum(w) - max(w) - min(w)) / l-2 )
-                    avw_foo = sum(w)/l
-                    avw = min(avw_foo, avw_tm) # a hack to prefer fewer cols
+            ## 2. I also get av of that std deviation, just to 
+            ##    shorten it a little.
+            ## This is the bit "more".
+            asd = sd / lw
 
-            elif alg==3:
-                ## Take the mean of the widths and add a bit more:
-                lw = len(w)
-                sw = sum(w)
-
-                ## 1. Standard Deviation
-                ##    Calc the variance by subtracting each width from the 
-                ##    average and then taking square and rolling the sum. 
-                ##    Calc the std deviation by sqrting that variance.
-                a = sw / lw # the average
-                sd = ( sum( ( a - i ) **2 for i in w ) / lw ) ** 0.5
-
-                ## 2. I also get av of that std deviation, just to 
-                ##    shorten it a little:
-                asd = sd / lw
-
-                ## 3. My result is the sum of these two.
-                avw = a + asd
+            ## 3. My result is the sum of these two.
+            avw = a + asd
 
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
@@ -233,7 +199,6 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             colw = int(panelwidth/cols)
 
             #print "colw:",colw
-
             self.fitmap_sizer.SetCols(cols)
 
             ## Loop viewobject, get fitmaps, prep them with the new width
@@ -248,4 +213,29 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         self.Thaw()
         print "====EXIT MinimalCreateFitmaps====="
 
+"""
+Unused algorithms in MinimalCreateFitmaps
+            if alg==1:
+                percent = .2 # == 10%
+                def trimmed_mean(data, percent):
+                    # sort list
+                    data = sorted(data)
+                    # number of elements to remove from both ends of list
+                    outliers = int(percent * len(data))
+                    # remove elements
+                    data = data[outliers:-outliers]
+                    return sum(data) / len(data)
+                avw = trimmed_mean(w, percent)                
 
+            elif alg==2:
+                ## A hacky trimmed mean mess
+                l = len(w)
+                if l < 3: 
+                    avw = sum(w)/l
+                else:
+                    ## When the widths are all similar, it's hard to know
+                    ## which to discard... Too much math for my head. :(
+                    avw_tm = max( 1, (sum(w) - max(w) - min(w)) / l-2 )
+                    avw_foo = sum(w)/l
+                    avw = min(avw_foo, avw_tm) # a hack to prefer fewer cols
+"""
