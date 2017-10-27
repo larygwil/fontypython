@@ -63,12 +63,6 @@ class Pencil(object):
     def getwidth(self): return 0 
     def draw(self, memdc): pass
 
-
-#class EmptyPencil(Pencil):
-#    def __init__(self,id):
-#        Pencil.__init__(self,id)
-
-
 class TextPencil(Pencil):
     _text_extents_dict = {}
     def __init__( self, id, txt, 
@@ -109,8 +103,6 @@ class TextPencil(Pencil):
         memdc.SetFont( self.font )
         memdc.DrawText( self.txt, self.x, self.y )
 
-
-
 class BitmapPencil(Pencil):
     def __init__( self, id, x=0, y=0, bitmap=None):
         Pencil.__init__(self, id, x, y)
@@ -118,8 +110,6 @@ class BitmapPencil(Pencil):
     def getwidth(self): return self.bitmap.GetWidth()
     def getheight(self): return self.bitmap.GetHeight()
     def draw(self, memdc):
-        #print self
-        #print self.bitmap
         memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
 
 
@@ -333,8 +323,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #print u"state of {} is {}".format(self.name, self.state)
         return self.state & Fitmap.blocks[c] == Fitmap.blocks[c]
 
-
-
     def accrue_height(self,n):
         self.height = max(self.height, n)
 
@@ -346,18 +334,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def remove_pencil(self, *ids):
         [ self.drawDict.pop(id, None) for id in ids ]
-
-    def bottomFadeEffect( self, dc, height, width, step=1.13):
-        """
-        Baptiste's idea! New implementation : June 2009
-        "Now a dividing gradient, you can say "wow" ;-)"
-        Donn says, "..Wow!" :-D
-
-        It goes from backcol and darkens it a little as it draws downwards.
-        """
-
-
-
 
     def gen_info_or_badfont( self, isinfo = False ):
         """
@@ -380,7 +356,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         fcol = self.style['fcol']
 
         textTup = self.fitem.InfoOrErrorText()
-        #print textTup
 
         ## prep the two lines of text
         tx,ty = (46,15) if isinfo else (38 , 20)
@@ -392,7 +367,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         tx,ty = (46,40) if isinfo else (5 ,40)
 
         tx += offx
-        text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty, points="points_smaller" )
+        text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty,
+                points="points_smaller" )
 
         self.add_pencil( iconpencil, text0, text1 )
 
@@ -402,7 +378,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
     def make_inactive_bitmap(self, wxim):
         if wxim in self._inactive_images:
-            print u"Cached inactive for {}".format(self.name)
+            #print u"Cached inactive for {}".format(self.name)
             return self._inactive_images[wxim]
         tmp = wxim.AdjustChannels(0,0,0,factor_alpha = 0.5)
         self._inactive_images[wxim] = tmp#.ConvertToBitmap()
@@ -425,7 +401,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 font = ImageFont.truetype(paf, points,index = i, encoding = "unicode")
 
                 w,h = font.getsize( text )
-                print u"{} {},{}".format(paf,w,h)
+                #print u"{} {},{}".format(paf,w,h)
                 ## Some fonts (50SDINGS.ttf) return a 0 width.
                 pilheight = max(1, int(h))
                 pilwidth = max(1, int(w))
@@ -685,7 +661,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         
         self.width = w
         h = self.height
-        print w,h
 
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
@@ -693,34 +668,34 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
         memDc.Clear()
         
-        #self.bottomFadeEffect( memDc, h, w )
         
+        ## Backdrop gradient:
         ## Baptiste's idea! New implementation: Oct 2017
         ## "Now a dividing gradient, you can say "wow" ;-)"
         ## Donn says, "..Wow!" :-D
         ctx = wx.GraphicsContext.Create(memDc)
-        b = ctx.CreateLinearGradientBrush(0,h,0,0, self.parent.gstops["baptiste"])# 
+        b = ctx.CreateLinearGradientBrush(0,h,0,0, self.parent.gstops["baptiste"])
         ctx.SetBrush (b)
         ctx.DrawRectangle(0,0,w,h)
 
-        self.bitmap = bitmap #record this for the init
-
         ## Draw it all - via the pencils
-        for pencil in self.drawDict.values(): 
+        for pencil in self.drawDict.values():
             pencil.draw(memDc)
 
+        ## Right-hand side gradient, to fade long glyphs
         fr = w/7
-        b = ctx.CreateLinearGradientBrush(w,0,w-fr,0, self.parent.gstops["white_to_alpha"] )
+        b = ctx.CreateLinearGradientBrush(w-fr,0,w,0, self.parent.gstops["white_to_alpha"] )
         ctx.SetBrush (b)
-        ctx.DrawRectangle(w-fr,0,w,h) #0,0,w,h)
+        ctx.DrawRectangle(w-fr,0,w,h)
 
         ## Now a dividing line
-        #b = ctx.CreateLinearGradientBrush(0,h,w,h,self.parent.gstops["underline"])
         b = ctx.CreateLinearGradientBrush(0,0,w,0,self.parent.gstops["underline"])
         ctx.SetBrush(b)
         ctx.DrawRectangle(0,h-1,w,h-1)
 
         #memDc.DrawCheckMark(50, 50, 20,20) # a liiitle fugly. Not gonna lie.
+
+        self.bitmap = bitmap #record this for the init
 
         # Vital line: I can't tell you ... Man. The suffering.
         self.SetBestSize((w, h))    

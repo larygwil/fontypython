@@ -52,12 +52,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
     def __init__(self, parent):
         self.parent = parent
         wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
-        #shadowcolor = wx.SystemSettings.GetColour(wx.wx.SYS_COLOUR_BTNSHADOW)
-        #self.SetBackgroundColour(shadowcolor)#'white')
-        self.SetBackgroundColour('white')
 
         ## Stops to use in fitmap drawing code.
-        self.gstops = {}
         white_full = wx.Colour(255,255,255,255)
         white_zero = wx.Colour(255,255,255,0)
         black_zero = wx.Colour(0,0,0,0)
@@ -65,16 +61,18 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ucl = wx.Colour(c,c,c,255)
         ucd = wx.Colour(c-30,c-30,c-30,255)
 
-        self.gstops.update(
-            {"white_to_alpha" : wx.GraphicsGradientStops( 
-                            startCol=white_full, endCol=white_zero ),
+        self.gstops = {
+             "white_to_alpha" : wx.GraphicsGradientStops( 
+                            startCol = white_zero, endCol = white_full ),
              "baptiste" : wx.GraphicsGradientStops(
                             startCol = wx.Colour(238,238,238,255), endCol = white_full ),
              "underline": wx.GraphicsGradientStops( 
                             startCol = ucd, endCol = ucl)
-        })
+            }
         self.gstops["white_to_alpha"].Add(wx.Colour(255,255,255,128), 0.5)
         self.gstops["underline"].Add( ucd, 0.4)
+
+        self.SetBackgroundColour(white_full)
 
         self.wheelValue = fpsys.config.points
         self.Bind( wx.EVT_MOUSEWHEEL, self.onWheel )
@@ -83,7 +81,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## Sep 2017. New hacks. Might not need this...
         #self.Bind(wx.EVT_SIZE, self.onSize)
         
-        self.fitmap_sizer = wx.FlexGridSizer(cols = 1, vgap=2, hgap=2)
+        self.fitmap_sizer = wx.FlexGridSizer(cols = 1, vgap = 0, hgap = 0)
         self.SetSizer(self.fitmap_sizer)
 
         self.SetupScrolling(rate_y = 5, scroll_x = False)
@@ -138,11 +136,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             fi.top_left_adjust_completed = False
 
     def MinimalCreateFitmaps( self, viewobject):#, force = False ) :
-        print "-------------------------"
-        print "MinimalCreateFitmaps runs"
+        #print "-------------------------"
+        #print "MinimalCreateFitmaps runs"
         self.Freeze()
         
-        panelwidth = self.GetSize()[0] #First run it's 0. After that it works.
+        panelwidth = self.GetSize()[0] #First run it's weird. After that it works.
 
         if len(viewobject) == 0:
             self.fitmap_sizer.Clear(True) # Wipe-out the past
@@ -161,7 +159,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     ## If the fitem is not one we want to show:
                     ## 1. Remove it from the sizer
                     ## 2. Destroy it.
-                    print " ..Murdering:", fitmap.name
+                    #print " ..Murdering:", fitmap.name
                     self.fitmap_sizer.Detach(fitmap)
                     fitmap.Destroy()
                 else:
@@ -232,7 +230,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         self.fitmap_sizer.FitInside(self)
         ## Trying this freeze/thaw thing. Not sure if there's any advantage.
         self.Thaw()
-        print "====EXIT MinimalCreateFitmaps====="
+        #print "====EXIT MinimalCreateFitmaps====="
 
 """
 Unused algorithms in MinimalCreateFitmaps
