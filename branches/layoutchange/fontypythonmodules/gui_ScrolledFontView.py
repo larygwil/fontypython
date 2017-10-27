@@ -206,27 +206,24 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                     avw_foo = sum(w)/l
                     avw = min(avw_foo, avw_tm) # a hack to prefer fewer cols
 
-            elif alg==4:
-                ## Calc the variance:
-                ## By subtracting each width from the average and then 
-                ## taking square and rolling the sum. 
-                def widths_variance(w):
-                    average = sum(w) / float(len(w))
-                    variance = 0
-                    for wid in w:
-                        variance = variance + (average - wid) ** 2
-                    return variance/len(w)
-                ## The standard deviation is taking square root of the variance.
-                def widths_std_deviation(variance):
-                    return variance ** 0.5
+            elif alg==3:
+                ## Take the mean of the widths and add a bit more:
+                lw = len(w)
+                sw = sum(w)
 
-                variance = widths_variance( w )
-                sd = widths_std_deviation( variance )
-                meandata = sum(w)/len(w)
-                ## I also mean the std deviation, just to clip it smaller:
-                meansd = sd/len(w)
-                ## My result is the sum of these two means. Works v. well.
-                avw = meandata + meansd
+                ## 1. Standard Deviation
+                ##    Calc the variance by subtracting each width from the 
+                ##    average and then taking square and rolling the sum. 
+                ##    Calc the std deviation by sqrting that variance.
+                a = sw / lw # the average
+                sd = ( sum( ( a - i ) **2 for i in w ) / lw ) ** 0.5
+
+                ## 2. I also get av of that std deviation, just to 
+                ##    shorten it a little:
+                asd = sd / lw
+
+                ## 3. My result is the sum of these two.
+                avw = a + asd
 
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
