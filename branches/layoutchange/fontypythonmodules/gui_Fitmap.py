@@ -223,19 +223,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Fitmap.styles['INFO_FONT_ITEM']['backcol']=parent.GetBackgroundColour()
 
         self.FVP = parent.parent #The Scrolled Font View Panel
-        #self.initialwidth = parent.GetSize()[0]
 
-        #self.TICKMAP = parent.parent.TICKMAP
         self.parent = parent
         self.TICKSMALL = parent.parent.TICKSMALL
 
+        self.style = {}
 
-        self.style = {} #Temporary space for style of fitem while drawing. It's a copy of one key from Fitem.styles
-
-        # Some values for drawing
         self.gradientheight = 50
 
-        # measure some text - same point size used in _draw_bitmap.
         Fitmap.SPACER = TextPencil("X", 0, 0, points = "points_smaller").getheight() * 3
 
         self.face_image_stack = []
@@ -339,8 +334,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         return self.state & Fitmap.blocks[c] == Fitmap.blocks[c]
 
 
-    #def accrue_width(self,n):
-    #    self.width = max(self.width, n)
 
     def accrue_height(self,n):
         self.height = max(self.height, n)
@@ -632,7 +625,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         if self.fitem.badfont:
             bh = self.gen_info_or_badfont()
-            print "bad height:", bh
             #h = Fitmap.MIN_FITEM_HEIGHT
             #if self.fitem.inactive: mainy += 5 #Need more space
             mainy = bh + 5 #self.height = h
@@ -654,7 +646,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 fx, fy = 0, 0
                 if not fpsys.config.ignore_adjustments:
                     fx,fy = self.CalculateTopLeftAdjustments(wximage)
-                    print "fx,fy:",fx,fy
                     
                 ## The face bitmap itself:
                 glyph = BitmapPencil("face-{}".format(i),
@@ -679,12 +670,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 ## Move TOP down to next BOTTOM (for next sub-face)
                 mainy += glyphHeight + Fitmap.SPACER
 
-        if self.fitem.inactive:
-            #totheight += (Fitmap.SPACER-10)
-            mainy += (Fitmap.SPACER)# -10) what? TODO fix #want room for 'is in pog' message.
+        #if self.fitem.inactive:
+        #    mainy += (Fitmap.SPACER)# -10) what? TODO fix #want room for 'is in pog' message.
 
-        #mainy might be a better indication of the height
-        #self.height = mainy # vs totheight
+        mainy += Fitmap.SPACER
         self.accrue_height( mainy )
 
         ## The inactive footer
@@ -748,10 +737,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         
         #self.bottomFadeEffect( memDc, h, w )
 
-        #ctx = wx.GraphicsContext.Create(memDc)
-        #b = ctx.CreateLinearGradientBrush(0,h,0,0,"#eeeeeeff", "#ffffffff")
-        #ctx.SetBrush (b)
-        #ctx.DrawRectangle(0,0,w,h)
+        ctx = wx.GraphicsContext.Create(memDc)
+        b = ctx.CreateLinearGradientBrush(0,h,0,0,"#eeeeeeff", "#ffffffff")
+        ctx.SetBrush (b)
+        ctx.DrawRectangle(0,0,w,h)
 
         self.bitmap = bitmap #record this for the init
 
@@ -761,11 +750,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             pencil.draw(memDc)
             #print "done"
 
-        #gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
-        #gstops.Add(wx.Colour(255,255,255,255), 0.8)
-        #b = ctx.CreateLinearGradientBrush(w,0,w-(w/8),0, gstops )
-        #ctx.SetBrush (b)
-        #ctx.DrawRectangle(0,0,w,h)
+
+        gstops = wx.GraphicsGradientStops(wx.Colour(255,255,255,255), wx.Colour(255,255,255,0))
+        gstops.Add(wx.Colour(255,255,255,128), 0.5)
+        b = ctx.CreateLinearGradientBrush(w,0,w-(w/7),0, gstops )
+        ctx.SetBrush (b)
+        ctx.DrawRectangle(0,0,w,h)
 
 
         ## Thinking of drawing with a bitmap brush onto a larger bg image somehow
@@ -775,9 +765,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # dc.DrawRectangle(10, 15, 90, 60)
 
         ## Now a dividing line
-        memDc.SetPen( wx.Pen( (180,180,180),1 ) )#black, 1 ) ) 
+        dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT)
+        memDc.SetPen( wx.Pen( dark, 1) )#(180,180,180),1 ) )#black, 1 ) ) 
         #memDc.DrawLine( 0, self.height-1, self.bitmap.GetWidth(), self.height-1 )
-        memDc.DrawLine( 0, self.height-1, w, self.height-1 )
+        #memDc.DrawLine( 0, self.height-1, w, self.height-1 )
+        memDc.DrawLine( 0, h-1,  w, h-1 )
+
 
         #memDc.DrawCheckMark(50, 50, 20,20) # a liiitle fugly. Not gonna lie.
 

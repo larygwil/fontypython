@@ -52,7 +52,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
     def __init__(self, parent):
         self.parent = parent
         wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
-
+        #shadowcolor = wx.SystemSettings.GetColour(wx.wx.SYS_COLOUR_BTNSHADOW)
+        #self.SetBackgroundColour(shadowcolor)#'white')
         self.SetBackgroundColour('white')
 
         self.wheelValue = fpsys.config.points
@@ -62,7 +63,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## Sep 2017. New hacks. Might not need this...
         #self.Bind(wx.EVT_SIZE, self.onSize)
         
-        self.fitmap_sizer = wx.FlexGridSizer(cols = 1)
+        self.fitmap_sizer = wx.FlexGridSizer(cols = 1, vgap=2, hgap=2)
         self.SetSizer(self.fitmap_sizer)
 
         self.SetupScrolling(rate_y = 5, scroll_x = False)
@@ -206,7 +207,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             for fitem in viewobject:
                 fm = td[ fitem ] # we get them from the dict
                 fm.assemble_bitmap(colw)
-                self.fitmap_sizer.Add(fm) # Here we re-add the fitmaps.
+                self.fitmap_sizer.Add(fm, flag=wx.wx.ALIGN_BOTTOM) # Here we re-add the fitmaps.
 
         self.fitmap_sizer.FitInside(self)
         ## Trying this freeze/thaw thing. Not sure if there's any advantage.
