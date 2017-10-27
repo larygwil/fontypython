@@ -171,26 +171,62 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
             
+            ## Trying various algorithms. Number 3 is the winner. Credit to 
+            ## Michael Moller for telling me about "standard deviation".
+            alg=3
+            if alg==1:
+                percent = .2 # == 10%
 
-            ## Get some kind of average width.
-            #avw = int( sum(w) / max( len(w), 1) )
-            #print "avw = int( sum(w) / max( len(w), 1) ):", avw
-            ## Going to use this "centered average" or "trimmed mean"
-            ## It's much smoother when there are wildly differing widths.
-            ## Take the sum, remove the min and max, then average:
-            ## With quite a few sanity tests between all that..
-            print w
-            l = len(w)
-            if l < 3: 
-                avw = sum(w)/l
-            else:
-                ## When the widths are all similar, it's hard to know
-                ## which to discard... Too much math for my head. :(
-                avw_tm = max( 1, (sum(w) - max(w) - min(w)) / l-2 )
-                avw_foo = sum(w)/l
-                avw = min(avw_foo, avw_tm) # a hack to prefer fewer cols
-                #print "avw:",avw
-                #print "vs:", sum(w)/l
+                def trimmed_mean(data, percent):
+                    # sort list
+                    data = sorted(data)
+                    # number of elements to remove from both ends of list
+                    outliers = int(percent * len(data))
+                    # remove elements
+                    data = data[outliers:-outliers]
+                    return sum(data) / len(data)
+                avw = trimmed_mean(w, percent)                
+
+            elif alg==2:
+                ## Get some kind of average width.
+                #avw = int( sum(w) / max( len(w), 1) )
+                #print "avw = int( sum(w) / max( len(w), 1) ):", avw
+                ## Going to use this "centered average" or "trimmed mean"
+                ## It's much smoother when there are wildly differing widths.
+                ## Take the sum, remove the min and max, then average:
+                ## With quite a few sanity tests between all that..
+                print w
+                l = len(w)
+                if l < 3: 
+                    avw = sum(w)/l
+                else:
+                    ## When the widths are all similar, it's hard to know
+                    ## which to discard... Too much math for my head. :(
+                    avw_tm = max( 1, (sum(w) - max(w) - min(w)) / l-2 )
+                    avw_foo = sum(w)/l
+                    avw = min(avw_foo, avw_tm) # a hack to prefer fewer cols
+
+            elif alg==4:
+                ## Calc the variance:
+                ## By subtracting each width from the average and then 
+                ## taking square and rolling the sum. 
+                def widths_variance(w):
+                    average = sum(w) / float(len(w))
+                    variance = 0
+                    for wid in w:
+                        variance = variance + (average - wid) ** 2
+                    return variance/len(w)
+                ## The standard deviation is taking square root of the variance.
+                def widths_std_deviation(variance):
+                    return variance ** 0.5
+
+                variance = widths_variance( w )
+                sd = widths_std_deviation( variance )
+                meandata = sum(w)/len(w)
+                ## I also mean the std deviation, just to clip it smaller:
+                meansd = sd/len(w)
+                ## My result is the sum of these two means. Works v. well.
+                avw = meandata + meansd
 
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
