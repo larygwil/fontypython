@@ -125,7 +125,7 @@ class DirControl(wx.GenericDirCtrl) :
         il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
 
         # removable drive (floppy, flash, etc) Does not seem to work on Kubuntu Jaunty (2009)
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
+        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_ext_drive.png",wx.BITMAP_TYPE_PNG))
 
         # assign image list:
         self.il = il
@@ -225,13 +225,16 @@ class NoteBook(wx.Notebook):
         self.AddPage(pan1, _("Source Folders"))
         self.AddPage(pan2, _("Source Pogs"))
 
-        source_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
-
-        target_pog_icon = self.imlist.Add( wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
+        # sadly, the artprovider icons suck, and I can't get access to the "stock items" either. fuck it. 
+        #  source_folder_icon = self.imlist.Add( wx.ArtProvider.GetBitmap(wx.ART_FOLDER,wx.ART_TOOLBAR, (16,16)) )
+        source_folder_icon = self.imlist.Add( 
+                wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
+        source_pog_icon = self.imlist.Add( wx.Bitmap(
+            fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
 
         self.AssignImageList(self.imlist)
+        self.SetPageImage(0, source_folder_icon)
         self.SetPageImage(1, source_pog_icon)
-        self.SetPageImage(0, target_pog_icon)
 
         self.SetSelection(page)
 

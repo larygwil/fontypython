@@ -104,13 +104,14 @@ class TextPencil(Pencil):
         memdc.DrawText( self.txt, self.x, self.y )
 
 class BitmapPencil(Pencil):
-    def __init__( self, id, x=0, y=0, bitmap=None):
+    def __init__( self, id, x=0, y=0, bitmap = None, use_mask = True ):
         Pencil.__init__(self, id, x, y)
         self.bitmap = bitmap
+        self.use_mask = use_mask
     def getwidth(self): return self.bitmap.GetWidth()
     def getheight(self): return self.bitmap.GetHeight()
     def draw(self, memdc):
-        memdc.DrawBitmap( self.bitmap, self.x, self.y, True )
+        memdc.DrawBitmap( self.bitmap, self.x, self.y, self.use_mask )
 
 
 
@@ -633,6 +634,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             else:
                 self.remove_pencil("tickmap")
 
+            
 
     def _use_pencils(self, colw = None):
         """
@@ -711,16 +713,26 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ## deleted by leaving this function.
             dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
 
+
             if not self.can_have_button(): return
             
-            ## Now I can calc the y value of the button.
-            self.cmb_rect=wx.Rect(0,self.bitmap.GetHeight()-40,19,32)
+            ## The charmap button is not part of the underlying process
+            ## of drawing the bitmap, in that it needs to react to the mouse. 
+            ## We call onPaint via self.refresh() and bypass all the 
+            ## other drawing code.
+
+            #self.cmb_rect=wx.Rect(0,self.bitmap.GetHeight()-40,19,32)
+            # x, y, w, h
+            self.cmb_rect=wx.Rect(4,self.height-31, 27, 27)
 
             # Draw the charmap button
             x,y = self.cmb_rect[0],self.cmb_rect[1]
+            #ctx = wx.GraphicsContext.Create( dc )
             if self.cmb_overout.truthstate:
+                #ctx.DrawBitmap( self.CHARMAP_BUTTON_OVER, x, y, 27, 27 )
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OVER, x, y, True )
             else:
+                #ctx.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, 27, 27 )
                 dc.DrawBitmap( self.CHARMAP_BUTTON_OUT, x,y, True )
 
 
@@ -749,6 +761,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
 
     def openCharacterMap( self ):
+
         fi=self.fitem
         dirname = os.path.basename( fi.glyphpaf )
         dest = os.path.join(fpsys.iPC.userFontPath(), dirname )
