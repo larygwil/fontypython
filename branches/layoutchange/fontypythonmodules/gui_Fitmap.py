@@ -361,7 +361,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         textTup = self.fitem.InfoOrErrorText()
 
         ## Text 0: The bold, large text of the message.
-        tx,ty = (46,15) if isinfo else (38 , 15)
+        tx,ty = (76,45) if isinfo else (38 , 15)
 
         tx += offx
         text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty,
@@ -371,11 +371,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ty += text0.getheight()
         # if there are newlines in the first text, we need more space
         if textTup[0].count("\n") == 0: ty += Fitmap.LINEHEIGHT + (Fitmap.LINEHEIGHT/3)
-        tx = 46 if isinfo else 5
+        tx = 76 if isinfo else 5
+        pnts = "points_normal" if isinfo else "points_smaller"
 
         tx += offx
         text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty,
-                points="points_smaller" )
+                points = pnts )
 
         self.add_pencil( iconpencil, text0, text1 )
 
