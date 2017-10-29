@@ -723,7 +723,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
             #self.cmb_rect=wx.Rect(0,self.bitmap.GetHeight()-40,19,32)
             # x, y, w, h
-            self.cmb_rect=wx.Rect(4,self.height-31, 27, 27)
+            self.cmb_rect=wx.Rect(4,self.height-31, 32, 27)
 
             # Draw the charmap button
             x,y = self.cmb_rect[0],self.cmb_rect[1]

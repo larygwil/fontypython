@@ -59,13 +59,15 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         black_zero = wx.Colour(0,0,0,0)
         c=255
         ucl = wx.Colour(c,c,c,255)
-        ucd = wx.Colour(c-30,c-30,c-30,255)
+        ucd = wx.Colour(c-38,c-40,c-41,255)
+
+        lbrown = wx.Colour(238,235,234,255)
 
         self.gstops = {
              "white_to_alpha" : wx.GraphicsGradientStops( 
                             startCol = white_zero, endCol = white_full ),
              "baptiste" : wx.GraphicsGradientStops(
-                            startCol = wx.Colour(238,238,238,255), endCol = white_full ),
+                            startCol = lbrown, endCol = white_full ),
              "underline": wx.GraphicsGradientStops( 
                             startCol = ucd, endCol = ucl)
             }
