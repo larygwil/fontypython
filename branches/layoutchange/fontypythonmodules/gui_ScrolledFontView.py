@@ -196,6 +196,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ## My soluition: Take the mean of the widths and add a bit "more".
             lw = len(w)
             sw = sum(w)
+            print w
 
             ## 1. Standard Deviation
             ##    Calc the variance by subtracting each width from the 

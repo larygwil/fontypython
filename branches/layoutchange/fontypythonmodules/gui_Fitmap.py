@@ -201,9 +201,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     'icon'   : "INFO_ITEM",
                 }
             }
-    MIN_FITEM_WIDTH = 450
+    MIN_FITEM_WIDTH = 500
     MIN_FITEM_HEIGHT = 10
     SPACER = 0
+    LINEHEIGHT = 0
 
     def __init__( self, parent, fitem ) :
 
@@ -222,7 +223,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.gradientheight = 50
 
-        Fitmap.SPACER = TextPencil("X", 0, 0, points = "points_smaller").getheight() * 3
+        Fitmap.LINEHEIGHT = TextPencil("X", 0, 0, points = "points_smaller").getheight()
+        Fitmap.SPACER = Fitmap.LINEHEIGHT * 3
 
         self.face_image_stack = []
         self._inactive_images = {}
@@ -341,14 +343,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         Draw the Info Font block, or an Error message block. Much clearer than it was before.
         """
         #Sept 2017: Move it all over by an offset
-        offx = 20
+        offx = 10
 
         icon = self.style['icon']
 
         iconpencil = None
         if icon:
             Icon = self.FVP.__dict__[icon] #See gui_FontView.py ~line 97
-            ix,iy = (6,10) if isinfo else (2,6)
+            ix,iy = (6,10) if isinfo else (2,10)
 
             ix += offx
             iconpencil = BitmapPencil( "infoicon", ix, iy, Icon)
@@ -358,14 +360,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         textTup = self.fitem.InfoOrErrorText()
 
-        ## prep the two lines of text
-        tx,ty = (46,15) if isinfo else (38 , 20)
+        ## Text 0
+        tx,ty = (46,15) if isinfo else (38 , 15)
 
         tx += offx
         text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty,
                 points="points_large", weight=wx.BOLD)
 
-        tx,ty = (46,40) if isinfo else (5 ,40)
+        ## Text 1 - under Text 0
+        ty += text0.getheight()
+        # if there are newlines in the first text, we need more space
+        if textTup[0].count("\n") == 0: ty += Fitmap.LINEHEIGHT + (Fitmap.LINEHEIGHT/3)
+        tx = 46 if isinfo else 5
 
         tx += offx
         text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty,
@@ -387,14 +393,18 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
      
 
     def _gen_glyphs(self):
-
-        #if isinstance(self.fitem, fontcontrol.InfoFontItem):
-        #    return self.parent.GetSize()[0]
-
+        """
+        NB: Determines the intial measured width of a fitmap.
+        """
+        w = 1 if not self.fitem.badfont else Fitmap.MIN_FITEM_WIDTH
+        #if self.fitem.badfont:
+        #    w = Fitmap.MIN_FITEM_WIDTH
+        #else:
+        #    w = 1
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
         del self.face_image_stack[:]
-        glyph_widths = [1]
+        glyph_widths = [w]
         there_are_more_faces=True
         while (there_are_more_faces):
             try:

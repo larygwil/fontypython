@@ -124,13 +124,13 @@ class FontItem( object ):
                 fileDoesExist = os.path.exists( self.glyphpaf )
                 if not fileDoesExist:
                     self.badfont = True
-                    self.badfontmsg = _("Font cannot be found, you should purge this Pog from the Tools menu.")
+                    self.badfontmsg = _("Font cannot be found. Purge lost fonts from this Pog.\n(See the Tools menu.)")
                     self.badstyle = "FILE_NOT_FOUND"
                     ## If the multi face font is damaged after the
                     ## first face, then this won't catch it...
                     break # it's at the end of the sub-faces 
             except:
-                print _("Unhandled error:\nPlease move (%s) away from here and report this to us.") % self.glyphpaf
+                print _("Unhandled error:\nPlease remove (%s) away from here and report this to us.") % self.glyphpaf
                 raise
             try:
                 font = ImageFont.truetype(self.glyphpaf, 16, index=i, encoding="unicode" )
