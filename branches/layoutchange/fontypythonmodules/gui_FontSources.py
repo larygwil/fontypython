@@ -36,10 +36,10 @@ from pubsub import * #I want all the topics.
 #import fpsys # Global objects
 import fontybugs
 
-try:
-    import fpsys
-except fontybugs.NoXDG_DATA_HOME, e:
-    print e.print_error_and_quit()
+#try:
+import fpsys
+#except fontybugs.NoXDG_DATA_HOME, e:
+#print e.print_error_and_quit()
 
 from wxgui import ps
 from gui_PogChooser import *
@@ -55,7 +55,7 @@ class FontSourcesPanel(wx.Panel):
         ## Notebook label and icon
         self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
         self.viewLabel = wx.StaticText( self, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
-        self.viewLabel.SetFont( wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD) )
+        self.viewLabel.SetFont( wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL) )
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)

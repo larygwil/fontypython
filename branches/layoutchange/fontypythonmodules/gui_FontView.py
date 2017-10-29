@@ -663,10 +663,10 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
     def __init__(self, parent):
         self.FVP = parent
         self.lab = u" "
-        self.infoFont = wx.Font(fpsys.SYSFONT["points_normal"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
-        self.light = (255,255,255)#wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
-        self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
-        self.back = parent.GetBackgroundColour()
+        self.infoFont = wx.Font(fpsys.SYSFONT["points_normal"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL)
+        #self.light = (255,255,255)#wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
+        #self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
+        #self.back = parent.GetBackgroundColour()
         self.h=100
         self.width = 10
 
