@@ -360,7 +360,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         textTup = self.fitem.InfoOrErrorText()
 
-        ## Text 0
+        ## Text 0: The bold, large text of the message.
         tx,ty = (46,15) if isinfo else (38 , 15)
 
         tx += offx
@@ -623,11 +623,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         ## The inactive footer
         if self.fitem.inactive:
-            x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
-            self.add_pencil( BitmapPencil( "bmpinactive", x-16, y-1, self.TICKSMALL) )
+            xx = 40
+            #x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
+            #y= self.height-20 if self.fitem.badfont else self.height-26
+            y = self.height - 25
+            self.add_pencil( BitmapPencil( "bmpinactive", xx, y, self.TICKSMALL) )
 
             txt = self.fitem.activeInactiveMsg
-            self.add_pencil( TextPencil( "fntinactive", txt, x+2, y, fcol) )
+            self.add_pencil( TextPencil( "fntinactive", txt, xx + 22 + 4, y + 1, fcol) )
             
         else:
             self.remove_pencil("bmpinactive", "fntinactive")
@@ -640,7 +643,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
                 self.TICKMAP = self.parent.parent.TICKMAP
-                self.add_pencil( BitmapPencil( "tickmap", 20, 5, self.TICKMAP) )    
+                self.add_pencil( BitmapPencil( "tickmap", 40, 10, self.TICKMAP) )    
             else:
                 self.remove_pencil("tickmap")
 
@@ -680,30 +683,35 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #memDc.SetBackground( wx.Brush( wx.Colour(255,255,255,wx.ALPHA_OPAQUE), wx.SOLID) )
         memDc.Clear()
         
-        
-        ## Backdrop gradient:
-        ## Baptiste's idea! New implementation: Oct 2017
-        ## "Now a dividing gradient, you can say "wow" ;-)"
-        ## Donn says, "..Wow!" :-D
-        ctx = wx.GraphicsContext.Create(memDc)
-        b = ctx.CreateLinearGradientBrush(0,h,0,0, self.parent.gstops["baptiste"])
-        ctx.SetBrush (b)
-        ctx.DrawRectangle(0,0,w,h)
+        if not isinstance( self.fitem, fontcontrol.InfoFontItem ):
+            ## Backdrop gradient:
+            ## Baptiste's idea! New implementation: Oct 2017
+            ## "Now a dividing gradient, you can say "wow" ;-)"
+            ## Donn says, "..Wow!" :-D
+            ctx = wx.GraphicsContext.Create(memDc)
+            b = ctx.CreateLinearGradientBrush(0,h,0,0, self.parent.gstops["baptiste"])
+            ctx.SetBrush (b)
+            ctx.DrawRectangle(0,0,w,h)
+
+            #if self.fitem.ticked:
+            #    ctx.SetBrush(wx.Brush(wx.Colour(0,170,212)))
+            #    ctx.DrawRectangle(0,0,4,h)
 
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values():
             pencil.draw(memDc)
 
-        ## Right-hand side gradient, to fade long glyphs
-        fr = w/7
-        b = ctx.CreateLinearGradientBrush(w-fr,0,w,0, self.parent.gstops["white_to_alpha"] )
-        ctx.SetBrush (b)
-        ctx.DrawRectangle(w-fr,0,w,h)
+        if not isinstance( self.fitem, fontcontrol.InfoFontItem ):
+            ## Right-hand side gradient, to fade long glyphs
+            fr = w/7
+            b = ctx.CreateLinearGradientBrush(w-fr,0,w,0, self.parent.gstops["white_to_alpha"] )
+            ctx.SetBrush (b)
+            ctx.DrawRectangle(w-fr,0,w,h)
 
-        ## Now a dividing line
-        b = ctx.CreateLinearGradientBrush(0,0,w,0,self.parent.gstops["underline"])
-        ctx.SetBrush(b)
-        ctx.DrawRectangle(0,h-1,w,h-1)
+            ## Now a dividing line
+            b = ctx.CreateLinearGradientBrush(0,0,w,0,self.parent.gstops["underline"])
+            ctx.SetBrush(b)
+            ctx.DrawRectangle(0,h-1,w,h-1)
 
         #memDc.DrawCheckMark(50, 50, 20,20) # a liiitle fugly. Not gonna lie.
 
@@ -722,7 +730,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ## wx.PaintDC and then blit the bitmap to it when dc is
             ## deleted by leaving this function.
             dc = wx.BufferedPaintDC(self, self.bitmap, wx.BUFFER_VIRTUAL_AREA)
-
 
             if not self.can_have_button(): return
             
