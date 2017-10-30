@@ -96,8 +96,8 @@ class TargetPogChooser(wx.Panel):
 
         mainvs = wx.BoxSizer(wx.VERTICAL)
         self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-        self.iconandtext.Add( (8, 1), 0 )
-        self.iconandtext.Add(self.icon, 0, wx.TOP | wx.BOTTOM, border = 4)
+        #self.iconandtext.Add( (8, 1), 0 )
+        self.iconandtext.Add(self.icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
         #self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.ALL, border = 4)
         #self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.LEFT | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL, border = 4)
         self.iconandtext.Add(self.textInfo, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)

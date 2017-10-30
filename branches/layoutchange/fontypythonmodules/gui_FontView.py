@@ -107,18 +107,25 @@ class FontViewPanel(wx.Panel):
         self.BUTTON_CHARMAP = wx.Bitmap(fpsys.mythingsdir + 'button_charmap.png', wx.BITMAP_TYPE_PNG)
         self.BUTTON_CHARMAP_OVER = wx.Bitmap(fpsys.mythingsdir + 'button_charmap_over.png', wx.BITMAP_TYPE_PNG)
 
+
+
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
-        self.textMainInfo = wx.StaticText(self,-1,u"..", style = wx.ALIGN_LEFT )
+        self.textMainInfo = wx.StaticText(
+                self, -1 ,u"..", style = wx.ALIGN_LEFT )
         self.textMainInfo.SetFont( 
                 wx.Font(fpsys.SYSFONT["points_large"], 
-                    fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL) )        
+                    fpsys.SYSFONT["family"], wx.NORMAL,
+                    wx.FONTWEIGHT_NORMAL) )        
 
         viewIcon = wx.StaticBitmap( self, -1, 
-                wx.Bitmap( fpsys.mythingsdir + 'icon_viewing.png', wx.BITMAP_TYPE_PNG ))
+                wx.Bitmap( fpsys.mythingsdir + 'icon_viewing.png', 
+                    wx.BITMAP_TYPE_PNG ))
 
-        sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM, border = 4 )
-        sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT, border = 4)
+        sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )
+        sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)
+
+
 
         ## Page choice and Filter controls
         sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
@@ -662,94 +669,3 @@ class FontViewPanel(wx.Panel):
 
     def ResetToPageOne(self):
         self.pageindex = 1 # I start here
-
-class xxMyLabel( wx.lib.stattext.GenStaticText ):
-    """
-    To spice-up the info label I made this control. It draws a shape behind the text.
-    Thanks to Andrea: http://wiki.wxpython.org/CreatingCustomControls
-    """
-    def __init__(self, parent):
-        self.FVP = parent
-        self.lab = u" "
-        self.infoFont = wx.Font(fpsys.SYSFONT["points_normal"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL)
-        #self.light = (255,255,255)#wx.SystemSettings.GetColour( wx.SYS_COLOUR_3DHIGHLIGHT )
-        #self.dark = wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)
-        #self.back = parent.GetBackgroundColour()
-        self.h=100
-        self.width = 10
-
-        self.VIEWICON = wx.Bitmap(fpsys.mythingsdir + "icon_viewing.png", type=wx.BITMAP_TYPE_PNG)
-
-        # call parent init after vital settings are done.
-        wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
-
-    def OnSize(self,e):
-        self.width=self.FVP.GetSize()[0]
-        self.Refresh()
-
-    def SetLabel( self, lab ):
-        self.lab=lab
-        self.Refresh()
-
-    def DoGetBestSize(self):
-        bestw,self.h = (100,26)
-        best = wx.Size(bestw,self.h)
-        self.CacheBestSize(best)
-        return best
-
-    def OnPaint(self, event):
-        dc = wx.PaintDC(self)
-
-        ## JULY 2016
-        ## =========
-        ## Decided to unclutter a bit, remarked this lot.
-        #w = self.width
-        #w -= wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X) # minus width of the scrollbar
-        #Now draw the thing:
-        #rect = wx.Rect(0,0, w, self.h + 10)
-        #dc.SetPen(wx.Pen(self.dark,width=1))
-        #dc.SetBrush( wx.TRANSPARENT_BRUSH )
-        #dc.DrawRoundedRectangleRect(rect, 5)
-
-        # The text
-        dc.SetFont(self.infoFont)
-        dc.DrawText(self.lab, 40,5)
-
-        dc.DrawBitmap( self.VIEWICON, 6,5, True)
-
-
-
-    # Old code -- keep for ref....
-
-    def OLD_DoGetBestSize(self):
-        dc = wx.ClientDC(self)
-        dc.SetFont(self.infoFont)
-        # How big is the text?
-        bestw,besth = dc.GetTextExtent(self.lab) or (100,100)
-        besth += 8
-        best = wx.Size(bestw,besth)
-        self.CacheBestSize(best)
-        self.h=besth
-        return best
-
-
-    def OnPaintFakeTab(self, event):
-        '''Old fake tab look. Keep for future ref.'''
-        pdc = wx.PaintDC(self)
-        try:
-            dc = wx.GCDC(pdc)
-        except:
-            dc = pdc
-        w=(dc.GetFullTextExtent(self.lab,self.infoFont)[0] or 100) + 40
-        rect = wx.Rect(0,0, w, self.h + 10)
-        dc.SetPen(wx.Pen(self.dark,width=1))
-        dc.SetBrush(wx.Brush(self.back))
-        dc.DrawRoundedRectangleRect(rect, 5)
-        #The gradient under the text
-        dc.GradientFillLinear( wx.Rect(2, self.h-15, w-3, self.h-2), self.light, self.back, nDirection=wx.NORTH )
-        # The text
-        dc.SetFont(self.infoFont)
-        dc.DrawText(self.lab, 27,5)
-        dc.DrawBitmap( self.VIEWICON, 6,5, True)

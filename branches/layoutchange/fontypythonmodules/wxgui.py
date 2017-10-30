@@ -200,7 +200,7 @@ class MainFrame(wx.Frame):
         self.whatgui = 1
 
         MINSCREENWIDTH = 800 #old skool
-        minw = 320
+        minw = 360
         fvminw = MINSCREENWIDTH - minw
         ms = wx.Size(minw,1)
 
@@ -217,7 +217,7 @@ class MainFrame(wx.Frame):
             ## This line seems less crashy, but not much less:
             ## self.spw = wx.SplitterWindow(self)
 
-            self.spw = wx.SplitterWindow(self)#, style=wx.SP_LIVE_UPDATE)
+            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
             self.spw.SetMinimumPaneSize(minw)
 
             p1 = wx.Panel(self.spw)

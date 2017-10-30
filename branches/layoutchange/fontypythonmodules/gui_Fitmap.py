@@ -677,6 +677,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         
         self.width = w
         h = self.height
+        print w,h
 
         bitmap = wx.EmptyImage( w, h ).ConvertToBitmap()
         memDc = wx.MemoryDC()
