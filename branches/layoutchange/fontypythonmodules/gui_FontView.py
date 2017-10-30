@@ -109,8 +109,16 @@ class FontViewPanel(wx.Panel):
 
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
-        self.textMainInfo = MyLabel(self)
-        sizerMainLabel.Add(self.textMainInfo,1,wx.ALIGN_LEFT)
+        self.textMainInfo = wx.StaticText(self,-1,u"..", style = wx.ALIGN_LEFT )
+        self.textMainInfo.SetFont( 
+                wx.Font(fpsys.SYSFONT["points_large"], 
+                    fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL) )        
+
+        viewIcon = wx.StaticBitmap( self, -1, 
+                wx.Bitmap( fpsys.mythingsdir + 'icon_viewing.png', wx.BITMAP_TYPE_PNG ))
+
+        sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM, border = 4 )
+        sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT, border = 4)
 
         ## Page choice and Filter controls
         sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
@@ -655,7 +663,7 @@ class FontViewPanel(wx.Panel):
     def ResetToPageOne(self):
         self.pageindex = 1 # I start here
 
-class MyLabel( wx.lib.stattext.GenStaticText ):
+class xxMyLabel( wx.lib.stattext.GenStaticText ):
     """
     To spice-up the info label I made this control. It draws a shape behind the text.
     Thanks to Andrea: http://wiki.wxpython.org/CreatingCustomControls
