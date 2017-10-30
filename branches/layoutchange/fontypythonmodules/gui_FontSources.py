@@ -53,7 +53,7 @@ class FontSourcesPanel(wx.Panel):
         wx.Panel.__init__(self, parent, id = -1)#, style = wx.BORDER_RAISED)
 
         ## Notebook label and icon
-        self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source_16x16.png', wx.BITMAP_TYPE_PNG ))
+        self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source.png', wx.BITMAP_TYPE_PNG ))
         self.viewLabel = wx.StaticText( self, -1, _("Source, Folder or Pog"), style = wx.ALIGN_LEFT )
         self.viewLabel.SetFont( wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL) )
 

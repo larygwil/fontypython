@@ -670,7 +670,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
         self.h=100
         self.width = 10
 
-        self.VIEWICON = wx.Bitmap(fpsys.mythingsdir + "view16x16.png", type=wx.BITMAP_TYPE_PNG)
+        self.VIEWICON = wx.Bitmap(fpsys.mythingsdir + "icon_viewing.png", type=wx.BITMAP_TYPE_PNG)
 
         # call parent init after vital settings are done.
         wx.lib.stattext.GenStaticText.__init__(self, parent, -1," ")
@@ -707,7 +707,7 @@ class MyLabel( wx.lib.stattext.GenStaticText ):
 
         # The text
         dc.SetFont(self.infoFont)
-        dc.DrawText(self.lab, 27,5)
+        dc.DrawText(self.lab, 40,5)
 
         dc.DrawBitmap( self.VIEWICON, 6,5, True)
 
