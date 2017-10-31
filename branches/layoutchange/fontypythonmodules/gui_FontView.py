@@ -42,6 +42,7 @@ import fpsys # Global objects
 import fontyfilter
 import fontybugs
 
+
 ##The SearchAssistant idea was to have a panel that opens to give tips and interactive
 ##help for searching. We were going to have field and PANOSE access via fontTools but
 ##this dev. has paused -- until someone else with a clue can help....
@@ -108,7 +109,6 @@ class FontViewPanel(wx.Panel):
         self.BUTTON_CHARMAP_OVER = wx.Bitmap(fpsys.mythingsdir + 'button_charmap_over.png', wx.BITMAP_TYPE_PNG)
 
 
-
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
         self.textMainInfo = wx.StaticText(
@@ -166,10 +166,11 @@ class FontViewPanel(wx.Panel):
         idItalic = wx.NewId()
         self.idRegular = wx.NewId()
         self.BIR = {
-                idBold:			{'style': "bold",   'label': _("b"), 'truth': False, 'instance': None},
-                idItalic:		{'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
-                self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
-                }
+           idBold: {'style': "bold",   'label': _("b"), 'truth': False, 'instance': None},
+           idItalic: {'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
+           self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 
+               'instance': None}
+           }
         for id, dic in self.BIR.iteritems():
             bBIR = wx.ToggleButton( self, id=id, label=dic['label'] )
             self.BIR[id]['instance'] =  bBIR
@@ -238,6 +239,8 @@ class FontViewPanel(wx.Panel):
 
         ## Advertise some local functions:
         ps.sub( left_or_right_key_pressed, self.OnLeftOrRightKey ) ##DND: class FontViewPanel
+        
+
         ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
         ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
         ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
@@ -250,6 +253,8 @@ class FontViewPanel(wx.Panel):
     #def	TESTOnResize(self,	*args,	**kwargs):#KILL ME
         #print	"Test Resizing in AUI stuff."
         #self.MainFontViewUpdate()
+
+
 
     def OnClearClick( self, event ):
         self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.

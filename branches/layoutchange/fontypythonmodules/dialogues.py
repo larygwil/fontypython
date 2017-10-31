@@ -74,9 +74,9 @@ class DialogHelp(wx.Dialog):
         self.Close()
 
 class TestHtmlPanel(wx.Panel):
-    def __init__(self, parent, size):
+    def __init__(self, parent):#, size):
         wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
-        self.html = MyHtmlWindow(self, -1, size)
+        self.html = MyHtmlWindow(self)#, -1, size)
         self.box = wx.BoxSizer(wx.VERTICAL)
         self.box.Add(self.html, 1, wx.GROW)
 
@@ -102,8 +102,8 @@ class TestHtmlPanel(wx.Panel):
         #self.html.HistoryBack()
 
 class MyHtmlWindow(html.HtmlWindow):
-    def __init__(self, parent, id, size):
-        html.HtmlWindow.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE, size = size)
+    def __init__(self, parent):#, id, size):
+        html.HtmlWindow.__init__(self, parent)#, id, style=wx.NO_FULL_REPAINT_ON_RESIZE, size = size)
         if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()
 

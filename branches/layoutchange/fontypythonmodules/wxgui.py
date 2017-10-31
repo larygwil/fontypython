@@ -267,6 +267,9 @@ class MainFrame(wx.Frame):
             self.fontViewPanel = FontViewPanel(self)
             self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
+            self.help_panel = dialogues.TestHtmlPanel(self)
+            self.help_panel.Hide()
+            
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
             stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -274,6 +277,9 @@ class MainFrame(wx.Frame):
             lrsizer = wx.BoxSizer(wx.HORIZONTAL)
             lrsizer.Add( stsizer, 0, wx.EXPAND)
             lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
+            ##
+            lrsizer.Add( self.help_panel, 1, wx.EXPAND )
+            
 
             self.SetSizer(lrsizer)
 
@@ -313,17 +319,18 @@ class MainFrame(wx.Frame):
         ## This is to draw the correct icons depending on cli params.
         self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
+    ##Only used if whatgui != 1
     def onSplitterPosChanging(self,evt):
         """
         A Splitter is moving - PRESENT TENSE. Let's do the least work poss.
         """
-        if self.whatgui == 3:
-            esp = evt.GetSashPosition()
-            print esp
-            if esp > 500:
-                evt.Veto()
-            return
+        esp = evt.GetSashPosition()
+        print esp
+        if esp > 500:
+            evt.Veto()
+        return
 
+    ##Only used if whatgui != 1
     def onSplitterPosChanged( self, evt ):
         """
         A Splitter has been moved - PAST TENSE.
@@ -432,6 +439,15 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def menuHelp(self, e):
+        if self.help_panel.IsShown():
+            self.help_panel.Hide()
+            self.fontViewPanel.Show()
+        else:
+            self.help_panel.Show()
+            self.fontViewPanel.Hide()
+        self.Layout()
+            
+        return
         # July 2016
         # =========
         # Made the initial size of the help dialog smaller
