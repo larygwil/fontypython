@@ -408,7 +408,7 @@ class FontViewPanel(wx.Panel):
         """
 
         ## If the help panel is open, hide it:
-        ps.pub( hide_help_if_its_open )
+        ps.pub( ensure_fontview_shown )
 
         ## Get shorter vars to use.
         V = fpsys.state.viewobject

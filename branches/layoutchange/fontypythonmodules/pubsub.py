@@ -42,7 +42,7 @@ toggle_selection_menu_item = 200
 toggle_purge_menu_item = 210
 
 left_or_right_key_pressed = 1000
-hide_help_if_its_open = 1500
+ensure_fontview_shown = 1500
 
 reset_top_left_adjustments = 2000
 

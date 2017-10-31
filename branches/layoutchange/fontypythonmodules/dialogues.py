@@ -36,39 +36,7 @@ import wx
 
 
 
-class xxDialogHelp(wx.Dialog):
-    def __init__(self, *args, **kwds):
-        kwds["style"] = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
-        wx.Dialog.__init__(self, *args, **kwds)
-
-        ID_ESC = 1001
-        self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
-        self.SetAcceleratorTable(self.accel)
-        self.Bind(wx.EVT_MENU, self.Escape, id=ID_ESC)
-
-        dbox = wx.BoxSizer(wx.VERTICAL)
-        btn = wx.Button(self, wx.ID_CANCEL)
-        btn.SetDefault()
-        win = TestHtmlPanel(self, size = kwds["size"])
-        dbox.Add(win, 1, wx.EXPAND)
-        dbox.Add(btn, 0, wx.CENTER | wx.TOP | wx.BOTTOM,border = 4)
-        self.SetSizer(dbox)
-        #self.SetAutoLayout(True) #sizes it properly...
-        dbox.SetSizeHints(self) #made it variable size, stops at 'size' as a min.
-        #dbox.Fit(self)
-        #self.Layout()
-        win.SetFocus()# magically enables ESC key too! Go figure :)
-        self.SetTitle(_("Fonty Python Help! Help! I'm being oppressed!"))
-        _icon = wx.EmptyIcon()
-        _icon.CopyFromBitmap(wx.Bitmap(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_ANY))
-        self.SetIcon(_icon)
-    def Escape(self, event):
-        self.Close()
-
-
-
-
-class DialogAbout(wx.Dialog):
+class xxDialogAbout(wx.Dialog):
     def __init__(self, *args, **kwds):
         # begin wxGlade: MyDialog.__init__
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE

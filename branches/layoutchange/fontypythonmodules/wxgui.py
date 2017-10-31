@@ -131,7 +131,97 @@ class MyHtmlWindow(html.HtmlWindow):
             self.SetStandardFonts()
 
 
+class AboutPanel(wx.Panel):
+    def __init__(self, parent):#*args, **kwds):
+        # begin wxGlade: MyDialog.__init__
+        #kwds["style"] = wx.DEFAULT_DIALOG_STYLE
+        wx.Panel.__init__(self,parent, -1, style = wx.NO_FULL_REPAINT_ON_RESIZE)
+# *args, **kwds)
+        self.nb = wx.Notebook(self, -1, style=0)
 
+        self.notebook_1_pane_2 = wx.Panel(self.nb, -1)
+        self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
+        self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
+
+        self.bLOGO = wx.StaticBitmap\
+        (self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
+
+        self.AboutText = wx.StaticText\
+        (self.notebook_1_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
+
+        self.emaillink = wx.TextCtrl\
+        (self.notebook_1_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)
+
+        self.GPL_TEXT = wx.TextCtrl\
+        (self.notebook_1_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
+
+        self.THANKS = wx.TextCtrl\
+        (self.notebook_1_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
+
+        #ID_ESC = 1001
+        #self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
+        #self.SetAcceleratorTable(self.accel)
+        #self.Bind(wx.EVT_MENU, self.EscapeAbout, id=ID_ESC)
+
+        #self.__set_properties()
+        self.__do_layout()
+        self.notebook_1_pane_1.SetFocus()
+        # end wxGlade
+
+    def xxx__set_properties(self):
+        self.SetTitle(_("About FontyPython"))
+        _icon = wx.EmptyIcon()
+        _icon.CopyFromBitmap(wx.Bitmap(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_ANY))
+        self.SetIcon(_icon)
+
+    #def EscapeAbout(self, event):
+    #    self.Close()
+
+    def __do_layout(self):
+        # begin wxGlade: MyDialog.__do_layout
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
+
+        sizerPane1 = wx.BoxSizer(wx.HORIZONTAL)
+        sizerPane1.Add(self.bLOGO, 0, 0, 0)
+
+        textsizer = wx.BoxSizer(wx.VERTICAL)
+        textsizer.Add(self.AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
+        textsizer.Add(self.emaillink, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
+        #textsizer.Add((10, 10), 0, wx.ALIGN_LEFT, 0)
+
+        sizerPane1.Add(textsizer, 1, wx.ALIGN_BOTTOM, 0)
+        
+        self.notebook_1_pane_1.SetSizer(sizerPane1)
+        sizerPane1.Fit(self.notebook_1_pane_1)
+        sizerPane1.SetSizeHints(self.notebook_1_pane_1)
+        
+        sizer_3.Add(self.GPL_TEXT,1, wx.EXPAND, 0)
+
+        self.notebook_1_pane_2.SetSizer(sizer_3)
+        sizer_3.Fit(self.notebook_1_pane_2)
+        sizer_3.SetSizeHints(self.notebook_1_pane_2)
+        
+        ## THANKS
+        sizer_thanks.Add( self.THANKS,1, wx.EXPAND,0 )
+        self.notebook_1_pane_3.SetSizer( sizer_thanks )
+        sizer_thanks.Fit( self.notebook_1_pane_3 )
+        sizer_thanks.SetSizeHints( self.notebook_1_pane_3 )
+        
+        
+        self.nb.AddPage(self.notebook_1_pane_1, _("About"))
+        self.nb.AddPage(self.notebook_1_pane_3, _("Thanks"))
+        self.nb.AddPage(self.notebook_1_pane_2, _("Licence"))
+        
+        sizer_1.Add(self.nb, 1, wx.EXPAND, 0)
+
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
+        sizer_1.SetSizeHints(self)
+        self.Layout()
+        self.Centre()
+        # end wxGlade
 
 class StatusBar(wx.StatusBar):
     """
@@ -171,6 +261,9 @@ class StatusBar(wx.StatusBar):
 
 
 class MainFrame(wx.Frame):
+    flag_normal = 1
+    flag_help = 2
+    flag_about = 4
     """
     The main frame for the app. Has some functionality for menu items.
     """
@@ -250,7 +343,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
         self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
         self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
-        self.Bind(wx.EVT_MENU, self.menuAbout, id = 202)
+        self.Bind(wx.EVT_MENU, self.toggle_about, id = 202)
         self.Bind(wx.EVT_MENU, self.toggle_help, id = 201)
         # June 2009
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
@@ -312,16 +405,6 @@ class MainFrame(wx.Frame):
             ## Right box: Fontview
             ## :- kind of shape.
 
-            ## NOTE:
-            ## =====
-            ## I tried a splitter window of 2 across
-            ## left: a panel with sizer of two high of: source, then target guis
-            ## right: fontview
-            ## This one freezes the app when you resize to the right... :(
-            ## Hard to reproduce. I used gdb and got it to crash, then
-            ## did a 'bt' and saw some complaints about get text extents
-            ## might be a bug in my font drawing code..?
-
             self.panelFontSources = FontSourcesPanel(self)
             self.panelFontSources.SetMinSize(ms)
 
@@ -331,8 +414,12 @@ class MainFrame(wx.Frame):
             self.fontViewPanel = FontViewPanel(self)
             self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
+            ## 31 Oct 2017
             self.help_panel = HtmlPanel(self)
             self.help_panel.Hide()
+
+            self.about_panel = AboutPanel(self)
+            self.about_panel.Hide()
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -343,9 +430,16 @@ class MainFrame(wx.Frame):
             lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
             ##
             lrsizer.Add( self.help_panel, 1, wx.EXPAND )
-            
+            lrsizer.Add( self.about_panel, 1, wx.EXPAND )
 
             self.SetSizer(lrsizer)
+
+            self.panel_state = MainFrame.flag_normal
+            self.panel_dict={
+                    MainFrame.flag_normal: self.fontViewPanel, 
+                    MainFrame.flag_help  : self.help_panel,
+                    MainFrame.flag_about : self.about_panel
+            }
 
         ## Idle/resize idea from here:
         ##https://stackoverflow.com/questions/13479831/what-is-the-simplest-way-of-monitoring-when-a-wxpython-frame-has-been-resized
@@ -369,7 +463,7 @@ class MainFrame(wx.Frame):
         ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem ) ##DND: class MainFrame
 
         ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
-        ps.sub( hide_help_if_its_open, self.hide_help_if_open )
+        ps.sub( ensure_fontview_shown, self.ensure_fontview_shown )
         
 
         ## call the big one - the big chief, the big cheese:
@@ -383,6 +477,53 @@ class MainFrame(wx.Frame):
 
         ## This is to draw the correct icons depending on cli params.
         self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
+
+
+    def flag_state_on(self, flag):
+        self.panel_state |= flag
+
+    def flag_state_off(self, flag):
+        self.panel_state &= ~flag
+
+    def flag_state_exclusive_toggle(self, flag):
+        fs = self.is_state_flagged(flag)
+        self.panel_state = 0
+        if fs: #swap it
+            self.flag_state_off(flag)
+        else:
+            self.flag_state_on(flag)
+
+    def is_state_flagged(self,flag):
+        #print "state is: {:08b}".format( self.panel_state)
+        return self.panel_state & flag == flag
+    
+    def panel_control(self):
+        if self.panel_state == 0:
+            self.panel_state = MainFrame.flag_normal
+
+        for flag, pan in self.panel_dict.iteritems():
+            if self.is_state_flagged(flag):
+                pan.Show()
+            else:
+                pan.Hide()
+                self.flag_state_off(flag)
+        self.Layout()
+
+    def ensure_fontview_shown(self):
+        ## For use from outside. 
+        ## See start of gui_FontView.MainFontViewUpdate()
+        self.panel_state = MainFrame.flag_normal
+        self.panel_control()
+
+    def toggle_about(self, e):
+        self.flag_state_exclusive_toggle(MainFrame.flag_about)
+        self.panel_control()
+
+    def toggle_help(self, e):
+        self.flag_state_exclusive_toggle(MainFrame.flag_help)
+        self.panel_control()
+
+
 
     ##Only used if whatgui != 1
     def onSplitterPosChanging(self,evt):
@@ -411,12 +552,14 @@ class MainFrame(wx.Frame):
     def onIdle(self, evt):
         #print "Idle runs"
         if self.resized:
-            if self.help_panel.IsShown():
+            if not self.is_state_flagged(MainFrame.flag_normal):
                 # Don't call the big update
                 return
             #print "  Idle updates fontViewPanel"
             ps.pub( update_font_view )
             self.resized = False
+
+
 
     def OnAccelKey(self,evt):
         ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_FontView.py
@@ -501,37 +644,7 @@ class MainFrame(wx.Frame):
                 ps.pub( update_font_view )
         dlg.Destroy()
 
-    def menuAbout(self, e):
-        dlg = dialogues.DialogAbout(self)
-        val = dlg.ShowModal()
-        dlg.Destroy()
 
-    def toggle_help(self, e):
-        if self.help_panel.IsShown():
-            self.help_panel.Hide()
-            self.fontViewPanel.Show()
-        else:
-            self.help_panel.Show()
-            self.fontViewPanel.Hide()
-        self.Layout()
-            
-        # July 2016
-        # =========
-        # Made the initial size of the help dialog smaller
-        # Was requested by a user who has a small screen
-        # ~600px wide is about as narrow as I can get it...
-        #dlg = dialogues.DialogHelp(self, size=(676, 400))
-        #val = dlg.ShowModal()
-        #lg.Destroy()
-
-    def hide_help_if_open(self):
-        ## For use from outside. 
-        ## See start of gui_FontView.MainFontViewUpdate()
-        #print self.help_panel.IsShown()
-        if self.help_panel.IsShown():
-            self.help_panel.Hide()
-            self.fontViewPanel.Show()
-            self.Layout()
 
 
     def menuCheckFonts( self, e ):
