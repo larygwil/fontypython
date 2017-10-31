@@ -41,6 +41,7 @@ import fontybugs
 
 ## Fetch the dialogue classes - used for zip dir dialog.
 import dialogues
+from gui_stuff import label, icon
 
 class TargetPogChooser(wx.Panel):
     """
@@ -49,9 +50,10 @@ class TargetPogChooser(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id = -1)
 
-        self.icon = wx.StaticBitmap( self, -1, wx.Bitmap(fpsys.mythingsdir + 'icon_target.png', wx.BITMAP_TYPE_PNG) )
-        self.textInfo = wx.StaticText(self, -1, _("Target Pogs"), style = wx.ALIGN_LEFT)
-        self.textInfo.SetFont(wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL))
+        target_icon = icon( self, 'icon_target' )
+        target_label = label(self,
+                _("Target Pogs"),
+                size = "points_large")
 
         s = None
         if fpsys.state.targetpattern == "P":
@@ -97,10 +99,10 @@ class TargetPogChooser(wx.Panel):
         mainvs = wx.BoxSizer(wx.VERTICAL)
         self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
         #self.iconandtext.Add( (8, 1), 0 )
-        self.iconandtext.Add(self.icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
-        #self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.ALL, border = 4)
-        #self.iconandtext.Add(self.textInfo, 1, wx.EXPAND | wx.LEFT | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL, border = 4)
-        self.iconandtext.Add(self.textInfo, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
+        self.iconandtext.Add(target_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
+        #self.iconandtext.Add(self.target_label, 1, wx.EXPAND | wx.ALL, border = 4)
+        #self.iconandtext.Add(self.target_label, 1, wx.EXPAND | wx.LEFT | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL, border = 4)
+        self.iconandtext.Add(target_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
         mainvs.Add(self.iconandtext, 0, wx.EXPAND)
 
 

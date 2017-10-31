@@ -42,6 +42,7 @@ import fpsys # Global objects
 import fontyfilter
 import fontybugs
 
+from gui_stuff import label, icon, wxbmp
 
 ##The SearchAssistant idea was to have a panel that opens to give tips and interactive
 ##help for searching. We were going to have field and PANOSE access via fontTools but
@@ -95,32 +96,24 @@ class FontViewPanel(wx.Panel):
         self.filter = ""
 
         self.TICKMAP = None
-        self._TICK = wx.Bitmap(fpsys.mythingsdir + "tick.png", type=wx.BITMAP_TYPE_PNG)
-        self._CROSS = wx.Bitmap(fpsys.mythingsdir + "cross.png", type=wx.BITMAP_TYPE_PNG)
+        self._TICK = wxbmp( 'tick' )
+        self._CROSS = wxbmp( 'cross' )
 
         #Sept 2009
-        self.SEGFAULT = wx.Bitmap(fpsys.mythingsdir + 'font_segfault.png', wx.BITMAP_TYPE_PNG)
-        self.NO_DRAW = wx.Bitmap(fpsys.mythingsdir + 'font_cannot_draw.png', wx.BITMAP_TYPE_PNG)
-        self.NOT_FOUND = wx.Bitmap(fpsys.mythingsdir + 'font_not_found.png', wx.BITMAP_TYPE_PNG)
-        self.INFO_ITEM = wx.Bitmap(fpsys.mythingsdir + 'font_info_item.png', wx.BITMAP_TYPE_PNG)
-        self.TICKSMALL = wx.Bitmap(fpsys.mythingsdir + "ticksmall.png", type=wx.BITMAP_TYPE_PNG)
+        self.SEGFAULT  = wxbmp( 'font_segfault' )
+        self.NO_DRAW   = wxbmp( 'font_cannot_draw' )
+        self.NOT_FOUND = wxbmp( 'font_not_found' )
+        self.INFO_ITEM = wxbmp( 'font_info_item' )
+        self.TICKSMALL = wxbmp( 'ticksmall' )
 
-        self.BUTTON_CHARMAP = wx.Bitmap(fpsys.mythingsdir + 'button_charmap.png', wx.BITMAP_TYPE_PNG)
-        self.BUTTON_CHARMAP_OVER = wx.Bitmap(fpsys.mythingsdir + 'button_charmap_over.png', wx.BITMAP_TYPE_PNG)
+        self.BUTTON_CHARMAP = wxbmp( 'button_charmap' )
+        self.BUTTON_CHARMAP_OVER = wxbmp( 'button_charmap_over' )
 
 
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
-        self.textMainInfo = wx.StaticText(
-                self, -1 ,u"..", style = wx.ALIGN_LEFT )
-        self.textMainInfo.SetFont( 
-                wx.Font(fpsys.SYSFONT["points_large"], 
-                    fpsys.SYSFONT["family"], wx.NORMAL,
-                    wx.FONTWEIGHT_NORMAL) )        
-
-        viewIcon = wx.StaticBitmap( self, -1, 
-                wx.Bitmap( fpsys.mythingsdir + 'icon_viewing.png', 
-                    wx.BITMAP_TYPE_PNG ))
+        self.textMainInfo = label(self, u"..", size="points_large")
+        viewIcon = icon(self, 'icon_viewing')
 
         sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )
         sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)

@@ -45,6 +45,8 @@ from wxgui import ps
 from gui_PogChooser import *
 import fontyfilter
 
+from gui_stuff import label, icon 
+
 class FontSourcesPanel(wx.Panel):
     """
     A panel to represent the entire Source GUI.
@@ -53,15 +55,16 @@ class FontSourcesPanel(wx.Panel):
         wx.Panel.__init__(self, parent, id = -1)#, style = wx.BORDER_RAISED)
 
         ## Notebook label and icon
-        self.viewIcon = wx.StaticBitmap( self, -1, wx.Bitmap( fpsys.mythingsdir + 'icon_source.png', wx.BITMAP_TYPE_PNG ))
-        self.viewLabel = wx.StaticText( self, -1, _("Sources: Folders or Pogs"), style = wx.ALIGN_LEFT )
-        self.viewLabel.SetFont( wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_NORMAL) )
+        view_icon = icon(self, 'icon_source')
+        view_label = label(self,
+                _("Sources: Folders or Pogs"), 
+                size = "points_large")
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
         #self.sizer_iconandtext.Add( (8, 1), 0 )
-        self.sizer_iconandtext.Add( self.viewIcon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
-        self.sizer_iconandtext.Add( self.viewLabel, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 6 )
+        self.sizer_iconandtext.Add( view_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
+        self.sizer_iconandtext.Add( view_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 6 )
 
         ## Now the actual notebook
         self.nb = NoteBook(self, name="notebook")

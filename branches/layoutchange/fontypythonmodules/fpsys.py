@@ -864,6 +864,7 @@ def logSegfaulters( lastPaf ):
         raise
 
 
+
 ######      #######
 ## Setup globals ##
 ######      #######
