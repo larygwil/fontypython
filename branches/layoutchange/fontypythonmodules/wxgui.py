@@ -187,7 +187,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
         self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
         self.Bind(wx.EVT_MENU, self.menuAbout, id = 202)
-        self.Bind(wx.EVT_MENU, self.menuHelp, id = 201)
+        self.Bind(wx.EVT_MENU, self.toggle_help, id = 201)
         # June 2009
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
         self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
@@ -305,7 +305,8 @@ class MainFrame(wx.Frame):
         ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem ) ##DND: class MainFrame
 
         ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
-
+        ps.sub( hide_help_if_its_open, self.hide_help_if_open )
+        
 
         ## call the big one - the big chief, the big cheese:
         ## This eventually draws all the Fitmaps - giving the middle a width.
@@ -346,6 +347,9 @@ class MainFrame(wx.Frame):
     def onIdle(self, evt):
         #print "Idle runs"
         if self.resized:
+            if self.help_panel.IsShown():
+                # Don't call the big update
+                return
             #print "  Idle updates fontViewPanel"
             ps.pub( update_font_view )
             self.resized = False
@@ -416,13 +420,13 @@ class MainFrame(wx.Frame):
                 stuffchanged = True
             if points != lastpoints:
                 fpsys.config.points = int(points)
-                #Crucial flag to force a redraw of font bitmaps later
-                #fpsys.state.point_size_changed_flag = True
-                fpsys.state.reflow_only = False
+                ##TODO kill #Crucial flag to force a redraw of font bitmaps later
+                ## #fpsys.state.point_size_changed_flag = True
+                ## fpsys.state.reflow_only = False
                 stuffchanged = True
             if ignore_adjust != lastias:
                 fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
-                fpsys.state.reflow_only = False
+                ## fpsys.state.reflow_only = False
                 stuffchanged = True
 
             fpsys.config.CMC.SET_CURRENT_APPNAME( dlg.CHOSEN_CHARACTER_MAP) # Oct 2009
@@ -438,7 +442,7 @@ class MainFrame(wx.Frame):
         val = dlg.ShowModal()
         dlg.Destroy()
 
-    def menuHelp(self, e):
+    def toggle_help(self, e):
         if self.help_panel.IsShown():
             self.help_panel.Hide()
             self.fontViewPanel.Show()
@@ -456,6 +460,16 @@ class MainFrame(wx.Frame):
         dlg = dialogues.DialogHelp(self, size=(676, 400))
         val = dlg.ShowModal()
         dlg.Destroy()
+
+    def hide_help_if_open(self):
+        ## For use from outside. 
+        ## See start of gui_FontView.MainFontViewUpdate()
+        #print self.help_panel.IsShown()
+        if self.help_panel.IsShown():
+            self.help_panel.Hide()
+            self.fontViewPanel.Show()
+            self.Layout()
+
 
     def menuCheckFonts( self, e ):
         """

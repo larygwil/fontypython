@@ -117,11 +117,11 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ##xPos, yPos = self.GetViewStart()
             self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
 
-            #fpsys.state.point_size_changed_flag = True
-            fpsys.state.reflow_only = False 
+            ##fpsys.state.point_size_changed_flag = True
+            #TODO Kill: fpsys.state.reflow_only = False 
             ps.pub( update_font_view ) # starts a chain of calls.
-            #fpsys.state.point_size_changed_flag = False
-            fpsys.state.reflow_only = True
+            ##fpsys.state.point_size_changed_flag = False
+            ##fpsys.state.reflow_only = True
 
             return
         ## Keep the wheel event going
@@ -138,13 +138,13 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             fi.top_left_adjust_completed = False
 
     def MinimalCreateFitmaps( self, viewobject):#, force = False ) :
-        print "-------------------------"
-        print "MinimalCreateFitmaps runs"
+        #print "-------------------------"
+        #print "MinimalCreateFitmaps runs"
         self.Freeze()
         
         panelwidth = max(500,self.GetSize()[0]) #First run it's weird. After that it works.
         
-        print "panelwidth:" ,panelwidth
+        #print "panelwidth:" ,panelwidth
 
         if len(viewobject) == 0:
             self.fitmap_sizer.Clear(True) # Wipe-out the past
@@ -155,7 +155,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         else:
             # Let's compare what we had before (the contents of the sizer!) with what
             # is coming-in new, i.e. the viewobject list.
-            print self.fitmap_sizer.GetChildren()
+            #print self.fitmap_sizer.GetChildren()
             td = {}
             for kid in self.fitmap_sizer.GetChildren():
                 fitmap = kid.GetWindow() #is the fitmap within
@@ -199,7 +199,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ## My soluition: Take the mean of the widths and add a bit "more".
             lw = len(w)
             sw = sum(w)
-            print w
+            #print w
 
             ## 1. Standard Deviation
             ##    Calc the variance by subtracting each width from the 
@@ -218,7 +218,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
-            print "cols:",cols
+            #print "cols:",cols
 
             ## Get a better actual width for the columns!
             colw = int(panelwidth/cols)
@@ -230,8 +230,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ## and then plug them into the sizer
             for fitem in viewobject:
                 fm = td[ fitem ] # we get them from the dict
-                print fm
-                print colw
+                #print fm
+                #print colw
                 fm.assemble_bitmap(colw)
                 self.fitmap_sizer.Add(fm, flag=wx.wx.ALIGN_BOTTOM) # Here we re-add the fitmaps.
 

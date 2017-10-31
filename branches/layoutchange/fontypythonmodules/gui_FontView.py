@@ -406,6 +406,10 @@ class FontViewPanel(wx.Panel):
         It draws the controls and the fonts as appropriate.
         It also sets flags in fpsys.state
         """
+
+        ## If the help panel is open, hide it:
+        ps.pub( hide_help_if_its_open )
+
         ## Get shorter vars to use.
         V = fpsys.state.viewobject
         T = fpsys.state.targetobject
@@ -521,6 +525,7 @@ class FontViewPanel(wx.Panel):
 
         fpsys.markInactive()
         self.filterAndPageThenCallCreateFitmaps()
+
 
 
 
