@@ -20,7 +20,6 @@ import fpsys
 #import fontsearch
 import strings
 import wx
-import wx.html as html
 
 ## June 25th 2016
 ## Remarking these two lines because they are causing a segfault:
@@ -35,16 +34,9 @@ import wx.html as html
 ##langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 ##mylocale = wx.Locale( langid )
 
-## langcode = locale.getlocale()[0] # I must not use getlocale...
-## This is suggested by Martin:
-loc = locale.setlocale(locale.LC_CTYPE) # use *one* of the categories (not LC_ALL)
-## returns something like 'en_ZA.UTF-8'
-if loc is None or len(loc) < 2:
-    langcode = 'en'
-else:
-    langcode = loc[:2].lower()# This is going to cause grief in the future...
 
-class DialogHelp(wx.Dialog):
+
+class xxDialogHelp(wx.Dialog):
     def __init__(self, *args, **kwds):
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER
         wx.Dialog.__init__(self, *args, **kwds)
@@ -73,39 +65,7 @@ class DialogHelp(wx.Dialog):
     def Escape(self, event):
         self.Close()
 
-class TestHtmlPanel(wx.Panel):
-    def __init__(self, parent):#, size):
-        wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
-        self.html = MyHtmlWindow(self)#, -1, size)
-        self.box = wx.BoxSizer(wx.VERTICAL)
-        self.box.Add(self.html, 1, wx.GROW)
 
-        #A BACK button. I used internal 'top' links instead
-        #subbox = wx.BoxSizer(wx.HORIZONTAL)
-        #btn = wx.Button(self, wx.ID_BACKWARD)
-        #self.Bind(wx.EVT_BUTTON ,self.OnBack, btn)
-        #subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
-        #self.box.Add(subbox, 0, wx.GROW)
-
-        self.SetSizer(self.box)
-        self.SetAutoLayout(True)
-
-        ## Find localized help, or default to English.
-        packpath = fpsys.fontyroot
-        helppaf = os.path.join(packpath, "help", langcode, "help.html")
-        if not os.path.exists( helppaf ):
-            helppaf = os.path.join(packpath, "help", "en", "help.html")
-        self.html.LoadPage( helppaf )
-
-        self.box.Fit(self)
-    #def OnBack( self, e ):
-        #self.html.HistoryBack()
-
-class MyHtmlWindow(html.HtmlWindow):
-    def __init__(self, parent):#, id, size):
-        html.HtmlWindow.__init__(self, parent)#, id, style=wx.NO_FULL_REPAINT_ON_RESIZE, size = size)
-        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
-            self.SetStandardFonts()
 
 
 class DialogAbout(wx.Dialog):

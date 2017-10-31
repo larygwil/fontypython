@@ -51,6 +51,10 @@ from gui_FontSources import *
 from gui_FontView import *
 from gui_PogTargets import *
 
+
+
+
+
 def setup_fonts_and_colours():
     fpsys.SYSCOLS.update(
     {"gray"  : wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT),
@@ -68,6 +72,66 @@ def setup_fonts_and_colours():
         "points_x_large" : ps*1.2,
         "points_xx_large": ps*2
         })
+
+## Help file stuff
+## Moved from dialogues on 31 OCt 2017
+import wx.html as html
+## langcode = locale.getlocale()[0] # I must not use getlocale...
+## This is suggested by Martin:
+loc = locale.setlocale(locale.LC_CTYPE) # use *one* of the categories (not LC_ALL)
+## returns something like 'en_ZA.UTF-8'
+if loc is None or len(loc) < 2:
+    langcode = 'en'
+else:
+    langcode = loc[:2].lower()# This is going to cause grief in the future...
+
+
+class HtmlPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
+        self.html = MyHtmlWindow(self)
+
+        box = wx.BoxSizer(wx.VERTICAL)
+        
+        label = wx.StaticText( self, -1, 
+                _("To close the help, press F1 again."), 
+                style = wx.ALIGN_LEFT )
+        label.SetFont( wx.Font(fpsys.SYSFONT["points_normal"], 
+            fpsys.SYSFONT["family"], wx.NORMAL, 
+            wx.FONTWEIGHT_NORMAL) )       
+
+        box.Add( label, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 4 )
+        box.Add(self.html, 1, wx.GROW)
+
+        self.SetSizer( box )
+        self.SetAutoLayout(True)
+
+        ## Find localized help, or default to English.
+        packpath = fpsys.fontyroot
+        helppaf = os.path.join(packpath, "help", langcode, "help.html")
+        if not os.path.exists( helppaf ):
+            helppaf = os.path.join(packpath, "help", "en", "help.html")
+        self.html.LoadPage( helppaf )
+
+        box.Fit(self)
+
+        #A BACK button. I used internal 'top' links instead
+        #subbox = wx.BoxSizer(wx.HORIZONTAL)
+        #btn = wx.Button(self, wx.ID_BACKWARD)
+        #self.Bind(wx.EVT_BUTTON ,self.OnBack, btn)
+        #subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
+        #self.box.Add(subbox, 0, wx.GROW)
+    #def OnBack( self, e ):
+        #self.html.HistoryBack()
+
+class MyHtmlWindow(html.HtmlWindow):
+    def __init__(self, parent):
+        html.HtmlWindow.__init__(self, parent)
+        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
+            self.SetStandardFonts()
+
+
+
 
 class StatusBar(wx.StatusBar):
     """
@@ -267,7 +331,7 @@ class MainFrame(wx.Frame):
             self.fontViewPanel = FontViewPanel(self)
             self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
-            self.help_panel = dialogues.TestHtmlPanel(self)
+            self.help_panel = HtmlPanel(self)
             self.help_panel.Hide()
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
@@ -438,7 +502,7 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def menuAbout(self, e):
-        dlg =dialogues.DialogAbout(self)
+        dlg = dialogues.DialogAbout(self)
         val = dlg.ShowModal()
         dlg.Destroy()
 
@@ -451,15 +515,14 @@ class MainFrame(wx.Frame):
             self.fontViewPanel.Hide()
         self.Layout()
             
-        return
         # July 2016
         # =========
         # Made the initial size of the help dialog smaller
         # Was requested by a user who has a small screen
         # ~600px wide is about as narrow as I can get it...
-        dlg = dialogues.DialogHelp(self, size=(676, 400))
-        val = dlg.ShowModal()
-        dlg.Destroy()
+        #dlg = dialogues.DialogHelp(self, size=(676, 400))
+        #val = dlg.ShowModal()
+        #lg.Destroy()
 
     def hide_help_if_open(self):
         ## For use from outside. 
