@@ -106,29 +106,10 @@ class DirControl(wx.GenericDirCtrl) :
         isz = (16,16)
         il = wx.ImageList(isz[0], isz[1])
 
-        # Add images to list. You need to keep the same order in order for
+        # Add images to list. You need to keep this exact order for
         # this to work!
-
-        # closed folder:
-        il.Add( wx.Bitmap( fpsys.mythingsdir + "/icon_closed_folder.png",wx.BITMAP_TYPE_PNG) )
-
-        # open folder:
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_open_folder.png",wx.BITMAP_TYPE_PNG))
-
-        # root of filesystem (linux):
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_root.png",wx.BITMAP_TYPE_PNG))
-
-        # drive letter (windows):
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
-
-        # cdrom drive:
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_cdrom.png",wx.BITMAP_TYPE_PNG))
-
-        # removable drive on win98:
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_drive.png",wx.BITMAP_TYPE_PNG))
-
-        # removable drive (floppy, flash, etc) Does not seem to work on Kubuntu Jaunty (2009)
-        il.Add(wx.Bitmap(fpsys.mythingsdir + "/icon_ext_drive.png",wx.BITMAP_TYPE_PNG))
+        bmplst=['icon_closed_folder', 'icon_open_folder', 'icon_root', 'icon_drive', 'icon_cdrom', 'icon_ext_drive', 'icon_ext_drive']
+        [il.Add( wxbmp(f) ) for f in bmplst]
 
         # assign image list:
         self.il = il
@@ -229,11 +210,8 @@ class NoteBook(wx.Notebook):
         self.AddPage(pan2, _("Source Pogs"))
 
         # sadly, the artprovider icons suck, and I can't get access to the "stock items" either. fuck it. 
-        #  source_folder_icon = self.imlist.Add( wx.ArtProvider.GetBitmap(wx.ART_FOLDER,wx.ART_TOOLBAR, (16,16)) )
-        source_folder_icon = self.imlist.Add( 
-                wx.Bitmap(fpsys.mythingsdir + "/icon_source_folder_16x16.png",wx.BITMAP_TYPE_PNG) )
-        source_pog_icon = self.imlist.Add( wx.Bitmap(
-            fpsys.mythingsdir + "/icon_source_pog_16x16.png",wx.BITMAP_TYPE_PNG) )
+        source_folder_icon = self.imlist.Add( wxbmp('icon_source_folder_16x16') )
+        source_pog_icon = self.imlist.Add( wxbmp('icon_source_pog_16x16') )
 
         self.AssignImageList(self.imlist)
         self.SetPageImage(0, source_folder_icon)

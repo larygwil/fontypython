@@ -37,6 +37,7 @@ import fpsys # Global objects
 import fontcontrol
 import fontybugs
 
+from fpwx import wxbmp 
 
 class PogChooser(wx.ListCtrl) :
     """
@@ -70,13 +71,10 @@ class PogChooser(wx.ListCtrl) :
             style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING
 
         il = wx.ImageList(16,16,True)
-        png = wx.Bitmap(fpsys.mythingsdir + "/pog16x16.png",wx.BITMAP_TYPE_PNG)
-        il.Add(png)
-        png = wx.Bitmap(fpsys.mythingsdir + "/pog16x16.installed.png",wx.BITMAP_TYPE_PNG)
-        il.Add(png)
+        il.Add( wxbmp('pog16x16') )
+        il.Add( wxbmp('pog16x16.installed') )
         ## Dec 2007 : target icon
-        png = wx.Bitmap( fpsys.mythingsdir + "/pog16x16.target.png", wx.BITMAP_TYPE_PNG )
-        il.Add( png )
+        il.Add( wxbmp( 'pog16x16.target') )
 
         wx.ListCtrl.__init__( self,parent,-1, style=style | wx.SUNKEN_BORDER, name="pog_chooser" )
 

@@ -44,17 +44,11 @@ ps = CPubsub()
 ## Fetch the dialogue classes *About, Settings, Help, etc.*
 import dialogues
 
-## DND: NB--Comments that have DND: in them mean DO NOT DELETE. They are used by me via grep on the cli.
-
-
 from gui_FontSources import *
 from gui_FontView import *
 from gui_PogTargets import *
 
-
-
 from fpwx import setup_fonts_and_colours, wxbmp, icon, SYSFONT
-
 
 
 ## Help file stuff
@@ -127,8 +121,6 @@ class AboutPanel(wx.Panel):
         self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
         self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
 
-        #self.bLOGO = wx.StaticBitmap\
-        #(self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
         self.bLOGO = icon(self.notebook_1_pane_1, 'aboutfplogo')
 
         self.AboutText = wx.StaticText\
@@ -153,11 +145,6 @@ class AboutPanel(wx.Panel):
         self.notebook_1_pane_1.SetFocus()
         # end wxGlade
 
-    def xxx__set_properties(self):
-        self.SetTitle(_("About FontyPython"))
-        _icon = wx.EmptyIcon()
-        _icon.CopyFromBitmap(wx.Bitmap(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_ANY))
-        self.SetIcon(_icon)
 
     #def EscapeAbout(self, event):
     #    self.Close()
@@ -260,12 +247,11 @@ class MainFrame(wx.Frame):
         #print "Main frame:", self.GetSizeTuple()[0]
 
         ## Try to show an icon
+        ## Oct 2017: Seems Unity (at least) doesn't even show icons...
         try:
-            image = wx.Image(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_PNG)
-            image = image.ConvertToBitmap()
-            icon = wx.EmptyIcon()
-            icon.CopyFromBitmap(image)
-            self.SetIcon(icon)
+            i = wx.EmptyIcon()
+            i.CopyFromBitmap( wxbmp('fplogo'))
+            self.SetIcon(i)
         except:
             pass
 
@@ -767,11 +753,10 @@ class FontySplash(wx.SplashScreen):
             Borrowing from the wxPython demo's code.
         """
         def __init__(self, parent=None):
-            aBitmap = wxbmp( "splash" )
             splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
             splashDuration = 1000 # milliseconds
 
-            wx.SplashScreen.__init__(self, aBitmap, splashStyle, splashDuration, parent)
+            wx.SplashScreen.__init__(self, wxbmp( "splash" ), splashStyle, splashDuration, parent)
             self.Bind(wx.EVT_CLOSE, self.OnExit)
 
             # Nice! Kick the show off in x millis.

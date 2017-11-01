@@ -100,15 +100,15 @@ class FontViewPanel(wx.Panel):
         self._CROSS = wxbmp( 'cross' )
 
         #Sept 2009
+        ## Bitmaps to be used in the Fitmap drawing.
+        ## Fetched from there as dict items. It got weird.
         self.SEGFAULT  = wxbmp( 'font_segfault' )
         self.NO_DRAW   = wxbmp( 'font_cannot_draw' )
         self.NOT_FOUND = wxbmp( 'font_not_found' )
         self.INFO_ITEM = wxbmp( 'font_info_item' )
         self.TICKSMALL = wxbmp( 'ticksmall' )
-
         self.BUTTON_CHARMAP = wxbmp( 'button_charmap' )
         self.BUTTON_CHARMAP_OVER = wxbmp( 'button_charmap_over' )
-
 
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
