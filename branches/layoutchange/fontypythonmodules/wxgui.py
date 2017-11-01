@@ -146,67 +146,65 @@ class AboutPanel(DismissablePanel):
         DismissablePanel.__init__(self, parent, flag)
 
     def __post_init__(self):
-        self.nb = wx.Notebook(self, -1, style=0)
+        nb = wx.Notebook(self, -1, style=0)
 
-        self.notebook_1_pane_2 = wx.Panel(self.nb, -1)
-        self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
-        self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
+        nbabout_pane_1 = wx.Panel(nb, -1)
+        nbabout_pane_2 = wx.Panel(nb, -1)
+        nbabout_pane_3 = wx.Panel(nb, -1)
 
-        self.bLOGO = icon(self.notebook_1_pane_1, 'aboutfplogo')
+        fplogo = icon(nbabout_pane_1, 'aboutfplogo')
 
-        self.AboutText = wx.StaticText\
-        (self.notebook_1_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
+        AboutText = wx.StaticText(
+                nbabout_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
 
-        self.emaillink = wx.TextCtrl\
-        (self.notebook_1_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)
+        emaillink = wx.TextCtrl(
+            nbabout_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)
 
-        self.GPL_TEXT = wx.TextCtrl\
-        (self.notebook_1_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
+        GPL_TEXT = wx.TextCtrl(
+                nbabout_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
 
-        self.THANKS = wx.TextCtrl\
-        (self.notebook_1_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
-        #self.THANKS = label(self.notebook_1_pane_3, strings.thanks, size="points_normal") 
+        THANKS = wx.TextCtrl(
+                nbabout_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
 
-        # begin wxGlade: MyDialog.__do_layout. Argh. This is a mess....
+        # Once was done in wxGlade. Argh. What a mess....
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
 
         sizerPane1 = wx.BoxSizer(wx.HORIZONTAL)
-        sizerPane1.Add(self.bLOGO, 0, 0, 0)
+        sizerPane1.Add(fplogo, 0, 0, 0)
 
         textsizer = wx.BoxSizer(wx.VERTICAL)
-        textsizer.Add(self.AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
-        textsizer.Add(self.emaillink, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
-        #textsizer.Add((10, 10), 0, wx.ALIGN_LEFT, 0)
+        textsizer.Add(AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
+        textsizer.Add(emaillink, 0, wx.EXPAND | wx.ALIGN_LEFT | wx.ALL, border = 10)
 
-        sizerPane1.Add(textsizer, 1, wx.ALIGN_BOTTOM, 0)
+        sizerPane1.Add(textsizer, 0, wx.ALIGN_TOP, 0)
         
-        self.notebook_1_pane_1.SetSizer(sizerPane1)
-        sizerPane1.Fit(self.notebook_1_pane_1)
-        sizerPane1.SetSizeHints(self.notebook_1_pane_1)
+        #ABOUT
+        nbabout_pane_1.SetSizer(sizerPane1)
+        sizerPane1.Fit(nbabout_pane_1)
+        sizerPane1.SetSizeHints(nbabout_pane_1)
         
-        sizer_3.Add(self.GPL_TEXT,1, wx.EXPAND, 0)
+        sizer_3.Add(GPL_TEXT,1, wx.EXPAND, 0)
 
-        self.notebook_1_pane_2.SetSizer(sizer_3)
-        sizer_3.Fit(self.notebook_1_pane_2)
-        sizer_3.SetSizeHints(self.notebook_1_pane_2)
+        #LICENCE
+        nbabout_pane_2.SetSizer(sizer_3)
+        sizer_3.Fit(nbabout_pane_2)
+        sizer_3.SetSizeHints(nbabout_pane_2)
         
         ## THANKS
-        sizer_thanks.Add( self.THANKS,1, wx.EXPAND | wx.ALL, border = 6 )
-        self.notebook_1_pane_3.SetSizer( sizer_thanks )
-        sizer_thanks.Fit( self.notebook_1_pane_3 )
-        sizer_thanks.SetSizeHints( self.notebook_1_pane_3 )
+        sizer_thanks.Add( THANKS,1, wx.EXPAND | wx.ALL, border = 6 )
+        nbabout_pane_3.SetSizer( sizer_thanks )
+        sizer_thanks.Fit( nbabout_pane_3 )
+        sizer_thanks.SetSizeHints( nbabout_pane_3 )
         
+        nb.AddPage(nbabout_pane_1, _("About"))
+        nb.AddPage(nbabout_pane_3, _("Thanks"))
+        nb.AddPage(nbabout_pane_2, _("Licence"))
         
-        self.nb.AddPage(self.notebook_1_pane_1, _("About"))
-        self.nb.AddPage(self.notebook_1_pane_3, _("Thanks"))
-        self.nb.AddPage(self.notebook_1_pane_2, _("Licence"))
+        sizer_1.Add(nb, 1, wx.EXPAND, 0)
         
-        sizer_1.Add(self.nb, 1, wx.EXPAND, 0)
-        
-        self.notebook_1_pane_1.SetFocus()
-        # end wxGlade
+        nbabout_pane_1.SetFocus()
         return sizer_1
 
 
@@ -624,6 +622,7 @@ class MainFrame(wx.Frame):
         for flag, pan in self.panel_dict.iteritems():
             if self.is_state_flagged(flag):
                 pan.Show()
+                #pan.SetFocus() # useless
             else:
                 pan.Hide()
                 self.flag_state_off(flag)
