@@ -51,9 +51,7 @@ class TargetPogChooser(wx.Panel):
         wx.Panel.__init__(self, parent, id = -1)
 
         target_icon = icon( self, 'icon_target' )
-        target_label = label(self,
-                _("Target Pogs"),
-                size = "points_large")
+        target_label = label(self, _("Target Pogs") )
 
         s = None
         if fpsys.state.targetpattern == "P":

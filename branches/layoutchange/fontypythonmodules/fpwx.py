@@ -42,7 +42,7 @@ def setup_fonts_and_colours():
         })
 
 def label(parent, 
-        ustr, size = "points_normal", 
+        ustr, size = "points_large", 
         weight = wx.FONTWEIGHT_NORMAL, 
         align = wx.ALIGN_LEFT):
     lbl = wx.StaticText( parent, -1, ustr, style = align )

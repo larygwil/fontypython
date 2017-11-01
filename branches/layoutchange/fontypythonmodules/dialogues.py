@@ -34,101 +34,11 @@ import wx
 ##langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 ##mylocale = wx.Locale( langid )
 
+from fpwx import SYSFONT
 
-
-class xxDialogAbout(wx.Dialog):
-    def __init__(self, *args, **kwds):
-        # begin wxGlade: MyDialog.__init__
-        kwds["style"] = wx.DEFAULT_DIALOG_STYLE
-        wx.Dialog.__init__(self, *args, **kwds)
-        self.nb = wx.Notebook(self, -1, style=0)
-
-        self.notebook_1_pane_2 = wx.Panel(self.nb, -1)
-        self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
-        self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
-
-        self.bLOGO = wx.StaticBitmap\
-        (self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
-
-        self.AboutText = wx.StaticText\
-        (self.notebook_1_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
-
-        self.emaillink = wx.TextCtrl\
-        (self.notebook_1_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)
-
-        self.GPL_TEXT = wx.TextCtrl\
-        (self.notebook_1_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
-
-        self.THANKS = wx.TextCtrl\
-        (self.notebook_1_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
-
-        ID_ESC = 1001
-        self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
-        self.SetAcceleratorTable(self.accel)
-        self.Bind(wx.EVT_MENU, self.EscapeAbout, id=ID_ESC)
-
-        self.__set_properties()
-        self.__do_layout()
-        self.notebook_1_pane_1.SetFocus()
-        # end wxGlade
-
-    def __set_properties(self):
-        self.SetTitle(_("About FontyPython"))
-        _icon = wx.EmptyIcon()
-        _icon.CopyFromBitmap(wx.Bitmap(fpsys.mythingsdir + 'fplogo.png', wx.BITMAP_TYPE_ANY))
-        self.SetIcon(_icon)
-
-    def EscapeAbout(self, event):
-        self.Close()
-
-    def __do_layout(self):
-        # begin wxGlade: MyDialog.__do_layout
-        sizer_1 = wx.BoxSizer(wx.VERTICAL)
-        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
-
-        sizerPane1 = wx.BoxSizer(wx.HORIZONTAL)
-        sizerPane1.Add(self.bLOGO, 0, 0, 0)
-
-        textsizer = wx.BoxSizer(wx.VERTICAL)
-        textsizer.Add(self.AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
-        textsizer.Add(self.emaillink, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
-        #textsizer.Add((10, 10), 0, wx.ALIGN_LEFT, 0)
-
-        sizerPane1.Add(textsizer, 1, wx.ALIGN_BOTTOM, 0)
-        
-        self.notebook_1_pane_1.SetSizer(sizerPane1)
-        sizerPane1.Fit(self.notebook_1_pane_1)
-        sizerPane1.SetSizeHints(self.notebook_1_pane_1)
-        
-        sizer_3.Add(self.GPL_TEXT,1, wx.EXPAND, 0)
-
-        self.notebook_1_pane_2.SetSizer(sizer_3)
-        sizer_3.Fit(self.notebook_1_pane_2)
-        sizer_3.SetSizeHints(self.notebook_1_pane_2)
-        
-        ## THANKS
-        sizer_thanks.Add( self.THANKS,1, wx.EXPAND,0 )
-        self.notebook_1_pane_3.SetSizer( sizer_thanks )
-        sizer_thanks.Fit( self.notebook_1_pane_3 )
-        sizer_thanks.SetSizeHints( self.notebook_1_pane_3 )
-        
-        
-        self.nb.AddPage(self.notebook_1_pane_1, _("About"))
-        self.nb.AddPage(self.notebook_1_pane_3, _("Thanks"))
-        self.nb.AddPage(self.notebook_1_pane_2, _("Licence"))
-        
-        sizer_1.Add(self.nb, 1, wx.EXPAND, 0)
-
-        self.SetSizer(sizer_1)
-        sizer_1.Fit(self)
-        sizer_1.SetSizeHints(self)
-        self.Layout()
-        self.Centre()
-        # end wxGlade
         
 
-class DialogSettings(wx.Dialog):
+class xxDialogSettings(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, _("Settings"), pos = wx.DefaultPosition)#, size =(450,-1))
         
@@ -139,7 +49,7 @@ class DialogSettings(wx.Dialog):
         PANE2 = wx.Panel(nb, -1)
 
         ## The layout of PANE1 begins:
-        font = wx.Font(fpsys.SYSFONT["points_x_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
+        font = wx.Font(SYSFONT["points_x_large"], SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
         labelHeading = wx.StaticText(self, -1, _("Settings"))
         labelHeading.SetFont(font)
 
@@ -329,7 +239,7 @@ class DialogCheckFonts( wx.Dialog ):
         ## LEFT
         leftsz = wx.BoxSizer(wx.VERTICAL)
 
-        font = wx.Font(fpsys.SYSFONT["points_large"], fpsys.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
+        font = wx.Font(SYSFONT["points_large"], SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
         title = wx.StaticText( self,-1,  _("Choose a directory and double click it to start"))
         title.SetFont( font )
         leftsz.Add(title,0,wx.EXPAND | wx.ALL, border=4 )

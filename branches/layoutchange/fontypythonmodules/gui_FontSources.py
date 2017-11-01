@@ -56,9 +56,7 @@ class FontSourcesPanel(wx.Panel):
 
         ## Notebook label and icon
         view_icon = icon(self, 'icon_source')
-        view_label = label(self,
-                _("Sources: Folders or Pogs"), 
-                size = "points_large")
+        view_label = label(self,_("Sources: Folders or Pogs") )
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
@@ -240,36 +238,6 @@ class NoteBook(wx.Notebook):
             ## the font view. This is wierd. So, clearing the selection makes this moot.
             self.tree.UnselectAll() # Found this method in the wxpython book.
 
-    #def OnContextMenu(self, event):
-    #	# only do this part the first time so the events are only bound once
-    #	if not hasattr(self, "popupID1"):
-    #		self.popupID1 = wx.NewId()
-    #		self.popupID2 = wx.NewId()
-    #
-    #		self.Bind(wx.EVT_MENU, self.OnPopupOne, id=self.popupID1)
-    #		self.Bind(wx.EVT_MENU, self.OnPopupTwo, id=self.popupID2)
-
-    #	# make a menu
-    #	menu = wx.Menu()
-        # Show how to put an icon in the menu
-        #item = wx.MenuItem(menu, self.popupID1,"One")
-        #bmp = images.getSmilesBitmap()
-        #item.SetBitmap(bmp)
-        #menu.AppendItem(item)
-        # add some other items
-    #	menu.Append(self.popupID1, _("Add fonts in this folder to a Pog.") )
-    #	menu.Append(self.popupID2, _("Add fonts in this folder and sub-folders to a Pog.") )
-
-        # Popup the menu.  If an item is selected then its handler
-        # will be called before PopupMenu returns.
-    #	self.PopupMenu(menu)
-    #	menu.Destroy()
-
-    #def OnPopupOne(self, event):
-    #	print "\n"
-
-    #def OnPopupTwo(self, event):
-    #	print "Popup one\n"
 
     def __onDirCtrlClick(self, e):
         wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!

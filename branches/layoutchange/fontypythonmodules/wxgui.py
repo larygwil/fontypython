@@ -48,7 +48,60 @@ from gui_FontSources import *
 from gui_FontView import *
 from gui_PogTargets import *
 
-from fpwx import setup_fonts_and_colours, wxbmp, icon, SYSFONT
+from fpwx import setup_fonts_and_colours, label, wxbmp, icon, SYSFONT
+
+
+
+
+
+
+
+flag_normal = 1
+flag_help = 2
+flag_about = 4
+class DismissablePanel(wx.Panel):
+    """
+    Only for sublcassing.
+    Provides a bar with a icon, title and X close button.
+    Under that is .. whatever.
+    """
+    def __init__(self, parent, flag, someicon=None, somelabel="Say something man!"):
+        wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
+        self.parent = parent
+        self.flag = flag
+
+        l = label( self, somelabel )
+        i = icon( self, someicon ) if someicon else (1,1)
+
+        #try:
+        #self.x_button = wx.BitmapButton(self, -1, wxbmp( "x" ), style = wx.NO_BORDER)
+        #except:
+        self.x_button = wx.Button(self, label="X", style=wx.NO_BORDER)
+
+        self.x_button.SetToolTipString( _("Dismiss") )
+        self.x_button.Bind( wx.EVT_BUTTON, self.on_x_click )
+
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        hbox.Add( i, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 4 )
+        hbox.Add( l, 1, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = 4 )
+        hbox.Add( self.x_button, 0, wx.EXPAND | wx.TOP | wx.BOTTOM | wx.RIGHT | wx.ALIGN_RIGHT, border = 4)
+
+        self.vbox = wx.BoxSizer(wx.VERTICAL)
+
+        self.vbox.Add( hbox, 0, wx.EXPAND )
+        ## Now, go fetch the .. whatever 
+        whatever = self.__post_init__()
+        self.vbox.Add( whatever, 1, wx.EXPAND)
+
+        self.SetSizer( self.vbox )
+        self.Layout()
+
+    def __post_init__(self):
+        pass
+
+    def on_x_click(self, evt):
+        self.parent.toggle_dismissable_panel(evt,self.flag)
+        pass
 
 
 ## Help file stuff
@@ -62,59 +115,37 @@ if loc is None or len(loc) < 2:
     langcode = 'en'
 else:
     langcode = loc[:2].lower()# This is going to cause grief in the future...
+class HtmlPanel(DismissablePanel):
+    ## Weird stuff:
+    class MyHtmlWindow(html.HtmlWindow):
+        def __init__(self, parent):
+            html.HtmlWindow.__init__(self, parent)
+            if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
+                self.SetStandardFonts()    
+    
+    def __init__(self, parent, flag):
+        DismissablePanel.__init__(self, parent, flag, somelabel="Help!")
 
-
-class HtmlPanel(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
-        self.html = MyHtmlWindow(self)
-
-        box = wx.BoxSizer(wx.VERTICAL)
-        
-        label = wx.StaticText( self, -1, 
-                _("To close the help, press F1 again."), 
-                style = wx.ALIGN_LEFT )
-        label.SetFont( wx.Font(SYSFONT["points_normal"], 
-            SYSFONT["family"], wx.NORMAL, 
-            wx.FONTWEIGHT_NORMAL) )       
-
-        box.Add( label, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 4 )
-        box.Add(self.html, 1, wx.GROW)
-
-        self.SetSizer( box )
-        self.SetAutoLayout(True)
+    def __post_init__(self):
+        self.html = HtmlPanel.MyHtmlWindow(self)
 
         ## Find localized help, or default to English.
         packpath = fpsys.fontyroot
         helppaf = os.path.join(packpath, "help", langcode, "help.html")
         if not os.path.exists( helppaf ):
             helppaf = os.path.join(packpath, "help", "en", "help.html")
-        self.html.LoadPage( helppaf )
-
-        box.Fit(self)
-
-        #A BACK button. I used internal 'top' links instead
-        #subbox = wx.BoxSizer(wx.HORIZONTAL)
-        #btn = wx.Button(self, wx.ID_BACKWARD)
-        #self.Bind(wx.EVT_BUTTON ,self.OnBack, btn)
-        #subbox.Add(btn, 1, wx.GROW | wx.ALL, 2)
-        #self.box.Add(subbox, 0, wx.GROW)
-    #def OnBack( self, e ):
-        #self.html.HistoryBack()
-
-class MyHtmlWindow(html.HtmlWindow):
-    def __init__(self, parent):
-        html.HtmlWindow.__init__(self, parent)
-        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
-            self.SetStandardFonts()
+        self.html.LoadPage( helppaf )        
+    
+        return self.html
 
 
-class AboutPanel(wx.Panel):
-    def __init__(self, parent):#*args, **kwds):
-        # begin wxGlade: MyDialog.__init__
-        #kwds["style"] = wx.DEFAULT_DIALOG_STYLE
-        wx.Panel.__init__(self,parent, -1, style = wx.NO_FULL_REPAINT_ON_RESIZE)
-# *args, **kwds)
+
+
+class AboutPanel(DismissablePanel):
+    def __init__(self, parent, flag):
+        DismissablePanel.__init__(self, parent, flag)
+
+    def __post_init__(self):
         self.nb = wx.Notebook(self, -1, style=0)
 
         self.notebook_1_pane_2 = wx.Panel(self.nb, -1)
@@ -134,23 +165,9 @@ class AboutPanel(wx.Panel):
 
         self.THANKS = wx.TextCtrl\
         (self.notebook_1_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
+        #self.THANKS = label(self.notebook_1_pane_3, strings.thanks, size="points_normal") 
 
-        #ID_ESC = 1001
-        #self.accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, wx.WXK_ESCAPE, ID_ESC)])
-        #self.SetAcceleratorTable(self.accel)
-        #self.Bind(wx.EVT_MENU, self.EscapeAbout, id=ID_ESC)
-
-        #self.__set_properties()
-        self.__do_layout()
-        self.notebook_1_pane_1.SetFocus()
-        # end wxGlade
-
-
-    #def EscapeAbout(self, event):
-    #    self.Close()
-
-    def __do_layout(self):
-        # begin wxGlade: MyDialog.__do_layout
+        # begin wxGlade: MyDialog.__do_layout. Argh. This is a mess....
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
@@ -176,7 +193,7 @@ class AboutPanel(wx.Panel):
         sizer_3.SetSizeHints(self.notebook_1_pane_2)
         
         ## THANKS
-        sizer_thanks.Add( self.THANKS,1, wx.EXPAND,0 )
+        sizer_thanks.Add( self.THANKS,1, wx.EXPAND | wx.ALL, border = 6 )
         self.notebook_1_pane_3.SetSizer( sizer_thanks )
         sizer_thanks.Fit( self.notebook_1_pane_3 )
         sizer_thanks.SetSizeHints( self.notebook_1_pane_3 )
@@ -187,13 +204,145 @@ class AboutPanel(wx.Panel):
         self.nb.AddPage(self.notebook_1_pane_2, _("Licence"))
         
         sizer_1.Add(self.nb, 1, wx.EXPAND, 0)
-
-        self.SetSizer(sizer_1)
-        sizer_1.Fit(self)
-        sizer_1.SetSizeHints(self)
-        self.Layout()
-        self.Centre()
+        
+        self.notebook_1_pane_1.SetFocus()
         # end wxGlade
+        return sizer_1
+
+
+
+
+#..newly moved into here, from dialogues.py. Nov 1 2017
+class xxSettingsPanel(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self,parent, -1, style = wx.NO_FULL_REPAINT_ON_RESIZE)
+        #wx.Dialog.__init__(self, parent, -1, _("Settings"), pos = wx.DefaultPosition)#, size =(450,-1))
+        
+        verticalSizer = wx.BoxSizer(wx.VERTICAL)
+    
+        nb = wx.Notebook(self, -1, style=0)
+        PANE1= wx.Panel(nb, -1)
+        PANE2 = wx.Panel(nb, -1)
+
+        ## The layout of PANE1 begins:
+        font = wx.Font(SYSFONT["points_x_large"], SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
+        labelHeading = wx.StaticText(self, -1, _("Settings"))
+        labelHeading.SetFont(font)
+
+        label_1 = wx.StaticText(PANE1, -1, _("Sample text:"))
+        self.inputSampleString = wx.TextCtrl(PANE1, -1, fpsys.config.text, size = (200, -1)) 
+        self.inputSampleString.SetFocus()
+        
+        label_2 = wx.StaticText(PANE1, -1, _("Point size:"))
+        self.inputPointSize = wx.SpinCtrl(PANE1, -1, "")
+        self.inputPointSize.SetRange(1, 500)
+        self.inputPointSize.SetValue(fpsys.config.points)
+        
+        label_3 = wx.StaticText(PANE1, -1, _("Page length:"))
+        self.inputPageLen = wx.SpinCtrl(PANE1, -1, "")
+        self.inputPageLen.SetRange(1, 5000) # It's your funeral!
+        self.inputPageLen.SetValue(fpsys.config.numinpage) 
+        self.inputPageLen.SetToolTip( wx.ToolTip( _("Beware large numbers!") ) )
+
+        PANE1sizer = wx.FlexGridSizer( rows=3, cols=2, hgap=5, vgap=8 )
+        PANE1sizer.Add(label_1, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        PANE1sizer.Add(self.inputSampleString, 1, wx.EXPAND )
+        PANE1sizer.Add(label_2, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        PANE1sizer.Add(self.inputPointSize, 0 )
+        PANE1sizer.Add(label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        PANE1sizer.Add(self.inputPageLen, 0 )
+
+        PANE1_buffer = wx.BoxSizer( wx.HORIZONTAL )
+        PANE1_buffer.Add( PANE1sizer, 1, wx.EXPAND | wx.ALL, border=10 )
+        PANE1.SetSizer( PANE1_buffer )
+
+
+        ## Layout of PANE2
+        ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
+        self.chkAdjust = wx.CheckBox(PANE2, -1, _("Disable font top-left correction."))
+        self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
+        self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds font drawing up a fraction, but degrades top-left positioning.") ) )
+        PANE2sizer = wx.BoxSizer( wx.VERTICAL )
+        PANE2sizer.Add(self.chkAdjust, 0, wx.ALIGN_LEFT | wx.BOTTOM, border=10 )
+
+        # The Character map choice
+        self.CMC = fpsys.config.CMC
+        if self.CMC.APPS_ARE_AVAILABLE:
+            self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
+            rb = wx.RadioBox(
+                    PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
+                    self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS
+                    )
+            
+            rb.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
+
+            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb)
+            rb.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
+            PANE2sizer.Add( rb, 0, wx.ALIGN_LEFT )
+        else:
+            self.CHOSEN_CHARACTER_MAP = None
+            no_app = wx.StaticText(PANE2, -1, _("Could not find a supported character viewer."))
+            PANE2sizer.Add( no_app, 0, wx.ALIGN_LEFT )
+
+
+        PANE2_buffer = wx.BoxSizer( wx.HORIZONTAL )
+        PANE2_buffer.Add( PANE2sizer, 1, wx.EXPAND | wx.ALL, border=10 )
+        PANE2.SetSizer( PANE2_buffer )
+
+        ## Add the panels to the notebook
+        nb.AddPage( PANE1, _("Quick settings") )
+        nb.AddPage( PANE2, _("Voodoo") )
+
+        ## Add label and a space to the vertical sizer
+        verticalSizer.Add( labelHeading, 0, wx.ALIGN_LEFT )
+        verticalSizer.Add( (0,5), 0 )
+
+        ## Add the notebook
+        verticalSizer.Add( nb, 1, wx.EXPAND | wx.ALL )
+        verticalSizer.Add((0,10),0) #space between bottom of grid and buttons
+
+        ## Make a std button group
+        btnsizer = wx.StdDialogButtonSizer()
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        btnsizer.AddButton(btn)
+        btn = wx.Button(self, wx.ID_CANCEL)
+        btnsizer.AddButton(btn)
+        btnsizer.Realize()
+    
+        ## Add button group to vertical sizer
+        verticalSizer.Add( btnsizer, 0, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL, border = 5)
+    
+        ## Make a 'buffer' to keep the insides away from the edges of the frame
+        buffer=wx.BoxSizer( wx.HORIZONTAL )
+        ## To get border to work use wx.EXPAND | wx.ALL
+        buffer.Add( verticalSizer, 1,wx.EXPAND | wx.ALL,  border=10 )
+
+        self.SetSizer( buffer )
+        buffer.Fit(self)
+        self.Layout()
+
+    def EvtRadioBox(self, event):
+        self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class StatusBar(wx.StatusBar):
     """
@@ -233,9 +382,7 @@ class StatusBar(wx.StatusBar):
 
 
 class MainFrame(wx.Frame):
-    flag_normal = 1
-    flag_help = 2
-    flag_about = 4
+
     """
     The main frame for the app. Has some functionality for menu items.
     """
@@ -314,8 +461,10 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
         self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
         self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
-        self.Bind(wx.EVT_MENU, self.toggle_about, id = 202)
-        self.Bind(wx.EVT_MENU, self.toggle_help, id = 201)
+        #Using a lambda to sneak that extra flag param into the handler.
+        #self.Bind(wx.EVT_MENU, self.toggle_about, id = 202)
+        self.Bind(wx.EVT_MENU, lambda evt, f=flag_help: self.toggle_dismissable_panel(evt,f), id = 201)
+        self.Bind(wx.EVT_MENU, lambda evt, f=flag_about:self.toggle_dismissable_panel(evt,f), id = 202)
         # June 2009
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
         self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
@@ -386,10 +535,10 @@ class MainFrame(wx.Frame):
             self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
             ## 31 Oct 2017
-            self.help_panel = HtmlPanel(self)
+            self.help_panel = HtmlPanel(self, flag_help)
             self.help_panel.Hide()
 
-            self.about_panel = AboutPanel(self)
+            self.about_panel = AboutPanel(self, flag_about)
             self.about_panel.Hide()
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
@@ -405,11 +554,11 @@ class MainFrame(wx.Frame):
 
             self.SetSizer(lrsizer)
 
-            self.panel_state = MainFrame.flag_normal
+            self.panel_state = flag_normal
             self.panel_dict={
-                    MainFrame.flag_normal: self.fontViewPanel, 
-                    MainFrame.flag_help  : self.help_panel,
-                    MainFrame.flag_about : self.about_panel
+                    flag_normal: self.fontViewPanel, 
+                    flag_help  : self.help_panel,
+                    flag_about : self.about_panel
             }
 
         ## Idle/resize idea from here:
@@ -470,7 +619,7 @@ class MainFrame(wx.Frame):
     
     def panel_control(self):
         if self.panel_state == 0:
-            self.panel_state = MainFrame.flag_normal
+            self.panel_state = flag_normal
 
         for flag, pan in self.panel_dict.iteritems():
             if self.is_state_flagged(flag):
@@ -483,17 +632,20 @@ class MainFrame(wx.Frame):
     def ensure_fontview_shown(self):
         ## For use from outside. 
         ## See start of gui_FontView.MainFontViewUpdate()
-        self.panel_state = MainFrame.flag_normal
+        self.panel_state = flag_normal
         self.panel_control()
 
-    def toggle_about(self, e):
-        self.flag_state_exclusive_toggle(MainFrame.flag_about)
-        self.panel_control()
+    #def toggle_about(self, e):
+    #    self.flag_state_exclusive_toggle(flag_about)
+    #    self.panel_control()
 
-    def toggle_help(self, e):
-        self.flag_state_exclusive_toggle(MainFrame.flag_help)
-        self.panel_control()
+    #def toggle_help(self, e):
+    #    self.flag_state_exclusive_toggle(flag_help)
+    #    self.panel_control()
 
+    def toggle_dismissable_panel(self, evt, flag):
+        self.flag_state_exclusive_toggle(flag)
+        self.panel_control()
 
 
     ##Only used if whatgui != 1
@@ -523,7 +675,7 @@ class MainFrame(wx.Frame):
     def onIdle(self, evt):
         #print "Idle runs"
         if self.resized:
-            if not self.is_state_flagged(MainFrame.flag_normal):
+            if not self.is_state_flagged(flag_normal):
                 # Don't call the big update
                 return
             #print "  Idle updates fontViewPanel"
