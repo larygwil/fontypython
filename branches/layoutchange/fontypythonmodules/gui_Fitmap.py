@@ -31,7 +31,7 @@ from PIL import Image, ImageFont, ImageDraw
 
 import collections
 
-
+from fpwx import SYSFONT
 
 
 class OverOutSignal(object):
@@ -74,8 +74,8 @@ class TextPencil(Pencil):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
         self.txt = txt
         ## I get point sizes from the SYSFONT dict
-        points = fpsys.SYSFONT[points]
-        self.font =  wx.Font( points, fpsys.SYSFONT["family"],
+        points = SYSFONT[points]
+        self.font =  wx.Font( points, SYSFONT["family"],
                 style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
         ## Measure a line of text in my font.

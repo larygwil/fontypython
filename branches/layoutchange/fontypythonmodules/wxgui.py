@@ -53,7 +53,7 @@ from gui_PogTargets import *
 
 
 
-from fpwx import setup_fonts_and_colours, wxbmp, icon
+from fpwx import setup_fonts_and_colours, wxbmp, icon, SYSFONT
 
 
 
@@ -80,8 +80,8 @@ class HtmlPanel(wx.Panel):
         label = wx.StaticText( self, -1, 
                 _("To close the help, press F1 again."), 
                 style = wx.ALIGN_LEFT )
-        label.SetFont( wx.Font(fpsys.SYSFONT["points_normal"], 
-            fpsys.SYSFONT["family"], wx.NORMAL, 
+        label.SetFont( wx.Font(SYSFONT["points_normal"], 
+            SYSFONT["family"], wx.NORMAL, 
             wx.FONTWEIGHT_NORMAL) )       
 
         box.Add( label, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 4 )

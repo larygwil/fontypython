@@ -119,13 +119,11 @@ class FontViewPanel(wx.Panel):
         sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)
 
 
-
         ## Page choice and Filter controls
         sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
 
         ## The clear filter button: added 10 Jan 2008
-        bmp = wx.Bitmap(fpsys.mythingsdir + "clear.png", type=wx.BITMAP_TYPE_PNG)
-        self.clearButton = wx.BitmapButton(self, -1, bmp, style = wx.NO_BORDER)
+        self.clearButton = wx.BitmapButton(self, -1, wxbmp( "clear" ), style = wx.NO_BORDER)
         self.clearButton.SetToolTipString( _("Clear filter") )
         self.clearButton.Bind( wx.EVT_BUTTON, self.OnClearClick )
 

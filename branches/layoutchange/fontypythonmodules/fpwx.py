@@ -46,10 +46,8 @@ def label(parent,
         weight = wx.FONTWEIGHT_NORMAL, 
         align = wx.ALIGN_LEFT):
     lbl = wx.StaticText( parent, -1, ustr, style = align )
-    lbl.SetFont( wx.Font(SYSFONT["points_large"], 
-        SYSFONT["family"], 
-        wx.NORMAL, 
-        weight) )
+    lbl.SetFont( wx.Font(SYSFONT[size], SYSFONT["family"], 
+                wx.NORMAL, weight) )
     return lbl
 
 def wxbmp( filename ):
