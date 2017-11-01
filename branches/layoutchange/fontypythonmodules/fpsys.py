@@ -875,12 +875,6 @@ LSP = linux_safe_path_library.linuxSafePath()
 iPC = PathControl(XDG_DATA_HOME)
 
 
-## Oct 2017 Default Font Family (System font)
-## And colours from the user's gui settings:
-## Setup in showMain() in wxgui.py
-SYSFONT={}
-SYSCOLS={}
-
 
 ## Borrowed from wxglade.py
 ## The reason for this is to find the path of this file

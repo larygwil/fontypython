@@ -53,25 +53,9 @@ from gui_PogTargets import *
 
 
 
+from fpwx import setup_fonts_and_colours, wxbmp, icon
 
 
-def setup_fonts_and_colours():
-    fpsys.SYSCOLS.update(
-    {"gray"  : wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT),
-     "shadow": wx.SystemSettings.GetColour(wx.wx.SYS_COLOUR_BTNSHADOW),
-    })
-
-    wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-    ps = wxfont.GetPointSize()
-    fpsys.SYSFONT.update(
-       {"font"           : wxfont,
-        "family"         : wxfont.GetFamily(),
-        "points_smaller" : ps*0.9,
-        "points_normal"  : ps,
-        "points_large"   : ps*1.07,
-        "points_x_large" : ps*1.2,
-        "points_xx_large": ps*2
-        })
 
 ## Help file stuff
 ## Moved from dialogues on 31 OCt 2017
@@ -143,8 +127,9 @@ class AboutPanel(wx.Panel):
         self.notebook_1_pane_1 = wx.Panel(self.nb, -1)
         self.notebook_1_pane_3 = wx.Panel(self.nb, -1)
 
-        self.bLOGO = wx.StaticBitmap\
-        (self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
+        #self.bLOGO = wx.StaticBitmap\
+        #(self.notebook_1_pane_1, -1, wx.Bitmap(fpsys.mythingsdir + 'aboutfplogo.png', wx.BITMAP_TYPE_ANY))
+        self.bLOGO = icon(self.notebook_1_pane_1, 'aboutfplogo')
 
         self.AboutText = wx.StaticText\
         (self.notebook_1_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
@@ -782,7 +767,7 @@ class FontySplash(wx.SplashScreen):
             Borrowing from the wxPython demo's code.
         """
         def __init__(self, parent=None):
-            aBitmap = wx.Bitmap( fpsys.mythingsdir + "splash.png", wx.BITMAP_TYPE_PNG )
+            aBitmap = wxbmp( "splash" )
             splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
             splashDuration = 1000 # milliseconds
 

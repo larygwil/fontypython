@@ -45,7 +45,7 @@ from wxgui import ps
 from gui_PogChooser import *
 import fontyfilter
 
-from gui_stuff import label, icon 
+from fpwx import label, icon 
 
 class FontSourcesPanel(wx.Panel):
     """

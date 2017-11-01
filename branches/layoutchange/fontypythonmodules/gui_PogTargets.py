@@ -41,7 +41,7 @@ import fontybugs
 
 ## Fetch the dialogue classes - used for zip dir dialog.
 import dialogues
-from gui_stuff import label, icon
+from fpwx import label, icon
 
 class TargetPogChooser(wx.Panel):
     """
