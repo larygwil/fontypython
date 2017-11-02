@@ -214,13 +214,31 @@ class AboutPanel(DismissablePanel):
 
 
 
-#..newly moved into here, from dialogues.py. Nov 1 2017
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
         DismissablePanel.__init__(self, parent, flag_settings)
 
+    def _set_values(self):
+        self.inputPageLen_val = fpsys.config.numinpage
+        self.inputPointSize_val = fpsys.config.points
+        self.inputSampleString_val = fpsys.config.text
+        self.chkAdjust_val = fpsys.config.ignore_adjustments
+        self.CMC_val = fpsys.config.CMC
+
+    def show_or_hide(self,evt):
+        evt.Skip()
+        if self.IsShown():
+            self._update_form()
+
+    def _update_form(self):
+        self._set_values()
+        # Most of the controls will "remember" their last setting.
+        # The only one that can change outside the settings is:
+        # The point size - can change by the wheel - hence update it:
+        self.inputPointSize.SetValue( self.inputPointSize_val )
+
     def __post_init__(self):
-        
+        self._set_values()
         verticalSizer = wx.BoxSizer(wx.VERTICAL)
     
         nb = wx.Notebook(self, -1, style=0)
@@ -233,18 +251,21 @@ class SettingsPanel(DismissablePanel):
         labelHeading.SetFont(font)
 
         label_1 = wx.StaticText(PANE1, -1, _("Sample text:"))
-        self.inputSampleString = wx.TextCtrl(PANE1, -1, fpsys.config.text, size = (200, -1)) 
+        #self.inputSampleString = wx.TextCtrl(PANE1, -1, fpsys.config.text, size = (200, -1)) 
+        self.inputSampleString = wx.TextCtrl(PANE1, -1, self.inputSampleString_val, size = (200, -1)) 
         self.inputSampleString.SetFocus()
         
         label_2 = wx.StaticText(PANE1, -1, _("Point size:"))
         self.inputPointSize = wx.SpinCtrl(PANE1, -1, "")
         self.inputPointSize.SetRange(1, 500)
-        self.inputPointSize.SetValue(fpsys.config.points)
+        #self.inputPointSize.SetValue(fpsys.config.points)
+        self.inputPointSize.SetValue( self.inputPointSize_val )
         
         label_3 = wx.StaticText(PANE1, -1, _("Page length:"))
         self.inputPageLen = wx.SpinCtrl(PANE1, -1, "")
         self.inputPageLen.SetRange(1, 5000) # It's your funeral!
-        self.inputPageLen.SetValue(fpsys.config.numinpage) 
+        #self.inputPageLen.SetValue(fpsys.config.numinpage) 
+        self.inputPageLen.SetValue( self.inputPageLen_val ) 
         self.inputPageLen.SetToolTip( wx.ToolTip( _("Beware large numbers!") ) )
 
         PANE1sizer = wx.FlexGridSizer( rows=3, cols=2, hgap=5, vgap=8 )
@@ -263,25 +284,26 @@ class SettingsPanel(DismissablePanel):
         ## Layout of PANE2
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
         self.chkAdjust = wx.CheckBox(PANE2, -1, _("Disable font top-left correction."))
-        self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
+        #self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
+        self.chkAdjust.SetValue( self.chkAdjust_val ) 
         self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds font drawing up a fraction, but degrades top-left positioning.") ) )
         PANE2sizer = wx.BoxSizer( wx.VERTICAL )
         PANE2sizer.Add(self.chkAdjust, 0, wx.ALIGN_LEFT | wx.BOTTOM, border=10 )
 
         # The Character map choice
-        self.CMC = fpsys.config.CMC
+        self.CMC = self.CMC_val #fpsys.config.CMC
         if self.CMC.APPS_ARE_AVAILABLE:
             self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
-            rb = wx.RadioBox(
+            self.CMCrb = wx.RadioBox(
                     PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS
                     )
             
-            rb.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
+            self.CMCrb.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
 
-            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb)
-            rb.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
-            PANE2sizer.Add( rb, 0, wx.ALIGN_LEFT )
+            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, self.CMCrb)
+            self.CMCrb.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
+            PANE2sizer.Add( self.CMCrb, 0, wx.ALIGN_LEFT )
         else:
             self.CHOSEN_CHARACTER_MAP = None
             no_app = wx.StaticText(PANE2, -1, _("Could not find a supported character viewer."))
@@ -304,17 +326,11 @@ class SettingsPanel(DismissablePanel):
         verticalSizer.Add( nb, 1, wx.EXPAND | wx.ALL )
         verticalSizer.Add((0,10),0) #space between bottom of grid and buttons
 
-        ## Make a std button group
-        btnsizer = wx.StdDialogButtonSizer()
-        btn = wx.Button(self, wx.ID_OK)
-        btn.SetDefault()
-        btnsizer.AddButton(btn)
-        btn = wx.Button(self, wx.ID_CANCEL)
-        btnsizer.AddButton(btn)
-        btnsizer.Realize()
+        ## Make an "apply" button. It gets caught in MainFrame.
+        btn = wx.Button(self, wx.ID_APPLY)
     
         ## Add button group to vertical sizer
-        verticalSizer.Add( btnsizer, 0, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL, border = 5)
+        verticalSizer.Add( btn, 0, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL, border = 5)
     
         ## Make a 'buffer' to keep the insides away from the edges of the frame
         buffer=wx.BoxSizer( wx.HORIZONTAL )
@@ -482,6 +498,12 @@ class MainFrame(wx.Frame):
         ## close (X) button of the DismissablePanels at the moment.
         self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel)
 
+        ## Catch the Apply button in the settings panel.
+        ## Placed *after* the generic catch for toggle_dismissable_panel
+        ## because it was being superceded.
+        self.Bind(wx.EVT_BUTTON, self.menuSettings, id=wx.ID_APPLY)
+
+
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
 
@@ -546,7 +568,8 @@ class MainFrame(wx.Frame):
             self.fontViewPanel = FontViewPanel(self)
             self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
-            ## 31 Oct 2017
+            ## Oct/Nov 2017
+            ## Moved some dialogues into the app as panels:
             self.help_panel = HtmlPanel(self)
             self.help_panel.Hide()
 
@@ -555,6 +578,7 @@ class MainFrame(wx.Frame):
 
             self.settings_panel = SettingsPanel(self)
             self.settings_panel.Hide()
+            self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -570,6 +594,7 @@ class MainFrame(wx.Frame):
 
             self.SetSizer(lrsizer)
 
+            ## A system to control the hide/show of these panels.
             self.panel_state = flag_normal
             self.panel_dict={
                     flag_normal  : self.fontViewPanel, 
@@ -746,19 +771,20 @@ class MainFrame(wx.Frame):
         self.Destroy()
 
     def menuSettings(self, e):
+        print "menuSettings runs."
         lastnuminpage = fpsys.config.numinpage
         lastpoints = fpsys.config.points
         lasttext = fpsys.config.text
         lastias = fpsys.config.ignore_adjustments
 
-        dlg = dialogues.DialogSettings(self)
-        val = dlg.ShowModal()
-        if val == wx.ID_OK:
+        #dlg = dialogues.DialogSettings(self)
+        #val = dlg.ShowModal()
+        if True:#val == wx.ID_OK:
             ## Did anything change?
-            num = int(dlg.inputPageLen.GetValue())
-            points = int(dlg.inputPointSize.GetValue())
-            txt = dlg.inputSampleString.GetValue()
-            ignore_adjust = dlg.chkAdjust.GetValue() #Sept 2009
+            num = int(self.settings_panel.inputPageLen.GetValue())
+            points = int(self.settings_panel.inputPointSize.GetValue())
+            txt = self.settings_panel.inputSampleString.GetValue()
+            ignore_adjust = self.settings_panel.chkAdjust.GetValue() #Sept 2009
 
             stuffchanged = False
             if num != lastnuminpage:
@@ -778,13 +804,16 @@ class MainFrame(wx.Frame):
                 ## fpsys.state.reflow_only = False
                 stuffchanged = True
 
-            fpsys.config.CMC.SET_CURRENT_APPNAME( dlg.CHOSEN_CHARACTER_MAP) # Oct 2009
+            fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP) # Oct 2009
 
-            ## Now to refresh things:
-            if stuffchanged: 
-                ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
-                ps.pub( update_font_view )
-        dlg.Destroy()
+        ## Now to refresh things:
+        if stuffchanged: 
+            ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
+            ## Will hide the settings_panel too
+            ps.pub( update_font_view )
+        else:
+            ## With no changes, we must hide the settings_panel
+            self.ensure_fontview_shown()
 
 
 
