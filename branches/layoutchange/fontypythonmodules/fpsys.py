@@ -218,7 +218,8 @@ class PathControl:
                     for f in files:
                         oldpaf = os.path.join(old_fp, f)
                         newpaf = os.path.join(new_fp, f)
-                        ##TESTER: newpaf = os.path.join("/root/", f)
+                        ##TESTER: 
+                        ## newpaf = os.path.join("/root/", f)
                         shutil.move(oldpaf, newpaf)
                 except Exception as e:
                     self.__ERROR_STATE["UpgradeFail"] = fontybugs.UpgradeFail(

@@ -814,7 +814,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         iCM.Cleanup( )
 
     def onMiddleClick(self, event):
-        ps.pub( menu_settings, None )
+        ps.pub( open_settings_panel)
 
     def can_have_button( self ):
         """

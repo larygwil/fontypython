@@ -32,13 +32,14 @@ def setup_fonts_and_colours():
     wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     ps = wxfont.GetPointSize()
     SYSFONT.update(
-       {"font"           : wxfont,
-        "family"         : wxfont.GetFamily(),
-        "points_smaller" : ps*0.9,
-        "points_normal"  : ps,
-        "points_large"   : ps*1.07,
-        "points_x_large" : ps*1.2,
-        "points_xx_large": ps*2
+       {"font"            : wxfont,
+        "family"          : wxfont.GetFamily(),
+        "points_smaller"  : ps*0.9,
+        "points_normal"   : ps,
+        "points_large"    : ps*1.07,
+        "points_x_large"  : ps*1.2,
+        "points_xx_large" : ps*1.5,
+        "points_xxx_large": ps*2,
         })
 
 def label(parent, 

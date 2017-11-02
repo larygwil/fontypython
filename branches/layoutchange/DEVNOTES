@@ -66,78 +66,45 @@ I intend to get to the filter/pager stuff too, but will try to do that in its ow
 
 BUGS
 ==
-FIXED* Just saw: In fitem - space between the name of the font and the "This is in" message is too small.
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
-
-NB::Don't forget to remove the wx debug stuff on the app object
-
-* Was working on showing multiple columns of fonts in the middle view. All okay but for the initial panel size being 0 when app runs. 
-* Another idea - to ask the user how many cols they want; get the width from that (panelwidth/numcolswanted) and then send that width into the code that draws the actual bitmaps. 
-* Possible: A fade-to-white on right edge of fitmaps so long text doesn't look so cut-off.
-* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. Still the old idea for an HTML style pager control.
-* Was also messing in pubsub. Added a return factor to it - also added a new key = sash position ish  -- idea was to get the width of scroll panel in some cleaner way than exists. Then ripped it out: it causes recursion issues.
-* Maybe - the scroll panel can be measured during its init? store that for when it reports 0?
-* Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
-
-
-
-TOFIX
-==
-% outside brackets _("") % out here, not inside.
-_("text {}").format(stuff)
-comments in fontcontrol are stale
-copyright dates replace
-man page
-pyc files in svn
-PEP8 all up in da hizzle - well, the tabs to spaces part.
-it's, its ...
-Fix remarks - lots of refs to files and line numbers that are long gone
 
 
 
 
 TODO
 ==
+* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. Still the old idea for an HTML style pager control.
+* NB::Don't forget to remove the wx debug stuff on the app object
 * UPDATE CHANGELOG
 * UPDATE README
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
 * Fix the state config for the window size etc.
-* Fix the fugly Help cancel button and size etc.
 * Fix the fugly look of the help file.
 
-NB!* YELLOW colour of the bad font icon sucks on the white backdrop.
+* Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
 
-* TARGET POG ICON should be some form of -> arrow. (Not the globe icon it is now.)
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
 * Do we need the wrapper and the segfonts stuff?
-* Make the settings window all one panel - no more notebook "voodoo" stuff.
+* Make the About page HTML!
 
-FITMAP issues
-==
-* Fontitems that error have width issues
-* Button to put fonts into pog --> not redrawing fitems properly. The ticks stay on screen.
+* Setting option - max number of columns to split fontview into. So there are no more than n columns.
+
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
+
+* Fix % outside brackets _("") % out here, not inside.
+   _("text {}").format(stuff)
+* comments that are stale
+* copyright dates replace
+* pyc files in svn
+* PEP8 all up in da hizzle - well, the tabs to spaces part.
+* it's, its ...
 
 
-* When a fitmap redraws it's width gets reset and it can over-write the fitmaps alongside (in the flex sizer)
-  I must constrain the width somehow
-
-* When font size gets small enough, the fitmaps start to float in too much whitespace...
 
 
 
-Fitmap & ScrolledFontView notes
-==
-After a lot of time and experiments, here's my summary:
-1. Each fitmap will do its best to be efficient - it will cache and buffer and all that stuff.
-2. In ScrolledFontView, make new fitmaps for the viewobject except where a prior fitmap is still valid.
-3. Do not export efficiency into higher layers. Keep it all in the fitmap class.
-Point 3 means I won't be trying to pre-make/pre-measure in order to get widths; in order to divide
-up the space into columns. I will simply make the entire fitmap - draw the whole bitmap - and then
-measure that. The fitmap must be as efficient as possible; not the code higher-up that uses fitmaps.
 
-Reasoning: It's a false economy to optimize outside of Fitmap. One starts to build more state things
-and then to estimate widths and do pre-pre-prep stuff. It's fucking insane.
 
 
 Oct 2017: A new Segfault!
@@ -154,10 +121,6 @@ Floating point exception (core dumped)
 Can't reproduce... :(
 
 
-SHORT-TERM MEMORY NOTES (Sadly now lost to time)
-==
-* In MainFontViewUpdate, put the TICKMAP into fpsys.state !
-* Then .. can state itself detect if it's changed? We can test an fpsys.state change directly in MinimalCreateFitmaps...
 
 
 FREETYPE SUPPORTED FONTS:
@@ -192,7 +155,6 @@ FUTURE IDEAS
 * DONE! A font inspector - open a dialogue showing all the glyphs at each character position. This has been asked for, but may not make it into Fonty soon.
 
 * Distinguish TTC somehow
-* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 
 
 

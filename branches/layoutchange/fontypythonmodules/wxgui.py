@@ -68,8 +68,8 @@ flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 class DismissablePanel(wx.Panel):
     """
     Only for subclassing.
-    Provides a bar with an icon, title and X close button.
-    Under that is .. whatever.
+    Provides a bar with an icon, title and an X close button.
+    Under that is .. whatever: usually a sizer.
     """
     def __init__(self, parent, flag, someicon=None, somelabel="Say something man!"):
         id = id_from_flag[flag]
@@ -116,6 +116,7 @@ if loc is None or len(loc) < 2:
     langcode = 'en'
 else:
     langcode = loc[:2].lower()# This is going to cause grief in the future...
+
 class HtmlPanel(DismissablePanel):
     ## Weird stuff:
     class MyHtmlWindow(html.HtmlWindow):
@@ -129,17 +130,13 @@ class HtmlPanel(DismissablePanel):
 
     def __post_init__(self):
         self.html = HtmlPanel.MyHtmlWindow(self)
-
         ## Find localized help, or default to English.
         packpath = fpsys.fontyroot
         helppaf = os.path.join(packpath, "help", langcode, "help.html")
         if not os.path.exists( helppaf ):
             helppaf = os.path.join(packpath, "help", "en", "help.html")
         self.html.LoadPage( helppaf )        
-    
         return self.html
-
-
 
 
 class AboutPanel(DismissablePanel):
@@ -292,28 +289,17 @@ class SettingsPanel(DismissablePanel):
         settings_sizer.Add((1,1),0)
         settings_sizer.Add(rb_or_nada, 1)
 
-        ## Make an "apply" button. It gets caught in MainFrame.
+        ## Make an "apply" button. Click gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
     
         ## Make a 'buffer' to keep the insides away from the edges of the frame
         b = wx.BoxSizer( wx.VERTICAL )
-        ## To get border to work use wx.EXPAND | wx.ALL
         b.Add( settings_sizer, 0, wx.EXPAND | wx.ALL,  border=10 )
         b.Add( btn, 0, wx.ALL, border=10)
         return b
 
     def EvtRadioBox(self, event):
         self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -364,7 +350,7 @@ class StatusBar(wx.StatusBar):
 class MainFrame(wx.Frame):
 
     """
-    The main frame for the app. Has some functionality for menu items.
+    The main frame for the app.
     """
     def __init__(self,parent,title) :
         ## Draw the frame
@@ -374,7 +360,7 @@ class MainFrame(wx.Frame):
         #print "Main frame:", self.GetSizeTuple()[0]
 
         ## Try to show an icon
-        ## Oct 2017: Seems Unity (at least) doesn't even show icons...
+        ## Oct 2017: Seems Unity (at least) doesn't even bother...
         try:
             i = wx.EmptyIcon()
             i.CopyFromBitmap( wxbmp('fplogo'))
@@ -577,32 +563,31 @@ class MainFrame(wx.Frame):
         self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
         ## Now to subscribe to have my various def called from other places:
-        ps.sub(show_error, self.ErrorBox) ##DND: class MainFrame
-        ps.sub(show_error_and_abort, self.ErrorAbort) ##DND: class MainFrame
-        ps.sub(show_message, self.MessageBox) ##DND: class MainFrame
-        ps.sub(print_to_status_bar, self.StatusbarPrint) ##DND: class MainFrame
-        ## Dec 2007 - Used on middle click in gui_Fitmap.py
-        ps.sub( menu_settings, self.menuSettings ) ##DND: class MainFrame
-        ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem ) ##DND: class MainFrame
+        ps.sub(show_error, self.ErrorBox)
+        ps.sub(show_error_and_abort, self.ErrorAbort)
+        ps.sub(show_message, self.MessageBox)
+        ps.sub(print_to_status_bar, self.StatusbarPrint)
 
-        ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem ) ##DND: class MainFrame
+        ## Dec 2007 - Used on middle click in gui_Fitmap.py
+        ps.sub( open_settings_panel, self.open_settings_panel )
+        ps.sub( toggle_selection_menu_item, self.toggleSelectionMenuItem )
+
+        ps.sub( toggle_purge_menu_item, self.TogglePurgeMenuItem )
         ps.sub( ensure_fontview_shown, self.ensure_fontview_shown )
         
 
         ## call the big one - the big chief, the big cheese:
         ## This eventually draws all the Fitmaps - giving the middle a width.
-        ps.pub( update_font_view ) #DND: It's in gui_FontView.py under class FontViewPanel
+        ps.pub( update_font_view ) #See gui_FontView.py under class FontViewPanel
 
 
         self.SetMinSize(wx.Size(MINSCREENWIDTH,600)) #Old Skool: Assuming monitor size...
         self.Layout()
 
-
         ## This is to draw the correct icons depending on cli params.
         self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
-
-
+    ## State stuff to manage the DismissablePanels
     def flag_state_on(self, flag):
         self.panel_state |= flag
 
@@ -621,7 +606,7 @@ class MainFrame(wx.Frame):
         #print "state is: {:08b}".format( self.panel_state)
         return self.panel_state & flag == flag
     
-    def panel_control(self):
+    def hide_or_show_panels(self):
         if self.panel_state == 0:
             self.panel_state = flag_normal
 
@@ -638,7 +623,7 @@ class MainFrame(wx.Frame):
         ## For use from outside. 
         ## See start of gui_FontView.MainFontViewUpdate()
         self.panel_state = flag_normal
-        self.panel_control()
+        self.hide_or_show_panels()
 
     def toggle_dismissable_panel(self, evt):
         """
@@ -646,11 +631,13 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        print "toggleSelectionMenuItem runs."
+        #print "toggleSelectionMenuItem runs."
         flag = flag_from_id.get(evt.GetId(),None)
         if flag:
             self.flag_state_exclusive_toggle(flag)
-            self.panel_control()
+            self.hide_or_show_panels()
+
+
 
 
     ##Only used if whatgui != 1
@@ -731,39 +718,36 @@ class MainFrame(wx.Frame):
         fpsys.config.recurseFolders = app.GetTopWindow().panelFontSources.nb.recurseFolders.GetValue()
         self.Destroy()
 
+    def open_settings_panel(self):
+        """Called from Fitmap on middle click."""
+        self.flag_state_exclusive_toggle( flag_settings )
+        self.hide_or_show_panels()
+
     def menuSettings(self, e):
-        print "menuSettings runs."
         lastnuminpage = fpsys.config.numinpage
         lastpoints = fpsys.config.points
         lasttext = fpsys.config.text
         lastias = fpsys.config.ignore_adjustments
 
-        #dlg = dialogues.DialogSettings(self)
-        #val = dlg.ShowModal()
-        if True:#val == wx.ID_OK:
-            ## Did anything change?
-            num = int(self.settings_panel.inputPageLen.GetValue())
-            points = int(self.settings_panel.inputPointSize.GetValue())
-            txt = self.settings_panel.inputSampleString.GetValue()
-            ignore_adjust = self.settings_panel.chkAdjust.GetValue() #Sept 2009
+        ## Did anything change?
+        num = int(self.settings_panel.inputPageLen.GetValue())
+        points = int(self.settings_panel.inputPointSize.GetValue())
+        txt = self.settings_panel.inputSampleString.GetValue()
+        ignore_adjust = self.settings_panel.chkAdjust.GetValue() #Sept 2009
 
-            stuffchanged = False
-            if num != lastnuminpage:
-                fpsys.config.numinpage = int(num)
-                stuffchanged = True
-            if txt != lasttext:
-                if len(txt) > 0: fpsys.config.text =  txt
-                stuffchanged = True
-            if points != lastpoints:
-                fpsys.config.points = int(points)
-                ##TODO kill #Crucial flag to force a redraw of font bitmaps later
-                ## #fpsys.state.point_size_changed_flag = True
-                ## fpsys.state.reflow_only = False
-                stuffchanged = True
-            if ignore_adjust != lastias:
-                fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
-                ## fpsys.state.reflow_only = False
-                stuffchanged = True
+        stuffchanged = False
+        if num != lastnuminpage:
+            fpsys.config.numinpage = int(num)
+            stuffchanged = True
+        if txt != lasttext:
+            if len(txt) > 0: fpsys.config.text =  txt
+            stuffchanged = True
+        if points != lastpoints:
+            fpsys.config.points = int(points)
+            stuffchanged = True
+        if ignore_adjust != lastias:
+            fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
+            stuffchanged = True
 
             fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP) # Oct 2009
 
@@ -869,8 +853,11 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
         self.Init()  # initialize the inspection tool
 
         ## Initial dialogue to inform user about wx unicode version.
-        if not "unicode" in wx.PlatformInfo:
-            wx.MessageBox(_("I am sorry, but Unicode is not supported by this installation of wxPython. Fonty Python relies on Unicode and will simply not work without it.\n\nPlease fetch and install the Unicode version of python-wxgtk."),
+        if not "xxunicode" in wx.PlatformInfo:
+            wx.MessageBox(_("I am sorry, but Unicode is not supported by this" \
+            "installation of wxPython. Fonty Python relies on Unicode and will" \
+            "simply not work without it.\n\nPlease fetch and install the" \
+            "Unicode version of python-wxgtk."),
                 caption=_("SORRY: UNICODE MUST BE SUPPORTED"),
                 style=wx.OK | wx.ICON_EXCLAMATION )
             raise SystemExit

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-## Fonty Python Copyright (C) 2017 Donn.C.Ingle
+## Fonty Python Copyright (C) 2006-2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ## This file is part of Fonty Python.
@@ -59,60 +59,58 @@ c1 = [os.path.join(fontyroot,'start_fontypython') ]
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
 
-p1 = subprocess.call( c1 )
-if p1 == 0:
-    print
-    #print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
-elif p1 == 1:
-    print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
-else: # err code -11
+#p1 = subprocess.call( c1 )
+
+p1=-11 # to test
+
+#if p1 == 0:
+#    print
+#    #print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
+#elif p1 == 1:
+#    print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
+if p1 < 0:
+    # err code -11
     #print "ERROR CODE:", p1
     ## This actually works!
     import sys, os, locale
-    #import fontypythonmodules.fpsys as FPSYS
     import fontypythonmodules.fontybugs as fontybugs
-    import fontypythonmodules.fpsys.PathControl as PC # Will this work?
+    import fontypythonmodules.fpsys as fpsys
     import wx, fontypythonmodules.dialogues as D
-
-    ## July 2016 - Removed as causing a segfault in wxPython.
-    ## Setup wxPython to access translations : enables the stock buttons.
-    ## localedir = "fontypythonmodules/locales"
-    ## langid = wx.LANGUAGE_DEFAULT
-    ## mylocale = wx.Locale( langid )
-
-    iPC = PC.PathControl() #??
-
-    ##TODO ?? DO I EVEN NEED THIS WRAPPER or lastFontBeforeSegfault etc? PIL seems super stable now in 2017
-
-    def getSegfaulter():
-        """
-        What was the last font to segfault PIL?
-        """
-        iPC.probeNoFontypythonDirError() # Will raise...
-
-        paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
-        culprit = None
-        try:
-            f = open( paf, "r" )
-            culprit = f.readline()[:-1]
-            f.close()
-        except:
-            raise
-        return culprit
+    from fontypythonmodules.fpwx import setup_fonts_and_colours
 
     ## Start the App and then show the Segfault dialog.
     class App(wx.App):
         def OnInit(self):
+            #try:
+            #    fpsys.iPC.probeNoFontypythonDirError() # Will raise...
+            ### App stopping errors:
+            #except (fontybugs.NoFontypythonDir, fontybugs.UpgradeFail) as e:
+            #    wx.MessageBox( e.unicode_of_error(),
+            #        caption=_("FATAL ERROR"),
+            #        style=wx.OK | wx.ICON_ERROR )
+            #    ## This one is unrecoverable:
+            #    raise SystemExit
+            
+            culprit = None
             try:
-                culprit = getSegfaulter()
-            except fontybugs.NoFontypythonDir as e:
-                e.print_error_and_quit() # hard luck.
+                paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
+                f = open( paf, "r" )
+                culprit = f.readline()[:-1]
+                f.close()
+                if culprit == "": culprit = None
+                sadStory = _("There's some problem with the font named below.\n" \
+                "Please use the \"Check Fonts\" tool in Fonty (from the command-line" \
+                "or in the Tools menu) to check this directory and mark the "\
+                "dangerous fonts.\n\n" )
+            except Exception as e:
+                sadStory = _(u"I could not find the "\
+                        "\"lastFontBeforeSegfault\" file.\n" \
+                        "The error was:\n{}").format(e)
 
-            #print culprit
-            dlg = D.SegfaultDialog(None, culprit)
+            setup_fonts_and_colours()
+
+            dlg = D.SegfaultDialog(None, sadStory, culprit)
             val = dlg.ShowModal()
-            if val == wx.ID_OK:
-                print _("Please restart Fonty Python after you have moved:\"%s\" to some other place.") % culprit
             dlg.Destroy()
             return True
     app = App(0)
