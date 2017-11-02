@@ -77,7 +77,7 @@ class DismissablePanel(wx.Panel):
         self.parent = parent
         self.flag = flag
 
-        l = label( self, somelabel )
+        l = label( self, somelabel, size="points_x_large", weight=wx.FONTWEIGHT_BOLD )
         i = icon( self, someicon ) if someicon else (1,1)
 
         #try:
@@ -96,7 +96,7 @@ class DismissablePanel(wx.Panel):
 
         self.vbox = wx.BoxSizer(wx.VERTICAL)
 
-        self.vbox.Add( hbox, 0, wx.EXPAND )
+        self.vbox.Add( hbox, 0, wx.EXPAND | wx.TOP, border = 8 )
         ## Now, go fetch the .. whatever 
         whatever = self.__post_init__()
         self.vbox.Add( whatever, 1, wx.EXPAND)
@@ -128,7 +128,7 @@ class HtmlPanel(DismissablePanel):
                 self.SetStandardFonts()    
     
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_help, somelabel="Help!")
+        DismissablePanel.__init__(self, parent, flag_help, somelabel=_("Help! Help! I'm being repressed!") ) 
 
     def __post_init__(self):
         self.html = HtmlPanel.MyHtmlWindow(self)
@@ -147,7 +147,7 @@ class HtmlPanel(DismissablePanel):
 
 class AboutPanel(DismissablePanel):
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_about)
+        DismissablePanel.__init__(self, parent, flag_about, somelabel=_("About Fonty") )
 
     def __post_init__(self):
         nb = wx.Notebook(self, -1, style=0)
@@ -216,7 +216,7 @@ class AboutPanel(DismissablePanel):
 
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_settings)
+        DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
 
     def _set_values(self):
         self.inputPageLen_val = fpsys.config.numinpage
@@ -227,7 +227,6 @@ class SettingsPanel(DismissablePanel):
 
     def show_or_hide(self,evt):
         """Event bound in MainFrame, fires when I hide or show."""
-        #evt.Skip()
         if self.IsShown():
             self._update_form()
 
@@ -241,108 +240,70 @@ class SettingsPanel(DismissablePanel):
 
     def __post_init__(self):
         self._set_values()
-        verticalSizer = wx.BoxSizer(wx.VERTICAL)
-    
-        nb = wx.Notebook(self, -1, style=0)
-        PANE1= wx.Panel(nb, -1)
-        PANE2 = wx.Panel(nb, -1)
 
-        ## The layout of PANE1 begins:
-        font = wx.Font(SYSFONT["points_x_large"], SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
-        labelHeading = wx.StaticText(self, -1, _("Settings"))
-        labelHeading.SetFont(font)
-
-        label_1 = wx.StaticText(PANE1, -1, _("Sample text:"))
-        #self.inputSampleString = wx.TextCtrl(PANE1, -1, fpsys.config.text, size = (200, -1)) 
-        self.inputSampleString = wx.TextCtrl(PANE1, -1, self.inputSampleString_val, size = (200, -1)) 
+        label_1 = label(self, _("Sample text:"), size="points_normal")
+        self.inputSampleString = wx.TextCtrl(self, -1, self.inputSampleString_val, size = (200, -1)) 
         self.inputSampleString.SetFocus()
         
-        label_2 = wx.StaticText(PANE1, -1, _("Point size:"))
-        self.inputPointSize = wx.SpinCtrl(PANE1, -1, "")
+        label_2 = label(self,_("Point size:"), size="points_normal")
+        self.inputPointSize = wx.SpinCtrl(self, -1, "")
         self.inputPointSize.SetRange(1, 500)
-        #self.inputPointSize.SetValue(fpsys.config.points)
         self.inputPointSize.SetValue( self.inputPointSize_val )
         
-        label_3 = wx.StaticText(PANE1, -1, _("Page length:"))
-        self.inputPageLen = wx.SpinCtrl(PANE1, -1, "")
+        label_3 = label(self, _("Page length:"), size="points_normal")
+        self.inputPageLen = wx.SpinCtrl(self, -1, "")
         self.inputPageLen.SetRange(1, 5000) # It's your funeral!
-        #self.inputPageLen.SetValue(fpsys.config.numinpage) 
         self.inputPageLen.SetValue( self.inputPageLen_val ) 
         self.inputPageLen.SetToolTip( wx.ToolTip( _("Beware large numbers!") ) )
 
-        PANE1sizer = wx.FlexGridSizer( rows=3, cols=2, hgap=5, vgap=8 )
-        PANE1sizer.Add(label_1, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
-        PANE1sizer.Add(self.inputSampleString, 1, wx.EXPAND )
-        PANE1sizer.Add(label_2, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
-        PANE1sizer.Add(self.inputPointSize, 0 )
-        PANE1sizer.Add(label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
-        PANE1sizer.Add(self.inputPageLen, 0 )
 
-        PANE1_buffer = wx.BoxSizer( wx.HORIZONTAL )
-        PANE1_buffer.Add( PANE1sizer, 1, wx.EXPAND | wx.ALL, border=10 )
-        PANE1.SetSizer( PANE1_buffer )
-
-
-        ## Layout of PANE2
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
-        self.chkAdjust = wx.CheckBox(PANE2, -1, _("Disable font top-left correction."))
+        self.chkAdjust = wx.CheckBox(self, -1, _("Disable font top-left correction."))
         #self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
         self.chkAdjust.SetValue( self.chkAdjust_val ) 
         self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds font drawing up a fraction, but degrades top-left positioning.") ) )
-        PANE2sizer = wx.BoxSizer( wx.VERTICAL )
-        PANE2sizer.Add(self.chkAdjust, 0, wx.ALIGN_LEFT | wx.BOTTOM, border=10 )
 
         # The Character map choice
         self.CMC = self.CMC_val #fpsys.config.CMC
         if self.CMC.APPS_ARE_AVAILABLE:
             self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
-            self.CMCrb = wx.RadioBox(
-                    PANE2, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
-                    self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS
-                    )
-            
-            self.CMCrb.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
+            rb_or_nada = wx.RadioBox(
+                    self, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
+                    self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
+            rb_or_nada.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
 
-            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, self.CMCrb)
-            self.CMCrb.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
-            PANE2sizer.Add( self.CMCrb, 0, wx.ALIGN_LEFT )
+            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb_or_nada)
+            rb_or_nada.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
         else:
             self.CHOSEN_CHARACTER_MAP = None
-            no_app = wx.StaticText(PANE2, -1, _("Could not find a supported character viewer."))
-            PANE2sizer.Add( no_app, 0, wx.ALIGN_LEFT )
+            rb_or_nada = label(self,_("Could not find a supported character viewer."), size="points_normal")
 
+        settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
 
-        PANE2_buffer = wx.BoxSizer( wx.HORIZONTAL )
-        PANE2_buffer.Add( PANE2sizer, 1, wx.EXPAND | wx.ALL, border=10 )
-        PANE2.SetSizer( PANE2_buffer )
+        settings_sizer.Add(label_1, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        settings_sizer.Add(self.inputSampleString, 1, wx.EXPAND )
 
-        ## Add the panels to the notebook
-        nb.AddPage( PANE1, _("Quick settings") )
-        nb.AddPage( PANE2, _("Voodoo") )
+        settings_sizer.Add(label_2, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        settings_sizer.Add(self.inputPointSize, 1 )
 
-        ## Add label and a space to the vertical sizer
-        verticalSizer.Add( labelHeading, 0, wx.ALIGN_LEFT )
-        verticalSizer.Add( (0,5), 0 )
+        settings_sizer.Add(label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        settings_sizer.Add(self.inputPageLen, 1 )
 
-        ## Add the notebook
-        verticalSizer.Add( nb, 1, wx.EXPAND | wx.ALL )
-        verticalSizer.Add((0,10),0) #space between bottom of grid and buttons
+        settings_sizer.Add((1,1),0)
+        settings_sizer.Add(self.chkAdjust, 1)
+
+        settings_sizer.Add((1,1),0)
+        settings_sizer.Add(rb_or_nada, 1)
 
         ## Make an "apply" button. It gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
     
-        ## Add button group to vertical sizer
-        verticalSizer.Add( btn, 0, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER_HORIZONTAL, border = 5)
-    
         ## Make a 'buffer' to keep the insides away from the edges of the frame
-        buffer=wx.BoxSizer( wx.HORIZONTAL )
+        b = wx.BoxSizer( wx.VERTICAL )
         ## To get border to work use wx.EXPAND | wx.ALL
-        buffer.Add( verticalSizer, 1,wx.EXPAND | wx.ALL,  border=10 )
-
-        return buffer
-        #self.SetSizer( buffer )
-        #buffer.Fit(self)
-        #self.Layout()
+        b.Add( settings_sizer, 0, wx.EXPAND | wx.ALL,  border=10 )
+        b.Add( btn, 0, wx.ALL, border=10)
+        return b
 
     def EvtRadioBox(self, event):
         self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
