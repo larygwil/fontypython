@@ -226,13 +226,15 @@ class SettingsPanel(DismissablePanel):
         self.CMC_val = fpsys.config.CMC
 
     def show_or_hide(self,evt):
-        evt.Skip()
+        """Event bound in MainFrame, fires when I hide or show."""
+        #evt.Skip()
         if self.IsShown():
             self._update_form()
 
     def _update_form(self):
         self._set_values()
         # Most of the controls will "remember" their last setting.
+        # (This is all show/hide anyway.)
         # The only one that can change outside the settings is:
         # The point size - can change by the wheel - hence update it:
         self.inputPointSize.SetValue( self.inputPointSize_val )
@@ -578,6 +580,7 @@ class MainFrame(wx.Frame):
 
             self.settings_panel = SettingsPanel(self)
             self.settings_panel.Hide()
+            ## This panel needs to signal when it hides/shows:
             self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
