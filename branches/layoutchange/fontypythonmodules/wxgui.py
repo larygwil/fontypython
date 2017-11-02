@@ -61,8 +61,9 @@ from fpwx import setup_fonts_and_colours, label, wxbmp, icon, SYSFONT
 flag_normal = 1
 flag_help = 2
 flag_about = 4
-id_from   = {flag_help:201, flag_about:202}
-flag_from = {v:k for k,v in id_from.iteritems()} #invert it!
+flag_settings = 8
+id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101}
+flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
 class DismissablePanel(wx.Panel):
     """
@@ -71,7 +72,7 @@ class DismissablePanel(wx.Panel):
     Under that is .. whatever.
     """
     def __init__(self, parent, flag, someicon=None, somelabel="Say something man!"):
-        id = id_from[flag]
+        id = id_from_flag[flag]
         wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.parent = parent
         self.flag = flag
@@ -126,8 +127,8 @@ class HtmlPanel(DismissablePanel):
             if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
                 self.SetStandardFonts()    
     
-    def __init__(self, parent, flag):
-        DismissablePanel.__init__(self, parent, flag, somelabel="Help!")
+    def __init__(self, parent):
+        DismissablePanel.__init__(self, parent, flag_help, somelabel="Help!")
 
     def __post_init__(self):
         self.html = HtmlPanel.MyHtmlWindow(self)
@@ -145,8 +146,8 @@ class HtmlPanel(DismissablePanel):
 
 
 class AboutPanel(DismissablePanel):
-    def __init__(self, parent, flag):
-        DismissablePanel.__init__(self, parent, flag)
+    def __init__(self, parent):
+        DismissablePanel.__init__(self, parent, flag_about)
 
     def __post_init__(self):
         nb = wx.Notebook(self, -1, style=0)
@@ -214,10 +215,11 @@ class AboutPanel(DismissablePanel):
 
 
 #..newly moved into here, from dialogues.py. Nov 1 2017
-class xxSettingsPanel(wx.Panel):
+class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
-        wx.Panel.__init__(self,parent, -1, style = wx.NO_FULL_REPAINT_ON_RESIZE)
-        #wx.Dialog.__init__(self, parent, -1, _("Settings"), pos = wx.DefaultPosition)#, size =(450,-1))
+        DismissablePanel.__init__(self, parent, flag_settings)
+
+    def __post_init__(self):
         
         verticalSizer = wx.BoxSizer(wx.VERTICAL)
     
@@ -319,9 +321,10 @@ class xxSettingsPanel(wx.Panel):
         ## To get border to work use wx.EXPAND | wx.ALL
         buffer.Add( verticalSizer, 1,wx.EXPAND | wx.ALL,  border=10 )
 
-        self.SetSizer( buffer )
-        buffer.Fit(self)
-        self.Layout()
+        return buffer
+        #self.SetSizer( buffer )
+        #buffer.Fit(self)
+        #self.Layout()
 
     def EvtRadioBox(self, event):
         self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
@@ -415,7 +418,7 @@ class MainFrame(wx.Frame):
 
         ## FILE MENU : Changed to "Tools" menu Sep 2009
         menu1 = wx.Menu()
-        menu1.Append(101, _("&Settings\tCtrl+S"), _("Change settings"))
+        menu1.Append(id_from_flag[flag_settings], _("&Settings\tCtrl+S"), _("Change settings"))
         menu1.AppendSeparator()
         ## Jan 18 2008
         menu1.Append( 102, _("&Check fonts"), _("Find those fonts that crash Fonty.") )
@@ -436,8 +439,8 @@ class MainFrame(wx.Frame):
 
         ## HELP MENU
         menu2 = wx.Menu()
-        menu2.Append(id_from[flag_help], _("H&elp\tF1"))
-        menu2.Append(id_from[flag_about], _("&About"))
+        menu2.Append(id_from_flag[flag_help], _("H&elp\tF1"))
+        menu2.Append(id_from_flag[flag_about], _("&About"))
         self.menuBar.Append(menu2, _("&Help"))
 
         self.SetMenuBar(self.menuBar)
@@ -450,23 +453,25 @@ class MainFrame(wx.Frame):
             ])
         self.SetAcceleratorTable(accel)
 
+
+        ## Do this generic bind for all menu events now.
+        ## Then specific ones afterwards; else this one supercedes them.
+        ## This is for the menus that open DismissablePanels:
+        ## Help, About, Settings
+        self.Bind(wx.EVT_MENU, self.toggle_dismissable_panel)
+
+
         ## Bind the Left and Right key shortcuts.	
         self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_FORWARD )
         self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_BACKWARD )
 
-        ## The X close window button.
+        ## The frame's close window button.
         self.Bind( wx.EVT_CLOSE, self.onHandleESC )
 
         ## Bind events for the menu items
         self.Bind(wx.EVT_MENU, self.onHandleESC, self.exit)
-        self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
         self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
         self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
-
-        ## The menus that open DismissablePanels:
-        ## They get their ids from the id_from dict
-        self.Bind(wx.EVT_MENU, self.toggle_dismissable_panel, id = id_from[flag_help])
-        self.Bind(wx.EVT_MENU, self.toggle_dismissable_panel, id = id_from[flag_about])
 
         # June 2009
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
@@ -542,11 +547,14 @@ class MainFrame(wx.Frame):
             self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
             ## 31 Oct 2017
-            self.help_panel = HtmlPanel(self, flag_help)
+            self.help_panel = HtmlPanel(self)
             self.help_panel.Hide()
 
-            self.about_panel = AboutPanel(self, flag_about)
+            self.about_panel = AboutPanel(self)
             self.about_panel.Hide()
+
+            self.settings_panel = SettingsPanel(self)
+            self.settings_panel.Hide()
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -558,14 +566,16 @@ class MainFrame(wx.Frame):
             ##
             lrsizer.Add( self.help_panel, 1, wx.EXPAND )
             lrsizer.Add( self.about_panel, 1, wx.EXPAND )
+            lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
 
             self.SetSizer(lrsizer)
 
             self.panel_state = flag_normal
             self.panel_dict={
-                    flag_normal: self.fontViewPanel, 
-                    flag_help  : self.help_panel,
-                    flag_about : self.about_panel
+                    flag_normal  : self.fontViewPanel, 
+                    flag_help    : self.help_panel,
+                    flag_about   : self.about_panel,
+                    flag_settings: self.settings_panel,
             }
 
         ## Idle/resize idea from here:
@@ -647,11 +657,11 @@ class MainFrame(wx.Frame):
     def toggle_dismissable_panel(self, evt):
         """
         Handles events from a few different sources: menus and buttons.
-        Looks for an id in the flag_from dict. If found,
+        Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        id = evt.GetId()
-        flag = flag_from.get(id,None)
+        print "toggleSelectionMenuItem runs."
+        flag = flag_from_id.get(evt.GetId(),None)
         if flag:
             self.flag_state_exclusive_toggle(flag)
             self.panel_control()
