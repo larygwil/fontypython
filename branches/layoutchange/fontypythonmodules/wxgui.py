@@ -77,32 +77,27 @@ class DismissablePanel(wx.Panel):
         self.parent = parent
         self.flag = flag
 
-        l = label( self, somelabel, size="points_x_large", weight=wx.FONTWEIGHT_BOLD )
+        ## Go fetch the .. whatever 
+        whatever = self.__post_init__()
+
+        l = label( self, somelabel, size="points_xx_large", weight=wx.FONTWEIGHT_BOLD )
         i = icon( self, someicon ) if someicon else (1,1)
 
-        #try:
-        #self.x_button = wx.BitmapButton(self, -1, wxbmp( "x" ), style = wx.NO_BORDER)
-        #except:
-        self.x_button = wx.Button(self,id, label="X", style=wx.NO_BORDER | wx.BU_EXACTFIT)
+        self.x_button = wx.Button(self,id, label="X", style = wx.NO_BORDER | wx.BU_EXACTFIT)
         ## No Bind here because the button's event will shoot up the tree and arrive in the
         ## main frame, where we catch it.
 
         self.x_button.SetToolTipString( _("Dismiss") )
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add( i, 0, wx.EXPAND)# | wx.TOP | wx.BOTTOM, border = 4 )
-        hbox.Add( l, 1, wx.EXPAND)# | wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = 4 )
-        #hbox.Add( self.x_button, 0, wx.EXPAND | wx.BOTTOM | wx.RIGHT | wx.ALIGN_RIGHT, border = 4)
+        hbox.Add( i, 0, wx.EXPAND )
+        hbox.Add( l, 1, wx.EXPAND )
         hbox.Add( self.x_button, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP | wx.BOTTOM, border = 4 )
         hbox.Add( (8,8),0)
 
         self.vbox = wx.BoxSizer(wx.VERTICAL)
-
         self.vbox.Add( hbox, 0, wx.EXPAND | wx.TOP , border = 8 ) #Wanted more space above.
-        ## Now, go fetch the .. whatever 
-        whatever = self.__post_init__()
         self.vbox.Add( whatever, 1, wx.EXPAND)
-
         self.SetSizer( self.vbox )
         self.Layout()
 
