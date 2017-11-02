@@ -853,10 +853,10 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
         self.Init()  # initialize the inspection tool
 
         ## Initial dialogue to inform user about wx unicode version.
-        if not "xxunicode" in wx.PlatformInfo:
-            wx.MessageBox(_("I am sorry, but Unicode is not supported by this" \
-            "installation of wxPython. Fonty Python relies on Unicode and will" \
-            "simply not work without it.\n\nPlease fetch and install the" \
+        if not "unicode" in wx.PlatformInfo:
+            wx.MessageBox(_("I am sorry, but Unicode is not supported by this " \
+            "installation of wxPython. Fonty Python relies on Unicode and will " \
+            "simply not work without it.\n\nPlease fetch and install the " \
             "Unicode version of python-wxgtk."),
                 caption=_("SORRY: UNICODE MUST BE SUPPORTED"),
                 style=wx.OK | wx.ICON_EXCLAMATION )

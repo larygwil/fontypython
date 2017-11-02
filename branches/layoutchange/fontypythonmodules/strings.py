@@ -25,7 +25,7 @@ copyright = "Fonty Python Copyright (C) 2017 Donn.C.Ingle"
 contact = "email: donn.ingle@gmail.com"
 done = "Done."
 
-
+ticket_url = "https://savannah.nongnu.org/bugs/?group=fontypython"
 
 version = _("Fonty Python version %s") % fpversion.version
 

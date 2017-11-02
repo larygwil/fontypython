@@ -59,20 +59,22 @@ c1 = [os.path.join(fontyroot,'start_fontypython') ]
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
 
-#p1 = subprocess.call( c1 )
+p1 = subprocess.call( c1 )
 
-p1=-11 # to test
+#p1=-11 # to test
 
 #if p1 == 0:
 #    print
 #    #print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
 #elif p1 == 1:
 #    print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
+
+## Nov 2017: Simpler plan:
 if p1 < 0:
     # err code -11
     #print "ERROR CODE:", p1
     ## This actually works!
-    import sys, os, locale
+    import sys, os
     import fontypythonmodules.fontybugs as fontybugs
     import fontypythonmodules.fpsys as fpsys
     import wx, fontypythonmodules.dialogues as D
@@ -81,31 +83,23 @@ if p1 < 0:
     ## Start the App and then show the Segfault dialog.
     class App(wx.App):
         def OnInit(self):
-            #try:
-            #    fpsys.iPC.probeNoFontypythonDirError() # Will raise...
-            ### App stopping errors:
-            #except (fontybugs.NoFontypythonDir, fontybugs.UpgradeFail) as e:
-            #    wx.MessageBox( e.unicode_of_error(),
-            #        caption=_("FATAL ERROR"),
-            #        style=wx.OK | wx.ICON_ERROR )
-            #    ## This one is unrecoverable:
-            #    raise SystemExit
-            
             culprit = None
+            ## A wide net. Not gonna split hairs.
             try:
                 paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
                 f = open( paf, "r" )
                 culprit = f.readline()[:-1]
                 f.close()
-                if culprit == "": culprit = None
-                sadStory = _("There's some problem with the font named below.\n" \
-                "Please use the \"Check Fonts\" tool in Fonty (from the command-line" \
-                "or in the Tools menu) to check this directory and mark the "\
-                "dangerous fonts.\n\n" )
+                #odball situation. file may have been empty:
+                if not culprit:
+                    raise IOError # force error into except
             except Exception as e:
-                sadStory = _(u"I could not find the "\
-                        "\"lastFontBeforeSegfault\" file.\n" \
+                sadStory = _("There's a problem I can't handle." \
                         "The error was:\n{}").format(e)
+
+            if culprit:
+                sadStory = _("There's some problem with the font named below." \
+                " Please use the \"Check Fonts\" tool in Fonty to mark bad fonts." )
 
             setup_fonts_and_colours()
 

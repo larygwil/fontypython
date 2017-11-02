@@ -35,8 +35,8 @@ import wx
 ##mylocale = wx.Locale( langid )
 
 from fpwx import SYSFONT, label
-
   
+
 class SegfaultDialog(wx.Dialog):
     """
     Dec 2007
@@ -52,31 +52,34 @@ class SegfaultDialog(wx.Dialog):
         ohDear = label( self, _("Oh dear,"))
         sadStory = label( self, sadStory)
 
-        if culprit: 
-            culprit = label(self, culprit)
-        else:
-            culprit = (1,1)
-        
+        ## Have to use a size. Can't get them to just fit the dialog. fcuk....
+        tickettxt = label(self, _("You can get help by opening a ticket, or sending me an email."))
+        emaillink = wx.TextCtrl(self, -1, strings.contact,  size=(450,-1), style = wx.TE_READONLY)
+        ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, size=(450,-1), style = wx.TE_READONLY)
+
         verticalSizer = wx.BoxSizer(wx.VERTICAL)
-        verticalSizer.Add(labelHeading, 0, 0, 0)
-        verticalSizer.Add(ohDear, 0, 0, 0)
-        verticalSizer.Add(sadStory, 1, wx.EXPAND, 0)
-        verticalSizer.Add(culprit, 1, wx.EXPAND, 0)
+        verticalSizer.Add(labelHeading, 0, wx.BOTTOM, border = 4 )
+        verticalSizer.Add(ohDear, 0 )
+        verticalSizer.Add(sadStory,  0, wx.BOTTOM, border = 8 )
+        if culprit: 
+            msg = _('The bad font is: "{}"').format(culprit)
+            culprit = label(self, msg,  weight=wx.FONTWEIGHT_BOLD)
+            verticalSizer.Add(culprit, 0 )
+        verticalSizer.Add((1,32), 0 )
+        verticalSizer.Add(tickettxt, 0 )
+        verticalSizer.Add(ticketurl, 0 )
+        verticalSizer.Add(emaillink, 0 )
         
-        btnsizer = wx.StdDialogButtonSizer()
         btn = wx.Button(self, wx.ID_OK)
         btn.SetDefault()
-        btnsizer.AddButton(btn)
-        btnsizer.Realize()
                 
-        verticalSizer.Add(btnsizer, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT, border = 15)
-        buffer=wx.BoxSizer( wx.HORIZONTAL )
-        buffer.Add( verticalSizer, 1, wx.ALL, border=10 )
+        verticalSizer.Add(btn, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT | wx.TOP, border = 15)
 
-        self.SetSizer( buffer )
-        buffer.Fit(self) 
-        self.SetSizer( buffer )
+        b = wx.BoxSizer( wx.HORIZONTAL )
+        b.Add( verticalSizer, 0, wx.ALL, border=10 )
 
+        self.SetSizer( b )
+        b.Fit(self) 
         self.Layout()
         
 class LocateDirectory(wx.Dialog):
