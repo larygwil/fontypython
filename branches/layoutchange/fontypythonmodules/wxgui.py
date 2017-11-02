@@ -55,18 +55,24 @@ from fpwx import setup_fonts_and_colours, label, wxbmp, icon, SYSFONT
 
 
 
-
+## Variables to do with the DismissablePanels
+## and to map the close (X) button id to the
+## state flags we use to show/hide the panels
 flag_normal = 1
 flag_help = 2
 flag_about = 4
+id_from   = {flag_help:201, flag_about:202}
+flag_from = {v:k for k,v in id_from.iteritems()} #invert it!
+
 class DismissablePanel(wx.Panel):
     """
-    Only for sublcassing.
-    Provides a bar with a icon, title and X close button.
+    Only for subclassing.
+    Provides a bar with an icon, title and X close button.
     Under that is .. whatever.
     """
     def __init__(self, parent, flag, someicon=None, somelabel="Say something man!"):
-        wx.Panel.__init__(self, parent, -1, style=wx.NO_FULL_REPAINT_ON_RESIZE)
+        id = id_from[flag]
+        wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.parent = parent
         self.flag = flag
 
@@ -76,10 +82,11 @@ class DismissablePanel(wx.Panel):
         #try:
         #self.x_button = wx.BitmapButton(self, -1, wxbmp( "x" ), style = wx.NO_BORDER)
         #except:
-        self.x_button = wx.Button(self, label="X", style=wx.NO_BORDER)
+        self.x_button = wx.Button(self,id, label="X", style=wx.NO_BORDER)
+        ## No Bind here because the button's event will shoot up the tree and arrive in the
+        ## main frame, where we catch it.
 
         self.x_button.SetToolTipString( _("Dismiss") )
-        self.x_button.Bind( wx.EVT_BUTTON, self.on_x_click )
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add( i, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 4 )
@@ -97,10 +104,6 @@ class DismissablePanel(wx.Panel):
         self.Layout()
 
     def __post_init__(self):
-        pass
-
-    def on_x_click(self, evt):
-        self.parent.toggle_dismissable_panel(evt,self.flag)
         pass
 
 
@@ -433,8 +436,8 @@ class MainFrame(wx.Frame):
 
         ## HELP MENU
         menu2 = wx.Menu()
-        menu2.Append(201, _("H&elp\tF1"))
-        menu2.Append(202, _("&About"))
+        menu2.Append(id_from[flag_help], _("H&elp\tF1"))
+        menu2.Append(id_from[flag_about], _("&About"))
         self.menuBar.Append(menu2, _("&Help"))
 
         self.SetMenuBar(self.menuBar)
@@ -459,14 +462,20 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.menuSettings, id = 101)
         self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
         self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
-        #Using a lambda to sneak that extra flag param into the handler.
-        #self.Bind(wx.EVT_MENU, self.toggle_about, id = 202)
-        self.Bind(wx.EVT_MENU, lambda evt, f=flag_help: self.toggle_dismissable_panel(evt,f), id = 201)
-        self.Bind(wx.EVT_MENU, lambda evt, f=flag_about:self.toggle_dismissable_panel(evt,f), id = 202)
+
+        ## The menus that open DismissablePanels:
+        ## They get their ids from the id_from dict
+        self.Bind(wx.EVT_MENU, self.toggle_dismissable_panel, id = id_from[flag_help])
+        self.Bind(wx.EVT_MENU, self.toggle_dismissable_panel, id = id_from[flag_about])
+
         # June 2009
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
         self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
 
+        ## Nov 2017
+        ## Catch all stray button events: This is dealing with the 
+        ## close (X) button of the DismissablePanels at the moment.
+        self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel)
 
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
@@ -597,6 +606,7 @@ class MainFrame(wx.Frame):
         self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
 
 
+
     def flag_state_on(self, flag):
         self.panel_state |= flag
 
@@ -634,17 +644,17 @@ class MainFrame(wx.Frame):
         self.panel_state = flag_normal
         self.panel_control()
 
-    #def toggle_about(self, e):
-    #    self.flag_state_exclusive_toggle(flag_about)
-    #    self.panel_control()
-
-    #def toggle_help(self, e):
-    #    self.flag_state_exclusive_toggle(flag_help)
-    #    self.panel_control()
-
-    def toggle_dismissable_panel(self, evt, flag):
-        self.flag_state_exclusive_toggle(flag)
-        self.panel_control()
+    def toggle_dismissable_panel(self, evt):
+        """
+        Handles events from a few different sources: menus and buttons.
+        Looks for an id in the flag_from dict. If found,
+        we know it's to do with a DismissablePanel.
+        """
+        id = evt.GetId()
+        flag = flag_from.get(id,None)
+        if flag:
+            self.flag_state_exclusive_toggle(flag)
+            self.panel_control()
 
 
     ##Only used if whatgui != 1
