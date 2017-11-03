@@ -34,8 +34,9 @@ def setup_fonts_and_colours():
     SYSFONT.update(
        {"font"            : wxfont,
         "family"          : wxfont.GetFamily(),
-        "points_smaller"  : ps*0.9,
+        "points_smaller"  : ps*0.8,
         "points_normal"   : ps,
+        "points_x_normal" : ps*1.05,
         "points_large"    : ps*1.07,
         "points_x_large"  : ps*1.2,
         "points_xx_large" : ps*1.5,
@@ -44,12 +45,24 @@ def setup_fonts_and_colours():
 
 
 def para( parent, ustr ):
-    p = label( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
+    p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
-def label(parent, 
-        ustr, size = "points_large", 
-        weight = wx.FONTWEIGHT_BOLD, 
+def label( parent, ustr ):
+    p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
+    return p
+
+def boldlabel( parent, ustr ):
+    p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_BOLD )
+    return p
+
+def h1( parent, ustr ):
+    p = xlabel( parent, ustr, size="points_large", weight=wx.FONTWEIGHT_BOLD )
+    return p
+
+
+def xlabel(parent, 
+        ustr, size, weight,
         align = wx.ALIGN_LEFT):
     lbl = wx.StaticText( parent, -1, ustr, style = align )
     lbl.SetFont( wx.Font(SYSFONT[size], SYSFONT["family"], 

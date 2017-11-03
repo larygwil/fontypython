@@ -48,12 +48,7 @@ from gui_FontSources import *
 from gui_FontView import *
 from gui_PogTargets import *
 
-from fpwx import setup_fonts_and_colours, label, wxbmp, icon, SYSFONT
-
-
-
-
-
+import fpwx
 
 ## Variables to do with the DismissablePanels
 ## and to map the close (X) button id to the
@@ -79,9 +74,13 @@ class DismissablePanel(wx.Panel):
 
         ## Go fetch the .. whatever 
         whatever = self.__post_init__()
+        
+        ## Make a 'buffer' to keep the insides away from the edges of the frame
+        whatever_sizer = wx.BoxSizer( wx.VERTICAL )
+        whatever_sizer.Add( whatever, 1, wx.EXPAND | wx.ALL,  border = 8 )
 
-        l = label( self, somelabel, size="points_xx_large", weight=wx.FONTWEIGHT_BOLD )
-        i = icon( self, someicon ) if someicon else (1,1)
+        l = fpwx.h1( self, somelabel )
+        i = fpwx.icon( self, someicon ) if someicon else (1,1)
 
         self.x_button = wx.Button(self,id, label="X", style = wx.NO_BORDER | wx.BU_EXACTFIT)
         ## No Bind here because the button's event will shoot up the tree and arrive in the
@@ -96,8 +95,8 @@ class DismissablePanel(wx.Panel):
         hbox.Add( (8,8),0)
 
         self.vbox = wx.BoxSizer(wx.VERTICAL)
-        self.vbox.Add( hbox, 0, wx.EXPAND | wx.TOP , border = 8 ) #Wanted more space above.
-        self.vbox.Add( whatever, 1, wx.EXPAND)
+        self.vbox.Add( hbox, 0, wx.EXPAND | wx.TOP , border = 16 ) #Wanted more space above.
+        self.vbox.Add( whatever_sizer, 1, wx.EXPAND)
         self.SetSizer( self.vbox )
         self.Layout()
 
@@ -150,7 +149,7 @@ class AboutPanel(DismissablePanel):
         nbabout_pane_2 = wx.Panel(nb, -1)
         nbabout_pane_3 = wx.Panel(nb, -1)
 
-        fplogo = icon(nbabout_pane_1, 'aboutfplogo')
+        fplogo = fpwx.icon(nbabout_pane_1, 'aboutfplogo')
 
         AboutText = wx.StaticText(
                 nbabout_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
@@ -235,16 +234,16 @@ class SettingsPanel(DismissablePanel):
     def __post_init__(self):
         self._set_values()
 
-        label_1 = label(self, _("Sample text:"), size="points_normal")
+        label_1 = fpwx.boldlabel(self, _("Sample text:"))
         self.inputSampleString = wx.TextCtrl(self, -1, self.inputSampleString_val, size = (200, -1)) 
         self.inputSampleString.SetFocus()
         
-        label_2 = label(self,_("Point size:"), size="points_normal")
+        label_2 = fpwx.boldlabel(self,_("Point size:"))
         self.inputPointSize = wx.SpinCtrl(self, -1, "")
         self.inputPointSize.SetRange(1, 500)
         self.inputPointSize.SetValue( self.inputPointSize_val )
         
-        label_3 = label(self, _("Page length:"), size="points_normal")
+        label_3 = fpwx.boldlabel(self, _("Page length:"))
         self.inputPageLen = wx.SpinCtrl(self, -1, "")
         self.inputPageLen.SetRange(1, 5000) # It's your funeral!
         self.inputPageLen.SetValue( self.inputPageLen_val ) 
@@ -252,13 +251,16 @@ class SettingsPanel(DismissablePanel):
 
 
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
-        self.chkAdjust = wx.CheckBox(self, -1, _("Disable font top-left correction."))
+        label_4 = fpwx.boldlabel(self, _("Disable font top-left correction:"))
+        self.chkAdjust = wx.CheckBox(self, -1, _("Tick to disable") )
         #self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
         self.chkAdjust.SetValue( self.chkAdjust_val ) 
         self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds font drawing up a fraction, but degrades top-left positioning.") ) )
 
         # The Character map choice
-        self.CMC = self.CMC_val #fpsys.config.CMC
+        # CMC is an instance of CharMapController
+        label_5 = fpwx.boldlabel(self, _("Character map viewer:"))
+        self.CMC = self.CMC_val
         if self.CMC.APPS_ARE_AVAILABLE:
             self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
             rb_or_nada = wx.RadioBox(
@@ -270,7 +272,9 @@ class SettingsPanel(DismissablePanel):
             rb_or_nada.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
         else:
             self.CHOSEN_CHARACTER_MAP = None
-            rb_or_nada = label(self,_("Could not find a supported character viewer."), size="points_normal")
+            rb_or_nada = wx.RadioBox(
+                    self, -1, _("Could not find a supported character viewer."), wx.DefaultPosition, wx.DefaultSize,
+                    "", 1, wx.RA_SPECIFY_COLS )
 
         settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
 
@@ -283,20 +287,18 @@ class SettingsPanel(DismissablePanel):
         settings_sizer.Add(label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
         settings_sizer.Add(self.inputPageLen, 1 )
 
-        settings_sizer.Add((1,1),0)
+        settings_sizer.Add(label_4, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL)
         settings_sizer.Add(self.chkAdjust, 1)
 
-        settings_sizer.Add((1,1),0)
+        settings_sizer.Add(label_5, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL)
         settings_sizer.Add(rb_or_nada, 1)
 
         ## Make an "apply" button. Click gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
-    
-        ## Make a 'buffer' to keep the insides away from the edges of the frame
-        b = wx.BoxSizer( wx.VERTICAL )
-        b.Add( settings_sizer, 0, wx.EXPAND | wx.ALL,  border=10 )
-        b.Add( btn, 0, wx.ALL, border=10)
-        return b
+        settings_sizer.Add(btn, 0, wx.ALL, border=10)
+
+
+        return settings_sizer
 
     def EvtRadioBox(self, event):
         self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
@@ -363,7 +365,7 @@ class MainFrame(wx.Frame):
         ## Oct 2017: Seems Unity (at least) doesn't even bother...
         try:
             i = wx.EmptyIcon()
-            i.CopyFromBitmap( wxbmp('fplogo'))
+            i.CopyFromBitmap( fpwx.wxbmp('fplogo'))
             self.SetIcon(i)
         except:
             pass
@@ -904,7 +906,7 @@ class FontySplash(wx.SplashScreen):
             splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
             splashDuration = 1000 # milliseconds
 
-            wx.SplashScreen.__init__(self, wxbmp( "splash" ), splashStyle, splashDuration, parent)
+            wx.SplashScreen.__init__(self, fpwx.wxbmp( "splash" ), splashStyle, splashDuration, parent)
             self.Bind(wx.EVT_CLOSE, self.OnExit)
 
             # Nice! Kick the show off in x millis.
@@ -923,7 +925,7 @@ class FontySplash(wx.SplashScreen):
         def showMain(self):
             ## Oct 2017
             ## Setup my system fonts and colours
-            setup_fonts_and_colours()
+            fpwx.setup_fonts_and_colours()
 
             frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
             app.SetTopWindow(frame)

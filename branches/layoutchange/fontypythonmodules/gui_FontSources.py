@@ -45,7 +45,7 @@ from wxgui import ps
 from gui_PogChooser import *
 import fontyfilter
 
-from fpwx import label, icon 
+import fpwx
 
 class FontSourcesPanel(wx.Panel):
     """
@@ -55,8 +55,8 @@ class FontSourcesPanel(wx.Panel):
         wx.Panel.__init__(self, parent, id = -1)#, style = wx.BORDER_RAISED)
 
         ## Notebook label and icon
-        view_icon = icon(self, 'icon_source')
-        view_label = label(self,_("Sources: Folders or Pogs") )
+        view_icon = fpwx.icon(self, 'icon_source')
+        view_label = fpwx.label(self,_("Sources: Folders or Pogs") )
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)

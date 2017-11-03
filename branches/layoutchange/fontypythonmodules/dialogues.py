@@ -34,8 +34,7 @@ import wx
 ##langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 ##mylocale = wx.Locale( langid )
 
-from fpwx import SYSFONT, label, para
-  
+import fpwx 
 
 class SegfaultDialog(wx.Dialog):
     """
@@ -46,9 +45,9 @@ class SegfaultDialog(wx.Dialog):
     def __init__(self, sadStory, culprit):
         wx.Dialog.__init__(self, None, -1, _("Oh boy..."), pos = wx.DefaultPosition )
         ## The layout begins:
-        labelHeading = label(self, _("Fonty Python, um ... crashed."))
-        sadStory = para( self, sadStory )
-        tickettxt = para(self, _("You can get help by opening a ticket, or sending an email."))
+        labelHeading = fpwx.h1(self, _("Fonty Python, um ... crashed."))
+        sadStory = fpwx.para( self, sadStory )
+        tickettxt = fpwx.para(self, _("You can get help by opening a ticket, or sending an email."))
         emaillink = wx.TextCtrl(self, -1, strings.contact, style = wx.TE_READONLY)
         ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, style = wx.TE_READONLY)
 
@@ -60,7 +59,7 @@ class SegfaultDialog(wx.Dialog):
         fs.Add(labelHeading, 0, wx.BOTTOM, border = 4 )
         fs.Add(sadStory,  0, wx.BOTTOM, border = 8 )
         if culprit: 
-            msg = label(self,_('The bad font or error is:'))
+            msg = fpwx.label(self,_('The bad font or error is:'))
             cul = "{}".format(culprit)
             culprit = wx.TextCtrl(self, -1, cul, style = wx.TE_READONLY | wx.TE_MULTILINE )
             fs.Add(msg,0)
@@ -119,7 +118,7 @@ class DialogCheckFonts( wx.Dialog ):
         ## LEFT
         leftsz = wx.BoxSizer(wx.VERTICAL)
 
-        font = wx.Font(SYSFONT["points_large"], SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
+        font = wx.Font(fpwx.SYSFONT["points_large"], fpwx.SYSFONT["family"], wx.NORMAL, wx.FONTWEIGHT_BOLD)
         title = wx.StaticText( self,-1,  _("Choose a directory and double click it to start"))
         title.SetFont( font )
         leftsz.Add(title,0,wx.EXPAND | wx.ALL, border=4 )

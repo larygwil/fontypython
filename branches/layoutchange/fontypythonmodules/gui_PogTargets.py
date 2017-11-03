@@ -41,7 +41,7 @@ import fontybugs
 
 ## Fetch the dialogue classes - used for zip dir dialog.
 import dialogues
-from fpwx import label, icon
+import fpwx
 
 class TargetPogChooser(wx.Panel):
     """
@@ -50,8 +50,8 @@ class TargetPogChooser(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id = -1)
 
-        target_icon = icon( self, 'icon_target' )
-        target_label = label(self, _("Target Pogs") )
+        target_icon = fpwx.icon( self, 'icon_target' )
+        target_label = fpwx.label(self, _("Target Pogs") )
 
         s = None
         if fpsys.state.targetpattern == "P":

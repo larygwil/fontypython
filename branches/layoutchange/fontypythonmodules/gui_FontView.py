@@ -42,7 +42,8 @@ import fpsys # Global objects
 import fontyfilter
 import fontybugs
 
-from fpwx import label, icon, wxbmp
+#from fpwx import label, icon, wxbmp
+import fpwx
 
 ##The SearchAssistant idea was to have a panel that opens to give tips and interactive
 ##help for searching. We were going to have field and PANOSE access via fontTools but
@@ -96,24 +97,24 @@ class FontViewPanel(wx.Panel):
         self.filter = ""
 
         self.TICKMAP = None
-        self._TICK = wxbmp( 'tick' )
-        self._CROSS = wxbmp( 'cross' )
+        self._TICK = fpwx.wxbmp( 'tick' )
+        self._CROSS = fpwx.wxbmp( 'cross' )
 
         #Sept 2009
         ## Bitmaps to be used in the Fitmap drawing.
         ## Fetched from there as dict items. It got weird.
-        self.SEGFAULT  = wxbmp( 'font_segfault' )
-        self.NO_DRAW   = wxbmp( 'font_cannot_draw' )
-        self.NOT_FOUND = wxbmp( 'font_not_found' )
-        self.INFO_ITEM = wxbmp( 'font_info_item' )
-        self.TICKSMALL = wxbmp( 'ticksmall' )
-        self.BUTTON_CHARMAP = wxbmp( 'button_charmap' )
-        self.BUTTON_CHARMAP_OVER = wxbmp( 'button_charmap_over' )
+        self.SEGFAULT  = fpwx.wxbmp( 'font_segfault' )
+        self.NO_DRAW   = fpwx.wxbmp( 'font_cannot_draw' )
+        self.NOT_FOUND = fpwx.wxbmp( 'font_not_found' )
+        self.INFO_ITEM = fpwx.wxbmp( 'font_info_item' )
+        self.TICKSMALL = fpwx.wxbmp( 'ticksmall' )
+        self.BUTTON_CHARMAP = fpwx.wxbmp( 'button_charmap' )
+        self.BUTTON_CHARMAP_OVER = fpwx.wxbmp( 'button_charmap_over' )
 
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
-        self.textMainInfo = label(self, u"..")
-        viewIcon = icon(self, 'icon_viewing')
+        self.textMainInfo = fpwx.label(self, u"..")
+        viewIcon = fpwx.icon(self, 'icon_viewing')
 
         sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )
         sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)
@@ -123,7 +124,7 @@ class FontViewPanel(wx.Panel):
         sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
 
         ## The clear filter button: added 10 Jan 2008
-        self.clearButton = wx.BitmapButton(self, -1, wxbmp( "clear" ), style = wx.NO_BORDER)
+        self.clearButton = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ), style = wx.NO_BORDER)
         self.clearButton.SetToolTipString( _("Clear filter") )
         self.clearButton.Bind( wx.EVT_BUTTON, self.OnClearClick )
 
