@@ -748,12 +748,14 @@ class MainFrame(wx.Frame):
         lastpoints = fpsys.config.points
         lasttext = fpsys.config.text
         lastias = fpsys.config.ignore_adjustments
+        lastnumcolumns = fpsys.config.max_num_columns
 
         ## Did anything change?
         num = int(self.settings_panel.inputPageLen.GetValue())
         points = int(self.settings_panel.inputPointSize.GetValue())
         txt = self.settings_panel.inputSampleString.GetValue()
         ignore_adjust = self.settings_panel.chkAdjust.GetValue() #Sept 2009
+        numcolumns = self.settings_panel.max_num_columns.GetValue()
 
         stuffchanged = False
         if num != lastnuminpage:
@@ -768,8 +770,11 @@ class MainFrame(wx.Frame):
         if ignore_adjust != lastias:
             fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
             stuffchanged = True
+        if numcolumns != lastnumcolumns:
+            fpsys.config.max_num_columns = numcolumns
+            stuffchanged = True
 
-            fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP) # Oct 2009
+        fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP) # Oct 2009
 
         ## Now to refresh things:
         if stuffchanged: 
