@@ -66,7 +66,7 @@ class DismissablePanel(wx.Panel):
     Provides a bar with an icon, title and an X close button.
     Under that is .. whatever: usually a sizer.
     """
-    def __init__(self, parent, flag, someicon=None, somelabel="Say something man!"):
+    def __init__(self, parent, flag, someicon=None, somelabel="..."):
         id = id_from_flag[flag]
         wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.parent = parent
@@ -75,15 +75,18 @@ class DismissablePanel(wx.Panel):
         ## Go fetch the .. whatever 
         whatever = self.__post_init__()
         
-        ## Make a 'buffer' to keep the insides away from the edges of the frame
+        ## Pad the whole thing some
         whatever_sizer = wx.BoxSizer( wx.VERTICAL )
-        whatever_sizer.Add( whatever, 1, wx.EXPAND | wx.ALL,  border = 8 )
+        whatever_sizer.Add( whatever, 1,
+                wx.EXPAND | wx.ALL,  border = 8 )
 
         l = fpwx.h1( self, somelabel )
         i = fpwx.icon( self, someicon ) if someicon else (1,1)
 
-        self.x_button = wx.Button(self,id, label="X", style = wx.NO_BORDER | wx.BU_EXACTFIT)
-        ## No Bind here because the button's event will shoot up the tree and arrive in the
+        self.x_button = wx.Button(self,id, label="X", 
+                style = wx.NO_BORDER | wx.BU_EXACTFIT)
+        ## No Bind here because the button's event will 
+        ## shoot up the tree and arrive in the
         ## main frame, where we catch it.
 
         self.x_button.SetToolTipString( _("Dismiss") )
@@ -91,11 +94,13 @@ class DismissablePanel(wx.Panel):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add( i, 0, wx.EXPAND )
         hbox.Add( l, 1, wx.EXPAND )
-        hbox.Add( self.x_button, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP | wx.BOTTOM, border = 4 )
+        hbox.Add( self.x_button, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP | wx.BOTTOM, 
+                border = 4 )
         hbox.Add( (8,8),0)
 
         self.vbox = wx.BoxSizer(wx.VERTICAL)
-        self.vbox.Add( hbox, 0, wx.EXPAND | wx.TOP , border = 16 ) #Wanted more space above.
+        self.vbox.Add( hbox, 0, wx.EXPAND | wx.TOP ,
+                border = 16 ) #Wanted more space above.
         self.vbox.Add( whatever_sizer, 1, wx.EXPAND)
         self.SetSizer( self.vbox )
         self.Layout()
@@ -125,7 +130,8 @@ class HtmlPanel(DismissablePanel):
                 self.SetStandardFonts()    
     
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_help, somelabel=_("Help! Help! I'm being repressed!") ) 
+        DismissablePanel.__init__(self, parent, flag_help, 
+                somelabel=_("Help! Help! I'm being repressed!") ) 
 
     def __post_init__(self):
         self.html = HtmlPanel.MyHtmlWindow(self)
@@ -140,7 +146,8 @@ class HtmlPanel(DismissablePanel):
 
 class AboutPanel(DismissablePanel):
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_about, somelabel=_("About Fonty") )
+        DismissablePanel.__init__(self, parent, flag_about, 
+                somelabel=_("About Fonty") )
 
     def __post_init__(self):
         nb = wx.Notebook(self, -1, style=0)
@@ -209,114 +216,142 @@ class AboutPanel(DismissablePanel):
 
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
+        self.form = {
+                    "numinpage": {},
+                    "points": {},
+                    "text": {},
+                    "ignore_adjustments": {},
+                    "max_num_columns": {},
+                    "CMC": {"noredraw":True}
+                }
+
+        self.settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
+        DismissablePanel.__init__(self, parent, flag_settings,
+                somelabel=_("Settings"))
 
     def _set_values(self):
-        self.inputPageLen_val = fpsys.config.numinpage
-        self.inputPointSize_val = fpsys.config.points
-        self.inputSampleString_val = fpsys.config.text
-        self.chkAdjust_val = fpsys.config.ignore_adjustments
-        self.CMC_val = fpsys.config.CMC
-        self.max_num_columns_val = fpsys.config.max_num_columns
+        for k,v in self.form.iteritems():
+            v = fpsys.config.__dict__[k]
+            self.form[k].update({"value":v})
+        #print self.form
+        
+        #self.inputPageLen_val = fpsys.config.numinpage
+        #self.inputPointSize_val = fpsys.config.points
+        #self.inputSampleString_val = fpsys.config.text
+        #self.chkAdjust_val = fpsys.config.ignore_adjustments
+        #self.CMC_val = fpsys.config.CMC
+        #self.max_num_columns_val = fpsys.config.max_num_columns
+
+    def get_old_values_from_config(self):
+        return {k:fpsys.config.__dict__[k] for k in self.form.keys()}
+
+    #def get_applied_values(self):
+    #    return {k:v for k in self.form.keys()}
 
     def show_or_hide(self,evt):
-        """Event bound in MainFrame, fires when I hide or show."""
+        """Event bound in MainFrame, fires when 
+        I hide or show."""
         if self.IsShown():
-            self._update_form()
+            self._set_values()
+            # Most of the controls will "remember" their last setting.
+            # (This is all show/hide anyway.)
+            # The only one that can change outside the settings is:
+            # The point size - can change by the wheel - hence update it:
+            self.form["points"]["control"].SetValue( self.gv("points") )
 
-    def _update_form(self):
-        self._set_values()
-        # Most of the controls will "remember" their last setting.
-        # (This is all show/hide anyway.)
-        # The only one that can change outside the settings is:
-        # The point size - can change by the wheel - hence update it:
-        self.inputPointSize.SetValue( self.inputPointSize_val )
+    def entry(self, key, title, ctrl, extra=None):
+        """Makes the label.
+        Puts it and the control into the sizer.
+        Manages the form dict"""
+        self.form[key]["control"] = ctrl
+        lbl = fpwx.boldlabel( self, title ) 
+        if extra:
+            sb = wx.BoxSizer(wx.VERTICAL)
+            sb.Add( lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
+            e = fpwx.parar(self, extra, size="points_smaller" )
+            sb.Add( e, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
+            self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP, border=4 )
+        else:
+            self.settings_sizer.Add(lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP, border=4 )
+        ## text controls need more width.
+        if isinstance(ctrl, wx._controls.TextCtrl):
+            self.settings_sizer.Add(ctrl, 1, wx.EXPAND )
+        else:
+            self.settings_sizer.Add(ctrl, 1 )
+
+    def gv(self, key):
+        return self.form[key]["value"]
 
     def __post_init__(self):
         self._set_values()
 
-        label_1 = fpwx.boldlabel(self, _("Sample text:"))
-        self.inputSampleString = wx.TextCtrl(self, -1, self.inputSampleString_val, size = (200, -1)) 
-        self.inputSampleString.SetFocus()
-        
-        label_2 = fpwx.boldlabel(self,_("Point size:"))
-        self.inputPointSize = wx.SpinCtrl(self, -1, "")
-        self.inputPointSize.SetRange(1, 500)
-        self.inputPointSize.SetValue( self.inputPointSize_val )
-        
-        label_3 = fpwx.boldlabel(self, _("Page length:"))
-        self.inputPageLen = wx.SpinCtrl(self, -1, "")
-        self.inputPageLen.SetRange(1, 5000) # It's your funeral!
-        self.inputPageLen.SetValue( self.inputPageLen_val ) 
-        self.inputPageLen.SetToolTip( wx.ToolTip( _("Beware large numbers!") ) )
+        ## Sample text 
+        c = wx.TextCtrl( self, -1, self.gv("text"), size = (200, -1) )
+        c.SetFocus()
+        self.entry( "text", _("Sample text:"), c )
 
+        ## Point size
+        c = wx.SpinCtrl(self, -1, "")
+        c.SetRange(1, 500)
+        c.SetValue( self.gv("points") )        
+        self.entry( "points", _("Point size:"), c )
+
+        ## Page length
+        c = wx.SpinCtrl(self, -1, "")
+        c.SetRange(1, 5000) # It's your funeral!
+        c.SetValue( self.gv("numinpage") ) 
+        c.SetToolTip( wx.ToolTip( _("Beware large numbers!") ) )
+        self.entry( "numinpage", _("Page length:"), c ) 
 
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
-        label_4 = fpwx.boldlabel(self, _("Disable top-left correction:"))
-        self.chkAdjust = wx.CheckBox(self, -1, _("Tick to disable") )
-        #self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
-        self.chkAdjust.SetValue( self.chkAdjust_val ) 
-        #self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds-up font drawing a little, but degrades top-left positioning.") ) )
+        c = wx.CheckBox(self, -1, _("Tick to disable") )
+        c.SetValue( self.gv("ignore_adjustments") )
+        self.entry( "ignore_adjustments",
+                _("Disable top-left correction:"), c,
+                extra = _("Disabling this speeds-up\n" \
+                  "font drawing a little,\n" \
+                  "but degrades top-left\npositioning."))
 
         # The Character map choice
         # CMC is an instance of CharMapController
-        label_5 = fpwx.boldlabel(self, _("Character map viewer:"))
-        self.CMC = self.CMC_val
+        self.CMC = self.gv("CMC")
         if self.CMC.APPS_ARE_AVAILABLE:
             self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
             rb_or_nada = wx.RadioBox(
                     self, -1, _("Available"), wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
-            rb_or_nada.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
+            rb_or_nada.SetSelection( 
+                    self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
 
             self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb_or_nada)
-            rb_or_nada.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
+            rb_or_nada.SetToolTip(wx.ToolTip( 
+                _("Choose which app to use as a character map viewer.") ))
         else:
             self.CHOSEN_CHARACTER_MAP = None
-            rb_or_nada = fpwx.para(self, _("None found.\nYou could install: {}".format(self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
+            rb_or_nada = fpwx.para(self, 
+                    _("None found.\nYou could install: {}".format(
+                        self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
 
-        settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
+        self.entry( "CMC", _("Character map viewer:"), rb_or_nada )
 
-        settings_sizer.Add(label_1, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
-        settings_sizer.Add(self.inputSampleString, 1, wx.EXPAND )
-
-        settings_sizer.Add(label_2, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
-        settings_sizer.Add(self.inputPointSize, 1 )
-
-        settings_sizer.Add(label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
-        settings_sizer.Add(self.inputPageLen, 1 )
-
-        sb = wx.BoxSizer(wx.VERTICAL)
-        sb.Add(label_4, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
-        explain = fpwx.parar(self,_(
-            "Disabling this speeds-up\n" \
-            "font drawing a little,\n" \
-            "but degrades top-left\npositioning."),size="points_smaller")
-        sb.Add(explain,0,wx.ALIGN_RIGHT | wx.ALIGN_TOP)
-        settings_sizer.Add(sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
-        settings_sizer.Add(self.chkAdjust, 1)
-
-        settings_sizer.Add(label_5, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
-        settings_sizer.Add(rb_or_nada, 1)
-
-        label_5 = fpwx.boldlabel(self,_("Max number of columns:"))
-        self.max_num_columns = wx.SpinCtrl(self, -1, "")
-        self.max_num_columns.SetRange(1, 20)
-        self.max_num_columns.SetValue( self.max_num_columns_val )       
-        sb = wx.BoxSizer(wx.VERTICAL)
-        sb.Add(label_5, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
-        explain = fpwx.parar(self,_(
-            "The font viewing area\n" \
+        ## Max columns
+        c = wx.SpinCtrl(self, -1, "")
+        c.SetRange(1, 20)
+        c.SetValue( self.gv("max_num_columns") )
+        self.entry( "max_num_columns", _("Max number of columns:"), c,
+                extra = _("The font viewing area\n" \
             "will divide into columns\n" \
-            "which you can control here."),size="points_smaller")
-        sb.Add(explain,0,wx.ALIGN_RIGHT | wx.ALIGN_TOP)
-        settings_sizer.Add(sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
-        settings_sizer.Add(self.max_num_columns, 1 )
+            "which you can control here.") )
 
         ## Make an "apply" button. Click gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
-        settings_sizer.Add(btn, 0, wx.ALL, border=10)
-        return settings_sizer
+        self.settings_sizer.Add(btn, 0, wx.ALL, border=10)
+
+        print "**"
+        print self.form
+        print "**"
+
+        return self.settings_sizer
 
     def EvtRadioBox(self, event):
         self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
@@ -467,7 +502,7 @@ class MainFrame(wx.Frame):
         ## Catch the Apply button in the settings panel.
         ## Placed *after* the generic catch for toggle_dismissable_panel
         ## because it was being superceded.
-        self.Bind(wx.EVT_BUTTON, self.menuSettings, id=wx.ID_APPLY)
+        self.Bind(wx.EVT_BUTTON, self.apply_settings, id=wx.ID_APPLY)
 
 
         ## THE MAIN GUI
@@ -743,7 +778,20 @@ class MainFrame(wx.Frame):
         self.flag_state_exclusive_toggle( flag_settings )
         self.hide_or_show_panels()
 
-    def menuSettings(self, e):
+    def apply_settings(self, e):
+        oldvals = self.settings_panel.get_old_values_from_config()
+        #newvals = self.settings_panel.get_applied_values()
+        print
+        print self.settings_panel.form
+        
+        for k,v in oldvals.iteritems():
+            if self.settings_panel.form[k]["control"].GetValue() != v:
+                #fpsys.config.__dict__[k] = v
+                print "changing fpsys.config.__dict__[{}] = {}".format(k,v)
+
+                if self.settings_panel.form[k]["noredraw"]:
+                    print "have to redraw"
+        return
         lastnuminpage = fpsys.config.numinpage
         lastpoints = fpsys.config.points
         lasttext = fpsys.config.text
@@ -774,7 +822,7 @@ class MainFrame(wx.Frame):
             fpsys.config.max_num_columns = numcolumns
             stuffchanged = True
 
-        fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP) # Oct 2009
+        fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP ) # Oct 2009
 
         ## Now to refresh things:
         if stuffchanged: 

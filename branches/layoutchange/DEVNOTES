@@ -79,7 +79,9 @@ TODO
 * UPDATE README
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
+
 * Fix the state config for the window size etc.
+
 * Fix the fugly look of the help file.
 
 * Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
@@ -88,7 +90,6 @@ TODO
 * Do we need the wrapper and the segfonts stuff?
 * Make the About page HTML!
 
-* Setting option - max number of columns to split fontview into. So there are no more than n columns.
 
 * Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 

@@ -218,6 +218,8 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
+
+            #Nov 2017: New option in settings to control columns"
             cols = min( cols, fpsys.config.max_num_columns )
             #print "cols:",cols
 
