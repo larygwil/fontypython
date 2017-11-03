@@ -558,11 +558,6 @@ class FPState:
         ## How many tick marks.
         self.numticks = 0
 
-        #self.point_size_changed_flag = False
-        #self.reflow_only = False
-
-
-
 ####
 ## Save and Load the conf file
 class Configure:
@@ -580,6 +575,8 @@ class Configure:
         self.numinpage = 10
         self.text = _("Jump the lazy dog fox")
         self.points = 64
+        #Nov 2017
+        self.max_num_columns = 0
         self.lastview = "EMPTY" # a pog name or a folder path.
         self.usegui = "wxgui"
         self.max = True
@@ -626,6 +623,7 @@ class Configure:
             self.numinpage = self.__data['numinpage']
             self.text = self.__data['text']
             self.points= self.__data['points']
+            self.max_num_columns= self.__data['max_num_columns']
             self.lastview = self.__data['lastview']
             self.usegui = self.__data['usegui']
             self.max = self.__data['max']
@@ -657,6 +655,7 @@ class Configure:
                                 "numinpage" : self.numinpage,
                                 "text" : self.text,
                                 "points" : self.points,
+                                "max_num_columns" : self.max_num_columns,
                                 "lastview" : self.lastview,
                                 "usegui" : self.usegui,
                                 "max" : self.max,

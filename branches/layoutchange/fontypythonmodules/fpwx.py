@@ -43,9 +43,12 @@ def setup_fonts_and_colours():
         "points_xxx_large": ps*2,
         })
 
+def parar( parent, ustr, size="points_normal" ):
+    p = xlabel( parent, ustr, size, weight=wx.FONTWEIGHT_NORMAL, align=wx.ALIGN_RIGHT )
+    return p
 
-def para( parent, ustr ):
-    p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
+def para( parent, ustr, size="points_normal" ):
+    p = xlabel( parent, ustr, size, weight=wx.FONTWEIGHT_NORMAL )
     return p
 
 def label( parent, ustr ):

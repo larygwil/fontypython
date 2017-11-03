@@ -217,6 +217,7 @@ class SettingsPanel(DismissablePanel):
         self.inputSampleString_val = fpsys.config.text
         self.chkAdjust_val = fpsys.config.ignore_adjustments
         self.CMC_val = fpsys.config.CMC
+        self.max_num_columns_val = fpsys.config.max_num_columns
 
     def show_or_hide(self,evt):
         """Event bound in MainFrame, fires when I hide or show."""
@@ -251,11 +252,11 @@ class SettingsPanel(DismissablePanel):
 
 
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
-        label_4 = fpwx.boldlabel(self, _("Disable font top-left correction:"))
+        label_4 = fpwx.boldlabel(self, _("Disable top-left correction:"))
         self.chkAdjust = wx.CheckBox(self, -1, _("Tick to disable") )
         #self.chkAdjust.SetValue(fpsys.config.ignore_adjustments) 
         self.chkAdjust.SetValue( self.chkAdjust_val ) 
-        self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds font drawing up a fraction, but degrades top-left positioning.") ) )
+        #self.chkAdjust.SetToolTip( wx.ToolTip( _("Disabling this speeds-up font drawing a little, but degrades top-left positioning.") ) )
 
         # The Character map choice
         # CMC is an instance of CharMapController
@@ -264,7 +265,7 @@ class SettingsPanel(DismissablePanel):
         if self.CMC.APPS_ARE_AVAILABLE:
             self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
             rb_or_nada = wx.RadioBox(
-                    self, -1, _("Available character map viewers"), wx.DefaultPosition, wx.DefaultSize,
+                    self, -1, _("Available"), wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
             rb_or_nada.SetSelection( self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
 
@@ -272,9 +273,7 @@ class SettingsPanel(DismissablePanel):
             rb_or_nada.SetToolTip(wx.ToolTip( _("Choose which app to use as a character map viewer.") ))
         else:
             self.CHOSEN_CHARACTER_MAP = None
-            rb_or_nada = wx.RadioBox(
-                    self, -1, _("Could not find a supported character viewer."), wx.DefaultPosition, wx.DefaultSize,
-                    "", 1, wx.RA_SPECIFY_COLS )
+            rb_or_nada = fpwx.para(self, _("None found.\nYou could install: {}".format(self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
 
         settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
 
@@ -287,17 +286,36 @@ class SettingsPanel(DismissablePanel):
         settings_sizer.Add(label_3, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
         settings_sizer.Add(self.inputPageLen, 1 )
 
-        settings_sizer.Add(label_4, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL)
+        sb = wx.BoxSizer(wx.VERTICAL)
+        sb.Add(label_4, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
+        explain = fpwx.parar(self,_(
+            "Disabling this speeds-up\n" \
+            "font drawing a little,\n" \
+            "but degrades top-left\npositioning."),size="points_smaller")
+        sb.Add(explain,0,wx.ALIGN_RIGHT | wx.ALIGN_TOP)
+        settings_sizer.Add(sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
         settings_sizer.Add(self.chkAdjust, 1)
 
-        settings_sizer.Add(label_5, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL)
+        settings_sizer.Add(label_5, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
         settings_sizer.Add(rb_or_nada, 1)
+
+        label_5 = fpwx.boldlabel(self,_("Max number of columns:"))
+        self.max_num_columns = wx.SpinCtrl(self, -1, "")
+        self.max_num_columns.SetRange(1, 20)
+        self.max_num_columns.SetValue( self.max_num_columns_val )       
+        sb = wx.BoxSizer(wx.VERTICAL)
+        sb.Add(label_5, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
+        explain = fpwx.parar(self,_(
+            "The font viewing area\n" \
+            "will divide into columns\n" \
+            "which you can control here."),size="points_smaller")
+        sb.Add(explain,0,wx.ALIGN_RIGHT | wx.ALIGN_TOP)
+        settings_sizer.Add(sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
+        settings_sizer.Add(self.max_num_columns, 1 )
 
         ## Make an "apply" button. Click gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
         settings_sizer.Add(btn, 0, wx.ALL, border=10)
-
-
         return settings_sizer
 
     def EvtRadioBox(self, event):
