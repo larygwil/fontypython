@@ -62,20 +62,12 @@ for arg in sys.argv[1:]: c1.append( arg )
 p1 = subprocess.call( c1 )
 
 #p1=-11 # to test
-
-#if p1 == 0:
-#    print
-#    #print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
-#elif p1 == 1:
-#    print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
-
 ## Nov 2017: Simpler plan:
 if p1 < 0:
     # err code -11
     #print "ERROR CODE:", p1
     ## This actually works!
-    import sys, os
-    import fontypythonmodules.fontybugs as fontybugs
+    import os
     import fontypythonmodules.fpsys as fpsys
     import wx, fontypythonmodules.dialogues as D
     from fontypythonmodules.fpwx import setup_fonts_and_colours
@@ -94,16 +86,19 @@ if p1 < 0:
                 if not culprit:
                     raise IOError # force error into except
             except Exception as e:
-                sadStory = _("There's a problem I can't handle." \
-                        "The error was:\n{}").format(e)
+                sadStory = _("There's a problem I can't handle.")
+                culprit = "{}".format(e)
 
             if culprit:
-                sadStory = _("There's some problem with the font named below." \
-                " Please use the \"Check Fonts\" tool in Fonty to mark bad fonts." )
+                sadStory = _("There's some problem with the font named below.\n" \
+                "You can do two things:\n" \
+                "1) Manually move this font somewhere else, or\n" \
+                "2) Use Fonty's command-line to mark bad fonts:\n" \
+                "   fontypython -c \"foldername\"" )
 
             setup_fonts_and_colours()
 
-            dlg = D.SegfaultDialog(None, sadStory, culprit)
+            dlg = D.SegfaultDialog( sadStory, culprit )
             val = dlg.ShowModal()
             dlg.Destroy()
             return True

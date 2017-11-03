@@ -1,4 +1,4 @@
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2006, .., 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
@@ -34,7 +34,7 @@ import wx
 ##langid = wx.LANGUAGE_DEFAULT # Picks this up from $LANG
 ##mylocale = wx.Locale( langid )
 
-from fpwx import SYSFONT, label
+from fpwx import SYSFONT, label, para
   
 
 class SegfaultDialog(wx.Dialog):
@@ -43,44 +43,37 @@ class SegfaultDialog(wx.Dialog):
     Runs from the wrapper script (which runs start_fontypython) so that we
     can tell the user that there was a segfault and why.
     """
-    def __init__(self, parent, sadStory, culprit):
-        wx.Dialog.__init__(self, parent, -1, _("Oh boy..."), pos = wx.DefaultPosition )
+    def __init__(self, sadStory, culprit):
+        wx.Dialog.__init__(self, None, -1, _("Oh boy..."), pos = wx.DefaultPosition )
         ## The layout begins:
-        labelHeading = label(self, _("Fonty Python, um ... crashed."), 
-                size="points_large", weight=wx.FONTWEIGHT_BOLD)
-        
-        ohDear = label( self, _("Oh dear,"))
-        sadStory = label( self, sadStory)
+        labelHeading = label(self, _("Fonty Python, um ... crashed."))
+        sadStory = para( self, sadStory )
+        tickettxt = para(self, _("You can get help by opening a ticket, or sending an email."))
+        emaillink = wx.TextCtrl(self, -1, strings.contact, style = wx.TE_READONLY)
+        ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, style = wx.TE_READONLY)
 
-        ## Have to use a size. Can't get them to just fit the dialog. fcuk....
-        tickettxt = label(self, _("You can get help by opening a ticket, or sending me an email."))
-        emaillink = wx.TextCtrl(self, -1, strings.contact,  size=(450,-1), style = wx.TE_READONLY)
-        ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, size=(450,-1), style = wx.TE_READONLY)
-
-        verticalSizer = wx.BoxSizer(wx.VERTICAL)
-        verticalSizer.Add(labelHeading, 0, wx.BOTTOM, border = 4 )
-        verticalSizer.Add(ohDear, 0 )
-        verticalSizer.Add(sadStory,  0, wx.BOTTOM, border = 8 )
-        if culprit: 
-            msg = _('The bad font is: "{}"').format(culprit)
-            culprit = label(self, msg,  weight=wx.FONTWEIGHT_BOLD)
-            verticalSizer.Add(culprit, 0 )
-        verticalSizer.Add((1,32), 0 )
-        verticalSizer.Add(tickettxt, 0 )
-        verticalSizer.Add(ticketurl, 0 )
-        verticalSizer.Add(emaillink, 0 )
-        
         btn = wx.Button(self, wx.ID_OK)
         btn.SetDefault()
-                
-        verticalSizer.Add(btn, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT | wx.TOP, border = 15)
+        
+        fs = wx.FlexGridSizer(cols = 1, vgap = 4)
+
+        fs.Add(labelHeading, 0, wx.BOTTOM, border = 4 )
+        fs.Add(sadStory,  0, wx.BOTTOM, border = 8 )
+        if culprit: 
+            msg = label(self,_('The bad font or error is:'))
+            cul = "{}".format(culprit)
+            culprit = wx.TextCtrl(self, -1, cul, style = wx.TE_READONLY | wx.TE_MULTILINE )
+            fs.Add(msg,0)
+            fs.Add(culprit, 1, wx.EXPAND  )
+        fs.Add(tickettxt, 0 )
+        fs.Add(ticketurl, 1, wx.EXPAND )
+        fs.Add(emaillink, 1, wx.EXPAND )
+        fs.Add(btn, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT | wx.TOP, border = 15 )
 
         b = wx.BoxSizer( wx.HORIZONTAL )
-        b.Add( verticalSizer, 0, wx.ALL, border=10 )
-
+        b.Add( fs, 0, wx.ALL, border=10 )
         self.SetSizer( b )
         b.Fit(self) 
-        self.Layout()
         
 class LocateDirectory(wx.Dialog):
     """

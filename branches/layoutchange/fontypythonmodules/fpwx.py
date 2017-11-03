@@ -42,9 +42,14 @@ def setup_fonts_and_colours():
         "points_xxx_large": ps*2,
         })
 
+
+def para( parent, ustr ):
+    p = label( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
+    return p
+
 def label(parent, 
         ustr, size = "points_large", 
-        weight = wx.FONTWEIGHT_NORMAL, 
+        weight = wx.FONTWEIGHT_BOLD, 
         align = wx.ALIGN_LEFT):
     lbl = wx.StaticText( parent, -1, ustr, style = align )
     lbl.SetFont( wx.Font(SYSFONT[size], SYSFONT["family"], 
