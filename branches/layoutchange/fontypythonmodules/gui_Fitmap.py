@@ -576,7 +576,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             mainy = bh + 5 #self.height = h
         else:
             mainy = Fitmap.MIN_FITEM_HEIGHT#10
-            self.height = mainy
+            self.height = mainy #reset the height!
 
             for i,wximage in enumerate(self.face_image_stack):
                 #print u"..draw_bitmap loop for {} i is {} wximage is {}".format(self.name,i,wximage)
