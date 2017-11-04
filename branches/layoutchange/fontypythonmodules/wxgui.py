@@ -216,33 +216,46 @@ class AboutPanel(DismissablePanel):
 
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
+
+        ## This dict is a way to handle the actual form in a loopy kind of way
+        ## Keys:
+        ## ==
+        ## default: for when a value is bad, use this.
+        ## redraw : signals if a change to this value would require a fitmap redraw
+        ## peek   : func to use to get value from the form control
+        ## poke   : func to use to put the value into fpsys.config
+        ## my.val : is the value taken from the control
+        ## config.val: is the value taken from fpsys.config
+        ## dud    : is a control that plays no real part
         self.form = {
-                     "numinpage": {"redraw":1},
-                        "points": {"redraw":1},
-                          "text": {"redraw":1, "default":"Fonty Python"},
-            "ignore_adjustments": {"redraw":1},
-               "max_num_columns": {"redraw":1},
-                  "app_char_map": {"redraw":0, 
-                                   "lam":lambda c: c.GetStringSelection()},
+                     "numinpage": {},
+                        "points": {},
+                          "text": {"default":"Fonty Python"},
+            "ignore_adjustments": {},
+               "max_num_columns": {},
+                  "app_char_map": {"redraw":False, 
+                                   "peek": lambda c: c.GetStringSelection()
+                                   "poke": self.poke_app_char_map },
                 }
+        ## Set redraw:True in all, except the False ones.
+        {d.update({"redraw":d.get("redraw",True)}) for d in self.form.values()}
 
-        self._some_values_have_changed = False
+        self._force_redraw = False
+
         self.settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
-        DismissablePanel.__init__(self, parent, flag_settings,
-                somelabel=_("Settings"))
+        
+        DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
 
-    def settings_form(self):
-        if self._some_values_have_changed:
-            return self.form
-        return None
+    def settings_force_redraw(self):
+        return self._force_redraw
 
     def _set_values_from_config(self):
         """Get the values out of config and record them
         in my "form" dict. which I use as a courier between
         config and here."""
         for key, d in self.form.iteritems():
-            v = fpsys.config.__dict__[key]
-            d.update( { "config.val": v } )
+            # get the val from config
+            d["config.val"] = fpsys.config.__dict__[key]
         #print self.form
         
         #self.inputPageLen_val = fpsys.config.numinpage
@@ -337,21 +350,22 @@ class SettingsPanel(DismissablePanel):
         self.CMC = fpsys.config.CMC
         ## Do we have some char viewer apps?
         if self.CMC.APPS_ARE_AVAILABLE:
-            self.CHOSEN_CHARACTER_MAP = self.gv("app_char_map")#self.CMC.GET_CURRENT_APPNAME()
+            CHOSEN_CHARACTER_MAP = self.gv("app_char_map")#self.CMC.GET_CURRENT_APPNAME()
             c = wx.RadioBox(
                     self, -1, _("Available"), wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
-            c.SetSelection(# self.gv("app_char_map") )
-                    self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
+            c.SetSelection(
+                    self.CMC.QUICK_APPNAME_LIST.index( CHOSEN_CHARACTER_MAP ))
 
-            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
+            ## Prefer explicit "poke" process to this:
+            ##  self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
             c.SetToolTip(wx.ToolTip( 
                 _("Choose which app to use as a character map viewer.") ))
             
             self.entry( "app_char_map", _("Character map viewer:"), c )
         ## No apps, just print a string:
         else:
-            self.CHOSEN_CHARACTER_MAP = None
+            CHOSEN_CHARACTER_MAP = None
             c = fpwx.para(self, 
                     _("None found.\nYou could install: {}".format(
                         self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
@@ -383,32 +397,52 @@ class SettingsPanel(DismissablePanel):
     #    return {k:fpsys.config.__dict__[k] for k in self.form.keys()}
 
     def apply_pressed(self,evt):
-        #oldvals = {k:fpsys.config.__dict__[k] for k in self.form.keys()}
-        self._some_values_have_changed = False
+        redraw = False
         for key,d in self.form.iteritems():
-            #print key, d["dud"]
-            d["changed"] = False
+            # A 'dud' is a control that plays no part
             if not d["dud"]:
-                lam = d.get("lam",None)
-                if lam:
-                    getval = lam(d["control"])
+                # Is there a special func to get value?
+                peek = d.get("peek",None)
+                if peek: # yes
+                    ctrlval = peek(d["control"])
                 else:
-                    getval = d["control"].GetValue()
-                    getdef = d.get("default", None)
-                    if getdef:
-                        # truthy test for "no value" (or empty string)
-                        if not getval: 
-                            getval = getdef
-                            d["control"].SetValue(getdef)
-                d["my.value"] = getval
-                if d["my.value"] != d["config.val"]:
-                    d["changed"] = True
-                    self._some_values_have_changed = True
-        evt.Skip() 
+                    ctrlval = d["control"].GetValue()
+                # is there a default?
+                getdef = d.get("default", None)
+                if getdef:
+                    # truthy test for "no value" (or empty string)
+                    if not ctrlval: 
+                        ctrlval = getdef # so, use default instead
+                        # Since the value in the control just failed
+                        # and we have to use a default, let's
+                        # also plug the fixed value back into the
+                        # control.
+                        # This one may fail if ctrl has no SetValue
+                        # method. I'm not worried right now.
+                        d["control"].SetValue(getdef)
 
+                # now I have the value from the control
+                d["my.val"] = ctrlval
+                # is it a change from the config's version?
+                if d["my.val"] != d["config.val"]:
+                    # It is! Record it in config now.
+                    # Is there a special func to do this?
+                    poke = d.get("poke",None)
+                    if poke: #yes
+                        poke(d["my.val"])
+                    else:
+                        fpsys.config.__dict__[key] = d["my.val"]
+                    redraw = d["redraw"]
 
-    def EvtRadioBox(self, event):
-        self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
+        self._force_redraw = redraw
+        evt.Skip()
+
+    #def EvtRadioBox(self, event):
+    def poke_app_char_map(self, v):
+        self.CMC.SET_CURRENT_APPNAME( v ) # self.gv("app_char_map") )
+                #self.settings_panel.CHOSEN_CHARACTER_MAP )
+
+    #    self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
 
 
 
@@ -835,29 +869,18 @@ class MainFrame(wx.Frame):
     def apply_settings(self, e):
         #oldvals = self.settings_panel.get_old_values_from_config()
         #newvals = self.settings_panel.get_applied_values()
-        f = self.settings_panel.settings_form()
-        if f: #if self.settings_panel.did_settings_change():
-            #let's poke the values into config
-            import pprint
-            print
-            pprint.pprint( f )#self.settings_panel.form )
-            redraw = False
-            for key, dict in f.iteritems():
-                if dict["changed"]:
-                    print "fpsys.config.__dict[{}] = {}".format(key, dict["my.value"])
-                    #fpsys.config.__dict[key] = dict["my.value"]
-                    if dict["redraw"] == 1: redraw = True
-            print redraw
+        if self.settings_panel.settings_force_redraw():
+            ## Might be unnecc if ignore_adjustments did not
+            ## change. Meh.
+            ##(sub in ScrolledFontView)
+            ps.pub( reset_top_left_adjustments )
+            ## Will hide the settings_panel too
+            ps.pub( update_font_view )
+        else:
+            ## With no changes, we must hide the settings_panel
+            self.ensure_fontview_shown()
         return
 
-        for k,v in oldvals.iteritems():
-            if self.settings_panel.form[k]["control"].GetValue() != v:
-                #fpsys.config.__dict__[k] = v
-                print "changing fpsys.config.__dict__[{}] = {}".format(k,v)
-
-                if self.settings_panel.form[k]["noredraw"]:
-                    print "have to redraw"
-        return
         lastnuminpage = fpsys.config.numinpage
         lastpoints = fpsys.config.points
         lasttext = fpsys.config.text

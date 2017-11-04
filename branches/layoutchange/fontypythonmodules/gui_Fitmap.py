@@ -807,7 +807,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     def run(self, *args):
         """
         Uses the instance (held in fpsys.config) of the classes in charmaps.py.
-        was in gui_ScrolledFontView.py
         """
         iCM = fpsys.config.CMC.GetInstance()
         iCM.OpenApp( *args )
