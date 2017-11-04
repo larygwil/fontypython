@@ -217,22 +217,24 @@ class AboutPanel(DismissablePanel):
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
         self.form = {
-                    "numinpage": {},
-                    "points": {},
-                    "text": {},
-                    "ignore_adjustments": {},
-                    "max_num_columns": {},
-                    "CMC": {"noredraw":True}
+                     "numinpage": {"redraw":1},
+                        "points": {"redraw":1},
+                          "text": {"redraw":1, "default":"Fonty Python"},
+            "ignore_adjustments": {"redraw":1},
+               "max_num_columns": {"redraw":1},
+                  "app_char_map": 
+                                  {"redraw":0, 
+                                      "lam":lambda: self.CHOSEN_CHARACTER_MAP}
                 }
 
         self.settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
         DismissablePanel.__init__(self, parent, flag_settings,
                 somelabel=_("Settings"))
 
-    def _set_values(self):
+    def _set_values_from_config(self):
         for k,v in self.form.iteritems():
             v = fpsys.config.__dict__[k]
-            self.form[k].update({"value":v})
+            self.form[k].update({"config.val":v})
         #print self.form
         
         #self.inputPageLen_val = fpsys.config.numinpage
@@ -242,17 +244,19 @@ class SettingsPanel(DismissablePanel):
         #self.CMC_val = fpsys.config.CMC
         #self.max_num_columns_val = fpsys.config.max_num_columns
 
-    def get_old_values_from_config(self):
-        return {k:fpsys.config.__dict__[k] for k in self.form.keys()}
+
 
     #def get_applied_values(self):
     #    return {k:v for k in self.form.keys()}
 
     def show_or_hide(self,evt):
-        """Event bound in MainFrame, fires when 
-        I hide or show."""
+        """
+        Event bound in MainFrame, fires when I hide or show.
+        NOTE: The __post_init__ only happens once, so I need a way
+        to alter the form as it comes and goes.
+        """
         if self.IsShown():
-            self._set_values()
+            self._set_values_from_config()
             # Most of the controls will "remember" their last setting.
             # (This is all show/hide anyway.)
             # The only one that can change outside the settings is:
@@ -280,10 +284,13 @@ class SettingsPanel(DismissablePanel):
             self.settings_sizer.Add(ctrl, 1 )
 
     def gv(self, key):
-        return self.form[key]["value"]
+        return self.form[key]["config.val"]
 
     def __post_init__(self):
-        self._set_values()
+        """
+        Fires once. Draw all the controls, with values from config.
+        """
+        self._set_values_from_config()
 
         ## Sample text 
         c = wx.TextCtrl( self, -1, self.gv("text"), size = (200, -1) )
@@ -332,7 +339,7 @@ class SettingsPanel(DismissablePanel):
                     _("None found.\nYou could install: {}".format(
                         self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
 
-        self.entry( "CMC", _("Character map viewer:"), rb_or_nada )
+        self.entry( "app_char_map", _("Character map viewer:"), rb_or_nada )
 
         ## Max columns
         c = wx.SpinCtrl(self, -1, "")
@@ -345,13 +352,39 @@ class SettingsPanel(DismissablePanel):
 
         ## Make an "apply" button. Click gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
+        self.Bind(wx.EVT_BUTTON, self.apply_pressed, id=wx.ID_APPLY)
         self.settings_sizer.Add(btn, 0, wx.ALL, border=10)
 
-        print "**"
-        print self.form
-        print "**"
+        #print "**"
+        #print self.form
+        #print "**"
 
         return self.settings_sizer
+
+
+    #def get_old_values_from_config(self):
+    #    return {k:fpsys.config.__dict__[k] for k in self.form.keys()}
+
+    def apply_pressed(self,evt):
+        #oldvals = {k:fpsys.config.__dict__[k] for k in self.form.keys()}
+        for key,d in self.form.iteritems():
+            lam = d.get("lam",None)
+            if lam:
+                getval = lam()
+            else:
+                getval = d["control"].GetValue()
+                getdef = d.get("default", None)
+                if getdef:
+                    # truthy test for "no value" (or empty string)
+                    if not getval: 
+                        getval = getdef
+                        d["control"].SetValue(getdef)
+            d["my.value"] = getval
+            d["changed"] = False
+            if d["my.value"] != d["config.val"]:
+                d["changed"] = True
+        evt.Skip() 
+
 
     def EvtRadioBox(self, event):
         self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
@@ -779,11 +812,13 @@ class MainFrame(wx.Frame):
         self.hide_or_show_panels()
 
     def apply_settings(self, e):
-        oldvals = self.settings_panel.get_old_values_from_config()
+        #oldvals = self.settings_panel.get_old_values_from_config()
         #newvals = self.settings_panel.get_applied_values()
+        import pprint
         print
-        print self.settings_panel.form
-        
+        pprint.pprint( self.settings_panel.form )
+        return
+
         for k,v in oldvals.iteritems():
             if self.settings_panel.form[k]["control"].GetValue() != v:
                 #fpsys.config.__dict__[k] = v
