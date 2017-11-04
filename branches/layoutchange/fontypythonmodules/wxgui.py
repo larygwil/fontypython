@@ -104,6 +104,7 @@ class DismissablePanel(wx.Panel):
         self.vbox.Add( whatever_sizer, 1, wx.EXPAND)
         self.SetSizer( self.vbox )
         self.Layout()
+        self.SetFocus()
 
     def __post_init__(self):
         pass
@@ -121,20 +122,20 @@ if loc is None or len(loc) < 2:
 else:
     langcode = loc[:2].lower()# This is going to cause grief in the future...
 
+## Weird stuff:
+class AnHtmlWindow(html.HtmlWindow):
+    def __init__(self, parent):
+        html.HtmlWindow.__init__(self, parent)
+        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
+            self.SetStandardFonts()  
+
 class HtmlPanel(DismissablePanel):
-    ## Weird stuff:
-    class MyHtmlWindow(html.HtmlWindow):
-        def __init__(self, parent):
-            html.HtmlWindow.__init__(self, parent)
-            if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
-                self.SetStandardFonts()    
-    
     def __init__(self, parent):
         DismissablePanel.__init__(self, parent, flag_help, 
                 somelabel=_("Help! Help! I'm being repressed!") ) 
 
     def __post_init__(self):
-        self.html = HtmlPanel.MyHtmlWindow(self)
+        self.html = AnHtmlWindow(self)
         ## Find localized help, or default to English.
         packpath = fpsys.fontyroot
         helppaf = os.path.join(packpath, "help", langcode, "help.html")
@@ -263,7 +264,7 @@ class SettingsPanel(DismissablePanel):
         ## Sample text 
         k="text"
         c = wx.TextCtrl( self, -1, self.gv(k), size = (200, -1) )
-        c.SetFocus() #Kinda doesn't work.
+        #c.SetFocus() #Kinda doesn't work.
         self.entry( k, _("Sample text:"), c )
 
         ## Point size
@@ -292,19 +293,19 @@ class SettingsPanel(DismissablePanel):
         k = "app_char_map"
         ## Do we have some char viewer apps?
         if self.CMC.apps_are_available:
-            CHOSEN_CHARACTER_MAP = self.gv(k)
+            app = self.gv(k)
             c = wx.RadioBox( self, -1, _("Available"), 
                     wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.quick_appname_list, 1, wx.RA_SPECIFY_COLS
                     )
-            c.SetSelection(self.CMC.quick_appname_list.index(CHOSEN_CHARACTER_MAP))
+            c.SetSelection(self.CMC.quick_appname_list.index(app))
             ## Prefer explicit "poke" (in dict) to this event:
             ##  self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
             c.SetToolTip(wx.ToolTip(_("Choose which app to use as a character map viewer.")))
             dud_control = False
         ## No apps, just print a string:
         else:
-            CHOSEN_CHARACTER_MAP = None
+            app = None
             c = fpwx.para(self, 
                     _("None found.\nYou could install: {}".format(
                         self.CMC.list_of_suggested_apps)) )
@@ -316,13 +317,15 @@ class SettingsPanel(DismissablePanel):
         c = self.spinner(k, (1, 20))# It's your funeral!        
         self.entry( k, _("Max number of columns:"), c,
                 extra = _("The font viewing area\n" \
-            "will divide into columns\n" \
-            "which you can control here.") )
+                          "will divide into columns\n" \
+                          "which you can control here.") )
 
-        ## Make an "apply" button. Click gets caught in MainFrame.
+        ## Make an "apply" button. Click also gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
         self.Bind(wx.EVT_BUTTON, self.apply_pressed, id=wx.ID_APPLY)
-        self.settings_sizer.Add((1,1),0) #blank cell
+        #btn.SetDefault() # no joy...
+
+        self.settings_sizer.Add((1,1),0) #a blank cell
         self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
 
         return self.settings_sizer
@@ -344,6 +347,7 @@ class SettingsPanel(DismissablePanel):
         """
         for key, d in self.form.iteritems():
             d["config.val"] = fpsys.config.__dict__[key]
+            d["changed"] = False # reset this.
 
     def show_or_hide(self,evt):
         """
@@ -360,14 +364,16 @@ class SettingsPanel(DismissablePanel):
             self.form["points"]["control"].SetValue( self.gv("points") )
 
     def entry(self, key, title, ctrl, extra=None, dud=False):
-        """Makes the label.
-        Puts it and the control into the sizer.
-        Manages the form dict"""
+        """
+        Makes the label. Puts it and the control into the sizer.
+        Manages the form dict.
+        """
         self.form[key]["control"] = ctrl
-        self.form[key]["dud"] = dud # some ctrls have no function.
+        self.form[key]["dud"] = dud # some ctrls are just info.
 
         lbl = fpwx.boldlabel( self, title ) 
         if extra:
+            ## We have some extra text to stuff in somewhere.
             sb = wx.BoxSizer(wx.VERTICAL)
             sb.Add( lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
             e = fpwx.parar(self, extra, size="points_smaller" )
@@ -382,21 +388,22 @@ class SettingsPanel(DismissablePanel):
             self.settings_sizer.Add(ctrl, 1 )
 
     def gv(self, key):
+        """Get a value for the key. It's less typing."""
         return self.form[key]["config.val"]
 
     def spinner(self, key, rnge, tip=None):
+        """There were several, so I did a thing."""
         c = wx.SpinCtrl(self, -1, "")
         c.SetRange(rnge[0], rnge[1])
         c.SetValue( self.gv(key) ) 
         if tip: c.SetToolTip( wx.ToolTip( tip ) )
         return c
 
-
     def apply_pressed(self,evt):
         """
         Loop through the form dict and connect the dots.
         Put new values into fpsys.config, and set flags
-        for MainFrame to test when it catches the event too.
+        for MainFrame to test when it catches the event.
         """
         redraw = False
         for key,d in self.form.iteritems():
@@ -425,13 +432,14 @@ class SettingsPanel(DismissablePanel):
 
                 # now I have the value from the control
                 d["my.val"] = ctrlval
-                # is it a change from the config's version?
+
+                # Is it different from the config's version?
+                # If so, update config.
                 if d["my.val"] != d["config.val"]:
                     changed=True
-                    # It is! Record it in config now.
-                    # Is there a special func to do this?
+                    # If there's a special poke func, use it.
                     poke = d.get("poke",None)
-                    if poke: #yes
+                    if poke:
                         poke(d["my.val"])
                     else:
                         fpsys.config.__dict__[key] = d["my.val"]
@@ -443,8 +451,10 @@ class SettingsPanel(DismissablePanel):
         ## to hide this panel.
         evt.Skip()
 
-    #def EvtRadioBox(self, event):
     def poke_app_char_map(self, v):
+        """poke func. I could have use the event system,
+        but I wanted to keep it all in the apply_pressed
+        method."""
         self.CMC.set_current_appname( v )
 
 
@@ -755,7 +765,7 @@ class MainFrame(wx.Frame):
         for flag, pan in self.panel_dict.iteritems():
             if self.is_state_flagged(flag):
                 pan.Show()
-                #pan.SetFocus() # useless
+                pan.SetFocus()
             else:
                 pan.Hide()
                 self.flag_state_off(flag)
