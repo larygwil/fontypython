@@ -651,19 +651,19 @@ class Configure:
 
     def __setData(self):
         self.__data = {"size" : self.size,
-                                "pos" : self.pos,
-                                "numinpage" : self.numinpage,
-                                "text" : self.text,
-                                "points" : self.points,
-                                "max_num_columns" : self.max_num_columns,
-                                "lastview" : self.lastview,
-                                "usegui" : self.usegui,
-                                "max" : self.max,
-                                "lastdir" : self.lastdir,
-                                "recurseFolders": self.recurseFolders,
-                                "ignore_adjustments": self.ignore_adjustments,
-                                "app_char_map" : self.app_char_map,
-                                }
+            "pos" : self.pos,
+            "numinpage" : self.numinpage,
+            "text" : self.text,
+            "points" : self.points,
+            "max_num_columns" : self.max_num_columns,
+            "lastview" : self.lastview,
+            "usegui" : self.usegui,
+            "max" : self.max,
+            "lastdir" : self.lastdir,
+            "recurseFolders": self.recurseFolders,
+            "ignore_adjustments": self.ignore_adjustments,
+            "app_char_map" : self.app_char_map,
+         }
     def app_char_map_set( self, x ):
         '''
         A callback from the CharMapController: when the CURRENT_APPNAME is set,

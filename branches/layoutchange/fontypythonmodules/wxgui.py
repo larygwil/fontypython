@@ -254,21 +254,7 @@ class SettingsPanel(DismissablePanel):
         in my "form" dict. which I use as a courier between
         config and here."""
         for key, d in self.form.iteritems():
-            # get the val from config
             d["config.val"] = fpsys.config.__dict__[key]
-        #print self.form
-        
-        #self.inputPageLen_val = fpsys.config.numinpage
-        #self.inputPointSize_val = fpsys.config.points
-        #self.inputSampleString_val = fpsys.config.text
-        #self.chkAdjust_val = fpsys.config.ignore_adjustments
-        #self.CMC_val = fpsys.config.CMC
-        #self.max_num_columns_val = fpsys.config.max_num_columns
-
-
-
-    #def get_applied_values(self):
-    #    return {k:v for k in self.form.keys()}
 
     def show_or_hide(self,evt):
         """
@@ -279,7 +265,7 @@ class SettingsPanel(DismissablePanel):
         if self.IsShown():
             self._set_values_from_config()
             # Most of the controls will "remember" their last setting.
-            # (This is all show/hide anyway.)
+            # (This is all a show/hide game anyway.)
             # The only one that can change outside the settings is:
             # The point size - can change by the wheel - hence update it:
             self.form["points"]["control"].SetValue( self.gv("points") )
@@ -290,9 +276,6 @@ class SettingsPanel(DismissablePanel):
         Manages the form dict"""
         self.form[key]["control"] = ctrl
         self.form[key]["dud"] = dud # some ctrls have no function.
-        #import pprint
-        #print "## key:", key
-        #pprint.pprint(self.form[key])
 
         lbl = fpwx.boldlabel( self, title ) 
         if extra:
