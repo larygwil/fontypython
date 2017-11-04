@@ -224,7 +224,7 @@ class SettingsPanel(DismissablePanel):
                "max_num_columns": {"redraw":1},
                   "app_char_map": 
                                   {"redraw":0, 
-                                      "lam":lambda: self.CHOSEN_CHARACTER_MAP}
+                                      "lam":lambda c: c.GetStringSelection()}
                 }
 
         self.settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
@@ -321,13 +321,13 @@ class SettingsPanel(DismissablePanel):
 
         # The Character map choice
         # CMC is an instance of CharMapController
-        self.CMC = self.gv("CMC")
+        self.CMC = fpsys.config.CMC
         if self.CMC.APPS_ARE_AVAILABLE:
-            self.CHOSEN_CHARACTER_MAP = self.CMC.GET_CURRENT_APPNAME()
+            self.CHOSEN_CHARACTER_MAP = self.gv("app_char_map")#self.CMC.GET_CURRENT_APPNAME()
             rb_or_nada = wx.RadioBox(
                     self, -1, _("Available"), wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
-            rb_or_nada.SetSelection( 
+            rb_or_nada.SetSelection(# self.gv("app_char_map") )
                     self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
 
             self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb_or_nada)
@@ -370,7 +370,7 @@ class SettingsPanel(DismissablePanel):
         for key,d in self.form.iteritems():
             lam = d.get("lam",None)
             if lam:
-                getval = lam()
+                getval = lam(d["control"])
             else:
                 getval = d["control"].GetValue()
                 getdef = d.get("default", None)

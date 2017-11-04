@@ -29,7 +29,7 @@ class CharMapApp(object):
             if os.path.exists(os.path.join(path, self.appname)) and \
                     not os.path.isdir(os.path.join(path, self.appname)):
                 return True
-        return False
+        return True# False
     def OpenApp( self, *args ): pass
     def Cleanup( self ): pass
     def Run( self, cmd ):
