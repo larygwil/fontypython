@@ -70,7 +70,6 @@ BUGS
 ==
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
 
-* make point size 500, then view fonts, then reduce it... height remains maxed!
 
 
 TODO

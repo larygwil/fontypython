@@ -635,7 +635,7 @@ class Configure:
             ## We must also set our instance of the CharMap Controller:
             ##  This can be "UNSET" (default first run) or an appname
             ##  That appname may be valid or not (it may have been uninstalled...)
-            self.CMC.SET_CURRENT_APPNAME(self.app_char_map)
+            self.CMC.set_current_appname(self.app_char_map)
 
         except KeyError:
             ## The conf file has keys that don't work for this version, chances are it's old.

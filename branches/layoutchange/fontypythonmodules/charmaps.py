@@ -105,50 +105,50 @@ class CharMapController(object):
     def __init__( self, config_callback ):
         self.config_callback = config_callback
         
-        SUPPORTED_CHAR_MAP_APPS = { "gucharmap":Gucharmap, "kfontview":Kfontview }
-        self.PUBLIC_LIST_FOR_SUGGESTED_APPS=" or ".join('"{}"'.format(n) for n in SUPPORTED_CHAR_MAP_APPS.keys())
+        supported_char_map_apps = { "gucharmap":Gucharmap, "kfontview":Kfontview }
+        self.list_of_suggested_apps=" or ".join('"{}"'.format(n) for n in supported_char_map_apps.keys())
 
         ## Which of the supported apps are actually available?
-        self.AVAILABLE_APP_DICT = {}
-        for appname, klass in SUPPORTED_CHAR_MAP_APPS.iteritems():
+        self._available_app_dict = {}
+        for appname, klass in supported_char_map_apps.iteritems():
             ## Instantiate an app class:
             i = klass( appname )
-            if i.is_installed: self.AVAILABLE_APP_DICT[appname] = i
+            if i.is_installed: self._available_app_dict[appname] = i
 
         ## Flag to signify if there are available apps to use.
-        self.APPS_ARE_AVAILABLE = False if len(self.AVAILABLE_APP_DICT) == 0 else True
+        self.apps_are_available = False if len(self._available_app_dict) == 0 else True
 
-        self.__CURRENT_APPNAME = "UNSET"
-        self.QUICK_APPNAME_LIST = self.AVAILABLE_APP_DICT.keys()
+        self.__current_appname = "UNSET"
+        self.quick_appname_list = self._available_app_dict.keys()
 
-    def SET_CURRENT_APPNAME(self, x):
+    def set_current_appname(self, x):
         ## If the new name (x) is UNSET or some appname that is not available
         ## then give x a new value of the first thing in the list of what is
         ## actually available.
-        if x not in self.QUICK_APPNAME_LIST and self.APPS_ARE_AVAILABLE:
-                x = self.QUICK_APPNAME_LIST[0]
+        if x not in self.quick_appname_list and self.apps_are_available:
+                x = self.quick_appname_list[0]
                 
-        self.__CURRENT_APPNAME = x ## It's possible that x is "UNSET" 
+        self.__current_appname = x ## It's possible that x is "UNSET" 
         self.config_callback( x ) ## go set the config's app_char_map var too.
 
     #def GET_CURRENT_APPNAME( self ):
     #    '''
-    #    This is only called when APPS_ARE_AVAILABLE is True: See dialogues.py
-    #    Think of this as raising an error if APPS_ARE_AVAILABLE is False!
+    #    This is only called when apps_are_available Is True: See dialogues.py
+    #    Think of this as raising an error if apps_are_available Is False!
     #    '''
-    #    if self.__CURRENT_APPNAME == "UNSET":
-    #        x = self.QUICK_APPNAME_LIST[0]
+    #    if self.__current_appname == "UNSET":
+    #        x = self.quick_appname_list[0]
     #        return x
     #    else:
-    #        return self.__CURRENT_APPNAME
+    #        return self.__current_appname
 
     def GetInstance( self ):
         '''
-        This is only called when APPS_ARE_AVAILABLE is True: See gui_Fitmap.py
+        This is only called when apps_are_available Is True: See gui_Fitmap.py
         in can_have_button method.
-        Think of this as raising an error if APPS_ARE_AVAILABLE is False!
+        Think of this as raising an error if apps_are_available Is False!
         '''
         ## Fetch an instance from my dict 
-        return self.AVAILABLE_APP_DICT[ self.__CURRENT_APPNAME ]
+        return self._available_app_dict[ self.__current_appname ]
 
 

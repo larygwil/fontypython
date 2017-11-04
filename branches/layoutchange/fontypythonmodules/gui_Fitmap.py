@@ -576,6 +576,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             mainy = bh + 5 #self.height = h
         else:
             mainy = Fitmap.MIN_FITEM_HEIGHT#10
+            self.height = mainy
 
             for i,wximage in enumerate(self.face_image_stack):
                 #print u"..draw_bitmap loop for {} i is {} wximage is {}".format(self.name,i,wximage)
@@ -825,7 +826,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         Other fitems like info and FILE_NOT_FOUND don't get buttons.
         """
-        if not fpsys.config.CMC.APPS_ARE_AVAILABLE: return False
+        if not fpsys.config.CMC.apps_are_available: return False
         if isinstance( self.fitem, fontcontrol.InfoFontItem ): return False
         if self.fitem.badstyle == "FILE_NOT_FOUND": return False
         if not self.fitem.family: return False

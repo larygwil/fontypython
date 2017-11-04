@@ -216,6 +216,13 @@ class AboutPanel(DismissablePanel):
 
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
+        """The settings form.
+        I went a little mad. It started simple, the old code. A few gets,
+        a few sets. Then I thought, "I can make this generic! Yeah! Shit yeah!"
+        And so I abstracted and factored and fuck. Now it's this thing.
+
+        Sorry about that.
+        """
 
         ## This dict is a way to handle the actual form in a loopy kind of way
         ## Keys:
@@ -246,26 +253,101 @@ class SettingsPanel(DismissablePanel):
         
         DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
 
+    def __post_init__(self):
+        """
+        Happens only once. Draws all the controls, with values from config.
+        After this, the panel only hides/shows. The controls all persist.
+        """
+        self._set_values_from_config()
+
+        ## Sample text 
+        k="text"
+        c = wx.TextCtrl( self, -1, self.gv(k), size = (200, -1) )
+        c.SetFocus() #Kinda doesn't work.
+        self.entry( k, _("Sample text:"), c )
+
+        ## Point size
+        k = "points"
+        c = self.spinner(k, (1, 500))
+        self.entry( k, _("Point size:"), c )
+
+        ## Page length
+        k = "numinpage"
+        c = self.spinner(k, (1, 5000), tip=_("Beware large numbers!"))# It's your funeral!
+        self.entry( k, _("Page length:"), c )
+
+        ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
+        c = wx.CheckBox(self, -1, _("Tick to disable") )
+        c.SetValue( self.gv("ignore_adjustments") )
+        self.entry( "ignore_adjustments",
+                _("Disable top-left correction:"), c,
+                extra = _("Disabling this speeds-up\n" \
+                          "font drawing a little,\n" \
+                          "but degrades top-left\n" \
+                          "positioning."))
+
+        # The Character map choice
+        # CMC is an instance of CharMapController
+        self.CMC = fpsys.config.CMC
+        k = "app_char_map"
+        ## Do we have some char viewer apps?
+        if self.CMC.apps_are_available:
+            CHOSEN_CHARACTER_MAP = self.gv(k)
+            c = wx.RadioBox( self, -1, _("Available"), 
+                    wx.DefaultPosition, wx.DefaultSize,
+                    self.CMC.quick_appname_list, 1, wx.RA_SPECIFY_COLS
+                    )
+            c.SetSelection(self.CMC.quick_appname_list.index(CHOSEN_CHARACTER_MAP))
+            ## Prefer explicit "poke" (in dict) to this event:
+            ##  self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
+            c.SetToolTip(wx.ToolTip(_("Choose which app to use as a character map viewer.")))
+            dud_control = False
+        ## No apps, just print a string:
+        else:
+            CHOSEN_CHARACTER_MAP = None
+            c = fpwx.para(self, 
+                    _("None found.\nYou could install: {}".format(
+                        self.CMC.list_of_suggested_apps)) )
+            dud_control = True
+        self.entry( k, _("Character map viewer:"), c, dud=dud_control )
+
+        ## Max columns
+        k = "max_num_columns"
+        c = self.spinner(k, (1, 20))# It's your funeral!        
+        self.entry( k, _("Max number of columns:"), c,
+                extra = _("The font viewing area\n" \
+            "will divide into columns\n" \
+            "which you can control here.") )
+
+        ## Make an "apply" button. Click gets caught in MainFrame.
+        btn = wx.Button(self, wx.ID_APPLY)
+        self.Bind(wx.EVT_BUTTON, self.apply_pressed, id=wx.ID_APPLY)
+        self.settings_sizer.Add((1,1),0) #blank cell
+        self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
+
+        return self.settings_sizer
+
     def settings_force_redraw(self):
-        """Used externally in MainFrame"""
+        """Do I have to redraw fitmaps?
+        Used externally in MainFrame"""
         return self._force_redraw
 
     def has_changed(self, key):
-        """Used externally in MainFrame"""
+        """Has a thing changed?
+        Used externally in MainFrame"""
         return self.form[key]["changed"]
 
     def _set_values_from_config(self):
         """
-        Get the values out of config and into
-        in my "form" dict which I use as a courier between
-        fpsys.config and here.
+        Get the values out of config and into my "form" dict,
+        which is the loopy thing between here and fpsys.config
         """
         for key, d in self.form.iteritems():
             d["config.val"] = fpsys.config.__dict__[key]
 
     def show_or_hide(self,evt):
         """
-        Event is bound in MainFrame, fires when I hide or show.
+        This handler's event is bound in MainFrame. Fires when I hide or show.
         NOTE: The __post_init__ only happens once, so I need a way
         to alter the form as it comes and goes.
         """
@@ -309,76 +391,6 @@ class SettingsPanel(DismissablePanel):
         if tip: c.SetToolTip( wx.ToolTip( tip ) )
         return c
 
-    def __post_init__(self):
-        """
-        Fires once. Draw all the controls, with values from config.
-        """
-        self._set_values_from_config()
-
-        ## Sample text 
-        c = wx.TextCtrl( self, -1, self.gv("text"), size = (200, -1) )
-        c.SetFocus()
-        self.entry( "text", _("Sample text:"), c )
-
-        ## Point size
-        k = "points"
-        c = self.spinner(k, (1, 500))
-        self.entry( k, _("Point size:"), c )
-
-        ## Page length
-        k = "numinpage"
-        c = self.spinner(k, (1, 5000), tip=_("Beware large numbers!"))# It's your funeral!
-        self.entry( k, _("Page length:"), c )
-
-        ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
-        c = wx.CheckBox(self, -1, _("Tick to disable") )
-        c.SetValue( self.gv("ignore_adjustments") )
-        self.entry( "ignore_adjustments",
-                _("Disable top-left correction:"), c,
-                extra = _("Disabling this speeds-up\n" \
-                  "font drawing a little,\n" \
-                  "but degrades top-left\npositioning."))
-
-        # The Character map choice
-        # CMC is an instance of CharMapController
-        self.CMC = fpsys.config.CMC
-        k = "app_char_map"
-        ## Do we have some char viewer apps?
-        if self.CMC.APPS_ARE_AVAILABLE:
-            CHOSEN_CHARACTER_MAP = self.gv(k)
-            c = wx.RadioBox( self, -1, _("Available"), 
-                    wx.DefaultPosition, wx.DefaultSize,
-                    self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS
-                    )
-            c.SetSelection(self.CMC.QUICK_APPNAME_LIST.index(CHOSEN_CHARACTER_MAP))
-            ## Prefer explicit "poke" (in dict) to this event:
-            ##  self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
-            c.SetToolTip(wx.ToolTip(_("Choose which app to use as a character map viewer.")))
-            dud_control = False
-        ## No apps, just print a string:
-        else:
-            CHOSEN_CHARACTER_MAP = None
-            c = fpwx.para(self, 
-                    _("None found.\nYou could install: {}".format(
-                        self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
-            dud_control = True
-        self.entry( k, _("Character map viewer:"), c, dud=dud_control )
-
-        ## Max columns
-        k = "max_num_columns"
-        c = self.spinner(k, (1, 20))# It's your funeral!        
-        self.entry( k, _("Max number of columns:"), c,
-                extra = _("The font viewing area\n" \
-            "will divide into columns\n" \
-            "which you can control here.") )
-
-        ## Make an "apply" button. Click gets caught in MainFrame.
-        btn = wx.Button(self, wx.ID_APPLY)
-        self.Bind(wx.EVT_BUTTON, self.apply_pressed, id=wx.ID_APPLY)
-        self.settings_sizer.Add((1,1),0) #blank cell
-        self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
-
-        return self.settings_sizer
 
     def apply_pressed(self,evt):
         """
@@ -433,7 +445,7 @@ class SettingsPanel(DismissablePanel):
 
     #def EvtRadioBox(self, event):
     def poke_app_char_map(self, v):
-        self.CMC.SET_CURRENT_APPNAME( v )
+        self.CMC.set_current_appname( v )
 
 
 
