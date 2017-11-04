@@ -220,7 +220,7 @@ class SettingsPanel(DismissablePanel):
         ## This dict is a way to handle the actual form in a loopy kind of way
         ## Keys:
         ## ==
-        ## default: for when a value is bad, use this.
+        ## default: for when a value is bad, use this instead.
         ## redraw : signals if a change to this value would require a fitmap redraw
         ## peek   : func to use to get value from the form control
         ## poke   : func to use to put the value into fpsys.config
@@ -230,35 +230,42 @@ class SettingsPanel(DismissablePanel):
         self.form = {
                      "numinpage": {},
                         "points": {},
-                          "text": {"default":"Fonty Python"},
+                          "text": {"default":fpsys.Configure.atoz},
             "ignore_adjustments": {},
                "max_num_columns": {},
                   "app_char_map": {"redraw":False, 
-                                   "peek": lambda c: c.GetStringSelection()
+                                   "peek": lambda c: c.GetStringSelection(),
                                    "poke": self.poke_app_char_map },
                 }
-        ## Set redraw:True in all, except the False ones.
+        ## Set redraw:True in all, except where False.
         {d.update({"redraw":d.get("redraw",True)}) for d in self.form.values()}
 
         self._force_redraw = False
 
-        self.settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
+        self.settings_sizer = wx.FlexGridSizer( cols = 2, hgap = 5, vgap = 8 )
         
         DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
 
     def settings_force_redraw(self):
+        """Used externally in MainFrame"""
         return self._force_redraw
 
+    def has_changed(self, key):
+        """Used externally in MainFrame"""
+        return self.form[key]["changed"]
+
     def _set_values_from_config(self):
-        """Get the values out of config and record them
-        in my "form" dict. which I use as a courier between
-        config and here."""
+        """
+        Get the values out of config and into
+        in my "form" dict which I use as a courier between
+        fpsys.config and here.
+        """
         for key, d in self.form.iteritems():
             d["config.val"] = fpsys.config.__dict__[key]
 
     def show_or_hide(self,evt):
         """
-        Event bound in MainFrame, fires when I hide or show.
+        Event is bound in MainFrame, fires when I hide or show.
         NOTE: The __post_init__ only happens once, so I need a way
         to alter the form as it comes and goes.
         """
@@ -295,6 +302,13 @@ class SettingsPanel(DismissablePanel):
     def gv(self, key):
         return self.form[key]["config.val"]
 
+    def spinner(self, key, rnge, tip=None):
+        c = wx.SpinCtrl(self, -1, "")
+        c.SetRange(rnge[0], rnge[1])
+        c.SetValue( self.gv(key) ) 
+        if tip: c.SetToolTip( wx.ToolTip( tip ) )
+        return c
+
     def __post_init__(self):
         """
         Fires once. Draw all the controls, with values from config.
@@ -307,17 +321,14 @@ class SettingsPanel(DismissablePanel):
         self.entry( "text", _("Sample text:"), c )
 
         ## Point size
-        c = wx.SpinCtrl(self, -1, "")
-        c.SetRange(1, 500)
-        c.SetValue( self.gv("points") )        
-        self.entry( "points", _("Point size:"), c )
+        k = "points"
+        c = self.spinner(k, (1, 500))
+        self.entry( k, _("Point size:"), c )
 
         ## Page length
-        c = wx.SpinCtrl(self, -1, "")
-        c.SetRange(1, 5000) # It's your funeral!
-        c.SetValue( self.gv("numinpage") ) 
-        c.SetToolTip( wx.ToolTip( _("Beware large numbers!") ) )
-        self.entry( "numinpage", _("Page length:"), c ) 
+        k = "numinpage"
+        c = self.spinner(k, (1, 5000), tip=_("Beware large numbers!"))# It's your funeral!
+        self.entry( k, _("Page length:"), c )
 
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
         c = wx.CheckBox(self, -1, _("Tick to disable") )
@@ -331,35 +342,32 @@ class SettingsPanel(DismissablePanel):
         # The Character map choice
         # CMC is an instance of CharMapController
         self.CMC = fpsys.config.CMC
+        k = "app_char_map"
         ## Do we have some char viewer apps?
         if self.CMC.APPS_ARE_AVAILABLE:
-            CHOSEN_CHARACTER_MAP = self.gv("app_char_map")#self.CMC.GET_CURRENT_APPNAME()
-            c = wx.RadioBox(
-                    self, -1, _("Available"), wx.DefaultPosition, wx.DefaultSize,
-                    self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
-            c.SetSelection(
-                    self.CMC.QUICK_APPNAME_LIST.index( CHOSEN_CHARACTER_MAP ))
-
-            ## Prefer explicit "poke" process to this:
+            CHOSEN_CHARACTER_MAP = self.gv(k)
+            c = wx.RadioBox( self, -1, _("Available"), 
+                    wx.DefaultPosition, wx.DefaultSize,
+                    self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS
+                    )
+            c.SetSelection(self.CMC.QUICK_APPNAME_LIST.index(CHOSEN_CHARACTER_MAP))
+            ## Prefer explicit "poke" (in dict) to this event:
             ##  self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
-            c.SetToolTip(wx.ToolTip( 
-                _("Choose which app to use as a character map viewer.") ))
-            
-            self.entry( "app_char_map", _("Character map viewer:"), c )
+            c.SetToolTip(wx.ToolTip(_("Choose which app to use as a character map viewer.")))
+            dud_control = False
         ## No apps, just print a string:
         else:
             CHOSEN_CHARACTER_MAP = None
             c = fpwx.para(self, 
                     _("None found.\nYou could install: {}".format(
                         self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
-
-            self.entry( "app_char_map", _("Character map viewer:"), c, dud = True )
+            dud_control = True
+        self.entry( k, _("Character map viewer:"), c, dud=dud_control )
 
         ## Max columns
-        c = wx.SpinCtrl(self, -1, "")
-        c.SetRange(1, 20)
-        c.SetValue( self.gv("max_num_columns") )
-        self.entry( "max_num_columns", _("Max number of columns:"), c,
+        k = "max_num_columns"
+        c = self.spinner(k, (1, 20))# It's your funeral!        
+        self.entry( k, _("Max number of columns:"), c,
                 extra = _("The font viewing area\n" \
             "will divide into columns\n" \
             "which you can control here.") )
@@ -367,23 +375,22 @@ class SettingsPanel(DismissablePanel):
         ## Make an "apply" button. Click gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
         self.Bind(wx.EVT_BUTTON, self.apply_pressed, id=wx.ID_APPLY)
-        self.settings_sizer.Add(btn, 0, wx.ALL, border=10)
-
-        #print "**"
-        #print self.form
-        #print "**"
+        self.settings_sizer.Add((1,1),0) #blank cell
+        self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
 
         return self.settings_sizer
 
-
-    #def get_old_values_from_config(self):
-    #    return {k:fpsys.config.__dict__[k] for k in self.form.keys()}
-
     def apply_pressed(self,evt):
+        """
+        Loop through the form dict and connect the dots.
+        Put new values into fpsys.config, and set flags
+        for MainFrame to test when it catches the event too.
+        """
         redraw = False
         for key,d in self.form.iteritems():
             # A 'dud' is a control that plays no part
             if not d["dud"]:
+                changed=False
                 # Is there a special func to get value?
                 peek = d.get("peek",None)
                 if peek: # yes
@@ -408,6 +415,7 @@ class SettingsPanel(DismissablePanel):
                 d["my.val"] = ctrlval
                 # is it a change from the config's version?
                 if d["my.val"] != d["config.val"]:
+                    changed=True
                     # It is! Record it in config now.
                     # Is there a special func to do this?
                     poke = d.get("poke",None)
@@ -416,20 +424,16 @@ class SettingsPanel(DismissablePanel):
                     else:
                         fpsys.config.__dict__[key] = d["my.val"]
                     redraw = d["redraw"]
+                d["changed"]=changed
 
         self._force_redraw = redraw
+        ## Pass the event on to the MainFrame, where I use it
+        ## to hide this panel.
         evt.Skip()
 
     #def EvtRadioBox(self, event):
     def poke_app_char_map(self, v):
-        self.CMC.SET_CURRENT_APPNAME( v ) # self.gv("app_char_map") )
-                #self.settings_panel.CHOSEN_CHARACTER_MAP )
-
-    #    self.CHOSEN_CHARACTER_MAP = self.CMC.QUICK_APPNAME_LIST[event.GetInt()]
-
-
-
-
+        self.CMC.SET_CURRENT_APPNAME( v )
 
 
 
@@ -839,6 +843,9 @@ class MainFrame(wx.Frame):
         ## Dec 2007 - I was using the wrong func and the
         ## main window kept getting smaller!
         fpsys.config.size = self.GetSizeTuple()
+        fpsys.config.pos = self.GetScreenPosition()
+        #print self.GetSizeTuple()
+        #print self.GetScreenPosition()
 
         ##June 2009 - fetch and record the value of the recurse folders checkbox.
         fpsys.config.recurseFolders = app.GetTopWindow().panelFontSources.nb.recurseFolders.GetValue()
@@ -850,60 +857,24 @@ class MainFrame(wx.Frame):
         self.hide_or_show_panels()
 
     def apply_settings(self, e):
-        #oldvals = self.settings_panel.get_old_values_from_config()
-        #newvals = self.settings_panel.get_applied_values()
+        """
+        The second stage of the Apply button on the settings panel.
+        (Stage one is within the SettingsPanel class.)
+        We get here after all the values have been checked and 
+        recorded into fpsys.config
+        Here we only need to decide on what to redraw.
+        """
         if self.settings_panel.settings_force_redraw():
-            ## Might be unnecc if ignore_adjustments did not
-            ## change. Meh.
-            ##(sub in ScrolledFontView)
-            ps.pub( reset_top_left_adjustments )
-            ## Will hide the settings_panel too
+            if self.settings_panel.has_changed("ignore_adjustments"):
+                ##(sub in ScrolledFontView)
+                ps.pub( reset_top_left_adjustments )
+            ## Redraw the fitmaps
+            ## Will also hide the settings_panel
             ps.pub( update_font_view )
         else:
             ## With no changes, we must hide the settings_panel
             self.ensure_fontview_shown()
         return
-
-        lastnuminpage = fpsys.config.numinpage
-        lastpoints = fpsys.config.points
-        lasttext = fpsys.config.text
-        lastias = fpsys.config.ignore_adjustments
-        lastnumcolumns = fpsys.config.max_num_columns
-
-        ## Did anything change?
-        num = int(self.settings_panel.inputPageLen.GetValue())
-        points = int(self.settings_panel.inputPointSize.GetValue())
-        txt = self.settings_panel.inputSampleString.GetValue()
-        ignore_adjust = self.settings_panel.chkAdjust.GetValue() #Sept 2009
-        numcolumns = self.settings_panel.max_num_columns.GetValue()
-
-        stuffchanged = False
-        if num != lastnuminpage:
-            fpsys.config.numinpage = int(num)
-            stuffchanged = True
-        if txt != lasttext:
-            if len(txt) > 0: fpsys.config.text =  txt
-            stuffchanged = True
-        if points != lastpoints:
-            fpsys.config.points = int(points)
-            stuffchanged = True
-        if ignore_adjust != lastias:
-            fpsys.config.ignore_adjustments = ignore_adjust #Sept 2009
-            stuffchanged = True
-        if numcolumns != lastnumcolumns:
-            fpsys.config.max_num_columns = numcolumns
-            stuffchanged = True
-
-        fpsys.config.CMC.SET_CURRENT_APPNAME( self.settings_panel.CHOSEN_CHARACTER_MAP ) # Oct 2009
-
-        ## Now to refresh things:
-        if stuffchanged: 
-            ps.pub( reset_top_left_adjustments ) ##DND : In ScrolledFontView
-            ## Will hide the settings_panel too
-            ps.pub( update_font_view )
-        else:
-            ## With no changes, we must hide the settings_panel
-            self.ensure_fontview_shown()
 
 
 

@@ -1,3 +1,5 @@
+Fonty started in ~ 2006 (In Hermanus, South Africa. On an early Ubuntu.)
+
 Work and notes in 2016/2017. Slow due to my ill health.
 ====
 See also the older "ROADMAP" file.
@@ -68,7 +70,7 @@ BUGS
 ==
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
 
-
+* make point size 500, then view fonts, then reduce it... height remains maxed!
 
 
 TODO

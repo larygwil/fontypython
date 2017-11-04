@@ -565,6 +565,7 @@ class Configure:
     Makes/Loads the conf file.
     Supplies size, pos, numinpage, text string and point size to other objects.
     """
+    atoz = _("Jump the lazy dog fox")
     def __init__(self):
         ## Private vars
         self.__dontSaveNumInPage = False
@@ -573,7 +574,7 @@ class Configure:
         self.size = (800,600)
         self.pos = (10, 10)
         self.numinpage = 10
-        self.text = _("Jump the lazy dog fox")
+        self.text = Configure.atoz
         self.points = 64
         #Nov 2017
         self.max_num_columns = 0
@@ -631,7 +632,7 @@ class Configure:
             self.recurseFolders = self.__data['recurseFolders']
             self.ignore_adjustments = self.__data['ignore_adjustments']
             self.app_char_map = self.__data['app_char_map']
-            ## We must also set our instance of the Char Map Controller:
+            ## We must also set our instance of the CharMap Controller:
             ##  This can be "UNSET" (default first run) or an appname
             ##  That appname may be valid or not (it may have been uninstalled...)
             self.CMC.SET_CURRENT_APPNAME(self.app_char_map)

@@ -35,10 +35,14 @@ class CharMapApp(object):
     def OpenApp( self, *args ): pass
     def Cleanup( self ): pass
     def Run( self, cmd ):
-        proc = subprocess.Popen( cmd, shell=False )
+        try:
+            proc = subprocess.Popen( cmd, shell=False )
+        except:
+            ## Just bail.
+            return
 
         ## gucharmap: Fonty actually holds still and waits here until gucharmap is closed.
-        ## kfontview: Fonty just runs-through. kfontview is a different beast.
+        ## kfontview: Fonty just runs-through. It's a different beast...
         ## Both still work and Fonty stays active. Multiple instances of the viewers can be opened!
         proc.wait()
 
@@ -127,16 +131,16 @@ class CharMapController(object):
         self.__CURRENT_APPNAME = x ## It's possible that x is "UNSET" 
         self.config_callback( x ) ## go set the config's app_char_map var too.
 
-    def GET_CURRENT_APPNAME( self ):
-        '''
-        This is only called when APPS_ARE_AVAILABLE is True: See dialogues.py
-        Think of this as raising an error if APPS_ARE_AVAILABLE is False!
-        '''
-        if self.__CURRENT_APPNAME == "UNSET":
-            x = self.QUICK_APPNAME_LIST[0]
-            return x
-        else:
-            return self.__CURRENT_APPNAME
+    #def GET_CURRENT_APPNAME( self ):
+    #    '''
+    #    This is only called when APPS_ARE_AVAILABLE is True: See dialogues.py
+    #    Think of this as raising an error if APPS_ARE_AVAILABLE is False!
+    #    '''
+    #    if self.__CURRENT_APPNAME == "UNSET":
+    #        x = self.QUICK_APPNAME_LIST[0]
+    #        return x
+    #    else:
+    #        return self.__CURRENT_APPNAME
 
     def GetInstance( self ):
         '''
