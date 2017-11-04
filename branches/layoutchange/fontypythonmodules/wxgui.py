@@ -222,19 +222,27 @@ class SettingsPanel(DismissablePanel):
                           "text": {"redraw":1, "default":"Fonty Python"},
             "ignore_adjustments": {"redraw":1},
                "max_num_columns": {"redraw":1},
-                  "app_char_map": 
-                                  {"redraw":0, 
-                                      "lam":lambda c: c.GetStringSelection()}
+                  "app_char_map": {"redraw":0, 
+                                   "lam":lambda c: c.GetStringSelection()},
                 }
 
+        self._some_values_have_changed = False
         self.settings_sizer = wx.FlexGridSizer( cols=2, hgap=5, vgap=8 )
         DismissablePanel.__init__(self, parent, flag_settings,
                 somelabel=_("Settings"))
 
+    def settings_form(self):
+        if self._some_values_have_changed:
+            return self.form
+        return None
+
     def _set_values_from_config(self):
-        for k,v in self.form.iteritems():
-            v = fpsys.config.__dict__[k]
-            self.form[k].update({"config.val":v})
+        """Get the values out of config and record them
+        in my "form" dict. which I use as a courier between
+        config and here."""
+        for key, d in self.form.iteritems():
+            v = fpsys.config.__dict__[key]
+            d.update( { "config.val": v } )
         #print self.form
         
         #self.inputPageLen_val = fpsys.config.numinpage
@@ -263,11 +271,16 @@ class SettingsPanel(DismissablePanel):
             # The point size - can change by the wheel - hence update it:
             self.form["points"]["control"].SetValue( self.gv("points") )
 
-    def entry(self, key, title, ctrl, extra=None):
+    def entry(self, key, title, ctrl, extra=None, dud=False):
         """Makes the label.
         Puts it and the control into the sizer.
         Manages the form dict"""
         self.form[key]["control"] = ctrl
+        self.form[key]["dud"] = dud # some ctrls have no function.
+        #import pprint
+        #print "## key:", key
+        #pprint.pprint(self.form[key])
+
         lbl = fpwx.boldlabel( self, title ) 
         if extra:
             sb = wx.BoxSizer(wx.VERTICAL)
@@ -322,24 +335,28 @@ class SettingsPanel(DismissablePanel):
         # The Character map choice
         # CMC is an instance of CharMapController
         self.CMC = fpsys.config.CMC
+        ## Do we have some char viewer apps?
         if self.CMC.APPS_ARE_AVAILABLE:
             self.CHOSEN_CHARACTER_MAP = self.gv("app_char_map")#self.CMC.GET_CURRENT_APPNAME()
-            rb_or_nada = wx.RadioBox(
+            c = wx.RadioBox(
                     self, -1, _("Available"), wx.DefaultPosition, wx.DefaultSize,
                     self.CMC.QUICK_APPNAME_LIST, 1, wx.RA_SPECIFY_COLS )
-            rb_or_nada.SetSelection(# self.gv("app_char_map") )
+            c.SetSelection(# self.gv("app_char_map") )
                     self.CMC.QUICK_APPNAME_LIST.index( self.CHOSEN_CHARACTER_MAP ))
 
-            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, rb_or_nada)
-            rb_or_nada.SetToolTip(wx.ToolTip( 
+            self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
+            c.SetToolTip(wx.ToolTip( 
                 _("Choose which app to use as a character map viewer.") ))
+            
+            self.entry( "app_char_map", _("Character map viewer:"), c )
+        ## No apps, just print a string:
         else:
             self.CHOSEN_CHARACTER_MAP = None
-            rb_or_nada = fpwx.para(self, 
+            c = fpwx.para(self, 
                     _("None found.\nYou could install: {}".format(
                         self.CMC.PUBLIC_LIST_FOR_SUGGESTED_APPS)) )
 
-        self.entry( "app_char_map", _("Character map viewer:"), rb_or_nada )
+            self.entry( "app_char_map", _("Character map viewer:"), c, dud = True )
 
         ## Max columns
         c = wx.SpinCtrl(self, -1, "")
@@ -367,22 +384,26 @@ class SettingsPanel(DismissablePanel):
 
     def apply_pressed(self,evt):
         #oldvals = {k:fpsys.config.__dict__[k] for k in self.form.keys()}
+        self._some_values_have_changed = False
         for key,d in self.form.iteritems():
-            lam = d.get("lam",None)
-            if lam:
-                getval = lam(d["control"])
-            else:
-                getval = d["control"].GetValue()
-                getdef = d.get("default", None)
-                if getdef:
-                    # truthy test for "no value" (or empty string)
-                    if not getval: 
-                        getval = getdef
-                        d["control"].SetValue(getdef)
-            d["my.value"] = getval
+            #print key, d["dud"]
             d["changed"] = False
-            if d["my.value"] != d["config.val"]:
-                d["changed"] = True
+            if not d["dud"]:
+                lam = d.get("lam",None)
+                if lam:
+                    getval = lam(d["control"])
+                else:
+                    getval = d["control"].GetValue()
+                    getdef = d.get("default", None)
+                    if getdef:
+                        # truthy test for "no value" (or empty string)
+                        if not getval: 
+                            getval = getdef
+                            d["control"].SetValue(getdef)
+                d["my.value"] = getval
+                if d["my.value"] != d["config.val"]:
+                    d["changed"] = True
+                    self._some_values_have_changed = True
         evt.Skip() 
 
 
@@ -814,9 +835,19 @@ class MainFrame(wx.Frame):
     def apply_settings(self, e):
         #oldvals = self.settings_panel.get_old_values_from_config()
         #newvals = self.settings_panel.get_applied_values()
-        import pprint
-        print
-        pprint.pprint( self.settings_panel.form )
+        f = self.settings_panel.settings_form()
+        if f: #if self.settings_panel.did_settings_change():
+            #let's poke the values into config
+            import pprint
+            print
+            pprint.pprint( f )#self.settings_panel.form )
+            redraw = False
+            for key, dict in f.iteritems():
+                if dict["changed"]:
+                    print "fpsys.config.__dict[{}] = {}".format(key, dict["my.value"])
+                    #fpsys.config.__dict[key] = dict["my.value"]
+                    if dict["redraw"] == 1: redraw = True
+            print redraw
         return
 
         for k,v in oldvals.iteritems():

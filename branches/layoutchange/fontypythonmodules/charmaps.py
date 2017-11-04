@@ -25,11 +25,12 @@ class CharMapApp(object):
         self.appname = appname
         self.is_installed = self.do_i_exist()
     def do_i_exist( self ):
-        return False #test
+        #return False #test
         for path in os.environ.get('PATH', '').split(':'):
             if os.path.exists(os.path.join(path, self.appname)) and \
                     not os.path.isdir(os.path.join(path, self.appname)):
                 return True
+        #return True #test
         return False
     def OpenApp( self, *args ): pass
     def Cleanup( self ): pass
