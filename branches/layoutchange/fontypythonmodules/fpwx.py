@@ -35,6 +35,7 @@ def setup_fonts_and_colours():
        {"font"            : wxfont,
         "family"          : wxfont.GetFamily(),
         "points_smaller"  : ps*0.8,
+        "points_small"    : ps*0.9,
         "points_normal"   : ps,
         "points_x_normal" : ps*1.05,
         "points_large"    : ps*1.07,
@@ -53,6 +54,10 @@ def para( parent, ustr, size="points_normal" ):
 
 def label( parent, ustr ):
     p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
+    return p
+
+def smalllabel( parent, ustr ):
+    p = xlabel( parent, ustr, size="points_small", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
 def boldlabel( parent, ustr ):

@@ -423,6 +423,8 @@ def itemGenerator( fromObj, sourceList ):
     ##Sept 2017 - .fnt files AFAICT not supported by PIL
     ##Sept 2017 - X11 .pcf files. PIL does not seem to support these directly.
 
+    ##NOV 2017: There's a font filetype list in fpsys.checkFonts(). Keep it
+    ## updated when you change shit here.
 
     ## NB: listOfItemsGenerated can contain MIXED byte strings/unicode
 

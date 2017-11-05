@@ -114,10 +114,15 @@ class FontViewPanel(wx.Panel):
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
         self.textMainInfo = fpwx.label(self, u"..")
+        self.textSubInfo = fpwx.smalllabel(self, u"Subinfo" )
         viewIcon = fpwx.icon(self, 'icon_viewing')
 
         sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )
-        sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)
+        #sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)
+        vb = wx.BoxSizer(wx.VERTICAL)
+        vb.Add(self.textMainInfo, 1, wx.LEFT )
+        vb.Add(self.textSubInfo, 1, wx.LEFT | wx.TOP , border = 4)
+        sizerMainLabel.Add(vb, 1, wx.LEFT | wx.TOP, border = 4)
 
 
         ## Page choice and Filter controls
@@ -508,10 +513,11 @@ class FontViewPanel(wx.Panel):
                 ps.pub( toggle_purge_menu_item, True )
 
         self.buttMainLastLabel=btext
-        self.textMainInfo.SetLabel( lab)
+        self.textMainInfo.SetLabel( lab )
         self.textMainInfo.Show()
         if status is not "":
-            ps.pub(print_to_status_bar, status)
+            self.textSubInfo.SetLabel( status )
+            #ps.pub(print_to_status_bar, status)
 
         self.ToggleMainButton()
 

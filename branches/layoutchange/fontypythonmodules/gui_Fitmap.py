@@ -300,6 +300,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         
         Fitmap.flagBecause of the way has_changed works, on first 
         run, the state will be maxed, all blocks are on.
+
+        "A" is generate glyphs from scratch
+        "B" is draw the bitmap again
         """
         # A | B
         if self.has_changed("pointschanged", fpsys.config.points):
@@ -307,6 +310,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # A | B
         if self.has_changed("textchanged", fpsys.config.text):
             self.state |= Fitmap.flagA | Fitmap.flagB
+        # B
+        if self.has_changed("fpsys.state.action", fpsys.state.action):
+            self.state |= Fitmap.flagB
         # B
         if self.has_changed("activechanged", self.fitem.inactive):
             self.state |= Fitmap.flagB
@@ -641,13 +647,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
         ## NB: FILE_NOT_FOUND is not available for installation!
         #print u"{} is {}".format(self.name,  self.fitem.badstyle)
-        if self.fitem.badstyle != "FILE_NOT_FOUND":
+        #if self.fitem.badstyle != "FILE_NOT_FOUND":
+        cannot_tick = fpsys.state.action == "APPEND" and self.fitem.badstyle == "FILE_NOT_FOUND"
+        if not cannot_tick:
             #print "self.fitem.name ticked:", self.fitem.ticked
             if self.fitem.ticked:
                 self.TICKMAP = self.parent.parent.TICKMAP
                 self.add_pencil( BitmapPencil( "tickmap", 40, 10, self.TICKMAP) )    
             else:
                 self.remove_pencil("tickmap")
+        else:
+            ## There might have been a tick (cross) on it from last time
+            self.remove_pencil("tickmap")
+
 
             
 
@@ -871,10 +883,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.openCharacterMap()
             return
 
+        cannot_tick = fpsys.state.action == "APPEND" and self.fitem.badstyle == "FILE_NOT_FOUND"
+        if cannot_tick:
+            return
+
         if fpsys.state.cantick and not self.fitem.inactive:
             self.fitem.ticked = not(self.fitem.ticked)
             self.assemble_bitmap() # This only redraws a single font item.
-            self.Refresh()  #forces a redraw.
+            self.Refresh()  #forces onPaint()
 
             ## Inc or dec a counter depending on the tickedness of this item
             if self.fitem.ticked: fpsys.state.numticks += 1

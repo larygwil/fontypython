@@ -478,6 +478,7 @@ class StatusBar(wx.StatusBar):
             shorterr = e.short_unicode_of_error()
         else:
             no_fonts_dir = False
+        
 
         ## Field 1 is Welcome...
         ## Field 2 is normal conversation.
@@ -489,6 +490,7 @@ class StatusBar(wx.StatusBar):
 
         if no_fonts_dir:
             self.SetStatusText( shorterr, 2)
+            print shorterr
             self.SetStatusWidths([300,-2,-1,32])
             #self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
         else:
@@ -497,7 +499,7 @@ class StatusBar(wx.StatusBar):
 
     def Report(self, msg):
         self.SetStatusText(msg, 1)
-
+        print msg
 
 class MainFrame(wx.Frame):
 
@@ -972,7 +974,6 @@ class MainFrame(wx.Frame):
 
             ## Update GUI
             ps.pub(print_to_status_bar, _("%s has been purged.") % pogname)
-
             ps.pub(update_font_view)
 
 
