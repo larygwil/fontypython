@@ -118,12 +118,12 @@ class FontViewPanel(wx.Panel):
         viewIcon = fpwx.icon(self, 'icon_viewing')
 
         sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )
-        #sizerMainLabel.Add(self.textMainInfo, 1, wx.LEFT | wx.TOP , border = 4)
+        ## Added a sub-label for the status news to free the status bar for other
+        ## messages.
         vb = wx.BoxSizer(wx.VERTICAL)
         vb.Add(self.textMainInfo, 1, wx.LEFT )
-        vb.Add(self.textSubInfo, 1, wx.LEFT | wx.TOP , border = 4)
+        vb.Add(self.textSubInfo,  1, wx.LEFT | wx.TOP , border = 4)
         sizerMainLabel.Add(vb, 1, wx.LEFT | wx.TOP, border = 4)
-
 
         ## Page choice and Filter controls
         sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)

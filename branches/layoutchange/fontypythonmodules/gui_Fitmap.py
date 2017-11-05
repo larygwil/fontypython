@@ -310,8 +310,10 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # A | B
         if self.has_changed("textchanged", fpsys.config.text):
             self.state |= Fitmap.flagA | Fitmap.flagB
-        # B
-        if self.has_changed("fpsys.state.action", fpsys.state.action):
+        # B : Nov 2017. When the overall source->target state changes
+        #     we can have ticks/crosses that should be redrawn.
+        #     See gui_FontView.MainFontViewUpdate() for use.
+        if self.has_changed("stateaction", fpsys.state.action):
             self.state |= Fitmap.flagB
         # B
         if self.has_changed("activechanged", self.fitem.inactive):
@@ -644,19 +646,20 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.remove_pencil("bmpinactive", "fntinactive")
             
         ## The ticked state
-        ## Draw the tick/cross if it's not a FILE_NOT_FOUND font (can't be found)
-        ## NB: FILE_NOT_FOUND is not available for installation!
-        #print u"{} is {}".format(self.name,  self.fitem.badstyle)
-        #if self.fitem.badstyle != "FILE_NOT_FOUND":
-        cannot_tick = fpsys.state.action == "APPEND" and self.fitem.badstyle == "FILE_NOT_FOUND"
-        if not cannot_tick:
-            #print "self.fitem.name ticked:", self.fitem.ticked
+        ## Draw the tick/cross if it's not a FILE_NOT_FOUND font 
+        ## (it's in the pog, but can't be found on paf)
+        ## NB: FILE_NOT_FOUND is not available for installation, but *is* available
+        ## for removal.
+        cannot_append_a_ghost_font = fpsys.state.action == "APPEND" and self.fitem.badstyle == "FILE_NOT_FOUND"
+        if not cannot_append_a_ghost_font:
+            ## We are a normal font. Tick or Cross it:
             if self.fitem.ticked:
                 self.TICKMAP = self.parent.parent.TICKMAP
                 self.add_pencil( BitmapPencil( "tickmap", 40, 10, self.TICKMAP) )    
             else:
                 self.remove_pencil("tickmap")
         else:
+            ## We are a ghost font and the state is APPEND.
             ## There might have been a tick (cross) on it from last time
             self.remove_pencil("tickmap")
 
@@ -883,6 +886,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             self.openCharacterMap()
             return
 
+        ## Prevent a click that would APPEND a ghost font.
         cannot_tick = fpsys.state.action == "APPEND" and self.fitem.badstyle == "FILE_NOT_FOUND"
         if cannot_tick:
             return

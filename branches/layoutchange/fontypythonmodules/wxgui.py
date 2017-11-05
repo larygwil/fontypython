@@ -283,9 +283,8 @@ class SettingsPanel(DismissablePanel):
         self.entry( "ignore_adjustments",
                 _("Disable top-left correction:"), c,
                 extra = _("Disabling this speeds-up\n" \
-                          "font drawing a little,\n" \
-                          "but degrades top-left\n" \
-                          "positioning."))
+                          "font drawing but can\n" \
+                          "cause bad positioning."))
 
         # The Character map choice
         # CMC is an instance of CharMapController
@@ -921,6 +920,10 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def menuSelectionALL(self,e):
+        """
+        Select all the fonts that are FILTERED.
+        Note: This does not do a test for ghost fonts. TODO
+        """
         if not fpsys.state.cantick: return # Can't tick if this is False.
         fpsys.state.numticks=0
         vo=fpsys.state.filteredViewObject # We want to select what is FILTERED
@@ -932,6 +935,9 @@ class MainFrame(wx.Frame):
         ps.pub( update_font_view )
 
     def menuSelectionNONE(self,e):
+        """
+        Deselcts all the fonts.
+        """
         fpsys.state.numticks=0
         vo=fpsys.state.viewobject # We *REALLY* mean select NONE. So ignore filter.
         for fi in vo:

@@ -74,14 +74,17 @@ class SegfaultDialog(wx.Dialog):
         self.SetSizer( b )
         b.Fit(self) 
         
+
+
+
+
 class LocateDirectory(wx.Dialog):
     """
     Sep 2009 : A nicer (than std dir dialogue) dialogue for locating a directory.
     It starts in the cwd.
     """
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, title = _("Locate a directory for the zip file(s)."),
-                pos=wx.DefaultPosition,style=wx.DEFAULT_FRAME_STYLE)
+        wx.Dialog.__init__(self, parent, -1, title = _("Locate a directory for the zip file(s)."), pos=wx.DefaultPosition,style=wx.DEFAULT_FRAME_STYLE)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.treedir = wx.GenericDirCtrl( self, -1, dir=os.getcwd(), style=wx.DIRCTRL_DIR_ONLY )
