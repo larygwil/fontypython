@@ -59,48 +59,90 @@ c1 = [os.path.join(fontyroot,'start_fontypython') ]
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
 
-p1 = subprocess.call( c1 )
+p1 = -11#subprocess.call( c1 )
 
 #p1=-11 # to test
 ## Nov 2017: Simpler plan:
-if p1 < 0:
-    # err code -11
-    #print "ERROR CODE:", p1
-    ## This actually works!
-    import os
-    import fontypythonmodules.fpsys as fpsys
-    import wx, fontypythonmodules.dialogues as D
-    from fontypythonmodules.fpwx import setup_fonts_and_colours
+if p1 >= 0:
+    raise SystemExit
 
-    ## Start the App and then show the Segfault dialog.
-    class App(wx.App):
-        def OnInit(self):
-            culprit = None
-            ## A wide net. Not gonna split hairs.
-            try:
-                paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
-                f = open( paf, "r" )
-                culprit = f.readline()[:-1]
-                f.close()
-                #odball situation. file may have been empty:
-                if not culprit:
-                    raise IOError # force error into except
-            except Exception as e:
-                sadStory = _("There's a problem I can't handle.")
-                culprit = "{}".format(e)
+## Gets here if p1 < 0:
+## err code -11
+## This actually works!
+import fontypythonmodules.fpsys as fpsys
+import wx
+import fontypythonmodules.fpwx as fpwx
+import fontypythonmodules.strings as strings
 
-            if culprit:
-                sadStory = _("There's some problem with the font named below.\n" \
-                "You can do two things:\n" \
-                "1) Manually move this font somewhere else, or\n" \
-                "2) Use Fonty's command-line to mark bad fonts:\n" \
-                "   fontypython -c \"foldername\"" )
+class SegfaultDialog(wx.Dialog):
+    """
+    Dec 2007, Nov 2017: Moved into this file from dialogues.py
+    Runs from the wrapper script (which runs start_fontypython) so that we
+    can tell the user that there was a segfault and why.
+    """
+    def __init__(self, sadStory, culprit):
+        wx.Dialog.__init__(self, None, -1, _("Oh boy..."), pos = wx.DefaultPosition )
+        ## The layout begins:
+        labelHeading = fpwx.h1(self, _("Fonty Python, um ... crashed."))
+        sadStory = fpwx.para( self, sadStory )
+        tickettxt = fpwx.para(self, _("You can get help by opening a ticket, or sending an email."))
+        emaillink = wx.TextCtrl(self, -1, strings.contact, style = wx.TE_READONLY)
+        ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, style = wx.TE_READONLY)
 
-            setup_fonts_and_colours()
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        
+        fs = wx.FlexGridSizer(cols = 1, vgap = 4)
 
-            dlg = D.SegfaultDialog( sadStory, culprit )
-            val = dlg.ShowModal()
-            dlg.Destroy()
-            return True
-    app = App(0)
-    app.MainLoop()
+        fs.Add(labelHeading, 0, wx.BOTTOM, border = 4 )
+        fs.Add(sadStory,  0, wx.BOTTOM, border = 8 )
+        if culprit: 
+            msg = fpwx.label(self,_('The bad font or error is:'))
+            cul = "{}".format(culprit)
+            culprit = wx.TextCtrl(self, -1, cul, style = wx.TE_READONLY | wx.TE_MULTILINE )
+            fs.Add(msg,0)
+            fs.Add(culprit, 1, wx.EXPAND  )
+        fs.Add(tickettxt, 0 )
+        fs.Add(ticketurl, 1, wx.EXPAND )
+        fs.Add(emaillink, 1, wx.EXPAND )
+        fs.Add(btn, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT | wx.TOP, border = 15 )
+
+        b = wx.BoxSizer( wx.HORIZONTAL )
+        b.Add( fs, 0, wx.ALL, border=10 )
+        self.SetSizer( b )
+        b.Fit(self) 
+
+
+
+## Start the App and then show the Segfault dialog.
+class App(wx.App):
+    def OnInit(self):
+        culprit = None
+        ## A wide net. Not gonna split hairs.
+        try:
+            paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
+            f = open( paf, "r" )
+            culprit = f.readline()[:-1]
+            f.close()
+            #odball situation. file may have been empty:
+            if not culprit:
+                raise IOError # force error into except
+        except Exception as e:
+            sadStory = _("There's a problem I can't handle.")
+            culprit = "{}".format(e)
+
+        if culprit:
+            sadStory = _("There's some problem with the font named below.\n" \
+            "You can do two things:\n" \
+            "1) Manually move this font somewhere else, or\n" \
+            "2) Use Fonty's command-line to mark bad fonts:\n" \
+            "   fontypython -c \"foldername\"" )
+
+        fpwx.setup_fonts_and_colours()
+
+        dlg = SegfaultDialog( sadStory, culprit )
+        val = dlg.ShowModal()
+        dlg.Destroy()
+        return True
+app = App(0)
+app.MainLoop()
