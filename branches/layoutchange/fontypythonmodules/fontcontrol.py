@@ -36,6 +36,22 @@ try:
 except:
     pass
 
+fexts = {
+        "Truetype"           : ["TTF"],
+        "Truetype_collection": ["TTC"],
+        "Opentype"           : ["OTF"],
+        "Opentype_collection": ["OTC"],
+        "Web_open_font"      : ["WOFF"],
+        "Type1"              : ["PFA","PFB"],
+        "Type1_metric_A"     : ["AFM"],
+        "Type1_metric_P"     : ["PFM"],
+        }
+## make a list like [".OTF",".TTC" ...etc.
+font_file_extensions_list = []
+for i in fexts.values():
+    font_file_extensions_list += [ "." + s for s in i ]
+
+
 class FontItem( object ):
     """
     Represents a single font file. It has the ability to provide a font image
@@ -260,6 +276,7 @@ class InfoFontItem( FontItem ):
         return ( l1, l2 )
 
 class TruetypeItem( FontItem ):
+
     def __init__( self, glyphpaf ):
         FontItem.__init__( self, glyphpaf )
 
@@ -359,9 +376,14 @@ def itemGenerator( fromObj, sourceList ):
     ## Make Type1Item objects and associate the 'metric' file found (or none)
 
     ## Filter some lists from sourceList to step through:
-    PFABs= [[stripExt(e),e] for e in sourceList if ext(e) in ("PFA","PFB")] # all type1 files
-    AFMs = [[stripExt(e),e] for e in sourceList if ext(e) in ("AFM")] # all AFM metric files
-    PFMs = [[stripExt(e),e] for e in sourceList if ext(e) in ("PFM")] # all PFM metric files
+    ## all type1 files
+    PFABs= [[stripExt(e),e] for e in sourceList if ext(e) in fexts["Type1"]]
+
+    ## all AFM metric files
+    AFMs = [[stripExt(e),e] for e in sourceList if ext(e) in fexts["Type1_metric_A"]]
+
+    ## all PFM metric files
+    PFMs = [[stripExt(e),e] for e in sourceList if ext(e) in fexts["Type1_metric_P"]]
 
     ## Those lists look like this:
     ##  ["/some/path/file", "/some/path/file.pfa"]
@@ -398,24 +420,29 @@ def itemGenerator( fromObj, sourceList ):
             listOfItemsGenerated.append( fi )
 
     ## Do the other font types
-    TTFList = [ paf for paf in sourceList if ext(paf) == "TTF" ]
+    #TTFList = [ paf for paf in sourceList if ext(paf) == "TTF" ]
+    TTFList = [ paf for paf in sourceList if ext(paf) in fexts["Truetype"] ]
     for paf in TTFList:
         fi = TruetypeItem( paf )
         listOfItemsGenerated.append( fi )
 
-    OTFList = [ paf for paf in sourceList if ext(paf) == "OTF" ]
+    #OTFList = [ paf for paf in sourceList if ext(paf) == "OTF" ]
+    OTFList = [ paf for paf in sourceList if ext(paf) in fexts["Opentype"] ]
     for paf in OTFList:
         fi = OpentypeItem( paf )
         listOfItemsGenerated.append(fi)
 
     #Sept 2017: Added OTC, hence the "in" test. Also new class name.
-    TTCandOTCList = [ paf for paf in sourceList if ext(paf) in ( "TTC", "OTC" ) ]
+    #TTCandOTCList = [ paf for paf in sourceList if ext(paf) in ( "TTC", "OTC" ) ]
+    TTCandOTCList = [ paf for paf in sourceList if ext(paf) in 
+            fexts["Truetype_collection"] + fexts["Opentype_collection"] ]
     for paf in TTCandOTCList:
         fi = TruetypeOrOpentypeCollectionItem( paf )
         listOfItemsGenerated.append(fi)
 
     ##Sept 2017
-    WOFFList = [ paf for paf in sourceList if ext(paf) == "WOFF" ]
+    #WOFFList = [ paf for paf in sourceList if ext(paf) == "WOFF" ]
+    WOFFList = [ paf for paf in sourceList if ext(paf) in fexts["Web_open_font"] ]
     for paf in WOFFList:
         fi = WebOpenFontFormatItem( paf )
         listOfItemsGenerated.append(fi)

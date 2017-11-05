@@ -473,7 +473,7 @@ except:
     for cwd, dirs, files in os.walk( dirtocheck ):
         printer(_("Looking in %s...") % os.path.basename(cwd) )
         ## We only want certain font files:
-        fontfiles = [f for f in files if f.upper().endswith( ("TTF","TTC","PFA","PFB","OTF", "OTC", "WOFF")) ]
+        fontfiles = [f for f in files if f.upper().endswith( tuple( fontcontrol.font_file_extensions_list )) ]
         if len(fontfiles) < 1:
             printer (_("No supported fonts found there..."))
             printer()
