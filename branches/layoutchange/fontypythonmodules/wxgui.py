@@ -889,10 +889,12 @@ class MainFrame(wx.Frame):
         ## main window kept getting smaller!
         fpsys.config.size = self.GetSizeTuple()
         fpsys.config.pos = self.GetScreenPosition()
-        #print self.GetSizeTuple()
-        #print self.GetScreenPosition()
+        
+        ## Nov 2017: We got here, so there are no segfaults, thus
+        ## we have no need for this file.
+        fpsys.rm_lastFontBeforeSegfault_file()
 
-        ##June 2009 - fetch and record the value of the recurse folders checkbox.
+        ##June 2009 - record the value of recurse folders checkbox.
         fpsys.config.recurseFolders = app.GetTopWindow().panelFontSources.nb.recurseFolders.GetValue()
         self.Destroy()
 

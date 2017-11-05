@@ -203,7 +203,7 @@ class FontItem( object ):
                     ## I will leave it in, but not that there's no call to "font.family"
                     ## (as the comments speak about) but rather a font.getname call.
                     ## I have also added code to rm the lastFontBeforeSegfault file
-                    ## after this loop - just so it doesn't lurk about in the fp dir.
+                    ## on App exit - just so it doesn't lurk about in the fp dir.
                     fpsys.logSegfaulters( self.glyphpaf )
                     
                     ## Sep 2009
@@ -239,8 +239,6 @@ class FontItem( object ):
                     self.badstyle = "PIL_SEGFAULT_ERROR"
                     break
 
-        ## Nov 2017: No segfaults, so no need for this file.
-        fpsys.rm_lastFontBeforeSegfault_file()
 
         self.numFaces = i
 

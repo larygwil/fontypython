@@ -474,19 +474,18 @@ except:
         printer(_("Looking in %s...") % os.path.basename(cwd) )
         ## We only want certain font files:
         fontfiles = [f for f in files if f.upper().endswith( tuple( fontcontrol.font_file_extensions_list )) ]
-        if len(fontfiles) < 1:
-            printer (_("No supported fonts found there..."))
-            printer()
+        #if len(fontfiles) < 1:
+        #    printer (_("No supported fonts found there..."))
+        #    printer()
         for file in fontfiles:
             paf = os.path.join( cwd, file )
             bad = checkForSegfault( paf )
+            bad = True #TEST
             if bad:
                 gotsome = True
                 seglist.append( paf )
-                printer ( " " + file ) # show it on-screen somewhere.
+                printer ( _(" Bad font: {}".format(file)) ) # show it on-screen somewhere.
 
-    if not gotsome:
-        printer(_("I could not find any bad fonts."))
     ## Now write the segfonts file:
     if seglist:
         ## Add the new fonts found to the ones in global segfonts list
@@ -508,8 +507,12 @@ except:
         fw.write( bytestring )
         fw.close()
 
+    if gotsome:
+        printer(_("Bad fonts were found. They have been noted. I will ignore them in future."))
+    else:
+        printer(_("I could not find any bad fonts."))
     printer()
-    printer(_("The process is complete."))
+    printer(_("The process is complete.")) 
 
 
 def isFolder(thing):
