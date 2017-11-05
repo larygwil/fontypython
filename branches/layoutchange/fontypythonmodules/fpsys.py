@@ -864,6 +864,13 @@ def logSegfaulters( lastPaf ):
         ## TODO ??
         raise
 
+def rm_lastFontBeforeSegfault_file():
+    paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
+    try:
+        os.remove(paf)
+    except:
+        pass 
+
 
 
 ######      #######

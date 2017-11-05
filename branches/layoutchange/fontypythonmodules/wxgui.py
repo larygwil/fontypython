@@ -57,7 +57,8 @@ flag_normal = 1
 flag_help = 2
 flag_about = 4
 flag_settings = 8
-id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101}
+flag_check_fonts = 16
+id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101, flag_check_fonts:102}
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
 class DismissablePanel(wx.Panel):
@@ -212,6 +213,21 @@ class AboutPanel(DismissablePanel):
         nbabout_pane_1.SetFocus()
         return sizer_1
 
+#class CheckFontsPanel(DismissablePanel):
+#    def __init__(self, parent):
+#        DismissablePanel.__init__(self, parent, flag_check_fonts, 
+#                somelabel=_("Check for dangerous fonts.") )
+#
+#    def __post_init__(self):
+#        # draw basic form
+#
+#    def show_or_hide(self,evt):
+#        """
+#        This handler's event is bound in MainFrame. Fires when I hide or show.
+#        NOTE: The __post_init__ only happens once, so ...
+#        """
+#        if self.IsShown():
+#            startdir = fpsys.state.viewobject.path
 
 
 
@@ -533,10 +549,12 @@ class MainFrame(wx.Frame):
 
         ## FILE MENU : Changed to "Tools" menu Sep 2009
         menu1 = wx.Menu()
-        menu1.Append(id_from_flag[flag_settings], _("&Settings\tCtrl+S"), _("Change settings"))
+        menu1.Append( id_from_flag[flag_settings],
+                _("&Settings\tCtrl+S"), _("Change settings"))
         menu1.AppendSeparator()
         ## Jan 18 2008
-        menu1.Append( 102, _("&Check fonts"), _("Find those fonts that crash Fonty.") )
+        menu1.Append( id_from_flag[flag_check_fonts], 
+                _("&Check fonts"), _("Find those fonts that crash Fonty.") )
         menu1.Append( 103, _("&Purge Pog.See TogglePurgeMenuItem for actual string."), _("Remove all ghost fonts from the selected Pog.") )
 
         self.MENUPURGE = menu1
@@ -569,7 +587,7 @@ class MainFrame(wx.Frame):
         self.SetAcceleratorTable(accel)
 
 
-        ## Do this generic bind for all menu events now.
+        ## Do this generic bind for all MENU EVENTS now.
         ## Then specific ones afterwards; else this one supercedes them.
         ## This is for the menus that open DismissablePanels:
         ## Help, About, Settings
@@ -679,6 +697,10 @@ class MainFrame(wx.Frame):
             self.settings_panel.Hide()
             ## This panel needs to signal when it hides/shows:
             self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
+
+            #self.check_fonts_panel = CheckFontsPanel(self)
+            #self.check_fonts_panel.Hide()
+            #self.check_fonts_panel.Bind(wx.EVT_SHOW, self.check_fonts_panel.show_or_hide)
             
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )

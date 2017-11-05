@@ -194,18 +194,24 @@ class FontItem( object ):
                 if self.glyphpaf not in fpsys.segfonts:
                     # This writes to lastFontBeforeSegfault file. Just in case it crashes the 
                     # app on the .family call below.
+
+                    ## Nov 2017
+                    ## ==
+                    ## Update. PIL(LOW) seems much more stable. I have only seen one
+                    ## segfault and I can't reproduce it.
+                    ## This lastFontBeforeSegfault thing is possibly redundant now.
+                    ## I will leave it in, but not that there's no call to "font.family"
+                    ## (as the comments speak about) but rather a font.getname call.
+                    ## I have also added code to rm the lastFontBeforeSegfault file
+                    ## after this loop - just so it doesn't lurk about in the fp dir.
                     fpsys.logSegfaulters( self.glyphpaf )
-                    ##
+                    
                     ## Sep 2009
                     ## It has been reported by a user that some fonts have family names (and other info?) that
                     ## are not English. They appear as ???y??? etc. in the font list. On my system Inkscape
                     ## draws tham with squares (holding a unicode number) and a few Eastern characters.
                     ## I am not sure AT ALL what to do about this. Is it a font/locale I should have installed?
-                    ##
                     ## This is bug number: https://savannah.nongnu.org/bugs/index.php?27305
-                    ##
-                    ## I await help from PIL list.
-
                     #self.family.append( font.getname()[0] ) # old code
 
                     ## No point Try-ing here, this segfaults when style/family is Null.
@@ -232,6 +238,9 @@ class FontItem( object ):
                     self.badfontmsg = _("Font causes a segfault. It cannot be drawn.")
                     self.badstyle = "PIL_SEGFAULT_ERROR"
                     break
+
+        ## Nov 2017: No segfaults, so no need for this file.
+        fpsys.rm_lastFontBeforeSegfault_file()
 
         self.numFaces = i
 

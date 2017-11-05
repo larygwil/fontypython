@@ -81,9 +81,10 @@ TODO
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
 
-* Fix the state config for the window size etc.
 
 * Fix the fugly look of the help file.
+* Make the "back to top" anchor actually at the top (help file)
+
 
 * Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
 
