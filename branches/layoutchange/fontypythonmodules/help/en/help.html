@@ -1,9 +1,10 @@
 <html>
-<body bgcolor="#91a2a9" LINK="#91a2a9" VLINK="#91a2a9" ALINK="#000088">
-<table cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF">
+	<body bgcolor="{dark}" LINK="{dark}" VLINK="{dark}" ALINK="{dark}">
+	<A NAME="TOP"></A>
+	<table cellpadding="0" cellspacing="0" border="0" bgcolor="{lightest}">
 	<TR><TD>
-		<img src="../common/fphelplogo.png">
-	</TD></TR><TR><TD align="right"><font size=-2 color="#aaaaaa">Updated July 2016&nbsp;&nbsp;</font></TD></TR>
+	<img src="fontypythonmodules/help/common/fphelplogo.png">
+	</TD></TR><TR><TD align="right"><font size=-2 color="{medium}">Updated July 2016&nbsp;&nbsp;</font></TD></TR>
 	<TR>
 	<TD>
 	<TABLE cellpadding="25">
@@ -11,23 +12,22 @@
 	<TD>
 		<p><i>FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.</i></p>
 		
-		<A NAME="TOP"></A>
 		<p>
 		<a href="#DOTFONTS">Dot fonts info</a> | <a href="#LAYOUT">The layout</a> | <a href="#MENUS">The Menus</a> | <a href="#SHORTCUTS">Shortcuts</a> | <a href="#TIPS">Tips</a> | <a href="#L10N">Localization</a> | <a href="#BUGS">Bugs</a> | <a href="#LIC">Licence</a>
 		</p>
 
-		<h3><font color="#758B94">Ye olde Basic Idea</font></h3>
+		<h3><font color="{heading}">Ye olde Basic Idea</font></h3>
 		<p>You visually gather fonts into <b>"Pogs"</b>. You then install the Pog, and all its fonts will be available to other apps. When you finish your work, uninstall the Pog.</p>
 		<p>I just stumbled onto the	word "Pog", it comes from the middle of "typography". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.</p>
 		<p>Your fonts never move from where they live, neither are copies made; <i>only links to the original files are used</i> to install the fonts into your home <i>.fonts</i> directory.</p>
 		<p>For example, you might have a Pog called "Zoo Logo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you need to work with them, you simply install the "Zoo Logo" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp and other apps. When you are done designing, you uninstall "Zoo Logo" and all those fonts go away. (The links to the original files are removed from your home .fonts directory, effectively uninstalling each font.)</p>
 		<p>Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.</p>
 
-		<h3><A NAME="DOTFONTS"></A><font color="#758B94">Home dot fonts</font></h3>
+		<h3><A NAME="DOTFONTS"></A><font color="{heading}">Home dot fonts</font></h3>
 		<p>In your home directory there is a hidden directory named <b>".fonts"</b>. Whatever's in there is a font that your system can use. (There's a trend now to do away with this approach. It could spell doom for Fonty.)</p>
 		<p><b>NB:</b> If the .fonts directory does not exist, please create it in your home directory.<br><b>For example</b><pre>$ cd ~<br>$ mkdir .fonts</pre><br><br><b>Alternatively</b> Make use of your file manager and simply create ".fonts" in your home folder.</p>
 
-		<h3><font color="#758B94">Latest News</font></h3>
+		<h3><font color="{heading}">Latest News</font></h3>
 		<ol>	
 			<li>(July 2016) Many fixes due to changes in PIL and GTK versions.</li>
 			<li>(Sept 2009) You can now zip Pog(s). This puts all those fonts into a zip file for convenient distribution.</li>
@@ -39,7 +39,7 @@
 		<CENTER><IMG src="../common/break.png" border="0"></CENTER>
 
 		<A NAME="LAYOUT"></A>
-		<h3><font color="#758B94">Layout</font></h3>
+		<h3><font color="{heading}">Layout</font></h3>
 		<CENTER><IMG src="fp_1to8-nq8.png" border="0">
 		<p><font size=1>The interface works from left to right. You select a Source on the far left, then you select fonts from the middle section, and finally you choose a Target "Pog" where you want to store them.</font></p></CENTER>
 
@@ -146,7 +146,7 @@
 	<CENTER><IMG src="../common/break.png" border="0"></CENTER>
 
 	<A NAME="MENUS"></A>
-	<h3><font color="#758B94">Menu items</font></h3>
+	<h3><font color="{heading}">Menu items</font></h3>
 	<ol>
 		<li><strong>Tools menu</strong>
 		<ol>
@@ -168,7 +168,7 @@
 	
 
 	<A NAME="SHORTCUTS"></A>
-	<h3><font color="#758B94">Shortcut keys</font></h3>
+	<h3><font color="{heading}">Shortcut keys</font></h3>
 	<ol>
 		<li><strong>If shortcut keys don't work</strong>, click in the filter text box. This seems to kick them back to life. Don't ask me what's going on....</li>
 		<li><strong>Esc key</strong> will close your app (and help etc.) quickly.</li>
@@ -182,7 +182,7 @@
 	<CENTER><IMG src="../common/break.png" border="0"></CENTER>
 
 	<A NAME="TIPS"></A>
-	<h3><font color="#758B94">Handy tips</font></h3>
+	<h3><font color="{heading}">Handy tips</font></h3>
 	<ol>
 		<li>Try to use Fonty from the command-line (from a console). It's easy, simply type: <pre>fontypython --help</pre></li>
 		<li>Pog files are merely text files. They are very, very simple and this was intentional. Here are some things you can do with them:
@@ -201,7 +201,7 @@
 	<CENTER><IMG src="../common/break.png" border="0"></CENTER>
 
 	<A NAME="L10N"></A>
-	<h3><font color="#758B94">Localization tips</font></h3>
+	<h3><font color="{heading}">Localization tips</font></h3>
 	<ol>
 		<li>If localization is not working it could be that there is no translation for your language yet, it can also be a problem with missing packages in your distro.<br>
 		This is what I installed on my system (Kubuntu 7.10 as of December 2007) while I was developing:<br>
@@ -226,7 +226,7 @@
 	<CENTER><IMG src="../common/break.png" border="0"></CENTER>
 
 	<A NAME="BUGS"></A>
-	<h3><font color="#758B94">Fonty bugs</font></h3>
+	<h3><font color="{heading}">Fonty bugs</font></h3>
 	<ol>
 	   <li><strong>Fatal crashes and Dangerous Fonts:</strong> Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window should appear and tell you which font is to blame. You should <em>move</em> that font <em>entirely</em> away from where it is. Start Fonty again to resume. If you are stuck, go into your .fontypython folder and open the file named 'lastFontBeforeSegfault', that will be the culprit!</li>
 	   <li><strong>Check Fonts:</strong> I've added a new tool to the Tools menu that will let you choose a folder (and it will go through all the sub-folders too) of fonts for checking. Any fonts that are likely to kill Fonty will be recorded in your ~/.fontypython folder in a file named 'segfonts'. After you do this, you can visit those folders in Fonty and it will display those fonts in yellow. <strong>If you find that Fonty is crashing too often</strong>, then use this tool!<br><font size=-1>There is also a command line to the same tool (fontypython -c /some/folder). Please check the command-line help.</font></li>
@@ -242,7 +242,7 @@
 	<CENTER><IMG src="../common/break.png" border="0"></CENTER>
 
 	<A NAME="LIC"></A>
-	<h3><font color="#758B94">Licence</font></h3>
+	<h3><font color="{heading}">Licence</font></h3>
 	<p>Fonty Python is Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle.</p>
 	<p>This file is part of Fonty Python.<br>
 	Fonty Python is free software: you can redistribute it and/or modify<br>

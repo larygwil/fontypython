@@ -36,6 +36,7 @@ try:
 except:
     pass
 
+#FontEXTensions
 fexts = {
         "Truetype"           : ["TTF"],
         "Truetype_collection": ["TTC"],
@@ -46,7 +47,7 @@ fexts = {
         "Type1_metric_A"     : ["AFM"],
         "Type1_metric_P"     : ["PFM"],
         }
-## make a list like [".OTF",".TTC" ...etc.
+## make it a flat list like [".OTF",".TTC" ...etc.
 font_file_extensions_list = []
 for i in fexts.values():
     font_file_extensions_list += [ "." + s for s in i ]

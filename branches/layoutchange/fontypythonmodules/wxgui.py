@@ -57,8 +57,7 @@ flag_normal = 1
 flag_help = 2
 flag_about = 4
 flag_settings = 8
-flag_check_fonts = 16
-id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101, flag_check_fonts:102}
+id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101}
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
 class DismissablePanel(wx.Panel):
@@ -123,6 +122,14 @@ if loc is None or len(loc) < 2:
 else:
     langcode = loc[:2].lower()# This is going to cause grief in the future...
 
+htmlcols = {
+"dark":"#AAAAAA",
+"medium":"#cccccc",
+"lightest":"white",
+"light":"white",
+"heading":"#91a2a9",
+}
+
 ## Weird stuff:
 class AnHtmlWindow(html.HtmlWindow):
     def __init__(self, parent):
@@ -142,7 +149,21 @@ class HtmlPanel(DismissablePanel):
         helppaf = os.path.join(packpath, "help", langcode, "help.html")
         if not os.path.exists( helppaf ):
             helppaf = os.path.join(packpath, "help", "en", "help.html")
-        self.html.LoadPage( helppaf )        
+
+        try:
+            #paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
+            f = open( helppaf, "r" )
+            h = f.read()
+            f.close()       
+        except Exception as e:
+            h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
+        try:
+            h = h.format(**htmlcols)
+        except:
+            pass
+        #self.html.LoadPage( helppaf )        
+        print h
+        self.html.SetPage( h )        
         return self.html
 
 
@@ -217,62 +238,38 @@ class AboutPanel(DismissablePanel):
         return sizer_1
 
 
-#class CheckFontsPanel(DismissablePanel):
-#    def __init__(self, parent):
-#        DismissablePanel.__init__(self, parent, flag_check_fonts, 
-#                somelabel=_("Check for dangerous fonts.") )
-#
-#    def __post_init__(self):
-#        # draw basic form
-#
-#    def show_or_hide(self,evt):
-#        """
-#        This handler's event is bound in MainFrame. Fires when I hide or show.
-#        NOTE: The __post_init__ only happens once, so ...
-#        """
-#        if self.IsShown():
-            #test crap
-#            self.parent.panelFontSources.nb.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.foo )
-#            startdir = fpsys.state.viewobject.path
-#        else:
-            #test crap
-#            self.parent.panelFontSources.nb.tree.Unbind(wx.EVT_TREE_SEL_CHANGED)#, self.foo )
-
-#    def foo(self,evt):
-#        print "foo:", evt
-#        #evt.Skip()
-
-
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
         """The settings form.
         I went a little mad. It started simple, the old code. A few gets,
-        a few sets. Then I thought, "I can make this generic! Yeah! Shit yeah!"
+        a few sets. Then I thought, "I can make this generic! Shit yeah!"
         And so I abstracted and factored and fuck. Now it's this thing.
 
         Sorry about that.
         """
 
-        ## This dict is a way to handle the actual form in a loopy kind of way
+        ## This dict is a way to handle the actual form in a
+        ## loopy kind of way
         ## Keys:
         ## ==
         ## default: for when a value is bad, use this instead.
-        ## redraw : signals if a change to this value would require a fitmap redraw
+        ## redraw : signals if a change to this value would require 
+        ##          a fitmap redraw
         ## peek   : func to use to get value from the form control
         ## poke   : func to use to put the value into fpsys.config
         ## my.val : is the value taken from the control
         ## config.val: is the value taken from fpsys.config
         ## dud    : is a control that plays no real part
         self.form = {
-                     "numinpage": {},
-                        "points": {},
-                          "text": {"default":fpsys.Configure.atoz},
-            "ignore_adjustments": {},
-               "max_num_columns": {},
-                  "app_char_map": {"redraw":False, 
-                                   "peek": lambda c: c.GetStringSelection(),
-                                   "poke": self.poke_app_char_map },
-                }
+                 "numinpage": {},
+                    "points": {},
+                      "text": {"default":fpsys.Configure.atoz},
+        "ignore_adjustments": {},
+           "max_num_columns": {},
+              "app_char_map": {"redraw":False, 
+                               "peek": lambda c: c.GetStringSelection(),
+                               "poke": self.poke_app_char_map },
+        }
         ## Set redraw:True in all, except where False.
         {d.update({"redraw":d.get("redraw",True)}) for d in self.form.values()}
 
@@ -292,7 +289,6 @@ class SettingsPanel(DismissablePanel):
         ## Sample text 
         k="text"
         c = wx.TextCtrl( self, -1, self.gv(k), size = (200, -1) )
-        #c.SetFocus() #Kinda doesn't work.
         self.entry( k, _("Sample text:"), c )
 
         ## Point size
@@ -386,8 +382,8 @@ class SettingsPanel(DismissablePanel):
             self._set_values_from_config()
             # Most of the controls will "remember" their last setting.
             # (This is all a show/hide game anyway.)
-            # The only one that can change outside the settings is:
-            # The point size - can change by the wheel - hence update it:
+            # The only one that can change outside the settings is
+            # point size - by the mouse wheel - hence I update it:
             self.form["points"]["control"].SetValue( self.gv("points") )
 
     def entry(self, key, title, ctrl, extra=None, dud=False):
@@ -565,8 +561,8 @@ class MainFrame(wx.Frame):
                 _("&Settings\tCtrl+S"), _("Change settings"))
         menu1.AppendSeparator()
         ## Jan 18 2008
-        menu1.Append( id_from_flag[flag_check_fonts], 
-                _("&Check fonts"), _("Find those fonts that crash Fonty.") )
+        ## Nov 2017: retired: menu1.Append( 102, 
+        ##        _("&Check fonts"), _("Find those fonts that crash Fonty.") )
         menu1.Append( 103, _("&Purge Pog.See TogglePurgeMenuItem for actual string."), _("Remove all ghost fonts from the selected Pog.") )
 
         self.MENUPURGE = menu1
@@ -615,7 +611,13 @@ class MainFrame(wx.Frame):
 
         ## Bind events for the menu items
         self.Bind(wx.EVT_MENU, self.onHandleESC, self.exit)
-        self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
+        
+        #NOV 2017: Retiring this menu
+        #I think PILLOW is more stable and I don't want to support the
+        #extra code for the gui of this. The command line already does
+        #a good job (-c) and my crash dialogue tells the user what to do.
+        ##self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
+
         self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
 
         # June 2009
@@ -937,23 +939,23 @@ class MainFrame(wx.Frame):
 
 
 
-
-    def menuCheckFonts( self, e ):
-        """
-        Added Jan 18 2008
-        User can visit suspicious directories with this tool
-        to gather a list of fonts that kill the app. They will be
-        marked as such and hereafter be safe to use.
-        """
-        ## Set startdir to the one our own dircontrol is in
-        if fpsys.state.viewpattern == "F":
-            startdir = fpsys.state.viewobject.path
-        else:
-            ##Let's get it from the config object
-            startdir = fpsys.config.lastdir
-        dlg = dialogues.DialogCheckFonts( self, startdir )
-        val = dlg.ShowModal()
-        dlg.Destroy()
+    ##Retired NOV 2017
+    #def menuCheckFonts( self, e ):
+    #    """
+    #    Added Jan 18 2008
+    #    User can visit suspicious directories with this tool
+    #    to gather a list of fonts that kill the app. They will be
+    #    marked as such and hereafter be safe to use.
+    #    """
+    #    ## Set startdir to the one our own dircontrol is in
+    #    if fpsys.state.viewpattern == "F":
+    #        startdir = fpsys.state.viewobject.path
+    #    else:
+    #        ##Let's get it from the config object
+    #        startdir = fpsys.config.lastdir
+    #    dlg = dialogues.DialogCheckFonts( self, startdir )
+    #    val = dlg.ShowModal()
+    #    dlg.Destroy()
 
     def menuSelectionALL(self,e):
         """
