@@ -205,7 +205,16 @@ class FontItem( object ):
                     ## I have also added code to rm the lastFontBeforeSegfault file
                     ## on App exit - just so it doesn't lurk about in the fp dir.
                     fpsys.logSegfaulters( self.glyphpaf )
-                    
+
+
+
+                    ##Test the segfault thing.
+                    #victim = "/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/branches/layoutchange/scraps/fontsfortesting/DF Calligraphic Ornaments LET Plain-1.0.ttf"
+                    #if self.glyphpaf == victim:
+                        ## Force a segfault.... to test :|
+                    #    exec'()'*7**6 
+
+
                     ## Sep 2009
                     ## It has been reported by a user that some fonts have family names (and other info?) that
                     ## are not English. They appear as ???y??? etc. in the font list. On my system Inkscape

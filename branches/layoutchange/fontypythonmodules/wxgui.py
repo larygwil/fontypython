@@ -211,7 +211,11 @@ class AboutPanel(DismissablePanel):
         sizer_1.Add(nb, 1, wx.EXPAND, 0)
         
         nbabout_pane_1.SetFocus()
+
+
+
         return sizer_1
+
 
 #class CheckFontsPanel(DismissablePanel):
 #    def __init__(self, parent):
@@ -227,8 +231,16 @@ class AboutPanel(DismissablePanel):
 #        NOTE: The __post_init__ only happens once, so ...
 #        """
 #        if self.IsShown():
+            #test crap
+#            self.parent.panelFontSources.nb.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.foo )
 #            startdir = fpsys.state.viewobject.path
+#        else:
+            #test crap
+#            self.parent.panelFontSources.nb.tree.Unbind(wx.EVT_TREE_SEL_CHANGED)#, self.foo )
 
+#    def foo(self,evt):
+#        print "foo:", evt
+#        #evt.Skip()
 
 
 class SettingsPanel(DismissablePanel):

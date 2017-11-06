@@ -59,7 +59,7 @@ c1 = [os.path.join(fontyroot,'start_fontypython') ]
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
 
-p1 = -11#subprocess.call( c1 )
+p1 = subprocess.call( c1 )
 
 #p1=-11 # to test
 ## Nov 2017: Simpler plan:
@@ -132,6 +132,7 @@ class App(wx.App):
             culprit = "{}".format(e)
 
         if culprit:
+            print os.path.dirname(culprit)
             sadStory = _("There's some problem with the font named below.\n" \
             "You can do two things:\n" \
             "1) Manually move this font somewhere else, or\n" \

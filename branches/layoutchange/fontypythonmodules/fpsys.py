@@ -480,7 +480,7 @@ except:
         for file in fontfiles:
             paf = os.path.join( cwd, file )
             bad = checkForSegfault( paf )
-            bad = True #TEST
+            #bad = True #TEST
             if bad:
                 gotsome = True
                 seglist.append( paf )
