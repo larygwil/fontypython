@@ -211,7 +211,7 @@ class FontItem( object ):
                     ##Test the segfault thing.
                     #victim = "/home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/branches/layoutchange/scraps/fontsfortesting/DF Calligraphic Ornaments LET Plain-1.0.ttf"
                     #if self.glyphpaf == victim:
-                        ## Force a segfault.... to test :|
+                    #    ## Force a segfault.... to test :|
                     #    exec'()'*7**6 
 
 

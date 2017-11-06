@@ -36,43 +36,7 @@ import wx
 
 import fpwx 
 
-class SegfaultDialog(wx.Dialog):
-    """
-    Dec 2007
-    Runs from the wrapper script (which runs start_fontypython) so that we
-    can tell the user that there was a segfault and why.
-    """
-    def __init__(self, sadStory, culprit):
-        wx.Dialog.__init__(self, None, -1, _("Oh boy..."), pos = wx.DefaultPosition )
-        ## The layout begins:
-        labelHeading = fpwx.h1(self, _("Fonty Python, um ... crashed."))
-        sadStory = fpwx.para( self, sadStory )
-        tickettxt = fpwx.para(self, _("You can get help by opening a ticket, or sending an email."))
-        emaillink = wx.TextCtrl(self, -1, strings.contact, style = wx.TE_READONLY)
-        ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, style = wx.TE_READONLY)
 
-        btn = wx.Button(self, wx.ID_OK)
-        btn.SetDefault()
-        
-        fs = wx.FlexGridSizer(cols = 1, vgap = 4)
-
-        fs.Add(labelHeading, 0, wx.BOTTOM, border = 4 )
-        fs.Add(sadStory,  0, wx.BOTTOM, border = 8 )
-        if culprit: 
-            msg = fpwx.label(self,_('The bad font or error is:'))
-            cul = "{}".format(culprit)
-            culprit = wx.TextCtrl(self, -1, cul, style = wx.TE_READONLY | wx.TE_MULTILINE )
-            fs.Add(msg,0)
-            fs.Add(culprit, 1, wx.EXPAND  )
-        fs.Add(tickettxt, 0 )
-        fs.Add(ticketurl, 1, wx.EXPAND )
-        fs.Add(emaillink, 1, wx.EXPAND )
-        fs.Add(btn, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT | wx.TOP, border = 15 )
-
-        b = wx.BoxSizer( wx.HORIZONTAL )
-        b.Add( fs, 0, wx.ALL, border=10 )
-        self.SetSizer( b )
-        b.Fit(self) 
         
 
 
@@ -170,28 +134,4 @@ class DialogCheckFonts( wx.Dialog ):
         fpsys.checkFonts( dirtocheck, self.printer )
         wx.EndBusyCursor()
 
-## May 2009 - Busy
-## June 2009 - Given up on this code for now.
 
-#class PopupInfo(wx.Frame):
-#	def __init__(self, parent, id, title, fmap):
-#		wx.Frame.__init__(self, parent, id, title)
-#		self.box = wx.BoxSizer(wx.VERTICAL)
-#		self.list = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_WORDWRAP)
-#		self.box.Add(self.list, proportion=1, flag=wx.EXPAND)
-#		font = fmap.fitem
-#		info = fontsearch.getInfo(font)
-#		try:
-#			self.SetTitle(info['Name Records']['Full Name'])
-#		except KeyError:
-#			self.SetTitle(font.name)
-#		except:
-#			self.SetTitle("Font Information")
-#		text = str(info)
-#		self.list.AppendText(text)
-#		self.butClose = wx.Button(self, id = wx.ID_OK)
-#		self.butClose.Bind(wx.EVT_BUTTON, lambda event : self.Close())
-#		self.Bind(wx.EVT_COMMAND_KILL_FOCUS, lambda event : self.Close())
-#		self.box.Add(self.butClose, flag=wx.FIXED_MINSIZE|wx.ALIGN_CENTER)
-#		self.box.Layout()
-#		self.SetSizer(self.box)		

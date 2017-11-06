@@ -114,7 +114,7 @@ class FontViewPanel(wx.Panel):
         ## Main Label on top
         sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
         self.textMainInfo = fpwx.label(self, u"..")
-        self.textSubInfo = fpwx.smalllabel(self, u"Subinfo" )
+        self.textSubInfo = fpwx.small_label(self, u"Subinfo" )
         viewIcon = fpwx.icon(self, 'icon_viewing')
 
         sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )

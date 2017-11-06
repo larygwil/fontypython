@@ -56,7 +56,7 @@ def label( parent, ustr ):
     p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
-def smalllabel( parent, ustr ):
+def small_label( parent, ustr ):
     p = xlabel( parent, ustr, size="points_small", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
