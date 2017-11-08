@@ -58,20 +58,22 @@ The Font View will also attempt to display in columns, so you can see many fonts
 
 Areas of interest:
 
-1. Change font size: Ctrl + scrolling the mouse wheel (up/down).
+1. **Point size:** Ctrl + scrolling the mouse wheel (up/down).
 
-2. Character Map Button: The little magnifying glass. If you have a character viewing app installed, 
+2. **Character Map Button:** The little magnifying glass. If you have a character viewing app installed, 
    this button will show and when clicked will open it to let you view the full character-set of the font.
    You can choose which character map viewer to use in the Settings. The choices are gucharmap or kfontview.
 
-3. Tick Area: Clicking anywhere on a font will either tick or cross it.
-   **Tick:** means the font can be placed into a Target Pog &mdash; i.e. the one chosen in the right-hand panel.
-   **Cross:** means the font will be removed from the Source Pog (The one you are viewing at the moment)
+3. **Selecting fonts:** Clicking anywhere on a font will select it.
+   * **Tick:** means the font can be placed into a Target Pog &mdash; i.e. the one chosen in the right-hand panel.
+   * **Cross:** means the font will be removed from the Source Pog (The one you are viewing at the moment)
    &mdash; i.e. the Pog currently chosen on the left-panel.
-   **Neither:** means you have only a Source selected and can only view the fonts.
+   * **Neither:** means you have only a Source selected and can only view the fonts.
 
 4. Font Info: Under each font you will find the family and style and filename. 
    When you use the filter to search, this is the text that is searched.
+
+5. Greyed-out: Fonts that are already in the Pog (selected as Target) are disabled.
 
 **Please note:** An error may appear instead of the expected font glyphs. 
 Such fonts cannot be drawn. You can select, Pog, and install them. Most of the time, these fonts will still work in your design apps, like Inkscape.
