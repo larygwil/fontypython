@@ -219,12 +219,14 @@ If you are stuck, post a report on https://savannah.nongnu.org/bugs/?group=fonty
 
 [Top](#top)
 
+	<CENTER><IMG src="fontypythonmodules/help/common/break.png" border="0"></CENTER>
+
 <a name="lic"></a>
 Licence
 ===
 <pre>
-Fonty Python is Copyright (C) 2006, 2017 Donn.C.Ingle.<br>
-<br>
+Fonty Python is Copyright (C) 2006, 2017 Donn.C.Ingle.
+
 This file is part of Fonty Python.<br>
 Fonty Python is free software: you can redistribute it and/or modify<br>
 it under the terms of the GNU General Public License as published by<br>
