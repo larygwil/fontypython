@@ -44,7 +44,7 @@ Layout
 =====
 On the left are the Source (top) and Target (bottom) controls. On the right is the Font View. 
 
-Left-top: The Sources
+<img src="fontypythonmodules/things/icon_source.png">Left-top: The Sources
 --
 Font *Sources* are directories or Pogs. There are tabs for you to choose. 
 
