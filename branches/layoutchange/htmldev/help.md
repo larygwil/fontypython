@@ -36,9 +36,7 @@ Whatever it's called and wherever it is, any fonts listed in that directory are 
 If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
 
 [Top](#top)
-
 <center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
-
 <a name="layout"></a>
 Layout
 =====

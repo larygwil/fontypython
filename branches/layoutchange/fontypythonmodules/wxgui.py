@@ -166,7 +166,7 @@ class HtmlPanel(DismissablePanel):
         #except:
         #    pass
         #self.html.LoadPage( helppaf )        
-        print h
+        #print h
         self.html.SetPage( h )        
         return self.html
 

@@ -8,6 +8,7 @@ move html into main fs
 
 Images
 ==
-I am pushing a string in wx.html after loading the html file manually in Python. This causes wx.html to seek paths from the main directory. Hence ref any images as fontypythonmodules/help/common/.. etc.
+I am pushing a string into wx.html after loading the html file manually in Python. This causes wx.html to seek paths from the main directory. Hence ref any images as fontypythonmodules/help/common/.. etc.
+
 
 
