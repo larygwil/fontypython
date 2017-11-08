@@ -18,6 +18,8 @@ For example, you might have a Pog called "Zoo Logo" into which you place all the
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
 
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+
 <a name="userfonts"></a>
 User Fonts
 =====
@@ -34,6 +36,8 @@ Whatever it's called and wherever it is, any fonts listed in that directory are 
 If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
 
 [Top](#top)
+
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
 
 <a name="layout"></a>
 Layout
@@ -72,8 +76,9 @@ The Font View will also attempt to display in columns, so you can see many fonts
 1. **Point size:** Ctrl + scrolling the mouse wheel (up/down).
 
 2. **Character Map Button:** The little magnifying glass. If you have a character viewing app installed, 
-   this button will show and when clicked will open it to let you view the full character-set of the font.
-   You can choose which character map viewer to use in the Settings. The choices are gucharmap or kfontview.
+   this button will open it.
+   (You can choose which character map viewer to use in the Settings. 
+   The choices are gucharmap or kfontview &mdash; but you must install one first.)
 
 3. **Selecting fonts:** Clicking anywhere on a font will select it.
    * **Tick:** means the font can be placed into a Target Pog &mdash; i.e. the one chosen in the right-hand panel.
@@ -91,7 +96,7 @@ The Font View will also attempt to display in columns, so you can see many fonts
    design apps, like Inkscape.
    (See [Bugs](#bugs) for more information about font errors.)
 
-##Font controls
+###Font controls
 
 1. **Filter:** 
   * "i,r,b" mean Italic, Regular and Bold. 
@@ -101,6 +106,8 @@ The Font View will also attempt to display in columns, so you can see many fonts
 3. **Left/Right:** Arrow buttons for paging one forward or back. 
 
 [Top](#top)
+
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
 
 <a name="menus"></a>
 Menus
@@ -120,6 +127,8 @@ Menus
 
 [Top](#top)
 
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+
 <a name="shortcuts"></a>
 Shortcut keys
 ====
@@ -133,6 +142,8 @@ If shortcut keys don't work, click in the filter text box. This seems to kick th
 
 
 [Top](#top)
+
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
 
 <a name="tips"></a>
 Tips
@@ -155,6 +166,8 @@ Tips
 
 
 [Top](#top)
+
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
 
 <a name="l10n"></a>
 Localization Tips
@@ -186,6 +199,8 @@ You should see a list of locales. If you see one ending in "utf8" that looks lik
 If you want to help translate, please drop us a ticket on: https://savannah.nongnu.org/bugs/?group=fontypython
 
 [Top](#top)
+
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
 
 <a name="bugs"></a>
 Bugs
@@ -219,27 +234,26 @@ If you are stuck, post a report on https://savannah.nongnu.org/bugs/?group=fonty
 
 [Top](#top)
 
-	<CENTER><IMG src="fontypythonmodules/help/common/break.png" border="0"></CENTER>
+<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
 
 <a name="lic"></a>
 Licence
 ===
 <pre>
-Fonty Python is Copyright (C) 2006, 2017 Donn.C.Ingle.
+Fonty Python is Copyright (C) 2006, 2017 Donn.C.Ingle.<br>
 
 This file is part of Fonty Python.<br>
 Fonty Python is free software: you can redistribute it and/or modify<br>
 it under the terms of the GNU General Public License as published by<br>
 the Free Software Foundation, either version 3 of the License, or<br>
 (at your option) any later version.<br>
-<br>
+
 Fonty Python is distributed in the hope that it will be useful,<br>
 but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
 MERCHANTABIliTY or FITNESS FOR A PARTICULAR PURPOSE. See the<br>
 GNU General Public License for more details.<br>
-<br>
+
 You should have received a copy of the GNU General Public License<br>
 along with Fonty Python. If not, see http://www.gnu.org/licenses/ <br>
 </pre>
-
 [Top](#top)

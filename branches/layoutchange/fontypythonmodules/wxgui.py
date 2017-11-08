@@ -127,7 +127,11 @@ htmlcols = {
 "medium":"#cccccc",
 "lightest":"white",
 "light":"white",
-"heading":"#91a2a9",
+"heading1":"#91a2a9",
+"heading2":"#91a2a9",
+"heading3":"#91a2a9",
+"heading4":"#91a2a9",
+"heading5":"#91a2a9",
 }
 
 ## Weird stuff:
@@ -157,10 +161,10 @@ class HtmlPanel(DismissablePanel):
             f.close()       
         except Exception as e:
             h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
-        try:
-            h = h.format(**htmlcols)
-        except:
-            pass
+        #try:
+        h = h.format(**htmlcols)
+        #except:
+        #    pass
         #self.html.LoadPage( helppaf )        
         print h
         self.html.SetPage( h )        
