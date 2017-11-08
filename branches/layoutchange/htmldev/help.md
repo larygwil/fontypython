@@ -44,13 +44,13 @@ Layout
 =====
 On the left are the Source (top) and Target (bottom) controls. On the right is the Font View. 
 
-<img src="fontypythonmodules/things/icon_source.png">Left-top: The Sources
+<img src="fontypythonmodules/things/icon_source.png">&nbsp; The Sources
 --
 Font *Sources* are directories or Pogs. There are tabs for you to choose. 
 
 Beware the **include sub-folders** check box. When checked, Fonty will look for fonts in **all** the sub-directories within your chosen Source directory. If there are lots of fonts in there, she might hang. Use this with caution.
 
-Left-bottom: The Targets
+<img src="fontypythonmodules/things/icon_target.png">&nbsp; The Targets
 --
 *Targets* are Pogs; they are where you gather your fonts.
 
@@ -65,7 +65,7 @@ Left-bottom: The Targets
 5. **Delete:** All selected Pogs will be deleted. It will ask you if you are sure.
 6. **Zip:** All selected Pogs will have their fonts zipped into individual zip files in the directory you choose.
 
-Right: The Font View
+<img src="fontypythonmodules/things/icon_viewing.png">&nbsp; The Font View
 --
 Fonts in your Source will be visible in the Font View. You can click on the fonts you want to select. At the bottom of the Font View are some controls to help you filter, page and manage the fonts you are looking at.
 
