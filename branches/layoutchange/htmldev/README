@@ -1,0 +1,13 @@
+MAKING THE HTML FILES
+==
+
+Edit the markdown files.
+Run makehtml on each
+further edit the html if needed
+move html into main fs
+
+Images
+==
+I am pushing a string in wx.html after loading the html file manually in Python. This causes wx.html to seek paths from the main directory. Hence ref any images as fontypythonmodules/help/common/.. etc.
+
+
