@@ -24,7 +24,3 @@ echo $HTML > "$htmlout"
 ## Stuff the shitty font tags into various places. 
 ## wx.html is all about the 90's
 sed -i 's|<h\(.\)>|<h\1><font color="{heading\1}">|g;s|</h\(.\)>|</font></h\1>|g;' "$htmlout"
-
-
-#cat tmpcss tmphtml tmpendhtml  > README.html
-#rm tmphtml tmpcss tmpendhtml

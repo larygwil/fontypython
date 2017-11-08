@@ -67,7 +67,7 @@ Fonts in your Source will be visible in the Font View. You can click on the font
 
 The Font View will also attempt to display in columns, so you can see many fonts in one go. The columns vary by how big each font is and the width of your window. You can control the number of columns in the Settings.
 
-Areas of interest within each font:
+###Fonts
 
 1. **Point size:** Ctrl + scrolling the mouse wheel (up/down).
 
@@ -91,7 +91,7 @@ Areas of interest within each font:
    design apps, like Inkscape.
    (See [Bugs](#bugs) for more information about font errors.)
 
-The Controls under the Font View
+##Font controls
 
 1. **Filter:** 
   * "i,r,b" mean Italic, Regular and Bold. 
@@ -112,10 +112,132 @@ Menus
      Use purge to remove them. 
      *Explanation:* A Pog contains a list of paths. If a font is somehow moved on your hard drive, 
      then the path in the Pog will be old. Purging will remove these ghost fonts.
-   * **Exit:** Guess. :)
+   * **Exit:** Guess. :-)
 2. **Selection menu**
    * **Select ALL the source fonts:** While only a few fonts are shown in a page at a time, there may 
      be thousands in the selected source. This will select **all** of them, in one go.
    * **Clear ENTIRE selection:** Will clear any selection.
 
+[Top](#top)
 
+<a name="shortcuts"></a>
+Shortcut keys
+====
+If shortcut keys don't work, click in the filter text box. This seems to kick them back to life. Don't ask me what's going on....
+
+1. **Esc** key will close your app quickly.
+2. **Ctrl+LeftArrow/Ctrl+RightArrow** will step through fonts like the Next and Previous buttons do.
+3. **Middle-click (the wheel-button)** in the font view (position 3 above) will open the Settings 
+   screen (like Ctrl+S does)
+4. **Ctrl + Scroll mouse wheel up/down** will increase/decrease the size of your font previews quickly.
+
+
+[Top](#top)
+
+<a name="tips"></a>
+Tips
+===
+
+1. Try to use Fonty from the command-line (from a console). It's easy, simply type:
+   fontypython --help
+2. Pog files are merely text files. They are very, very simple and this was intentional. Here are some things you can do with them:
+   * Open and edit them in any text editor.
+   * Append fonts to the end of them, just include the entire path and the font name.
+   * *Note for Type1 fonts: Only include the PFA/B file types, not the various metric files that 
+     follow them.*
+   * If your paths change (say you renamed your folders, or re-installed your O/S) then you can use 
+     search/replace to update all the paths to all the fonts in your Pogs. You could do this from 
+     the command-line using GNU tools, but any text editor will help you here too.
+   * You can backup your Pogs by simply copying them to another folder.
+   * One last trick, for those proficient with the Gnu tools, you can do things like this:
+
+        find /home/you/somepath/TTFS/F -iname "Fu*" >> Futura.Pog
+
+
+[Top](#top)
+
+<a name="l10n"></a>
+Localization Tips
+==
+
+If localization is not working it could be there is none for your language; it can also be a
+problem with missing packages in your distro. This is what I installed on my system while I 
+was developing: (Replace the last two letters with your own language code.)
+
+* language-support-fr
+* language-support-en
+* language-pack-gnome-fr (This one is very important, it has many stock translations for GTK.)
+
+ENCODING TIP:
+Check your LANG variable. Open a console and type:
+        echo $LANG
+If it reports "C" or "POSIX" or it's blank then you will be running under ANSI (ASCII) encoding only. This means that unusually named fonts and Pogs will likely be invisible to you, function badly, or cause errors. I am putting out fires as fast as I can, but these bugs are hard to find.
+
+To see what other encodings you could be using, type:
+
+        locale -a
+
+You should see a list of locales. If you see one ending in "utf8" that looks like it fits your language, then change your system to use it. You should do this via your system-settings gui, but you can do it temporarily like this:
+
+        LANG=xx_YY.encoding
+
+(Where xx_YY and encoding are replaced by you.) After that, start Fonty again.
+
+If you want to help translate, please drop us a ticket on: https://savannah.nongnu.org/bugs/?group=fontypython
+
+[Top](#top)
+
+<a name="bugs"></a>
+Bugs
+===
+Fatal crashes and Dangerous Fonts.
+--
+Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window should appear and tell you which font is to blame. You should move that font entirely away from where it is. Start Fonty again to resume. 
+
+If you are stuck, go into your "fontypython" folder and open the file named "lastFontBeforeSegfault", that will be the culprit!
+
+To find your fontypython directory, look in your home folder for either:
+
+* .fontypython or
+* .local/share/fontypython
+
+You can also ask fonty for the path. On the command-line, run:
+    
+        fontypython -d
+
+Checking Fonts
+--
+If Fonty will not start, you have a really bad font somewhere. On the command-line, use the -c flag to check all fonts (recursively) on the given path:
+
+        fontypython -c /some/folder
+
+Any fonts that are likely to kill Fonty will be recorded in a file named "segfonts" (look in your fontypython directory). After you do this, Fonty should work again. 
+
+When Fonty starts, she checks your Pog files. If there are any Pogs that cannot be read for whatever reason, then they are renamed to ".badpog". You should go in there and do some sleuthing.
+
+If you are stuck, post a report on https://savannah.nongnu.org/bugs/?group=fontypython. Please run Fonty from the command line so that you can copy any error displayed.
+
+[Top](#top)
+
+<a name="lic"></a>
+Licence
+===
+<pre>
+Fonty Python is Copyright (C) 2006, 2017 Donn.C.Ingle.<br>
+<br>
+This file is part of Fonty Python.<br>
+Fonty Python is free software: you can redistribute it and/or modify<br>
+it under the terms of the GNU General Public License as published by<br>
+the Free Software Foundation, either version 3 of the License, or<br>
+(at your option) any later version.<br>
+<br>
+Fonty Python is distributed in the hope that it will be useful,<br>
+but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
+MERCHANTABIliTY or FITNESS FOR A PARTICULAR PURPOSE. See the<br>
+GNU General Public License for more details.<br>
+<br>
+You should have received a copy of the GNU General Public License<br>
+along with Fonty Python. If not, see http://www.gnu.org/licenses/ <br>
+</pre>
+
+[Top](#top)
