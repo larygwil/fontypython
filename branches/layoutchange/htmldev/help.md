@@ -132,7 +132,7 @@ Shortcut keys
 ====
 If shortcut keys don't work, click in the filter text box. This seems to kick them back to life. Don't ask me what's going on....
 
-1. **Esc** key will close your app quickly.
+1. **Esc** key will close any panels that may be open, or close the whole app quickly.
 2. **Ctrl+LeftArrow/Ctrl+RightArrow** will step through fonts like the Next and Previous buttons do.
 3. **Middle-click (the wheel-button)** in the font view (position 3 above) will open the Settings 
    screen (like Ctrl+S does)

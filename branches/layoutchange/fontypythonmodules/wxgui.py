@@ -242,20 +242,17 @@ class SettingsPanel(DismissablePanel):
 
         Sorry about that.
         """
-
         ## This dict is a way to handle the actual form in a
         ## loopy kind of way
         self.form = {}
-
         self._force_redraw = False
-
         self.settings_sizer = wx.FlexGridSizer( cols = 2, hgap = 5, vgap = 8 )
         
         DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
 
     def __post_init__(self):
         """
-        Happens only once. Draws all the controls, with values from config.
+        Happens only once. Draws all the controls, with values *from* config.
         After this, the panel only hides/shows. The controls all persist.
         """
         ## Sample text 
@@ -272,7 +269,8 @@ class SettingsPanel(DismissablePanel):
 
         ## Page length
         k = "numinpage"
-        c = self.spinner(k, (1, 5000), tip=_("Beware large numbers!"))# It's your funeral!
+        c = self.spinner(k, (1, 5000), 
+                tip=_("Beware large numbers!"))# It's your funeral!
         self.entry( k, _("Page length:"), c )
 
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
@@ -298,7 +296,8 @@ class SettingsPanel(DismissablePanel):
             c.SetSelection(self.CMC.quick_appname_list.index(app))
             ## Prefer explicit "poke" (in dict) to this event:
             ##  self.Bind(wx.EVT_RADIOBOX, self.EvtRadioBox, c)
-            c.SetToolTip(wx.ToolTip(_("Choose which app to use as a character map viewer.")))
+            c.SetToolTip(wx.ToolTip(_("Choose which app to use" \
+                    " as a character map viewer.")))
             dud_control = False
         ## No apps, just print a string:
         else:
@@ -324,11 +323,13 @@ class SettingsPanel(DismissablePanel):
 
         ## Nov 2017 - Moving the recurse check box into settings
         k = "recurseFolders"
-        c = wx.CheckBox(self, -1, _("Tick to enable") )
+        c = wx.CheckBox(self, -1, _("Tick to include all " \
+                                    "sub-folders in source view.") )
         c.SetValue( self.gv(k) )
         self.entry( k,_("Include sub-folders."), c,
-                extra = _("Caution: This will crash Fonty " \
-                          "if your Source folder (directory) is deep."),
+                extra = _("Caution: This will crash Fonty if\n" \
+                          "your Source folder (directory)\n" \
+                          "is deep."),
                 redraw = True)
 
         ## Make an "apply" button. Click also gets caught in MainFrame.
@@ -351,23 +352,13 @@ class SettingsPanel(DismissablePanel):
         Used externally in MainFrame"""
         return self.form[key]["changed"]
 
-    def xx_set_values_from_config(self):
-        """
-        Get the values out of config and into my "form" dict,
-        which is the loopy thing between here and fpsys.config
-        """
-        for key, d in self.form.iteritems():
-            d["config.val"] = fpsys.config.__dict__[key]
-            d["changed"] = False # reset this.
-
     def show_or_hide(self,evt):
         """
         This handler's event is bound in MainFrame. Fires when I hide or show.
-        NOTE: The __post_init__ only happens once, so I need a way
+        NOTE: Since __post_init__ only happens once, I need a way
         to alter the form as it comes and goes.
         """
         if self.IsShown():
-            #self._set_values_from_config()
             # Most of the controls will "remember" their last setting.
             # (This is all a show/hide game anyway.)
             # The only one that can change outside the settings is
@@ -391,8 +382,6 @@ class SettingsPanel(DismissablePanel):
                  a fitmap redraw
         peek   : func to get value from the form control
         poke   : func to put the value into fpsys.config
-        my.val : is the value taken from the control
-        config.val: is the value taken from fpsys.config
         dud    : is a control that plays no real part
 
         """
@@ -422,7 +411,6 @@ class SettingsPanel(DismissablePanel):
 
     def gv(self, key):
         """Get a value for the key. It's less typing."""
-        #d["config.val"] = fpsys.config.__dict__[key]
         return fpsys.config.__dict__[key]
 
     def spinner(self, key, rnge, tip=None):
@@ -465,18 +453,16 @@ class SettingsPanel(DismissablePanel):
                         d["control"].SetValue(getdef)
 
                 # now I have the value from the control
-                d["my.val"] = ctrlval
-
                 # Is it different from the config's version?
                 # If so, update config.
-                if d["my.val"] != self.gv(key): #d["config.val"]:
+                if ctrlval != self.gv(key):
                     changed=True
                     # If there's a special poke func, use it.
                     poke = d.get("poke",None)
                     if poke:
-                        poke(d["my.val"])
+                        poke(ctrlval)
                     else:
-                        fpsys.config.__dict__[key] = d["my.val"]
+                        fpsys.config.__dict__[key] = ctrlval
                     redraw = d["redraw"]
                 d["changed"]=changed
 

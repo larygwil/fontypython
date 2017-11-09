@@ -36,8 +36,8 @@ def setup_fonts_and_colours():
     ##Colours for things that use html
     hcol = SYSCOLS["highlight"]
     HTMLCOLS.update({
-    "dark"    :SYSCOLS["dark"], #AAAAAA",
-    "medium"  :SYSCOLS["gray"], #"#cccccc",
+    "dark"    :SYSCOLS["dark"],
+    "medium"  :SYSCOLS["gray"],
     "bg"      :SYSCOLS["bg"],
     "heading1":hcol,
     "heading2":hcol,
@@ -48,7 +48,6 @@ def setup_fonts_and_colours():
     # I need them all in #RRGGBB format:
     for k,v in HTMLCOLS.iteritems():
         HTMLCOLS[k] = v.GetAsString(flags=wx.C2S_HTML_SYNTAX)
-
 
     wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     ps = wxfont.GetPointSize()
@@ -64,8 +63,6 @@ def setup_fonts_and_colours():
         "points_xx_large" : ps*1.5,
         "points_xxx_large": ps*2,
         })
-
-
 
 def parar( parent, ustr, size="points_normal" ):
     p = xlabel( parent, ustr, size, weight=wx.FONTWEIGHT_NORMAL, align=wx.ALIGN_RIGHT )

@@ -71,7 +71,6 @@ BUGS
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
 
 
-
 TODO
 ==
 * I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. Still the old idea for an HTML style pager control.
@@ -81,15 +80,9 @@ TODO
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
 
-
-* Fix the fugly look of the help file.
-* Make the "back to top" anchor actually at the top (help file)
-
-
 * Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
 
 * Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
-* Do we need the wrapper and the segfonts stuff?
 * Make the About page HTML!
 
 
@@ -105,8 +98,10 @@ TODO
 
 
 * Help FP logo - same as in about
-* Move the sub-folders checkbox into settings. Append dire warning.
+* Help icon
+* Settings icon
 
+* zip folder choose dialogue sucks
 
 
 
