@@ -46,6 +46,8 @@ ensure_fontview_shown = 1500
 
 reset_top_left_adjustments = 2000
 
+fake_click_the_source_dir_control = 2500
+
 ## A hack to allow values to return from published topics
 globRetVal = {}
 

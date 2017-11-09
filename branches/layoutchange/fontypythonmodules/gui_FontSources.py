@@ -142,15 +142,8 @@ class NoteBook(wx.Notebook):
         #self.tree.EnsureVisible(s)
         #self.tree.ScrollTo(s)
 
-        ## The Recurse check-box
-        self.recurseFolders = wx.CheckBox(pan1, -1, _("Include sub-folders."))
-        self.recurseFolders.SetToolTipString(_("Caution: This will crash Fonty if the folder is deep."))
-        self.recurseFolders.SetValue( fpsys.config.recurseFolders )
-        self.Bind(wx.EVT_CHECKBOX, self.__onDirCtrlClick, self.recurseFolders) #click on check box same as click on folder item.
-
         ## Add them to a sizer
         box = wx.BoxSizer(wx.VERTICAL)
-        box.Add( self.recurseFolders,0,wx.EXPAND )
         box.Add( self.dircontrol,1, wx.EXPAND )
         pan1.SetSizer(box)
         box.Layout()
@@ -181,8 +174,8 @@ class NoteBook(wx.Notebook):
         #pan2.SetSizer(vbox)
         #vbox.Layout()
 
-        ps.sub(source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
-        ps.sub(select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
+        ps.sub( source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
+        ps.sub( select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
         ps.sub( add_pog_item_to_source, self.AddItem ) #DND: class NoteBook
         ps.sub( remove_pog_item_from_source, self.RemoveItem ) #DND: class NoteBook
 
@@ -194,6 +187,9 @@ class NoteBook(wx.Notebook):
         ## Bind to another event solve the problem of EVT_LEFT_UP firing when the little
         ## open-branch/tree arrow was pressed.
         ## 5.3.2009 Michael Hoeft
+        ## Nov 2017: Also publish this for use in wxgui - since I moved the
+        ## recurseFolders into there.
+        ps.sub( fake_click_the_source_dir_control, self.__onDirCtrlClick )
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
 
         ## Had a context menu, but not using it.
@@ -222,10 +218,7 @@ class NoteBook(wx.Notebook):
         ## If the app is started with a Folder as the Source, then
         ## check if we must recurse. If so, fake a click to kick that off.
         ## Sept 2017
-        ## Can't figure out why this depended on the recursion check box. Took it out.
-        ## TODO: Expect fail...
         if fpsys.state.viewpattern  == "F":
-            #if self.recurseFolders.GetValue():
             self.__onDirCtrlClick(None) # Fake an event
 
 
@@ -244,7 +237,7 @@ class NoteBook(wx.Notebook):
         p = self.dircontrol.GetPath()
 
         try:
-            fpsys.instantiateViewFolder(p,self.recurseFolders.GetValue() )
+            fpsys.instantiateViewFolder( p, fpsys.config.recurseFolders )
             fpsys.config.lastdir = p
         except fontybugs.FolderHasNoFonts, e:
             pass # update_font_view handles this with a std message.

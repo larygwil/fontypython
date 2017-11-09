@@ -245,28 +245,7 @@ class SettingsPanel(DismissablePanel):
 
         ## This dict is a way to handle the actual form in a
         ## loopy kind of way
-        ## Keys:
-        ## ==
-        ## default: for when a value is bad, use this instead.
-        ## redraw : signals if a change to this value would require 
-        ##          a fitmap redraw
-        ## peek   : func to use to get value from the form control
-        ## poke   : func to use to put the value into fpsys.config
-        ## my.val : is the value taken from the control
-        ## config.val: is the value taken from fpsys.config
-        ## dud    : is a control that plays no real part
-        self.form = {
-                 "numinpage": {},
-                    "points": {},
-                      "text": {"default":fpsys.Configure.atoz},
-        "ignore_adjustments": {},
-           "max_num_columns": {},
-              "app_char_map": {"redraw":False, 
-                               "peek": lambda c: c.GetStringSelection(),
-                               "poke": self.poke_app_char_map },
-        }
-        ## Set redraw:True in all, except where False.
-        {d.update({"redraw":d.get("redraw",True)}) for d in self.form.values()}
+        self.form = {}
 
         self._force_redraw = False
 
@@ -279,12 +258,12 @@ class SettingsPanel(DismissablePanel):
         Happens only once. Draws all the controls, with values from config.
         After this, the panel only hides/shows. The controls all persist.
         """
-        self._set_values_from_config()
-
         ## Sample text 
         k="text"
         c = wx.TextCtrl( self, -1, self.gv(k), size = (200, -1) )
-        self.entry( k, _("Sample text:"), c )
+        self.entry( k, _("Sample text:"), c,
+                default = fpsys.Configure.atoz
+                )
 
         ## Point size
         k = "points"
@@ -297,10 +276,10 @@ class SettingsPanel(DismissablePanel):
         self.entry( k, _("Page length:"), c )
 
         ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
+        k = "ignore_adjustments"
         c = wx.CheckBox(self, -1, _("Tick to disable") )
-        c.SetValue( self.gv("ignore_adjustments") )
-        self.entry( "ignore_adjustments",
-                _("Disable top-left correction:"), c,
+        c.SetValue( self.gv(k) )
+        self.entry( k, _("Disable top-left correction:"), c,
                 extra = _("Disabling this speeds-up\n" \
                           "font drawing but can\n" \
                           "cause bad positioning."))
@@ -328,7 +307,12 @@ class SettingsPanel(DismissablePanel):
                     _("None found.\nYou could install: {}".format(
                         self.CMC.list_of_suggested_apps)) )
             dud_control = True
-        self.entry( k, _("Character map viewer:"), c, dud=dud_control )
+        self.entry( k, _("Character map viewer:"), c, 
+                dud = dud_control,
+                redraw = False,
+                peek = lambda c: c.GetStringSelection(),
+                poke = self.poke_app_char_map
+                )
 
         ## Max columns
         k = "max_num_columns"
@@ -337,6 +321,15 @@ class SettingsPanel(DismissablePanel):
                 extra = _("The font viewing area\n" \
                           "will divide into columns\n" \
                           "which you can control here.") )
+
+        ## Nov 2017 - Moving the recurse check box into settings
+        k = "recurseFolders"
+        c = wx.CheckBox(self, -1, _("Tick to enable") )
+        c.SetValue( self.gv(k) )
+        self.entry( k,_("Include sub-folders."), c,
+                extra = _("Caution: This will crash Fonty " \
+                          "if your Source folder (directory) is deep."),
+                redraw = True)
 
         ## Make an "apply" button. Click also gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
@@ -358,7 +351,7 @@ class SettingsPanel(DismissablePanel):
         Used externally in MainFrame"""
         return self.form[key]["changed"]
 
-    def _set_values_from_config(self):
+    def xx_set_values_from_config(self):
         """
         Get the values out of config and into my "form" dict,
         which is the loopy thing between here and fpsys.config
@@ -374,20 +367,42 @@ class SettingsPanel(DismissablePanel):
         to alter the form as it comes and goes.
         """
         if self.IsShown():
-            self._set_values_from_config()
+            #self._set_values_from_config()
             # Most of the controls will "remember" their last setting.
             # (This is all a show/hide game anyway.)
             # The only one that can change outside the settings is
             # point size - by the mouse wheel - hence I update it:
             self.form["points"]["control"].SetValue( self.gv("points") )
 
-    def entry(self, key, title, ctrl, extra=None, dud=False):
+    def entry(self, key, title, ctrl, extra = None, dud = False,
+              default = None,
+              redraw = True,
+              peek = None,
+              poke = None ):
         """
         Makes the label. Puts it and the control into the sizer.
-        Manages the form dict.
+        
+        Manages the form dict:
+
+        Keys:
+        ==
+        default: for when a value is bad, use this instead.
+        redraw : signals if a change to this value would require 
+                 a fitmap redraw
+        peek   : func to get value from the form control
+        poke   : func to put the value into fpsys.config
+        my.val : is the value taken from the control
+        config.val: is the value taken from fpsys.config
+        dud    : is a control that plays no real part
+
         """
+        self.form[key] = {}
         self.form[key]["control"] = ctrl
         self.form[key]["dud"] = dud # some ctrls are just info.
+        self.form[key].update({"default":default, 
+                               "redraw" : redraw,
+                               "peek"   : peek, 
+                               "poke"   : poke})
 
         lbl = fpwx.boldlabel( self, title ) 
         if extra:
@@ -407,7 +422,8 @@ class SettingsPanel(DismissablePanel):
 
     def gv(self, key):
         """Get a value for the key. It's less typing."""
-        return self.form[key]["config.val"]
+        #d["config.val"] = fpsys.config.__dict__[key]
+        return fpsys.config.__dict__[key]
 
     def spinner(self, key, rnge, tip=None):
         """There were several, so I did a thing."""
@@ -453,7 +469,7 @@ class SettingsPanel(DismissablePanel):
 
                 # Is it different from the config's version?
                 # If so, update config.
-                if d["my.val"] != d["config.val"]:
+                if d["my.val"] != self.gv(key): #d["config.val"]:
                     changed=True
                     # If there's a special poke func, use it.
                     poke = d.get("poke",None)
@@ -779,6 +795,10 @@ class MainFrame(wx.Frame):
         self.panel_state &= ~flag
 
     def flag_state_exclusive_toggle(self, flag):
+        """
+        Toggle this flag's bit.
+        All other flags will be turned off.
+        """
         fs = self.is_state_flagged(flag)
         self.panel_state = 0
         if fs: #swap it
@@ -885,9 +905,14 @@ class MainFrame(wx.Frame):
         self.ErrorBox(args) #Pass it along to be displayed
         self.endApp()
 
-    def onHandleESC(self, e) :
-        print strings.done
-        self.endApp()
+    def onHandleESC(self, e):
+        ## if we have a DismissablePanel open, let's close
+        ## it instead of the app.
+        if self.panel_state > flag_normal:
+            self.ensure_fontview_shown()
+        else:
+            print strings.done
+            self.endApp()
 
     def endApp(self) :
         """
@@ -903,8 +928,6 @@ class MainFrame(wx.Frame):
         ## we have no need for this file.
         fpsys.rm_lastFontBeforeSegfault_file()
 
-        ##June 2009 - record the value of recurse folders checkbox.
-        fpsys.config.recurseFolders = app.GetTopWindow().panelFontSources.nb.recurseFolders.GetValue()
         self.Destroy()
 
     def open_settings_panel(self):
@@ -921,11 +944,22 @@ class MainFrame(wx.Frame):
         Here we only need to decide on what to redraw.
         """
         if self.settings_panel.settings_force_redraw():
+
+            ## If the ignore adjustments checkbos changed:
             if self.settings_panel.has_changed("ignore_adjustments"):
-                ##(sub in ScrolledFontView)
                 ps.pub( reset_top_left_adjustments )
+
+            ## This recurse checkbox is more complex.
+            ## I have to hand over control to that class:
+            if self.settings_panel.has_changed("recurseFolders"):
+                ## This does do a redraw, thus a force-close 
+                ## of the settings panel.
+                ps.pub( fake_click_the_source_dir_control, None )
+                # bail! So we don't do another re-draw.
+                return
+
             ## Redraw the fitmaps
-            ## Will also hide the settings_panel
+            ## (Will also hide the settings_panel)
             ps.pub( update_font_view )
         else:
             ## With no changes, we must hide the settings_panel

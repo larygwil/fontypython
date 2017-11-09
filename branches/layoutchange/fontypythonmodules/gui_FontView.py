@@ -442,6 +442,7 @@ class FontViewPanel(wx.Panel):
         elif Patt == "FN":
             #View a Folder, no target
             lab = _("Viewing Folder %s") % V.label()
+            if fpsys.config.recurseFolders: lab = "{} (And all sub-folders)".format(lab)
             fpsys.state.cantick = False
             btext = _("Nothing to do")
             fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
@@ -467,6 +468,7 @@ class FontViewPanel(wx.Panel):
             if T.isInstalled():
                 ## We cannot put stuff into an installed pog
                 lab = _("Viewing Folder %s") % V.label()
+                if fpsys.config.recurseFolders: lab = "{} (And all sub-folders)".format(lab)
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
