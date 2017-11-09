@@ -122,17 +122,7 @@ if loc is None or len(loc) < 2:
 else:
     langcode = loc[:2].lower()# This is going to cause grief in the future...
 
-htmlcols = {
-"dark":"#AAAAAA",
-"medium":"#cccccc",
-"lightest":"white",
-"light":"white",
-"heading1":"#91a2a9",
-"heading2":"#91a2a9",
-"heading3":"#91a2a9",
-"heading4":"#91a2a9",
-"heading5":"#91a2a9",
-}
+
 
 ## Weird stuff:
 class AnHtmlWindow(html.HtmlWindow):
@@ -162,11 +152,12 @@ class HtmlPanel(DismissablePanel):
         except Exception as e:
             h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
         #try:
-        h = h.format(**htmlcols)
+        h = h.format(**fpwx.HTMLCOLS)
         #except:
         #    pass
         #self.html.LoadPage( helppaf )        
         #print h
+        ##..for the licence html_text = text.replace('\n', '<BR>')
         self.html.SetPage( h )        
         return self.html
 

@@ -5,7 +5,7 @@
 
 
 TOP=$(cat << ENDSTYLE
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><body bgcolor="{lightest}" LINK="{dark}" VLINK="{dark}" ALINK="{dark}">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><body bgcolor="{bg}" LINK="{dark}" VLINK="{dark}" ALINK="{dark}">
 ENDSTYLE
 )
 

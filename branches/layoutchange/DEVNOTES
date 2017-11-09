@@ -104,7 +104,9 @@ TODO
 * it's, its ...
 
 
-
+* Help FP logo - same as in about
+* Catch ESC kay in DismissablePanels so it closes them, not the app.
+* Move the sub-folders checkbox into settings. Append dire warning.
 
 
 
