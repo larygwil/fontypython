@@ -1,6 +1,6 @@
 <a name="top"></a>
 <div align=right><font size=-2 color="{medium}">Updated July 2016&nbsp;&nbsp;</font></div>
-<img src="fontypythonmodules/help/common/fphelplogo.png">
+<div align=right><img src="fontypythonmodules/things/splash.png"></div>
 
 *FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.*
 
@@ -18,7 +18,7 @@ For example, you might have a Pog called "Zoo Logo" into which you place all the
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 
 <a name="userfonts"></a>
 User Fonts
@@ -36,7 +36,7 @@ Whatever it's called and wherever it is, any fonts listed in that directory are 
 If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
 
 [Top](#top)
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 <a name="layout"></a>
 Layout
 =====
@@ -50,10 +50,14 @@ Beware the **include sub-folders** check box. When checked, Fonty will look for 
 
 <img src="fontypythonmodules/things/icon_target.png">&nbsp; The Targets
 --
-*Targets* are Pogs; they are where you gather your fonts.
+These Pogs are the *Targets*: you put fonts into them.
 
-* You cannot use an already **installed** Pog as a Target. (Uninstall it first.)
-* By holding Ctrl you can select many Pogs at once for installing/uninstalling/etc. many at once.
+* <img src="fontypythonmodules/things/pog16x16.png">&nbsp; Shows a Pog (which is not installed).
+  Such Pogs can be Targets.
+* <img src="fontypythonmodules/things/pog16x16.installed.png">&nbsp; Shows an installed Pog.
+  You can't use these as targets. (Uninstall them first.)
+
+For Targets, you can select many Pogs at once by holding control (Ctrl) as you select them; this is for installing/uninstalling/etc. many Pogs at once.
 
 ###Pog management buttons
 1. **Clear selection:** Will unselect whatever Pogs you selected.
@@ -105,7 +109,7 @@ The Font View will also attempt to display in columns, so you can see many fonts
 
 [Top](#top)
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 
 <a name="menus"></a>
 Menus
@@ -125,7 +129,7 @@ Menus
 
 [Top](#top)
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 
 <a name="shortcuts"></a>
 Shortcut keys
@@ -141,7 +145,7 @@ If shortcut keys don't work, click in the filter text box. This seems to kick th
 
 [Top](#top)
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center></center>
 
 <a name="tips"></a>
 Tips
@@ -165,7 +169,7 @@ Tips
 
 [Top](#top)
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 
 <a name="l10n"></a>
 Localization Tips
@@ -198,7 +202,7 @@ If you want to help translate, please drop us a ticket on: https://savannah.nong
 
 [Top](#top)
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 
 <a name="bugs"></a>
 Bugs
@@ -232,7 +236,7 @@ If you are stuck, post a report on https://savannah.nongnu.org/bugs/?group=fonty
 
 [Top](#top)
 
-<center><img src="fontypythonmodules/help/common/break.png" border="0"></center>
+<center><h1>~/~</h1></center>
 
 <a name="lic"></a>
 Licence

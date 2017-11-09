@@ -69,6 +69,7 @@ I intend to get to the filter/pager stuff too, but will try to do that in its ow
 BUGS
 ==
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
+*HTML stuff returns to top on window resize. I think this is a wx bug/thing.
 
 
 TODO
@@ -97,7 +98,9 @@ TODO
 * it's, its ...
 
 
-* Help FP logo - same as in about
+* Help FP logo - def needs ... something
+* in help - more icons, like the pog target icons etc.
+* make all help images transparent pngs.
 * Help icon
 * Settings icon
 

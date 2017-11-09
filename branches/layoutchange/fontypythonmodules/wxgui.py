@@ -152,7 +152,8 @@ class HtmlPanel(DismissablePanel):
         except Exception as e:
             h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
         #try:
-        h = h.format(**fpwx.HTMLCOLS)
+        h = h.format( **fpwx.HTMLCOLS )
+        #h = h.format()
         #except:
         #    pass
         #self.html.LoadPage( helppaf )        
@@ -174,7 +175,7 @@ class AboutPanel(DismissablePanel):
         nbabout_pane_2 = wx.Panel(nb, -1)
         nbabout_pane_3 = wx.Panel(nb, -1)
 
-        fplogo = fpwx.icon(nbabout_pane_1, 'aboutfplogo')
+        fplogo = fpwx.icon(nbabout_pane_1, 'splash')
 
         AboutText = wx.StaticText(
                 nbabout_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
@@ -857,14 +858,11 @@ class MainFrame(wx.Frame):
     def onIdle(self, evt):
         #print "Idle runs"
         if self.resized:
-            if not self.is_state_flagged(flag_normal):
-                # Don't call the big update
-                return
-            #print "  Idle updates fontViewPanel"
-            ps.pub( update_font_view )
+            ## If it's showing the normal (font) view, then:
+            if self.is_state_flagged(flag_normal):
+                ps.pub( update_font_view )
+
             self.resized = False
-
-
 
     def OnAccelKey(self,evt):
         ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_FontView.py
@@ -894,7 +892,7 @@ class MainFrame(wx.Frame):
     def onHandleESC(self, e):
         ## if we have a DismissablePanel open, let's close
         ## it instead of the app.
-        if self.panel_state > flag_normal:
+        if not self.is_state_flagged(flag_normal):
             self.ensure_fontview_shown()
         else:
             print strings.done
