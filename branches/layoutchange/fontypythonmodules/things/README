@@ -1,36 +1,33 @@
 Section One : Copyright
 =======================
-The following images are Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+The following images are Copyright (C) 2006, .., 2017 Donn.C.Ingle
 aboutfplogo.png
+button_charmap_over.png
+button_charmap.png
+clear.png
 cross.png
+font_cannot_draw.png
+font_info_item.png
+font_not_found.png
+font_segfault.png
 fplogo.png
-splash.png
-icon_source_16x16.png
+icon_cdrom.png
+icon_closed_folder.png
+icon_drive.png
+icon_ext_drive.png
+icon_open_folder.png
+icon_root.png
 icon_source_folder_16x16.png
+icon_source.png
 icon_source_pog_16x16.png
-icon_target_16x16.png
+icon_target.png
+icon_viewing.png
 pog16x16.installed.png
 pog16x16.png
 pog16x16.target.png
-view16x16.png
+splash.png
 tick.png
 ticksmall.png
-clear.png
-font_info_item.png 
-font_no_draw.png
-font_not_found.png
-font_segfault.png
-button_regular.png
-button_regular_down.png
-button_italic.png
-button_italic_down.png
-button_bold.png
-button_bold_down.png
-icon_cdrom.png
-icon_drive.png
-icon_root.png
-icon_closed_folder.png
-icon_open_folder.png
 
 Section Two : License
 =======================
