@@ -143,16 +143,23 @@ class HtmlPanel(DismissablePanel):
         helppaf = os.path.join(packpath, "help", langcode, "help.html")
         if not os.path.exists( helppaf ):
             helppaf = os.path.join(packpath, "help", "en", "help.html")
-
         try:
-            #paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
             f = open( helppaf, "r" )
             h = f.read()
             f.close()       
         except Exception as e:
             h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
         try:
-            h = h.format( **fpwx.HTMLCOLS )
+            ## Drop some last-minute info into the html string
+            s_fpdir = fpsys.LSP.to_unicode(fpsys.iPC.appPath())
+            s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
+            sep = "~/~"
+            sep = "<center><font size=5 color=\"{medium}\">" \
+                  "<b>{sep}</b></font></center>".format(
+                          sep = sep,
+                          medium = fpwx.HTMLCOLS["heading1"] )
+            h = h.format( SEP=sep, STATS_1=s_fpdir, STATS_2=s_fontsdir, 
+                    **fpwx.HTMLCOLS )
         except:
             pass
         #self.html.LoadPage( helppaf )        

@@ -3,8 +3,13 @@ MAKING THE HTML FILES
 
 Edit the markdown files.
 Run makehtml on each
-further edit the html if needed
-move html into main fs
+move html to wherever.
+
+makehtml
+==
+Does some replacing - to insert colour fprmat {tags} into heading tags and stuff.
+
+Later, python does more replacing to replace those tags with actual system colours. (See the various html panels in wxgui.py)
 
 Images
 ==

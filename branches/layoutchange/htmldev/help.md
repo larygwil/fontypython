@@ -3,11 +3,12 @@
 
 *Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
-[User Fonts](#userfonts) | [The Layout](#layout) | [Menus](#menus) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
+[The Idea](#idea) | [Info](#info) | [User Fonts](#userfonts) | [The Layout](#layout) | [Menus](#menus) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
 
+<a name="idea"></a>
 Ye Olde Basic Idea
 =======
-You visually gather fonts into "Pogs", and then install it. All its fonts will be available to other apps. When you finish your work, uninstall the Pog.
+You visually gather fonts into a "Pog", and then install it. All its fonts will be available to other apps. When you finish your work, uninstall the Pog.
 
 I just stumbled onto the word "Pog", in "ty*pog*raphy". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.
 
@@ -17,7 +18,19 @@ For example, you might have a Pog called "Logos" into which you place all the fo
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
 
-<center><h1>~/~</h1></center>
+[Top](#top)
+{SEP}
+
+<a name="info"></a>
+Info
+===
+Your important directories are:
+
+* **Fontypython:** {STATS_1}
+* **User fonts:** {STATS_2}
+
+[Top](#top)
+{SEP}
 
 <a name="userfonts"></a>
 User Fonts
@@ -35,7 +48,8 @@ Whatever it's called and wherever it is, any fonts listed in that directory are 
 If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
 
 [Top](#top)
-<center><h1>~/~</h1></center>
+{SEP}
+
 <a name="layout"></a>
 Layout
 =====
@@ -108,7 +122,7 @@ The Font View will also attempt to display in columns, so you can see many fonts
 
 [Top](#top)
 
-<center><h1>~/~</h1></center>
+{SEP}
 
 <a name="menus"></a>
 Menus
@@ -128,7 +142,7 @@ Menus
 
 [Top](#top)
 
-<center><h1>~/~</h1></center>
+{SEP}
 
 <a name="shortcuts"></a>
 Shortcut keys
@@ -168,7 +182,7 @@ Tips
 
 [Top](#top)
 
-<center><h1>~/~</h1></center>
+{SEP}
 
 <a name="l10n"></a>
 Localization Tips
@@ -201,7 +215,7 @@ If you want to help translate, please drop us a ticket on: https://savannah.nong
 
 [Top](#top)
 
-<center><h1>~/~</h1></center>
+{SEP}
 
 <a name="bugs"></a>
 Bugs
@@ -235,7 +249,7 @@ If you are stuck, post a report on https://savannah.nongnu.org/bugs/?group=fonty
 
 [Top](#top)
 
-<center><h1>~/~</h1></center>
+{SEP}
 
 <a name="lic"></a>
 Licence
