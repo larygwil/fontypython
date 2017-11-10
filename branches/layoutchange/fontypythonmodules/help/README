@@ -1,9 +1,13 @@
+Nov 2017
+==
+Now using markdown and the dev files are in the main root under "htmldev". There has been no query from anyone to localize the help, so there's no guide. Contact us if you wish to try.
+
+Old
+==
 To localize your help file, create a directory here using the two letter code,
 for example France would be 'fr' (It should be the same as the code used in
 the locale folder.)
-Then copy the files (and the README files) from en into there.
-Then edit the files as you want to. Original SVG dev-files will be available on request.
-Fonty should now pick your language up and use your help file.
-Send us what you have done!
+
+
 :)
 /d

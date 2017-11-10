@@ -36,7 +36,7 @@ try:
 except:
     pass
 
-#FontEXTensions
+#Font file extensions
 fexts = {
         "Truetype"           : ["TTF"],
         "Truetype_collection": ["TTC"],

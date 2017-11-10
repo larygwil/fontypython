@@ -46,6 +46,10 @@ import dialogues
 
 from gui_FontSources import *
 from gui_FontView import *
+
+##gui_PogTargets uses this id, so make it before:
+id_zip_pog_button = wx.NewId()
+id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
 from gui_PogTargets import *
 
 import fpwx
@@ -57,7 +61,8 @@ flag_normal = 1
 flag_help = 2
 flag_about = 4
 flag_settings = 8
-id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101}
+flag_choosedir = 16
+id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101, flag_choosedir:id_zip_pog_button}
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
 class DismissablePanel(wx.Panel):
@@ -167,6 +172,59 @@ class HtmlPanel(DismissablePanel):
         ##..for the licence html_text = text.replace('\n', '<BR>')
         self.html.SetPage( h )        
         return self.html
+
+class ChooseZipDirPanel(DismissablePanel):
+    """
+    Sep 2009 : A nicer (than std dir dialogue) dialogue for locating a directory.
+    It starts in the cwd.
+    Nov 2017
+    ==
+    Moved it all into a DismissablePanel
+    """
+    def __init__(self, parent):
+        DismissablePanel.__init__(self,parent, flag_choosedir, 
+                somelabel=_("Locate a directory for the zip file(s)."))
+        self._chosen_path = None
+
+    def __post_init__(self):
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.treedir = wx.GenericDirCtrl( self, -1, 
+                dir=os.getcwd(), style=wx.DIRCTRL_DIR_ONLY )
+        tree = self.treedir.GetTreeCtrl()
+
+        #Clicks on the control will change the button's label
+        tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
+
+        sizer.Add(self.treedir, 1, wx.EXPAND)
+        
+        ## Make a button. Click also gets caught in MainFrame.
+        self.btn = wx.Button(self, label = self.__make_label(os.getcwd())
+                , id=id_do_the_actual_zip)
+        self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=id_do_the_actual_zip)
+
+        sizer.Add( self.btn, 1, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+
+        return sizer
+
+    def __make_label(self, p):
+        return _("Create the zip file in {}").format(p)
+
+    def __onDirCtrlClick(self,e):
+        cp = self.treedir.GetPath()
+        self.btn.SetLabel(self.__make_label(cp))
+
+    def _do_actual_zip(self, evt):
+        """
+        Forwards the click on to MainFrame where it's also bound.
+        """
+        self._chosen_path = self.treedir.GetPath()
+        evt.Skip()
+
+    def get_path(self):
+        return self._chosen_path
+
+
 
 
 class AboutPanel(DismissablePanel):
@@ -638,6 +696,9 @@ class MainFrame(wx.Frame):
         ## because it was being superceded.
         self.Bind(wx.EVT_BUTTON, self.apply_settings, id=wx.ID_APPLY)
 
+        ## Catch the Zip button in the choose_zipdir_panel 
+        ## Initial event caught and forwarded (Skip()) in TargetPogChooser
+        self.Bind(wx.EVT_BUTTON, self.do_pog_zip, id=id_do_the_actual_zip)
 
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
@@ -705,21 +766,26 @@ class MainFrame(wx.Frame):
 
             ## Oct/Nov 2017
             ## Moved some dialogues into the app as panels:
+
+            ## Help
             self.help_panel = HtmlPanel(self)
             self.help_panel.Hide()
 
+            ## About
             self.about_panel = AboutPanel(self)
             self.about_panel.Hide()
 
+            ## The Settings
             self.settings_panel = SettingsPanel(self)
             self.settings_panel.Hide()
             ## This panel needs to signal when it hides/shows:
             self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
 
-            #self.check_fonts_panel = CheckFontsPanel(self)
-            #self.check_fonts_panel.Hide()
-            #self.check_fonts_panel.Bind(wx.EVT_SHOW, self.check_fonts_panel.show_or_hide)
-            
+            ## Zip Pog button
+            self.choose_zipdir_panel = ChooseZipDirPanel(self)
+            self.choose_zipdir_panel.Hide()
+
+
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
             stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -727,10 +793,10 @@ class MainFrame(wx.Frame):
             lrsizer = wx.BoxSizer(wx.HORIZONTAL)
             lrsizer.Add( stsizer, 0, wx.EXPAND)
             lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
-            ##
             lrsizer.Add( self.help_panel, 1, wx.EXPAND )
             lrsizer.Add( self.about_panel, 1, wx.EXPAND )
             lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
+            lrsizer.Add( self.choose_zipdir_panel, 1, wx.EXPAND )
 
             self.SetSizer(lrsizer)
 
@@ -741,6 +807,7 @@ class MainFrame(wx.Frame):
                     flag_help    : self.help_panel,
                     flag_about   : self.about_panel,
                     flag_settings: self.settings_panel,
+                   flag_choosedir: self.choose_zipdir_panel
             }
 
         ## Idle/resize idea from here:
@@ -828,7 +895,8 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        #print "toggleSelectionMenuItem runs."
+        print "toggleSelectionMenuItem runs."
+        print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
         if flag:
             self.flag_state_exclusive_toggle(flag)
@@ -961,6 +1029,23 @@ class MainFrame(wx.Frame):
             self.ensure_fontview_shown()
         return
 
+    def do_pog_zip(self, e):
+        """
+        The button in the choose_zipdir_panel was clicked.
+        """
+        todir = self.choose_zipdir_panel.get_path()
+        if todir:
+            wx.BeginBusyCursor()
+            for p in self.panelTargetPogChooser.list_of_pogs_to_zip:
+                ipog = fontcontrol.Pog(p)
+                bugs=ipog.zip( todir )
+            wx.EndBusyCursor()
+            extra=""
+            if bugs:
+                extra=_("Some fonts were skipped, try purging the Pog(s) involved.")
+            ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
+
+        self.ensure_fontview_shown()
 
 
     ##Retired NOV 2017

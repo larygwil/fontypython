@@ -256,7 +256,7 @@ class PogChooser(wx.ListCtrl) :
         Change a single Pog's icon to installed/uninstalled.
         ONLY called from InstallPog and UninstallPog.
         """
-        print "ChangeIcon:",self
+        #print "ChangeIcon:",self
         T = fpsys.state.targetobject
         pn = T.name
         index = self.FindItem(0, pn)

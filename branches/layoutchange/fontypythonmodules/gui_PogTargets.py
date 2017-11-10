@@ -42,6 +42,7 @@ import fontybugs
 ## Fetch the dialogue classes - used for zip dir dialog.
 import dialogues
 import fpwx
+from wxgui import id_zip_pog_button
 
 class TargetPogChooser(wx.Panel):
     """
@@ -76,7 +77,7 @@ class TargetPogChooser(wx.Panel):
         self.iduninstall = wx.NewId()
         self.iddelete = wx.NewId()
         #Sept 2009
-        self.idzip = wx.NewId()
+        self.idzip = id_zip_pog_button #Created in wxgui
 
         self.buttNew = wx.Button(self, label = _("New Pog"), id = self.idnew )
         self.buttNew.SetToolTipString(_("Creates a new, empty Pog"))
@@ -92,68 +93,31 @@ class TargetPogChooser(wx.Panel):
 
         self.buttZip = wx.Button(self, label = _("Zip Pog(s)") , id = self.idzip)
         self.buttZip.SetToolTipString(_("Save a zip file of the selected Pogs"))
+        self.list_of_pogs_to_zip = None # will be used in wxgui
 
 
         mainvs = wx.BoxSizer(wx.VERTICAL)
         self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-        #self.iconandtext.Add( (8, 1), 0 )
         self.iconandtext.Add(target_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
-        #self.iconandtext.Add(self.target_label, 1, wx.EXPAND | wx.ALL, border = 4)
-        #self.iconandtext.Add(self.target_label, 1, wx.EXPAND | wx.LEFT | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL, border = 4)
         self.iconandtext.Add(target_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
         mainvs.Add(self.iconandtext, 0, wx.EXPAND)
 
+        mainvs.Add(self.pogTargetlist, 1, wx.EXPAND)
 
-        gui = 3
-        if gui == 1:
-            mainvs.Add(self.pogTargetlist, 1, wx.EXPAND)
+        ## The buttons under the target:
+        gs = wx.GridSizer(3,2)
+        gs.AddMany( [
+        (self.buttNoPog, 1, wx.EXPAND ),
+        (self.buttInstall, 1, wx.EXPAND),
+        (self.buttUninstall, 1, wx.EXPAND),
+        (self.buttNew, 1, wx.EXPAND),
+        (self.buttDelete, 1, wx.EXPAND),
+        (self.buttZip, 1, wx.EXPAND)
+        ])
 
-            mainvs.Add(self.buttNoPog, 0, wx.EXPAND | wx.BOTTOM | wx.TOP, border=5)
-            mainvs.Add(self.buttInstall, 0, wx.EXPAND)
-            mainvs.Add(self.buttUninstall, 0, wx.EXPAND)
-            mainvs.Add(self.buttNew, 0, wx.EXPAND)
-            mainvs.Add(self.buttDelete, 0, wx.EXPAND)
-            mainvs.Add(self.buttZip, 0, wx.EXPAND)
+        mainvs.Add(gs, 0, wx.EXPAND)
 
-            self.SetSizer(mainvs)
-
-        if gui == 2:
-            hs = wx.BoxSizer(wx.HORIZONTAL)
-            hs.Add(self.pogTargetlist, 1, wx.EXPAND)
-
-            vs = wx.BoxSizer(wx.VERTICAL)
-
-            vs.Add(self.buttNoPog, 0, wx.EXPAND )
-            vs.Add(self.buttInstall, 0, wx.EXPAND)
-            vs.Add(self.buttUninstall, 0, wx.EXPAND)
-            vs.Add(self.buttNew, 0, wx.EXPAND)
-            vs.Add(self.buttDelete, 0, wx.EXPAND)
-            vs.Add(self.buttZip, 0, wx.EXPAND)
-
-            hs.Add(vs, 0, wx.EXPAND)
-
-            mainvs.Add(hs, 1, wx.EXPAND)
-            self.SetSizer(mainvs)
-
-        if gui == 3:
-            mainvs.Add(self.pogTargetlist, 1, wx.EXPAND)
-
-            gs = wx.GridSizer(2,3)
-            gs.AddMany( [
-            (self.buttNoPog, 1, wx.EXPAND ),
-            (self.buttInstall, 1, wx.EXPAND),
-            (self.buttUninstall, 1, wx.EXPAND),
-            (self.buttNew, 1, wx.EXPAND),
-            (self.buttDelete, 1, wx.EXPAND),
-            (self.buttZip, 1, wx.EXPAND)
-            ])
-
-            mainvs.Add(gs, 0, wx.EXPAND)
-
-            self.SetSizer(mainvs)
-
-
-
+        self.SetSizer(mainvs)
 
 
         ## Bind the events:
@@ -355,25 +319,13 @@ class TargetPogChooser(wx.Panel):
 
         ## Sep 2009 : ZIP POGS 
         if e.GetId() == self.idzip:
-            dlg = dialogues.LocateDirectory( self )
-            ok=False
-            if dlg.ShowModal() == wx.ID_OK:
-                todir=dlg.GetPath()
-                ok=True
-            dlg.Destroy()
-            if ok:
-                wx.BeginBusyCursor()
+            ## Nov 2017
+            ## ==
+            ## Moved the zip code into wxgui MainFrame
+            ## it's in a DismissablePanel now.
+            self.list_of_pogs_to_zip = multipogs # I want the list of chosen pogs.
+            e.Skip() # fwd the event
 
-                for p in multipogs:
-                    ipog = fontcontrol.Pog(p)
-                    bugs=ipog.zip( todir )
-
-                wx.EndBusyCursor()
-                extra=""
-                if bugs: extra=_("Some fonts were skipped, try purging the Pog(s) involved.")
-                ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
-            else:
-                ps.pub(print_to_status_bar,_("Zip cancelled."))
 
 
     def OnPogTargetClick(self, args):

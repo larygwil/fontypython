@@ -21,6 +21,6 @@ MID=$(markdown "$1") # > tmphtml
 HTML="${TOP}${MID}${BOT}"
 echo $HTML > "$htmlout"
 
-## Stuff the shitty font tags into various places. 
+## Stuff the shitty font tags into heading tags. 
 ## wx.html is all about the 90's
 sed -i 's|<h\(.\)>|<h\1><font color="{heading\1}">|g;s|</h\(.\)>|</font></h\1>|g;' "$htmlout"

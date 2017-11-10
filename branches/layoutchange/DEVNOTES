@@ -81,9 +81,7 @@ TODO
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
 
-* Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
 
-* Maybe- background colour of the pog choosers target can differ from source? Maybe icons too?
 * Make the About page HTML!
 
 
@@ -98,16 +96,9 @@ TODO
 * it's, its ...
 
 
-* Help FP logo - def needs ... something
-* in help - more icons, like the pog target icons etc.
-* in help - more info - print the user font path, for e.g.
-* make all help images transparent pngs.
-* Help icon
 * Settings icon
 
 * zip folder choose dialogue sucks
-
-* uninstall pog in gui prints something on console...
 
 
 
