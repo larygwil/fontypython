@@ -28,8 +28,9 @@ def setup_fonts_and_colours():
     SYSCOLS.update(
     {"dark"  : wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT),
      "gray"  : wx.SystemSettings.GetColour(wx.SYS_COLOUR_GRAYTEXT),
-     "shadow": wx.SystemSettings.GetColour(wx.wx.SYS_COLOUR_BTNSHADOW),
-     "bg"    : wx.SystemSettings.GetColour(wx.wx.SYS_COLOUR_BACKGROUND),
+     "shadow": wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNSHADOW),
+    "neutral": wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND),
+     "light" : wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW),
   "highlight": wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT),
     })
 
@@ -38,7 +39,7 @@ def setup_fonts_and_colours():
     HTMLCOLS.update({
     "dark"    :SYSCOLS["dark"],
     "medium"  :SYSCOLS["gray"],
-    "bg"      :SYSCOLS["bg"],
+    "bg"      :SYSCOLS["neutral"],
     "heading1":hcol,
     "heading2":hcol,
     "heading3":hcol,
@@ -48,7 +49,8 @@ def setup_fonts_and_colours():
     # I need them all in #RRGGBB format:
     for k,v in HTMLCOLS.iteritems():
         HTMLCOLS[k] = v.GetAsString(flags=wx.C2S_HTML_SYNTAX)
-
+    HTMLCOLS.update({"fontyblue":"#768b94"})
+    
     wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     ps = wxfont.GetPointSize()
     SYSFONT.update(

@@ -68,7 +68,7 @@ class DismissablePanel(wx.Panel):
     """
     def __init__(self, parent, flag, someicon=None, somelabel="..."):
         id = id_from_flag[flag]
-        wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)
+        wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
         self.parent = parent
         self.flag = flag
 
@@ -151,11 +151,10 @@ class HtmlPanel(DismissablePanel):
             f.close()       
         except Exception as e:
             h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
-        #try:
-        h = h.format( **fpwx.HTMLCOLS )
-        #h = h.format()
-        #except:
-        #    pass
+        try:
+            h = h.format( **fpwx.HTMLCOLS )
+        except:
+            pass
         #self.html.LoadPage( helppaf )        
         #print h
         ##..for the licence html_text = text.replace('\n', '<BR>')
@@ -605,7 +604,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_BACKWARD )
 
         ## The frame's close window button.
-        self.Bind( wx.EVT_CLOSE, self.onHandleESC )
+        self.Bind( wx.EVT_CLOSE, self.endApp )
 
         ## Bind events for the menu items
         self.Bind(wx.EVT_MENU, self.onHandleESC, self.exit)
@@ -889,17 +888,21 @@ class MainFrame(wx.Frame):
         self.ErrorBox(args) #Pass it along to be displayed
         self.endApp()
 
-    def onHandleESC(self, e):
-        ## if we have a DismissablePanel open, let's close
-        ## it instead of the app.
+    def onHandleESC( self, e ):
+        """
+        ESC key wired to this.
+        
+        If we have a DismissablePanel open, let's close
+         it instead of the app.
+        """
         if not self.is_state_flagged(flag_normal):
             self.ensure_fontview_shown()
         else:
-            print strings.done
-            self.endApp()
+            self.endApp(None)
 
-    def endApp(self) :
+    def endApp( self, e ) :
         """
+        Frame's X is wired to this.
         Save app's vital statistics and exit.
         See the end of start.py where it's actually saved.
         """
@@ -912,6 +915,7 @@ class MainFrame(wx.Frame):
         ## we have no need for this file.
         fpsys.rm_lastFontBeforeSegfault_file()
 
+        print strings.done
         self.Destroy()
 
     def open_settings_panel(self):

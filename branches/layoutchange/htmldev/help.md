@@ -1,20 +1,19 @@
 <a name="top"></a>
-<div align=right><font size=-2 color="{medium}">Updated July 2016&nbsp;&nbsp;</font></div>
-<div align=right><img src="fontypythonmodules/things/splash.png"></div>
+<img src="fontypythonmodules/things/fplogo.png">&nbsp;<font size=40 color="{fontyblue}"><i><b>Fonty Python</b></i></font>
 
-*FontyPython is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your home fonts folder for temporary use in other apps.*
+*Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
 [User Fonts](#userfonts) | [The Layout](#layout) | [Menus](#menus) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
 
 Ye Olde Basic Idea
 =======
-You visually gather fonts into "Pogs". You then install the Pog, and all its fonts will be available to other apps. When you finish your work, uninstall the Pog.
+You visually gather fonts into "Pogs", and then install it. All its fonts will be available to other apps. When you finish your work, uninstall the Pog.
 
-I just stumbled onto the word "Pog", it comes from the middle of "typography". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.
+I just stumbled onto the word "Pog", in "ty*pog*raphy". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.
 
-Your fonts never move from where they live, neither are copies made; only links to the original files are used to install the fonts into your user fonts directory.
+Your fonts never move from where they live, neither are copies made; *only* links to the original files are used to install the fonts into your user fonts directory.
 
-For example, you might have a Pog called "Zoo Logo" into which you place all the fonts needed to design a logo for a Zoo. After that, when you want to work, simply install the "Zoo Logo" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp and other apps. When you are done designing, you uninstall "Zoo Logo" and all those fonts go away. (The links to the original files are removed, **not** the actual original font files!)
+For example, you might have a Pog called "Logos" into which you place all the fonts needed to design a logo. When you want to work, install the "Logos" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp, etc. When you're done, uninstall "Logos" and all those fonts go away. (The links to the original files are removed, **not** the actual font files!)
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
 

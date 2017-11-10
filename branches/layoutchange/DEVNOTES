@@ -100,13 +100,20 @@ TODO
 
 * Help FP logo - def needs ... something
 * in help - more icons, like the pog target icons etc.
+* in help - more info - print the user font path, for e.g.
 * make all help images transparent pngs.
 * Help icon
 * Settings icon
 
 * zip folder choose dialogue sucks
 
+* uninstall pog in gui prints something on console...
 
+
+
+* command line arg to print fonts in a pog...?
+
+* i HAVE to do the font mute thing....
 
 
 Oct 2017: A new Segfault!
