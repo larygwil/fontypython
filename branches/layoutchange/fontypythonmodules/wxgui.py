@@ -42,10 +42,12 @@ from pubsub import * #I want all the topics.
 ps = CPubsub()
 
 ## Fetch the dialogue classes *About, Settings, Help, etc.*
-import dialogues
+#import dialogues
 
 from gui_FontSources import *
 from gui_FontView import *
+from gui_DirChooser import ATree
+
 
 ##gui_PogTargets uses this id, so make it before:
 id_zip_pog_button = wx.NewId()
@@ -188,8 +190,7 @@ class ChooseZipDirPanel(DismissablePanel):
     def __post_init__(self):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        self.treedir = wx.GenericDirCtrl( self, -1, 
-                dir=os.getcwd(), style=wx.DIRCTRL_DIR_ONLY )
+        self.treedir = ATree(self, os.getcwd())
         tree = self.treedir.GetTreeCtrl()
         #Clicks on the control will change the button's label
         tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
@@ -204,6 +205,9 @@ class ChooseZipDirPanel(DismissablePanel):
         self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=id_do_the_actual_zip)
         sizer.Add(btn, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
         return sizer
+
+    def show_error(self, msg):
+        self.lbl.SetLabel(msg)
 
     def __make_label(self, p=None):
         if not p: p = os.getcwd()
@@ -1034,19 +1038,32 @@ class MainFrame(wx.Frame):
         The button in the choose_zipdir_panel was clicked.
         """
         todir = self.choose_zipdir_panel.get_path()
+        emsg = ""
         if todir:
             wx.BeginBusyCursor()
             for p in self.panelTargetPogChooser.list_of_pogs_to_zip:
                 ipog = fontcontrol.Pog(p)
-                bugs=ipog.zip( todir )
+                try:
+                    bugs = ipog.zip( todir )
+                except IOError as er:
+                    emsg = _("I can't write to this directory: {}").format(todir)
+                    bugs = True
+                    break
+                except Exception as er:
+                    emsg = _("Unhandled error: {}").format(er)
+                    bugs = True
+                    break
             wx.EndBusyCursor()
             extra=""
             if bugs:
                 extra=_("Some fonts were skipped, try purging the Pog(s) involved.")
-            ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
+                msg = "{}\n{}".format(extra, emsg)
+                self.choose_zipdir_panel.show_error(msg)
+                ps.pub(print_to_status_bar,_("Something went wrong."))
+            else:
+                ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
 
-        self.ensure_fontview_shown()
-
+                self.ensure_fontview_shown()
 
     ##Retired NOV 2017
     #def menuCheckFonts( self, e ):

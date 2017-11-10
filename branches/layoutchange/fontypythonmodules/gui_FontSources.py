@@ -81,7 +81,7 @@ class FontSourcesPanel(wx.Panel):
 
 
 
-class DirControl(ATree):#wx.GenericDirCtrl) :
+class DirControl(ATree):
     """
     The Directory tree view. Note: Directory names are all UNICODE!
     """
@@ -97,25 +97,6 @@ class DirControl(ATree):#wx.GenericDirCtrl) :
             else:
                 startdir = os.environ['HOME']
         ATree.__init__(self, parent, startdir) 
-        
-        #wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
-        #self.SelectPath( startdir, True )
-
-
-
-        # create the image list:
-        #isz = (16,16)
-        #il = wx.ImageList(isz[0], isz[1])
-
-        # Add images to list. You need to keep this exact order for
-        # this to work!
-        #bmplst=['icon_closed_folder', 'icon_open_folder', 'icon_root', 'icon_drive', 'icon_cdrom', 'icon_ext_drive', 'icon_ext_drive']
-        #[il.Add( wxbmp(f) ) for f in bmplst]
-
-        # assign image list:
-        #self.il = il
-        #self.GetTreeCtrl().SetImageList(il)
-
         ## NOTE: The click event is bound in the Notebook.
 
 class NoteBook(wx.Notebook):

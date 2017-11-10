@@ -18,11 +18,17 @@
 import wx, fpwx
 
 class ATree(wx.GenericDirCtrl):
+    """
+    Nov 2017
+    ==
+    A dir control with my fp icons. Used as a Pog source, and
+    in choosing a zip file directory. So far.
+    Note: Directory names are all UNICODE!
+    """
     def __init__(self, parent, startdir):
         wx.GenericDirCtrl.__init__(self, parent, -1, 
                 dir = startdir, 
                 style=wx.DIRCTRL_DIR_ONLY )
-                #name="dircontrol")
         self.SelectPath( startdir, True )
         # create the image list:
         isz = (16,16)
