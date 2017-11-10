@@ -98,8 +98,9 @@ class DismissablePanel(wx.Panel):
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add( i, 0, wx.EXPAND )
-        hbox.Add( l, 1, wx.EXPAND )
-        hbox.Add( self.x_button, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP | wx.BOTTOM, 
+        # push the label down to better align with the X
+        hbox.Add( l, 1, wx.EXPAND | wx.TOP, border = 8 ) 
+        hbox.Add( self.x_button, 0, wx.ALIGN_RIGHT  | wx.BOTTOM, 
                 border = 4 )
         hbox.Add( (8,8),0)
 
@@ -116,7 +117,7 @@ class DismissablePanel(wx.Panel):
 
 
 ## Help file stuff
-## Moved from dialogues on 31 OCt 2017
+## Moved from dialogues on 31 Oct 2017
 import wx.html as html
 ## langcode = locale.getlocale()[0] # I must not use getlocale...
 ## This is suggested by Martin:
@@ -126,8 +127,6 @@ if loc is None or len(loc) < 2:
     langcode = 'en'
 else:
     langcode = loc[:2].lower()# This is going to cause grief in the future...
-
-
 
 ## Weird stuff:
 class AnHtmlWindow(html.HtmlWindow):
@@ -192,27 +191,28 @@ class ChooseZipDirPanel(DismissablePanel):
         self.treedir = wx.GenericDirCtrl( self, -1, 
                 dir=os.getcwd(), style=wx.DIRCTRL_DIR_ONLY )
         tree = self.treedir.GetTreeCtrl()
-
         #Clicks on the control will change the button's label
         tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
-
         sizer.Add(self.treedir, 1, wx.EXPAND)
         
+        self.lbl = fpwx.label( self, self.__make_label() ) 
+        sizer.Add( self.lbl, 0, wx.EXPAND | wx.TOP, border=10)
+
         ## Make a button. Click also gets caught in MainFrame.
-        self.btn = wx.Button(self, label = self.__make_label(os.getcwd())
-                , id=id_do_the_actual_zip)
+        btn = wx.Button(self, label = _("Create the zip file"),
+                                id=id_do_the_actual_zip)
         self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=id_do_the_actual_zip)
-
-        sizer.Add( self.btn, 1, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
-
+        sizer.Add(btn, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
         return sizer
 
-    def __make_label(self, p):
-        return _("Create the zip file in {}").format(p)
+    def __make_label(self, p=None):
+        if not p: p = os.getcwd()
+        return _("The zip file(s) will be put into:\n{}").format(p)
 
     def __onDirCtrlClick(self,e):
         cp = self.treedir.GetPath()
-        self.btn.SetLabel(self.__make_label(cp))
+        #self.btn.SetLabel(self.__make_label(cp))
+        self.lbl.SetLabel(self.__make_label(cp))
 
     def _do_actual_zip(self, evt):
         """
