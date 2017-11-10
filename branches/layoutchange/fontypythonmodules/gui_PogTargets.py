@@ -327,7 +327,6 @@ class TargetPogChooser(wx.Panel):
             e.Skip() # fwd the event
 
 
-
     def OnPogTargetClick(self, args):
         """
         args[0] pogname

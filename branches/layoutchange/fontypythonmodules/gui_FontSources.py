@@ -43,6 +43,8 @@ import fpsys
 
 from wxgui import ps
 from gui_PogChooser import *
+from gui_DirChooser import ATree
+
 import fontyfilter
 
 import fpwx
@@ -79,7 +81,7 @@ class FontSourcesPanel(wx.Panel):
 
 
 
-class DirControl(wx.GenericDirCtrl) :
+class DirControl(ATree):#wx.GenericDirCtrl) :
     """
     The Directory tree view. Note: Directory names are all UNICODE!
     """
@@ -94,24 +96,25 @@ class DirControl(wx.GenericDirCtrl) :
                 startdir = lastdir
             else:
                 startdir = os.environ['HOME']
-
-        wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
-        self.SelectPath( startdir, True )
+        ATree.__init__(self, parent, startdir) 
+        
+        #wx.GenericDirCtrl.__init__(self, parent, -1, dir = startdir, style=wx.DIRCTRL_DIR_ONLY, name="dircontrol")
+        #self.SelectPath( startdir, True )
 
 
 
         # create the image list:
-        isz = (16,16)
-        il = wx.ImageList(isz[0], isz[1])
+        #isz = (16,16)
+        #il = wx.ImageList(isz[0], isz[1])
 
         # Add images to list. You need to keep this exact order for
         # this to work!
-        bmplst=['icon_closed_folder', 'icon_open_folder', 'icon_root', 'icon_drive', 'icon_cdrom', 'icon_ext_drive', 'icon_ext_drive']
-        [il.Add( wxbmp(f) ) for f in bmplst]
+        #bmplst=['icon_closed_folder', 'icon_open_folder', 'icon_root', 'icon_drive', 'icon_cdrom', 'icon_ext_drive', 'icon_ext_drive']
+        #[il.Add( wxbmp(f) ) for f in bmplst]
 
         # assign image list:
-        self.il = il
-        self.GetTreeCtrl().SetImageList(il)
+        #self.il = il
+        #self.GetTreeCtrl().SetImageList(il)
 
         ## NOTE: The click event is bound in the Notebook.
 
@@ -204,8 +207,8 @@ class NoteBook(wx.Notebook):
         self.AddPage(pan2, _("Source Pogs"))
 
         # sadly, the artprovider icons suck, and I can't get access to the "stock items" either. fuck it. 
-        source_folder_icon = self.imlist.Add( wxbmp('icon_source_folder_16x16') )
-        source_pog_icon = self.imlist.Add( wxbmp('icon_source_pog_16x16') )
+        source_folder_icon = self.imlist.Add( fpwx.wxbmp('icon_source_folder_16x16') )
+        source_pog_icon = self.imlist.Add( fpwx.wxbmp('icon_source_pog_16x16') )
 
         self.AssignImageList(self.imlist)
         self.SetPageImage(0, source_folder_icon)
