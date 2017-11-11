@@ -42,13 +42,12 @@ import fontybugs
 ## Fetch the dialogue classes - used for zip dir dialog.
 import dialogues
 import fpwx
-from wxgui import id_zip_pog_button
 
 class TargetPogChooser(wx.Panel):
     """
     Far right-hand side control. Chooses target pogs. Houses control buttons.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, id_zip_pog_button):
         wx.Panel.__init__(self, parent, id = -1)
 
         target_icon = fpwx.icon( self, 'icon_target' )

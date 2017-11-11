@@ -41,17 +41,9 @@ import wx
 from pubsub import * #I want all the topics.
 ps = CPubsub()
 
-## Fetch the dialogue classes *About, Settings, Help, etc.*
-#import dialogues
-
 from gui_FontSources import *
 from gui_FontView import *
 from gui_DirChooser import ATree
-
-
-##gui_PogTargets uses this id, so make it before:
-id_zip_pog_button = wx.NewId()
-id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
 from gui_PogTargets import *
 
 import fpwx
@@ -64,7 +56,18 @@ flag_help = 2
 flag_about = 4
 flag_settings = 8
 flag_choosedir = 16
-id_from_flag   = {flag_help:201, flag_about:202, flag_settings:101, flag_choosedir:id_zip_pog_button}
+
+## ids
+id_zip_pog_button = wx.NewId() # I need it here, and to pass it into TargetPogChooser
+id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
+# got a flag? get an id.
+id_from_flag = {
+        flag_help:201,
+        flag_about:202,
+        flag_settings:101,
+        flag_choosedir:id_zip_pog_button
+        }
+# got an id? get a flag.
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
 class DismissablePanel(wx.Panel):
@@ -201,7 +204,7 @@ class ChooseZipDirPanel(DismissablePanel):
 
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
-        sizer.Add (self.printer, 1, wx.EXPAND )
+        sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
         self.printer.Hide()
 
         ## Make a button. Click also gets caught in MainFrame.
@@ -227,11 +230,10 @@ class ChooseZipDirPanel(DismissablePanel):
             self.printer.Hide()
 
     def printout(self, msg):
-        self.printer.write(msg)
+        self.printer.write(msg + "\n")
         if not self.printer.IsShown(): 
             self.printer.Show()
             self.Layout()
-        #self.lbl.SetLabel(msg)
 
     def __make_label(self, p=None):
         if not p: p = os.getcwd()
@@ -788,7 +790,7 @@ class MainFrame(wx.Frame):
             self.panelFontSources = FontSourcesPanel(self)
             self.panelFontSources.SetMinSize(ms)
 
-            self.panelTargetPogChooser = TargetPogChooser(self)
+            self.panelTargetPogChooser = TargetPogChooser(self, id_zip_pog_button)
             self.panelTargetPogChooser.SetMinSize(ms)
 
             self.fontViewPanel = FontViewPanel(self)
@@ -925,8 +927,8 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        print "toggleSelectionMenuItem runs."
-        print evt.GetId()
+        #print "toggleSelectionMenuItem runs."
+        #print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
         if flag:
             self.flag_state_exclusive_toggle(flag)
@@ -1075,13 +1077,16 @@ class MainFrame(wx.Frame):
                 if fail: 
                     czd.printout(
                        _("I could not create the zip for {}").format(ipog) )
-                    czd.printout( emsgs[0] )
+                    czd.printout( emsgs[0])
+                    czd.printout( "" )
                 else:
                     czd.printout( 
                        _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (p, todir) )
+                    czd.printout( "" )
                     if bugs:
                         czd.printout( _("Some bugs happened:") )
-                        for m in emsgs: czd.printout(m)
+                        for m in emsgs: czd.printout( m )
+                        czd.printout( "" )
             wx.EndBusyCursor()
 
             if bugs:
