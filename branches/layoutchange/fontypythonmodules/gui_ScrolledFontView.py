@@ -183,7 +183,9 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
                 ## Since their states may have changed, we do the
                 ## render_and_measure_glyphs on all fitmaps again:
                 wid = fm.render_and_measure_glyphs()
-                w.append(wid) # record the widths
+                ## Record the width, but if it's wider than the panel
+                ## just chop it. It's an asshole anyway.
+                w.append(min(wid, panelwidth))
 
 
             # Clear the sizer. Docs say this "detaches" all children.

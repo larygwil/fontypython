@@ -373,7 +373,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         tx += offx
         text0 = TextPencil( "tup0", textTup[0], fcol=fcol, x=tx,y=ty,
-                points="points_large", weight=wx.BOLD)
+                points="points_large", weight=wx.NORMAL)
 
         ## Text 1 - under Text 0
         ty += text0.getheight()
