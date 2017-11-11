@@ -1,4 +1,5 @@
 # This Python file uses the following encoding: utf-8
+
 ## Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
@@ -21,22 +22,19 @@ import fpversion
 import os
 
 ##copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
-copyright = "Fonty Python Copyright (C) 2017 Donn.C.Ingle"
-contact = "email: donn.ingle@gmail.com"
+copyright = u"Fonty Python Copyright © 2017 Donn.C.Ingle"
+contact = "Email: donn.ingle@gmail.com"
 done = "Done."
 
 ticket_url = "https://savannah.nongnu.org/bugs/?group=fontypython"
 
 version = _("Fonty Python version %s") % fpversion.version
 
-warranty = """This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.  See the GNU General Public License for more details."""
+warranty = "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;\n" \
+           "without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n" \
+           "See the GNU General Public License for more details."
 
 copy_warranty_contact = u"{}\n\n{}\n\n{}".format(copyright, warranty, contact)
-
-
-aboutText = "%s\n%s\nWritten on Gnu\Linux, using wxPython.\n\n%s" % (copyright, version, warranty)
 
 fonts_supported = _("""Fonts supported: TTF, OTF, TTC, WOFF, Type1 (PFB, PFA).""")
 
@@ -265,30 +263,6 @@ TIP
 Look for "python-gi" in your package manager.
 """)
 
-
-## Won't xlate the thanks:
-thanks = u"""Many thanks to:
-===============    
-1. Robin Dunn - wxPython and much sundry help.
-
-2. Martin v. Löwis - Essential concepts regarding unicode and files.
-
-3. Pietro Battiston - Italian translation.
-
-4. Baptiste - French translation and many ideas.
-
-5. Jason Yamada-Hanff - For the wiki, at least :)
-
-6. Michael Hoeft - For code, friendship and the German translation.
-
-7. Kartik Mistry - Our esteemed Debian packager!
-
-8. savannah.nongnu.org - For the hosting.
-
-9. Michael Moller - For math advice; pointing me in the direction of the "standard-deviation", which I used in the font layout.
-
-10. And all those I've forgotten!
-"""
 
 ## June 2009 : Get the GPL from the COPYING file rather than a copy of it all here again.
 try:

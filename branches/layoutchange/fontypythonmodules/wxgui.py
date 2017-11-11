@@ -58,14 +58,15 @@ flag_settings = 8
 flag_choosedir = 16
 
 ## ids
+id_x_button=wx.NewId()
 id_zip_pog_button = wx.NewId() # I need it here, and to pass it into TargetPogChooser
 id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
 # got a flag? get an id.
 id_from_flag = {
-        flag_help:201,
-        flag_about:202,
-        flag_settings:101,
-        flag_choosedir:id_zip_pog_button
+        flag_help       : wx.NewId(),
+        flag_about      : wx.NewId(),
+        flag_settings   : wx.NewId(),
+        flag_choosedir  : id_zip_pog_button
         }
 # got an id? get a flag.
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
@@ -78,6 +79,7 @@ class DismissablePanel(wx.Panel):
     """
     def __init__(self, parent, flag, someicon=None, somelabel="..."):
         id = id_from_flag[flag]
+        self.id = id
         wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
         self.parent = parent
         self.flag = flag
@@ -93,19 +95,17 @@ class DismissablePanel(wx.Panel):
         l = fpwx.h1( self, somelabel )
         i = fpwx.icon( self, someicon ) if someicon else (1,1)
 
-        self.x_button = wx.Button(self,id, label="X", 
+        x_button = wx.Button(self, -1, label="X", 
                 style = wx.NO_BORDER | wx.BU_EXACTFIT)
-        ## No Bind here because the button's event will 
-        ## shoot up the tree and arrive in the
-        ## main frame, where we catch it.
+        self.Bind(wx.EVT_BUTTON, self._x_pressed, x_button)
 
-        self.x_button.SetToolTipString( _("Dismiss") )
+        x_button.SetToolTipString( _("Dismiss") )
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add( i, 0, wx.EXPAND )
         # push the label down to better align with the X
         hbox.Add( l, 1, wx.EXPAND | wx.TOP, border = 8 ) 
-        hbox.Add( self.x_button, 0, wx.ALIGN_RIGHT  | wx.BOTTOM, 
+        hbox.Add( x_button, 0, wx.ALIGN_RIGHT  | wx.BOTTOM, 
                 border = 4 )
         hbox.Add( (8,8),0)
 
@@ -120,6 +120,10 @@ class DismissablePanel(wx.Panel):
     def __post_init__(self):
         pass
 
+    def _x_pressed(self,evt):
+        ## I don't want the button's id going-on, but the panel's
+        evt.SetId(self.id)
+        evt.Skip()
 
 ## Help file stuff
 ## Moved from dialogues on 31 Oct 2017
@@ -140,7 +144,7 @@ class AnHtmlWindow(html.HtmlWindow):
         if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
             self.SetStandardFonts()  
 
-class HtmlPanel(DismissablePanel):
+class HelpPanel(DismissablePanel):
     def __init__(self, parent):
         DismissablePanel.__init__(self, parent, flag_help, 
                 somelabel=_("Help! Help! I'm being repressed!") ) 
@@ -177,6 +181,46 @@ class HtmlPanel(DismissablePanel):
         self.html.SetPage( h )        
         return self.html
 
+class AboutPanel(DismissablePanel):
+    def __init__(self, parent):
+        DismissablePanel.__init__(self, parent, flag_about, 
+                somelabel=_("About Fonty") ) 
+
+    def __post_init__(self):
+        self.html = AnHtmlWindow(self)
+        ## Find localized help, or default to English.
+        packpath = fpsys.fontyroot
+        helppaf = os.path.join(packpath, "about", "about.html")
+        try:
+            f = open( helppaf, "r" )
+            h = f.read()
+            f.close()       
+        except Exception as e:
+            h = "<h1>Error reading about file</h1><p>{}</p>".format(e)
+        try:
+            ## Drop some last-minute info into the html string
+            sep = "~/~"
+            sep = "<center><font size=5 color=\"{medium}\">" \
+                  "<b>{sep}</b></font></center>".format(
+                          sep = sep,
+                          medium = fpwx.HTMLCOLS["heading1"] )
+            d = {"warranty": strings.warranty.replace("\n","<br>"),
+                "copyright": strings.copyright,
+                  "contact": strings.contact,
+                  "version": strings.version,
+                  "ticket" : strings.ticket_url,
+                  "GPL"    : strings.GPL.replace("\n","<br>")}
+            d.update(**fpwx.HTMLCOLS)
+
+            h = fpsys.LSP.to_unicode(h)
+            h = h.format( SEP=sep,**d )
+            
+        except:
+            pass
+        ##..for the licence html_text = text.replace('\n', '<BR>')
+        self.html.SetPage( h )        
+        return self.html
+
 class ChooseZipDirPanel(DismissablePanel):
     """
     Sep 2009 : A nicer (than std dir dialogue) dialogue for locating a directory.
@@ -191,7 +235,6 @@ class ChooseZipDirPanel(DismissablePanel):
         self._chosen_path = None
 
     def __post_init__(self):
-
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.treedir = ATree(self, os.getcwd())
         tree = self.treedir.GetTreeCtrl()
@@ -255,77 +298,6 @@ class ChooseZipDirPanel(DismissablePanel):
         return self._chosen_path
 
 
-
-
-class AboutPanel(DismissablePanel):
-    def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_about, 
-                somelabel=_("About Fonty") )
-
-    def __post_init__(self):
-        nb = wx.Notebook(self, -1, style=0)
-
-        nbabout_pane_1 = wx.Panel(nb, -1)
-        nbabout_pane_2 = wx.Panel(nb, -1)
-        nbabout_pane_3 = wx.Panel(nb, -1)
-
-        fplogo = fpwx.icon(nbabout_pane_1, 'splash')
-
-        AboutText = wx.StaticText(
-                nbabout_pane_1, -1, strings.aboutText, style = wx.TE_MULTILINE)
-
-        emaillink = wx.TextCtrl(
-            nbabout_pane_1, -1, strings.contact, size =(200,-1 ), style = wx.TE_READONLY)
-
-        GPL_TEXT = wx.TextCtrl(
-                nbabout_pane_2, -1, strings.GPL, style=wx.TE_MULTILINE|wx.TE_READONLY)
-
-        THANKS = wx.TextCtrl(
-                nbabout_pane_3, -1, strings.thanks, style=wx.TE_MULTILINE|wx.TE_READONLY)
-
-        # Once was done in wxGlade. Argh. What a mess....
-        sizer_1 = wx.BoxSizer(wx.VERTICAL)
-        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_thanks = wx.BoxSizer( wx.HORIZONTAL )
-
-        sizerPane1 = wx.BoxSizer(wx.HORIZONTAL)
-        sizerPane1.Add(fplogo, 0, 0, 0)
-
-        textsizer = wx.BoxSizer(wx.VERTICAL)
-        textsizer.Add(AboutText, 0, wx.ALIGN_LEFT | wx.ALL, border = 10)
-        textsizer.Add(emaillink, 0, wx.EXPAND | wx.ALIGN_LEFT | wx.ALL, border = 10)
-
-        sizerPane1.Add(textsizer, 0, wx.ALIGN_TOP, 0)
-        
-        #ABOUT
-        nbabout_pane_1.SetSizer(sizerPane1)
-        sizerPane1.Fit(nbabout_pane_1)
-        sizerPane1.SetSizeHints(nbabout_pane_1)
-        
-        sizer_3.Add(GPL_TEXT,1, wx.EXPAND, 0)
-
-        #LICENCE
-        nbabout_pane_2.SetSizer(sizer_3)
-        sizer_3.Fit(nbabout_pane_2)
-        sizer_3.SetSizeHints(nbabout_pane_2)
-        
-        ## THANKS
-        sizer_thanks.Add( THANKS,1, wx.EXPAND | wx.ALL, border = 6 )
-        nbabout_pane_3.SetSizer( sizer_thanks )
-        sizer_thanks.Fit( nbabout_pane_3 )
-        sizer_thanks.SetSizeHints( nbabout_pane_3 )
-        
-        nb.AddPage(nbabout_pane_1, _("About"))
-        nb.AddPage(nbabout_pane_3, _("Thanks"))
-        nb.AddPage(nbabout_pane_2, _("Licence"))
-        
-        sizer_1.Add(nb, 1, wx.EXPAND, 0)
-        
-        nbabout_pane_1.SetFocus()
-
-
-
-        return sizer_1
 
 
 class SettingsPanel(DismissablePanel):
@@ -657,18 +629,22 @@ class MainFrame(wx.Frame):
         ## Jan 18 2008
         ## Nov 2017: retired: menu1.Append( 102, 
         ##        _("&Check fonts"), _("Find those fonts that crash Fonty.") )
-        menu1.Append( 103, _("&Purge Pog.See TogglePurgeMenuItem for actual string."), _("Remove all ghost fonts from the selected Pog.") )
+        self.id_purge = wx.NewId()
+        menu1.Append( self.id_purge, _("&Purge Pog.See TogglePurgeMenuItem for actual string."), _("Remove all ghost fonts from the selected Pog.") )
 
         self.MENUPURGE = menu1
 
-        self.exit = menu1.Append(104, _("&Exit"), _("Close the app"))
+        self.id_exit = wx.NewId()
+        self.exit = menu1.Append(self.id_exit, _("&Exit"), _("Close the app"))
         self.menuBar.Append(menu1, _("&Tools"))
 
 
         ## SELECT MENU: June 2009
         menu3 = wx.Menu()
-        menu3.Append( 301, _("&Select ALL the source fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
-        menu3.Append( 302, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
+        self.id_selall = wx.NewId()
+        menu3.Append( self.id_selall, _("&Select ALL the source fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
+        self.id_selnone = wx.NewId()
+        menu3.Append( self.id_selnone, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
         self.menuBar.Append(menu3, _("&Selection"))
         self.MENUSELECTION = menu3
 
@@ -712,16 +688,16 @@ class MainFrame(wx.Frame):
         #a good job (-c) and my crash dialogue tells the user what to do.
         ##self.Bind(wx.EVT_MENU, self.menuCheckFonts, id = 102 )
 
-        self.Bind(wx.EVT_MENU, self.menuPurgePog, id = 103 )
+        self.Bind(wx.EVT_MENU, self.menuPurgePog, id = self.id_purge )
 
         # June 2009
-        self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=301)
-        self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=302)
+        self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=self.id_selall)
+        self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=self.id_selnone)
 
         ## Nov 2017
         ## Catch all stray button events: This is dealing with the 
         ## close (X) button of the DismissablePanels at the moment.
-        self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel)
+        self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel )
 
         ## Catch the Apply button in the settings panel.
         ## Placed *after* the generic catch for toggle_dismissable_panel
@@ -731,6 +707,9 @@ class MainFrame(wx.Frame):
         ## Catch the Zip button in the choose_zipdir_panel 
         ## Initial event caught and forwarded (Skip()) in TargetPogChooser
         self.Bind(wx.EVT_BUTTON, self.do_pog_zip, id=id_do_the_actual_zip)
+
+
+
 
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
@@ -800,7 +779,7 @@ class MainFrame(wx.Frame):
             ## Moved some dialogues into the app as panels:
 
             ## Help
-            self.help_panel = HtmlPanel(self)
+            self.help_panel = HelpPanel(self)
             self.help_panel.Hide()
 
             ## About
@@ -810,13 +789,10 @@ class MainFrame(wx.Frame):
             ## The Settings
             self.settings_panel = SettingsPanel(self)
             self.settings_panel.Hide()
-            ## This panel needs to signal when it hides/shows:
-            #self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
 
             ## Zip Pog button
             self.choose_zipdir_panel = ChooseZipDirPanel(self)
             self.choose_zipdir_panel.Hide()
-
 
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -930,11 +906,10 @@ class MainFrame(wx.Frame):
         #print "toggleSelectionMenuItem runs."
         #print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
+        #print "got flag:", flag
         if flag:
             self.flag_state_exclusive_toggle(flag)
             self.hide_or_show_panels()
-
-
 
 
     ##Only used if whatgui != 1
@@ -975,8 +950,8 @@ class MainFrame(wx.Frame):
 
     def toggleSelectionMenuItem(self, onoff):
         #HIG says to leave top menu alone and only toggle sub-items.
-        self.MENUSELECTION.Enable(301,onoff[0])
-        self.MENUSELECTION.Enable(302,onoff[0])
+        self.MENUSELECTION.Enable(self.id_selall,onoff[0])
+        self.MENUSELECTION.Enable(self.id_selnone,onoff[0])
 
     def StatusbarPrint(self, args):
         self.sb.Report(args[0])
@@ -1038,6 +1013,7 @@ class MainFrame(wx.Frame):
         recorded into fpsys.config
         Here we only need to decide on what to redraw.
         """
+        #print "apply settings?"
         if self.settings_panel.settings_force_redraw():
 
             ## If the ignore adjustments checkbos changed:
@@ -1148,16 +1124,16 @@ class MainFrame(wx.Frame):
         vis=vis[0]
         #print vis
         #print fpsys.state.viewobject.name
-        self.MENUPURGE.Enable(103,vis)
+        self.MENUPURGE.Enable(self.id_purge, vis)
 
         ## July 2016
         ## =========
         ## Make the label of the menu reflect the view Pog's name
         ## so it's clear which selection counts for purging.
         if vis:
-            self.MENUPURGE.SetLabel(103, _("&Purge \"%s\"\tCtrl+P" % fpsys.state.viewobject.name ) )
+            self.MENUPURGE.SetLabel(self.id_purge, _("&Purge \"%s\"\tCtrl+P" % fpsys.state.viewobject.name ) )
         else:
-            self.MENUPURGE.SetLabel(103, _("&Purge Pog\tCtrl+P")) #Reflect original string, as it's got translations already.
+            self.MENUPURGE.SetLabel(self.id_purge, _("&Purge Pog\tCtrl+P")) #Reflect original string, as it's got translations already.
 
 
     def menuPurgePog(self,e):

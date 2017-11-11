@@ -39,8 +39,6 @@ import fpsys # Global objects
 import fontyfilter
 import fontybugs
 
-## Fetch the dialogue classes - used for zip dir dialog.
-import dialogues
 import fpwx
 
 class TargetPogChooser(wx.Panel):

@@ -49,7 +49,7 @@ def setup_fonts_and_colours():
     # I need them all in #RRGGBB format:
     for k,v in HTMLCOLS.iteritems():
         HTMLCOLS[k] = v.GetAsString(flags=wx.C2S_HTML_SYNTAX)
-    HTMLCOLS.update({"fontyblue":"#768b94"})
+    HTMLCOLS.update({"fontyblue":u"#768b94"})
     
     wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     ps = wxfont.GetPointSize()
