@@ -81,6 +81,7 @@ TODO
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
 
+* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
 * Make the About page HTML!
 
@@ -97,9 +98,6 @@ TODO
 
 
 * Settings icon
-
-* zip folder choose dialogue sucks
-
 
 
 * command line arg to print fonts in a pog...?

@@ -1,6 +1,5 @@
 <a name="top"></a>
-<img src="fontypythonmodules/things/splash.png">
-<font size=40 color="{fontyblue}"><i><b>About Fonty Python</b></i></font>
+<img src="fontypythonmodules/things/fplogo.png">&nbsp;<font size=40 color="{fontyblue}"><i><b>Fonty Python</b></i></font>
 
 *Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
