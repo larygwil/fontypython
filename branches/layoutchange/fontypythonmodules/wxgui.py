@@ -721,42 +721,7 @@ class MainFrame(wx.Frame):
         minw = 360
         fvminw = MINSCREENWIDTH - minw
         ms = wx.Size(minw,1)
-
-        if self.whatgui == 3:
-            fvminw = MINSCREENWIDTH
-            #splitter window of 2 across
-            #left: a panel with sizer of two high of: source, then target guis
-            #right: fontview
-            ##This one freezes the app when you resize to the right... :(
-            ## Hard to reproduce. I used gdb and got it to crash, then
-            ## did a 'bt' and saw some complaints about get text extents
-            ## might be a bug in my font drawing code..?
-            ## self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-            ## This line seems less crashy, but not much less:
-            ## self.spw = wx.SplitterWindow(self)
-
-            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-            self.spw.SetMinimumPaneSize(minw)
-
-            p1 = wx.Panel(self.spw)
-            self.panelFontSources = FontSourcesPanel(p1)
-            self.panelTargetPogChooser = TargetPogChooser(p1)
-
-            stsizer = wx.BoxSizer(wx.VERTICAL)
-            stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
-            stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
-
-            p1.SetSizer(stsizer)
-
-            self.fontViewPanel = FontViewPanel(self.spw)
-            self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
-
-            self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
-            # Thanks to the multiSplitterWindow code from the demo:
-            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
-            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterPosChanged)
-
-        elif self.whatgui == 1:
+        if self.whatgui == 1:
 
             ## PRIMARY GUI
             ## ===========
@@ -817,13 +782,40 @@ class MainFrame(wx.Frame):
                     flag_settings: self.settings_panel,
                    flag_choosedir: self.choose_zipdir_panel
             }
+        elif self.whatgui == 3:
+            #Very out of date. Left for future maybes.
+            #splitter window of 2 across
+            #left: a panel with sizer of two high of: source, then target guis
+            #right: fontview
+            ##This one freezes the app when you resize to the right... :(
+            ## Hard to reproduce. I used gdb and got it to crash, then
+            ## did a 'bt' and saw some complaints about get text extents
+            ## might be a bug in my font drawing code..?
+            ## self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+            ## This line seems less crashy, but not much less:
+            ## self.spw = wx.SplitterWindow(self)
+            fvminw = MINSCREENWIDTH
+            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+            self.spw.SetMinimumPaneSize(minw)
+            p1 = wx.Panel(self.spw)
+            self.panelFontSources = FontSourcesPanel(p1)
+            self.panelTargetPogChooser = TargetPogChooser(p1)
+            stsizer = wx.BoxSizer(wx.VERTICAL)
+            stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
+            stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
+            p1.SetSizer(stsizer)
+            self.fontViewPanel = FontViewPanel(self.spw)
+            self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
+            self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
+            # Thanks to the multiSplitterWindow code from the demo:
+            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
+            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterPosChanged)
 
-        ## Idle/resize idea from here:
-        ##https://stackoverflow.com/questions/13479831/what-is-the-simplest-way-of-monitoring-when-a-wxpython-frame-has-been-resized
+
+        ## Frame resizing sanity code
         self.resized = False
         self.Bind(wx.EVT_IDLE, self.onIdle)
         self.Bind(wx.EVT_SIZE, self.onFrameSize)
-
 
         ## GUI ENDS
         ## =============
@@ -1023,14 +1015,16 @@ class MainFrame(wx.Frame):
             ## This recurse checkbox is more complex.
             ## I have to hand over control to that class:
             if self.settings_panel.has_changed("recurseFolders"):
-                ## This does do a redraw, thus a force-close 
-                ## of the settings panel.
+                ## This does a redraw, and there it does a 
+                ## force-close of the settings panel.
+
+                ## We have to imitate a click on the dir control
+                ## to kick stuff into gear.
                 ps.pub( fake_click_the_source_dir_control, None )
                 # bail! So we don't do another re-draw.
                 return
 
-            ## Redraw the fitmaps
-            ## (Will also hide the settings_panel)
+            ## Redraw the fitmaps (Will also hide the settings_panel)
             ps.pub( update_font_view )
         else:
             ## With no changes, we must hide the settings_panel
