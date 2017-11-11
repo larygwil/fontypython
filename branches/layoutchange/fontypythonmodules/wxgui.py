@@ -199,15 +199,39 @@ class ChooseZipDirPanel(DismissablePanel):
         self.lbl = fpwx.label( self, self.__make_label() ) 
         sizer.Add( self.lbl, 0, wx.EXPAND | wx.TOP, border=10)
 
+        self.printer = wx.TextCtrl(self,
+            -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
+        sizer.Add (self.printer, 1, wx.EXPAND )
+        self.printer.Hide()
+
         ## Make a button. Click also gets caught in MainFrame.
         btn = wx.Button(self, label = _("Create the zip file"),
                                 id=id_do_the_actual_zip)
         self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=id_do_the_actual_zip)
         sizer.Add(btn, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+
+        self.Bind(wx.EVT_SHOW, self.show_or_hide)
         return sizer
 
-    def show_error(self, msg):
-        self.lbl.SetLabel(msg)
+    def show_or_hide(self,evt):
+        """The entire panel hide/show"""
+        if self.IsShown():
+            # I am being shown
+            if self.printer.IsEmpty():
+                self.printer.Hide()
+            else:
+                self.printer.Show()
+        else:
+            # I am being hidden ( esc, or x)
+            self.printer.Clear()
+            self.printer.Hide()
+
+    def printout(self, msg):
+        self.printer.write(msg)
+        if not self.printer.IsShown(): 
+            self.printer.Show()
+            self.Layout()
+        #self.lbl.SetLabel(msg)
 
     def __make_label(self, p=None):
         if not p: p = os.getcwd()
@@ -409,6 +433,8 @@ class SettingsPanel(DismissablePanel):
         self.settings_sizer.Add((1,1),0) #a blank cell
         self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
 
+        self.Bind(wx.EVT_SHOW, self.show_or_hide)
+
         return self.settings_sizer
 
     def settings_force_redraw(self):
@@ -423,7 +449,7 @@ class SettingsPanel(DismissablePanel):
 
     def show_or_hide(self,evt):
         """
-        This handler's event is bound in MainFrame. Fires when I hide or show.
+        Fires when I hide or show.
         NOTE: Since __post_init__ only happens once, I need a way
         to alter the form as it comes and goes.
         """
@@ -783,7 +809,7 @@ class MainFrame(wx.Frame):
             self.settings_panel = SettingsPanel(self)
             self.settings_panel.Hide()
             ## This panel needs to signal when it hides/shows:
-            self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
+            #self.settings_panel.Bind(wx.EVT_SHOW, self.settings_panel.show_or_hide)
 
             ## Zip Pog button
             self.choose_zipdir_panel = ChooseZipDirPanel(self)
@@ -1037,33 +1063,36 @@ class MainFrame(wx.Frame):
         """
         The button in the choose_zipdir_panel was clicked.
         """
-        todir = self.choose_zipdir_panel.get_path()
+        czd = self.choose_zipdir_panel
+        todir = czd.get_path()
         emsg = ""
         if todir:
             wx.BeginBusyCursor()
             for p in self.panelTargetPogChooser.list_of_pogs_to_zip:
                 ipog = fontcontrol.Pog(p)
-                try:
-                    bugs = ipog.zip( todir )
-                except IOError as er:
-                    emsg = _("I can't write to this directory: {}").format(todir)
-                    bugs = True
-                    break
-                except Exception as er:
-                    emsg = _("Unhandled error: {}").format(er)
-                    bugs = True
-                    break
+                (bugs, fail, emsgs) = ipog.zip( todir )
+                    
+                if fail: 
+                    czd.printout(
+                       _("I could not create the zip for {}").format(ipog) )
+                    czd.printout( emsgs[0] )
+                else:
+                    czd.printout( 
+                       _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (p, todir) )
+                    if bugs:
+                        czd.printout( _("Some bugs happened:") )
+                        for m in emsgs: czd.printout(m)
             wx.EndBusyCursor()
-            extra=""
+
             if bugs:
-                extra=_("Some fonts were skipped, try purging the Pog(s) involved.")
-                msg = "{}\n{}".format(extra, emsg)
-                self.choose_zipdir_panel.show_error(msg)
+                czd.printout(_("Some fonts were skipped, try purging the Pog(s) involved."))
                 ps.pub(print_to_status_bar,_("Something went wrong."))
             else:
-                ps.pub(print_to_status_bar,_("Zip file(s) have been created.%s") % extra )
+                czd.printout(_("Zip file(s) have been created."))
+                ps.pub(print_to_status_bar,_("Zip file(s) have been created.") )
 
-                self.ensure_fontview_shown()
+                #self.ensure_fontview_shown()
+
 
     ##Retired NOV 2017
     #def menuCheckFonts( self, e ):

@@ -19,6 +19,8 @@
 
 
 import os, sys, locale, glob, errno
+import tempfile, shutil, warnings
+
 from PIL import ImageFont
 
 ## This import will not RUN the code in fpsys.py
@@ -947,26 +949,67 @@ class Pog(BasicFontList):
 
     def zip(self, todir):
         """Sept 2009 : Add all the fonts to a zip file in todir."""
-        ## Start a zip file: I am not sure if a filename should be bytestrings or unicode....
-        file = zipfile.ZipFile(os.path.join(todir,self.name + ".fonts.zip"), "w")
-        self.genList() # I forget how to handle errors raised in that labyrinth... sorry world :(
+        #print "**ZIP"
+
         #print "ZIP:",ipog.name
-        bugs=False
+        bugs = False
+        fail = False
+        emsgs = []
+
+        try:
+            ## Start a zip file: I am not sure if a filename should be bytestrings or unicode....
+            file = zipfile.ZipFile(os.path.join(todir,self.name + ".fonts.zip"), "w")
+        except IOError as er:
+            emsgs.append( _("I can't write to this directory: {}").format(todir) )
+            bugs = True
+            fail = True
+        except Exception as er:
+            bugs = True
+            fail = True
+            emsgs.append( "{}".format(er) )
+
+        if fail: return (bugs, fail, emsgs)
+
+        self.genList()
         for fi in self:
             ## zipfiles have no internal encoding, so I must encode from unicode to a byte string
             arcfile = fpsys.LSP.ensure_bytes(os.path.basename(fi.glyphpaf))
             try:
-                file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
-            except OSError,e:
-                bugs=True
+                ## Suppress warnings, which .write emits too much of:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    file.write(fi.glyphpaf, arcfile, zcompress) #var set global at start of this module.
+
+            except IOError as er:
+                emsgs.append( _("I can't write to this directory: {}").format(todir) )
+                bugs = True
+                fail = True
+                ##Fatal bug - get out!
+                break                
+            except OSError,er:
+                bugs = True
                 # e.errno == errno.ENOENT: # No such file or directory
-                print e # whatever is wrong, print the message and continue
+                emsgs.append( "{}".format(er) )
+
             ## July 2016
             ## =========
             ## Randomly saw this error: ValueError('ZIP does not support timestamps before 1980')
-            ## HAND. Added this new except with a message.
-            except ValueError,e:
-                bugs=True
-                print _("%s failed to zip because %s" % (fi.glyphpaf, e))
+            ## NOV 2017
+            ## ===
+            ## Going to make a tmp copy of the file and try again:
+            except ValueError,er:
+                emsgs.append( _("Correcting timestamp on {}.").format(arcfile) )#print er
+                try:
+                    #make a temp, then copy font there
+                    temp_dir = tempfile.gettempdir()
+                    temp_path = os.path.join(temp_dir,arcfile)
+                    shutil.copy(fi.glyphpaf, temp_path)#should touch it to now
+                    ## try the zip again:
+                    file.write(temp_path, arcfile, zcompress)
+                    os.unlink(temp_path) # rm the tmp file
+                except Exception as er:
+                    bugs = True
+                    emsgs.append( _("Zip on {} failed because: {}").format(arcfile, er))
+                
         file.close()
-        return bugs # a flag for later.
+        return (bugs, fail, emsgs)

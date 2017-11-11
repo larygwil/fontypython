@@ -78,11 +78,20 @@ def lsfonts():
 
 def zip( pog ):
     ## Sep 2009 : ZIP
+    ## Nov 2017: Much fixing of error handling.
     if fpsys.isPog( pog ):
         todir = os.curdir #always where we run this
         ipog = fontcontrol.Pog( pog )
-        ipog.zip( todir )
-        print _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (pog,os.getcwd())
+        (bugs, fail, emsgs) = ipog.zip( todir )
+
+        if fail: 
+            print _("I could not create the zip at all.")
+            print emsgs[0]
+        else:
+            print _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (pog,os.getcwd())
+            if bugs:
+                print _("Some bugs happened:")
+                for m in emsgs: print m
     else:
         print _("I can't find a pog named %s") % pog
     raise SystemExit
