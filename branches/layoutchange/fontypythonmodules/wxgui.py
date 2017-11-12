@@ -163,7 +163,7 @@ class DismissableHTMLPanel(DismissablePanel):
         
         ##provide a separator thing
         sep = "~/~"
-        self.sep = u"<center><font size=5 color=\"{medium}\">" \
+        sep = u"<center><font size=5 color=\"{medium}\">" \
                    "<b>{sep}</b></font></center>".format(
                       sep = sep,
                       medium = fpwx.HTMLCOLS["heading1"] )
@@ -266,7 +266,8 @@ class ChooseZipDirPanel(DismissablePanel):
     """
     def __init__(self, parent):
         DismissablePanel.__init__(self,parent, flag_choosedir, 
-                somelabel=_("Locate a directory for the zip file(s)."))
+                somelabel=_("Locate a directory for the zip file(s)."),
+                someicon = "icon_zip")
         self._chosen_path = None
 
     def __post_init__(self):
@@ -350,7 +351,10 @@ class SettingsPanel(DismissablePanel):
         self._force_redraw = False
         self.settings_sizer = wx.FlexGridSizer( cols = 2, hgap = 5, vgap = 20 )
         
-        DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"), extra_padding = 12)
+        DismissablePanel.__init__(self, parent, flag_settings,
+                somelabel = _("Settings"),
+                someicon = "icon_settings",
+                extra_padding = 12)
 
     def __post_init__(self):
         """

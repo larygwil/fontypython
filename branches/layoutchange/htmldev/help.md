@@ -111,12 +111,13 @@ The Font View will also attempt to display in columns, so you can see many fonts
 Menus
 ====
 * **Tools menu**
-  * **Settings:** Access the settings for the font view. 
+  * <img src="fontypythonmodules/things/icon_settings.png">&nbsp;**Settings:** Access the settings for 
+    the font view. 
     Shortcuts: Ctrl+S or middle-click on the font view.
   * **Purge Pog:** The Pog you are currently viewing may contain fonts that are not there anymore.
-    Use purge to remove them. 
-    *Explanation:* A Pog contains a list of paths. If a font is somehow moved on your hard drive, 
-    then the path in the Pog will be old. Purging will remove these ghost fonts.
+    Use purge to remove them.<br>
+     *Explanation*: A Pog contains a list of paths. If a font is somehow moved on your hard drive, 
+     then the path in the Pog will be old. Purging will remove these ghost fonts.
   * **Exit:** Guess. :-)
 * **Selection menu**
   * **Select ALL the source fonts:** While only a few fonts are shown in a page at a time, there may 

@@ -68,7 +68,7 @@ I intend to get to the filter/pager stuff too, but will try to do that in its ow
 
 BUGS
 ==
-*ESC key not bubbling up, still. Perhaps bind it from the fontview panel too?
+*ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
 *HTML stuff returns to top on window resize. I think this is a wx bug/thing.
 
 
@@ -83,9 +83,6 @@ TODO
 
 * Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
-* Make the About page HTML!
-
-
 * Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 
 * Fix % outside brackets _("") % out here, not inside.
@@ -96,13 +93,16 @@ TODO
 * PEP8 all up in da hizzle - well, the tabs to spaces part.
 * it's, its ...
 
-
 * Settings icon
 
-
 * command line arg to print fonts in a pog...?
+* All command args have kind of shitty naming... Do I dare change them now?
 
 * i HAVE to do the font mute thing....
+
+* Distinguish TTC|OTC somehow
+
+
 
 
 Oct 2017: A new Segfault!
@@ -152,7 +152,6 @@ FUTURE IDEAS
 * Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
 * DONE! A font inspector - open a dialogue showing all the glyphs at each character position. This has been asked for, but may not make it into Fonty soon.
 
-* Distinguish TTC somehow
 
 
 
