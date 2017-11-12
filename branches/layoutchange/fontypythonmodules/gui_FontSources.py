@@ -62,7 +62,6 @@ class FontSourcesPanel(wx.Panel):
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-        #self.sizer_iconandtext.Add( (8, 1), 0 )
         self.sizer_iconandtext.Add( view_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
         self.sizer_iconandtext.Add( view_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 6 )
 

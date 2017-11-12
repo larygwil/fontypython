@@ -98,7 +98,6 @@ class DismissablePanel(wx.Panel):
                 wx.EXPAND | wx.ALL,  border = 8 + extra_padding )
 
         l = fpwx.h1( self, somelabel )
-        i = fpwx.icon( self, someicon ) if someicon else (1,1)
 
         x_button = wx.Button(self, -1, label="X", 
                 style = wx.NO_BORDER | wx.BU_EXACTFIT)
@@ -107,7 +106,10 @@ class DismissablePanel(wx.Panel):
         x_button.SetToolTipString( _("Dismiss") )
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add( i, 0, wx.EXPAND )
+        if someicon:
+            hbox.Add( fpwx.icon( self, someicon ), 0, wx.EXPAND | wx.RIGHT, border = 12 )
+        else:
+            hbox.Add( (1,1), 0, wx.EXPAND )
         # push the label down to better align with the X
         hbox.Add( l, 1, wx.EXPAND | wx.TOP, border = 8 ) 
         hbox.Add( x_button, 0, wx.ALIGN_RIGHT  | wx.BOTTOM, 
@@ -140,8 +142,12 @@ class DismissableHTMLPanel(DismissablePanel):
             if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
                 self.SetStandardFonts() 
 
-    def __init__(self, parent, flag, somelabel):
-        DismissablePanel.__init__(self, parent, flag, somelabel=somelabel)
+    def __init__(self, parent, flag,
+            somelabel = "...",
+            someicon = None):
+        DismissablePanel.__init__(self, parent, flag,
+                somelabel = somelabel,
+                someicon = someicon)
 
     def __post_init__(self):
         ## call one: get the HTML paf
@@ -196,7 +202,8 @@ class HelpPanel(DismissableHTMLPanel):
     """Help moved to HTML in Oct/Nov 2017"""
     def __init__(self, parent):
         DismissableHTMLPanel.__init__(self, parent, flag_help, 
-                somelabel=_("Help! Help! I'm being repressed!") ) 
+                somelabel=_("Help! Help! I'm being repressed!"),
+                someicon="fplogo") 
 
     def __post_init_set_paf__(self):
         ## langcode = locale.getlocale()[0] # I must not use getlocale...
@@ -218,7 +225,15 @@ class HelpPanel(DismissableHTMLPanel):
     def __post_init_setup_replace_dict__(self):
         ## Drop some last-minute info into the html string
         s_fpdir = fpsys.LSP.to_unicode(fpsys.iPC.appPath())
-        s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
+
+        ## Let's use our fancy error stuff to swap-in a message about
+        ## the user fonts directory, should it be missing!
+        try:
+            fpsys.iPC.probeNoFontsDirError()
+            s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
+        except Exception as e:
+            s_fontsdir = u"<h1>Missing User Fonts</h1><b>{}</b>".format( unicode(e).replace("\n","<br>") )
+
         d={"STATS_1":s_fpdir, "STATS_2":s_fontsdir} 
         return d
 
@@ -227,7 +242,8 @@ class AboutPanel(DismissableHTMLPanel):
     """About moved to HTML in Nov 2017"""
     def __init__(self, parent):
         DismissableHTMLPanel.__init__(self, parent, flag_about, 
-                somelabel=_("About Fonty") ) 
+                somelabel=_("About Fonty"),
+                someicon="fplogo") 
 
     def __post_init_set_paf__(self):
         packpath = fpsys.fontyroot

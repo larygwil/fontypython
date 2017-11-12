@@ -1,5 +1,5 @@
 <a name="top"></a>
-<img src="fontypythonmodules/things/fplogo.png">&nbsp;<font size=40 color="{fontyblue}"><i><b>Fonty Python</b></i></font>
+<font size=40 color="{fontyblue}"><i><b>Fonty Python</b></i></font>
 
 *Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
@@ -25,11 +25,12 @@ Fonty is also great for just looking at fonts, wherever they are on your compute
 <a name="info"></a>
 User Fonts Info
 ===
-* Your **fontypython** directory is: {STATS_1}&nbsp;(This is where all your Pogs are stored.)
+* Your **fontypython** directory, where all your pogs are kept, is: {STATS_1}
 * You **user fonts** directory is: {STATS_2}
+
   (If there is a dot in front (like .fonts) it means the directory is "hidden". You might not see it in your file manager.)
 
-  Whatever it's called and wherever it is, any fonts listed in that directory are "installed" and your apps will be able to use them. Fonty's job is to shuttle fonts in and out of here so you don't have to.
+  Whatever it's called and wherever it is, any fonts listed in here are "installed". Fonty's job is to shuttle fonts in and out of here so you don't have to.
 
   If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
 

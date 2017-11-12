@@ -21,8 +21,8 @@ class ATree(wx.GenericDirCtrl):
     """
     Nov 2017
     ==
-    A dir control with my fp icons. Used as a Pog source, and
-    in choosing a zip file directory. So far.
+    A dir control with my custom icons.
+    Used as a Pog source, and when choosing a zip file directory. So far.
     Note: Directory names are all UNICODE!
     """
     def __init__(self, parent, startdir):
