@@ -28,6 +28,11 @@ import charmaps
 import subprocess
 try:
     ## Sept 2017 - Trying to get XDG compliance going.
+    ## ==
+    ## I tried to use: wx.StandardPaths
+    ## The version I have to work with (3.x) does not support the new Freedesktop stuff.
+    ## Therefore, I must employ GLib..
+    ##
     ## ===
     ## Freedesktop specs and GLib.
     ## https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html

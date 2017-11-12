@@ -72,6 +72,10 @@ id_from_flag = {
 # got an id? get a flag.
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
+
+## ---
+## The two basic classes for the DismissablePanels
+
 class DismissablePanel(wx.Panel):
     """
     Only for subclassing.
@@ -126,10 +130,10 @@ class DismissablePanel(wx.Panel):
         evt.SetId(self.id)
         evt.Skip()
 
-
-
 class DismissableHTMLPanel(DismissablePanel):
-    ## Weird stuff:
+    """
+    Collects common stuff that both HTML-based panels use.
+    """
     class AnHtmlWindow(html.HtmlWindow):
         def __init__(self, parent):
             html.HtmlWindow.__init__(self, parent)
@@ -183,8 +187,13 @@ class DismissableHTMLPanel(DismissablePanel):
         """Override and return a dict of keys to replace in the html."""
         pass
 
+## Ends basic classes
+## --
+
+
 
 class HelpPanel(DismissableHTMLPanel):
+    """Help moved to HTML in Oct/Nov 2017"""
     def __init__(self, parent):
         DismissableHTMLPanel.__init__(self, parent, flag_help, 
                 somelabel=_("Help! Help! I'm being repressed!") ) 
@@ -215,6 +224,7 @@ class HelpPanel(DismissableHTMLPanel):
 
 
 class AboutPanel(DismissableHTMLPanel):
+    """About moved to HTML in Nov 2017"""
     def __init__(self, parent):
         DismissableHTMLPanel.__init__(self, parent, flag_about, 
                 somelabel=_("About Fonty") ) 
@@ -236,11 +246,7 @@ class AboutPanel(DismissableHTMLPanel):
 
 class ChooseZipDirPanel(DismissablePanel):
     """
-    Sep 2009 : A nicer (than std dir dialogue) dialogue for locating a directory.
-    It starts in the cwd.
-    Nov 2017
-    ==
-    Moved it all into a DismissablePanel
+    Deals with all the crap the zip functionality needs.
     """
     def __init__(self, parent):
         DismissablePanel.__init__(self,parent, flag_choosedir, 
