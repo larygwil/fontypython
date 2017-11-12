@@ -88,7 +88,15 @@ class PogChooser(wx.ListCtrl) :
             self.indexselected = i # Set this to help initial icon settings.
             self.Select(i, True)
         else:
-            self.Select(0, False)
+            ## Nov 2017
+            ## == "FichteFoll" hit a bug here.
+            ## When fp starts with zero pogs (i.e. like it would for
+            ## most people :O ) then there's an index problem with
+            ## self.Select
+            ## TBH, I can't remember why this else branch is here.
+            ## Rather than court the revenge of my bad memory, I have
+            ## stuck a test on the count:
+            if self.GetItemCount() > 0: self.Select(0, False)
             self.indexselected = -1
 
 

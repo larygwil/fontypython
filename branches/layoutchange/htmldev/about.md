@@ -29,6 +29,7 @@ Many thanks to:
 * **savannah.nongnu.org** - For the hosting. You guys rule!
 * **Michael Moller** - For math advice; pointing me in the direction of the "standard-deviation",
   which I used in the font layout. Also for getting me into Linux all those years ago.
+* **FichteFoll** - For catching a bug which prevented startup when there are no pogs! Ye Gods!
 
 Licence
 =======

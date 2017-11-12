@@ -580,7 +580,7 @@ class Configure:
         self.text = Configure.atoz
         self.points = 64
         #Nov 2017
-        self.max_num_columns = 0
+        self.max_num_columns = 1
         self.lastview = "EMPTY" # a pog name or a folder path.
         self.usegui = "wxgui"
         self.max = True
