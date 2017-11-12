@@ -10,11 +10,12 @@ Ye Olde Basic Idea
 =======
 You visually gather fonts into a "Pog", and then install it. All its fonts will be available to other apps. When you finish your work, uninstall the Pog.
 
-I just stumbled onto the word "Pog", in "ty*pog*raphy". It means "collection" or "group" or "bunch" or "box" or "case" or "stack" or "pile" &mdash; you get the picture.
+I pinched the word "Pog" from "ty**pog**raphy". It means "collection", "group", "bunch", "box", "case", "stack" or "pile" &mdash; you get the picture.
 
 Your fonts never move from where they live, neither are copies made; *only* links to the original files are used to install the fonts into your user fonts directory.
 
-For example, you might have a Pog called "Logos" into which you place all the fonts needed to design a logo. When you want to work, install the "Logos" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp, etc. When you're done, uninstall "Logos" and all those fonts go away. (The links to the original files are removed, **not** the actual font files!)
+For example, you might have a Pog called "Logos" into which you place all the fonts needed to design a logo. When you want to work, install the "Logos" Pog and start your design app. All those fonts will now appear in Inkscape, the Gimp, etc. 
+When you're done, uninstall "Logos" and all those fonts go away. (The links to the original files are removed, **not** the actual font files!)
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
 
@@ -25,9 +26,7 @@ Fonty is also great for just looking at fonts, wherever they are on your compute
 User Fonts Info
 ===
 * Your **fontypython** directory is: {STATS_1}&nbsp;(This is where all your Pogs are stored.)
-
 * You **user fonts** directory is: {STATS_2}
-
   (If there is a dot in front (like .fonts) it means the directory is "hidden". You might not see it in your file manager.)
 
   Whatever it's called and wherever it is, any fonts listed in that directory are "installed" and your apps will be able to use them. Fonty's job is to shuttle fonts in and out of here so you don't have to.

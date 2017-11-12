@@ -22,6 +22,7 @@ import fpsys # Global objects
 import fpversion
 ## Now, bring in all those big modules
 import wx
+import wx.html as html
 
 
 ## June 25th 2016
@@ -77,7 +78,7 @@ class DismissablePanel(wx.Panel):
     Provides a bar with an icon, title and an X close button.
     Under that is .. whatever: usually a sizer.
     """
-    def __init__(self, parent, flag, someicon=None, somelabel="..."):
+    def __init__(self, parent, flag, someicon=None, somelabel="...", extra_padding=0):
         id = id_from_flag[flag]
         self.id = id
         wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
@@ -90,7 +91,7 @@ class DismissablePanel(wx.Panel):
         ## Pad the whole thing some
         whatever_sizer = wx.BoxSizer( wx.VERTICAL )
         whatever_sizer.Add( whatever, 1,
-                wx.EXPAND | wx.ALL,  border = 8 )
+                wx.EXPAND | wx.ALL,  border = 8 + extra_padding )
 
         l = fpwx.h1( self, somelabel )
         i = fpwx.icon( self, someicon ) if someicon else (1,1)
@@ -121,105 +122,117 @@ class DismissablePanel(wx.Panel):
         pass
 
     def _x_pressed(self,evt):
-        ## I don't want the button's id going-on, but the panel's
+        ## I don't want the button's id skipping-on, but the panel's
         evt.SetId(self.id)
         evt.Skip()
 
-## Help file stuff
-## Moved from dialogues on 31 Oct 2017
-import wx.html as html
-## langcode = locale.getlocale()[0] # I must not use getlocale...
-## This is suggested by Martin:
-loc = locale.setlocale(locale.LC_CTYPE) # use *one* of the categories (not LC_ALL)
-## returns something like 'en_ZA.UTF-8'
-if loc is None or len(loc) < 2:
-    langcode = 'en'
-else:
-    langcode = loc[:2].lower()# This is going to cause grief in the future...
 
-## Weird stuff:
-class AnHtmlWindow(html.HtmlWindow):
-    def __init__(self, parent):
-        html.HtmlWindow.__init__(self, parent)
-        if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
-            self.SetStandardFonts()  
 
-class HelpPanel(DismissablePanel):
-    def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_help, 
-                somelabel=_("Help! Help! I'm being repressed!") ) 
+class DismissableHTMLPanel(DismissablePanel):
+    ## Weird stuff:
+    class AnHtmlWindow(html.HtmlWindow):
+        def __init__(self, parent):
+            html.HtmlWindow.__init__(self, parent)
+            if "gtk2" in wx.PlatformInfo or "gtk3" in wx.PlatformInfo:
+                self.SetStandardFonts() 
+
+    def __init__(self, parent, flag, somelabel):
+        DismissablePanel.__init__(self, parent, flag, somelabel=somelabel)
 
     def __post_init__(self):
-        self.html = AnHtmlWindow(self)
+        ## call one: get the HTML paf
+        self.paf = self.__post_init_set_paf__()
+        
+        self.html = DismissableHTMLPanel.AnHtmlWindow(self)
+        try:
+            f = open( self.paf, "r" )
+            h = f.read()
+            f.close()       
+        except Exception as e:
+            h = u"<h1>Error reading {} file</h1><p>{}</p>".format(self.paf, e)
+        
+        ##provide a separator thing
+        sep = "~/~"
+        self.sep = u"<center><font size=5 color=\"{medium}\">" \
+                   "<b>{sep}</b></font></center>".format(
+                      sep = sep,
+                      medium = fpwx.HTMLCOLS["heading1"] )
+        sd = {"SEP":sep}
+
+        ## call two: get the replace strings in a dict
+        d = self.__post_init_setup_replace_dict__()
+
+        # merge all the dicts
+        sd.update(**d)
+        sd.update(**fpwx.HTMLCOLS)
+        
+        ## Make sure the HTML is unicode
+        h = fpsys.LSP.to_unicode(h)
+
+        ## Format the HTML
+        h = h.format(**sd)
+
+        self.html.SetPage( h )        
+        return self.html
+
+    def __post_init_set_paf__(self):
+        """Override and return a paf to an html file."""
+        pass
+
+    def __post_init_setup_replace_dict__(self):
+        """Override and return a dict of keys to replace in the html."""
+        pass
+
+
+class HelpPanel(DismissableHTMLPanel):
+    def __init__(self, parent):
+        DismissableHTMLPanel.__init__(self, parent, flag_help, 
+                somelabel=_("Help! Help! I'm being repressed!") ) 
+
+    def __post_init_set_paf__(self):
+        ## langcode = locale.getlocale()[0] # I must not use getlocale...
+        ## This is suggested by Martin:
+        # use *one* of the categories (not LC_ALL)
+        loc = locale.setlocale(locale.LC_CTYPE)
+        ## returns something like 'en_ZA.UTF-8'
+        if loc is None or len(loc) < 2:
+            langcode = 'en'
+        else:
+            langcode = loc[:2].lower()# May cause bugs
         ## Find localized help, or default to English.
         packpath = fpsys.fontyroot
         helppaf = os.path.join(packpath, "help", langcode, "help.html")
         if not os.path.exists( helppaf ):
             helppaf = os.path.join(packpath, "help", "en", "help.html")
-        try:
-            f = open( helppaf, "r" )
-            h = f.read()
-            f.close()       
-        except Exception as e:
-            h = "<h1>Error reading help file</h1><p>{}</p>".format(e)
-        try:
-            ## Drop some last-minute info into the html string
-            s_fpdir = fpsys.LSP.to_unicode(fpsys.iPC.appPath())
-            s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
-            sep = "~/~"
-            sep = "<center><font size=5 color=\"{medium}\">" \
-                  "<b>{sep}</b></font></center>".format(
-                          sep = sep,
-                          medium = fpwx.HTMLCOLS["heading1"] )
-            h = h.format( SEP=sep, STATS_1=s_fpdir, STATS_2=s_fontsdir, 
-                    **fpwx.HTMLCOLS )
-        except:
-            pass
-        #self.html.LoadPage( helppaf )        
-        #print h
-        ##..for the licence html_text = text.replace('\n', '<BR>')
-        self.html.SetPage( h )        
-        return self.html
+        return helppaf
 
-class AboutPanel(DismissablePanel):
+    def __post_init_setup_replace_dict__(self):
+        ## Drop some last-minute info into the html string
+        s_fpdir = fpsys.LSP.to_unicode(fpsys.iPC.appPath())
+        s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
+        d={"STATS_1":s_fpdir, "STATS_2":s_fontsdir} 
+        return d
+
+
+class AboutPanel(DismissableHTMLPanel):
     def __init__(self, parent):
-        DismissablePanel.__init__(self, parent, flag_about, 
+        DismissableHTMLPanel.__init__(self, parent, flag_about, 
                 somelabel=_("About Fonty") ) 
 
-    def __post_init__(self):
-        self.html = AnHtmlWindow(self)
-        ## Find localized help, or default to English.
+    def __post_init_set_paf__(self):
         packpath = fpsys.fontyroot
-        helppaf = os.path.join(packpath, "about", "about.html")
-        try:
-            f = open( helppaf, "r" )
-            h = f.read()
-            f.close()       
-        except Exception as e:
-            h = "<h1>Error reading about file</h1><p>{}</p>".format(e)
-        try:
-            ## Drop some last-minute info into the html string
-            sep = "~/~"
-            sep = "<center><font size=5 color=\"{medium}\">" \
-                  "<b>{sep}</b></font></center>".format(
-                          sep = sep,
-                          medium = fpwx.HTMLCOLS["heading1"] )
-            d = {"warranty": strings.warranty.replace("\n","<br>"),
-                "copyright": strings.copyright,
-                  "contact": strings.contact,
-                  "version": strings.version,
-                  "ticket" : strings.ticket_url,
-                  "GPL"    : strings.GPL.replace("\n","<br>")}
-            d.update(**fpwx.HTMLCOLS)
+        return os.path.join(packpath, "about", "about.html")
 
-            h = fpsys.LSP.to_unicode(h)
-            h = h.format( SEP=sep,**d )
-            
-        except:
-            pass
-        ##..for the licence html_text = text.replace('\n', '<BR>')
-        self.html.SetPage( h )        
-        return self.html
+    def __post_init_setup_replace_dict__(self):
+        return {
+             "warranty": strings.warranty.replace("\n","<br>"),
+            "copyright": strings.copyright,
+              "contact": strings.contact,
+              "version": strings.version,
+              "ticket" : strings.ticket_url,
+              "GPL"    : strings.GPL.replace("\n","<br>")}
+
+
 
 class ChooseZipDirPanel(DismissablePanel):
     """
@@ -313,9 +326,9 @@ class SettingsPanel(DismissablePanel):
         ## loopy kind of way
         self.form = {}
         self._force_redraw = False
-        self.settings_sizer = wx.FlexGridSizer( cols = 2, hgap = 5, vgap = 8 )
+        self.settings_sizer = wx.FlexGridSizer( cols = 2, hgap = 5, vgap = 20 )
         
-        DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"))
+        DismissablePanel.__init__(self, parent, flag_settings, somelabel=_("Settings"), extra_padding = 12)
 
     def __post_init__(self):
         """
@@ -469,9 +482,9 @@ class SettingsPanel(DismissablePanel):
             sb.Add( lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
             e = fpwx.parar(self, extra, size="points_smaller" )
             sb.Add( e, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
-            self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP, border=4 )
+            self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
         else:
-            self.settings_sizer.Add(lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP, border=4 )
+            self.settings_sizer.Add(lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
         ## text controls need more width.
         if isinstance(ctrl, wx._controls.TextCtrl):
             self.settings_sizer.Add(ctrl, 1, wx.EXPAND )

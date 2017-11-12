@@ -65,10 +65,12 @@ class PogChooser(wx.ListCtrl) :
         ## We keep refs to the two parents of this class.
         if whoami == "SOURCEPOG" :#isinstance( self.parent, wx.Panel ):
             PogChooser.__VIEW = self
-            style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING | wx.LC_SINGLE_SEL
+            #style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING | wx.LC_SINGLE_SEL
+            style = wx.LC_LIST | wx.LC_SORT_ASCENDING | wx.LC_SINGLE_SEL
         else:
             PogChooser.__TARGET = self.parent
-            style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING
+            #style = wx.LC_LIST | wx.LC_AUTOARRANGE | wx.LC_SORT_ASCENDING
+            style = wx.LC_LIST | wx.LC_SORT_ASCENDING
 
         il = wx.ImageList(16,16,True)
         il.Add( wxbmp('pog16x16') )
@@ -95,7 +97,7 @@ class PogChooser(wx.ListCtrl) :
             ## self.Select
             ## TBH, I can't remember why this else branch is here.
             ## Rather than court the revenge of my bad memory, I have
-            ## stuck a test on the count:
+            ## stuck a count test on the Select:
             if self.GetItemCount() > 0: self.Select(0, False)
             self.indexselected = -1
 

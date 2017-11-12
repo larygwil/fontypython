@@ -1,9 +1,10 @@
 MAKING THE HTML FILES
 ==
+Install markdown (on my sys: apt-get install markdown)
 
 Edit the markdown files.
 Run makehtml on each
-move html to wherever.
+Move html to wherever.
 
 makehtml
 ==
@@ -11,6 +12,11 @@ Does some replacing - to insert format {tags} into heading tags and stuff.
 
 Later, python does more replacing to replace those tags with actual system colours and other strings. 
 (See the various html panels in wxgui.py)
+
+distrib script
+==
+In the root, I have "make_html_and_distrib"
+This does both help and about and places the files.
 
 Images
 ==
