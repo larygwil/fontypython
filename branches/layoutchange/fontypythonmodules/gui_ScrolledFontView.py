@@ -199,7 +199,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             
             ## Credit to Michael Moller for clueing me onto "standard deviation".
             ## My soluition: Take the mean of the widths and add a bit "more".
-            lw = len(w)
+            lw = len(w) # cannot be 0. I feel confident!
             sw = sum(w)
             #print w
 
@@ -218,12 +218,17 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ## 3. My result is the sum of these two.
             avw = a + asd
 
+            #Just prevent any poss div by 0
+            avw = max( avw, 1 )
+
             ## Can we afford some columns?
             cols = max( 1, int(panelwidth / avw) )
 
             #Nov 2017: New option in settings to control columns"
             cols = min( cols, fpsys.config.max_num_columns )
-            #print "cols:",cols
+
+            #Just prevent any poss div by 0
+            cols = max( cols, 1)
 
             ## Get a better actual width for the columns!
             colw = int(panelwidth/cols)
