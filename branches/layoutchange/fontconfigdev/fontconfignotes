@@ -1,0 +1,493 @@
+FONTCONFIG NOTES
+NOV 2017
+--
+
+fc-query 
+tells you what fontconfig understand about the font file. Notably what attributes the file is for (for bitmap fonts for example) and what attributes can be used (for vector fonts).
+
+fc-list 
+is a way of telling you what fonts can be found in the directories fontconfig is looking at, and therefore con be used by applications. Finally fc-cache performs an indexing of these fonts to find them easier and to scale them (among other things) for application use.
+
+The fontconfig shared library on the other hand is the most interesting part. It uses the configuration files (/etc/fonts, ~/.config/fontconfig) and the font cache to give preprepared fonts directly to applications that are linked against it. Since most applications used XFT (and therefore FreeType) and the FreeType library is using calls from the fontconfig library, the use of these fonts become ubiquitous.
+
+
+
+Some hot parting tips
+
+fc-cache will force fontconfig to pick up any changes. There’s a -f, but in all my fighting with fontconfig it never once made a difference.
+
+As far as I can tell, there is no reason to ever run sudo fc-cache -vf. This has been floating around the Internet for years, but it seems to be apocryphal copy/paste. You don’t need to flush root‘s fontconfig cache unless you’re running GUI stuff as root.
+
+fc-match <font> will tell you what font will be used in practice. You might think that’s what fc-query does, and you’d be wrong. fc-query‘s primary use is to produce bizarre error messages when you accidentally use it instead of fc-match.
+
+
+Re the fc-list command:
+$ fc-list : family | cut -f1 -d"," | sort
+Accanthis ADF Std
+Accanthis ADF Std No2
+Accanthis ADF Std No3
+Andale Mono
+Arial
+Arial Black
+Asana Math
+Bitstream Charter
+Cabin
+Century Schoolbook L
+<snip>
+
+The following variation uses the --format (-f) option and produces output similar to the above example:
+
+$ fc-list --format="%{family[0]}\n" | sort | uniq
+Accanthis ADF Std
+Accanthis ADF Std No2
+Accanthis ADF Std No3
+Andale Mono
+Arial
+Arial Black
+Asana Math
+Bitstream Charter
+Cabin
+Century Schoolbook L
+<snip>
+
+
+Good trick
+==
+To see all the fontconfig paths and shit an app loads:
+FC_DEBUG=1024 gimp
+(gimp, for e.g)
+
+NB
+==
+xdg/fontconfig/conf.d
+FILES MUST START WITH A NUMBER!!!!!
+
+
+
+Installed font-manager
+==
+
+donn@ddm:~$ cat .fonts.conf 
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+
+<!--
+    This file is maintained by Font Manager.
+
+    If you wish to make any changes it is suggested you do so using
+
+        /home/donn/.config/font-manager/local.conf
+
+    Any changes made to this file will be automatically relocated there
+    at startup and any settings already in that file will be overwritten.
+-->
+
+    <include ignore_missing="yes">/home/donn/.config/font-manager/conf.d</include>
+    <include ignore_missing="yes">/home/donn/.config/font-manager/directories.conf</include>
+    <include ignore_missing="yes">/home/donn/.config/font-manager/local.conf</include>
+    <include ignore_missing="yes">/home/donn/.config/font-manager/select.conf</include>
+
+</fontconfig>
+
+In the app, I selected "garuda" and hit the "X" icon. It seems to have marked it as "rejectfont"
+I ran Inkscape, and Garuda is gone!
+
+donn@ddm:~/.config$ cd font-manager/
+donn@ddm:~/.config/font-manager$ ls
+conf.d  preferences.ini  select.conf
+donn@ddm:~/.config/font-manager$ cat select.conf 
+<?xml version="1.0"?>
+<fontconfig>
+  <selectfont>
+    <rejectfont>
+      <pattern>
+        <patelt name="family">
+          <string>Garuda</string>
+        </patelt>
+      </pattern>
+    </rejectfont>
+  </selectfont>
+</fontconfig>
+donn@ddm:~/.config/font-manager$ ls conf.d/
+donn@ddm:~/.config/font-manager$ ls
+conf.d  preferences.ini  select.conf
+
+
+
+Gonna try removing more...
+Kacst...
+
+
+donn@ddm:~/.config/font-manager$ cat select.conf 
+<?xml version="1.0"?>
+<fontconfig>
+  <selectfont>
+    <rejectfont>
+      <pattern>
+        <patelt name="family">
+          <string>Garuda</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstPen</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstPoster</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstQurn</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstBook</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstTitleL</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstOne</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstNaskh</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstLetter</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstArt</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstTitle</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstDecorative</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstDigital</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstOffice</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstFarsi</string>
+        </patelt>
+      </pattern>
+      <pattern>
+        <patelt name="family">
+          <string>KacstScreen</string>
+        </patelt>
+      </pattern>
+    </rejectfont>
+  </selectfont>
+</fontconfig>
+
+Source that is doing this (font-manager)
+https://github.com/FontManager/master/blob/d19326493e1c6df3bc14d761b1ea9435c0f3b8b2/lib/FontConfig/Selections.vala
+
+
+More stuff:
+donn@ddm:~$ fc-list : family
+...
+mry_KacstQurn
+TakaoPGothic,Takao Pゴシック
+donn@ddm:~$ fc-list mry_ family
+donn@ddm:~$ fc-list mry_KacstQurn family
+mry_KacstQurn
+
+
+Seems I missed this one. Will make a manual xml file to kill it.
+
+https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
+The manual says:
+.. per-user configuration file that lives in $XDG_CONFIG_HOME/fontconfig/fonts.conf 
+
+I added a line into ~/.config/fontconfig/fonts.conf
+ <include ignore_missing="yes">/home/donn/.local/share/fontypython/hush.conf</include>
+
+Then I made hush.conf in my fp dev and put a ln -s into .local/share/fontypython/
+
+Let's see...
+
+Okay...
+
+This hush.conf works:
+<?xml version="1.0"?>
+<fontconfig>
+  <selectfont>
+    <rejectfont>
+      <pattern>
+        <patelt name="file">
+          <string>/usr/share/fonts/truetype/kacst/mry_KacstQurn.ttf</string>
+        </patelt>
+      </pattern>
+    </rejectfont>
+  </selectfont>
+</fontconfig>
+
+I can use the entire paf to silence the fuck out of that font!
+
+Vers2
+==
+Just make a file in conf.d (under fontconfig in xdg_config) but start the NAME WITH A NUMBER
+1.fp.conf
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <selectfont>
+    <rejectfont>
+      <pattern>
+        <patelt name="file">
+          <string>/usr/share/fonts/truetype/kacst/mry_KacstQurn.ttf</string>
+        </patelt>
+      </pattern>
+    </rejectfont>
+  </selectfont>
+</fontconfig>
+
+Works!
+
+
+Globs
+==
+<rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+Well, fuck! That's great.
+It also leaves only what's in /home/donn/.local/share/fonts/
+
+It does kind of crashify the desktop...
+
+Ideas
+==
+Whitelist some.
+DejaVu*
+FreeSans*
+FreeMono*
+FreeSerif*
+Ubuntu*
+Liberation*
+
+
+DejaVu Sans Mono
+DejaVu Sans
+DejaVu Serif
+FreeSerif
+FreeSans
+FreeMono
+Ubuntu
+Ubuntu Condensed
+Ubuntu,Ubuntu Light
+Ubuntu Mono
+Liberation Sans Narrow
+Liberation Mono
+Liberation Serif
+Liberation Sans
+
+
+
+Various iffy attempts:
+===
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <selectfont>
+  <!-- <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont> -->
+  <acceptfont>
+   <glob>/usr/share/fonts/truetype/DejaVu*</glob>
+   <glob>/usr/share/fonts/truetype/FreeSans*</glob>
+   <glob>/usr/share/fonts/FreeMono*</glob>
+   <glob>/usr/share/fonts/FreeSerif*</glob>
+   <glob>/usr/share/fonts/Ubuntu*</glob>
+   <glob>/usr/share/fonts/Liberation*</glob>
+  </acceptfont>
+  </selectfont
+
+
+This one shows that I can reject based on family name.
+
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <selectfont>
+  <!-- <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont> -->
+  <rejectfont>
+
+  <pattern>
+   <patelt name="family" >
+    <string>DejaVu Sans</string>
+   </patelt>
+  </pattern>
+
+  <pattern>
+   <patelt name="family" >
+    <string>DejaVu Sans Mono</string>
+   </patelt>
+  </pattern>
+
+  </rejectfont>
+<!--
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>DejaVu Sans</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+-->
+  </selectfont>
+</fontconfig>
+
+
+
+
+
+
+
+Does not work???
+==
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <selectfont>
+  <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>DejaVu Sans</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>DejaVu Sans Mono</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>DejaVu Serif</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>FreeSerif</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>FreeSans</string>
+   </patelt>
+  </pattern>
+
+  <pattern>
+   <patelt name="family" >
+    <string>FreeMono</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Ubuntu</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Ubuntu Condensed</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Ubuntu,Ubuntu Light</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Ubuntu Mono</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Liberation Sans Narrow</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+ 
+ <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Liberation Mono</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Liberation Serif</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+  <acceptfont>
+  <pattern>
+   <patelt name="family" >
+    <string>Liberation Sans</string>
+   </patelt>
+  </pattern>
+  </acceptfont>
+
+
+  </selectfont>
+</fontconfig>
+
+
