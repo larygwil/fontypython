@@ -15,6 +15,18 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
+
+## Nov 15, 2017
+## --
+## Coding while there's a Coup d'etat in Zimbabwe; our neighbour. 
+## Feeling of doom in our SA politics. Ruinous criminals in ANC gov;
+## my health declining and no income.
+## Just keeping my head down and trying to get Fonty working and
+## out the door. Good luck Zimbabwe. I hope you kick out the Prick!
+## Zuma next. Somehow. Without blood.
+
+
+
 import locale
 import strings
 import fontybugs

@@ -406,10 +406,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         NB: Determines the intial measured width of a fitmap.
         """
         w = 1 if not self.fitem.badfont else Fitmap.MIN_FITEM_WIDTH
-        #if self.fitem.badfont:
-        #    w = Fitmap.MIN_FITEM_WIDTH
-        #else:
-        #    w = 1
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
         del self.face_image_stack[:]
@@ -710,10 +706,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ctx.SetBrush (b)
             ctx.DrawRectangle(0,0,w,h)
 
-            #if self.fitem.ticked:
-            #    ctx.SetBrush(wx.Brush(wx.Colour(0,170,212)))
-            #    ctx.DrawRectangle(0,0,4,h)
-
         ## Draw it all - via the pencils
         for pencil in self.drawDict.values():
             pencil.draw(memDc)
@@ -755,7 +747,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             ## We call onPaint via self.refresh() and bypass all the 
             ## other drawing code.
 
-            #self.cmb_rect=wx.Rect(0,self.bitmap.GetHeight()-40,19,32)
             # x, y, w, h
             self.cmb_rect=wx.Rect(4,self.height-31, 32, 27)
 

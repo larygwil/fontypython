@@ -218,20 +218,16 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             ## 3. My result is the sum of these two.
             avw = a + asd
 
-            #Just prevent any poss div by 0
-            avw = max( avw, 1 )
-
             ## Can we afford some columns?
-            cols = max( 1, int(panelwidth / avw) )
+            ##  ..Also prevent any poss div by 0
+            cols = max( 1, int(panelwidth / max(avw, 1) ) )
 
             #Nov 2017: New option in settings to control columns"
             cols = min( cols, fpsys.config.max_num_columns )
 
-            #Just prevent any poss div by 0
-            cols = max( cols, 1)
-
             ## Get a better actual width for the columns!
-            colw = int(panelwidth/cols)
+            ##  ..Also prevent any poss div by 0
+            colw = int(panelwidth / max(cols, 1))
 
             #print "colw:",colw
             self.fitmap_sizer.SetCols(cols)

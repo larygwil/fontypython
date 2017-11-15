@@ -2,6 +2,45 @@ FONTCONFIG NOTES
 NOV 2017
 --
 
+Plan A
+==
+
+1. I can drop an XML file into .config/fontconfig/conf.d which will glob reject fonts in usr/share/fonts
+2. Installing a Pog with select system fonts into user fonts/ WILL make them visible! 
+   The glob reject does not match on the link's path! Phew. Is this a fontconfig bug?
+
+The reject file is:
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+ <selectfont>
+  <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+ </selectfont>
+</fontconfig>
+
+Reply from the fontconfig list:
+> Akira TAGOH <akira@tagoh.org> wrote:
+> Are you asking if there are any way to do something in XML instead of "ln -s"?
+> Here is to allow only /usr/share/fonts/dejavu/DejaVuSans.ttf and
+> reject all of fonts under /usr/share/fonts.
+>
+> <fontconfig>
+>   <selectfont>
+>     <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+>     <acceptfont>
+>       <glob>/usr/share/fonts/truetype/dejavu</glob>
+>       <glob>/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf</glob>
+>     </acceptfont>
+>   </selectfont>
+> </fontconfig>
+>
+> Adding a directory too is the trick. fontconfig checks a directory
+> first then filenames in it so just adding a filename without dir
+> fails.
+I tested it, it does not work. :(
+
+--
+
 fc-query 
 tells you what fontconfig understand about the font file. Notably what attributes the file is for (for bitmap fonts for example) and what attributes can be used (for vector fonts).
 

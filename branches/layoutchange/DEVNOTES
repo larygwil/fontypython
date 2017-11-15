@@ -83,7 +83,6 @@ TODO
 
 * Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
-* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 
 * Fix % outside brackets _("") % out here, not inside.
    _("text {}").format(stuff)
@@ -93,6 +92,8 @@ TODO
 * PEP8 all up in da hizzle - well, the tabs to spaces part.
 * it's, its ...
 
+* Fitmaps widths of textpencils ...
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 
 * command line arg to print fonts in a pog...?
 * All command args have kind of shitty naming... Do I dare change them now?
