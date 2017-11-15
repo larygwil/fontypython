@@ -263,8 +263,8 @@ class FontItem( object ):
         if self.badfont:
             l1 = self.badfontmsg
             l2 = self.glyphpaf_unicode
-            n = 40
-            l2 = u"\n".join([l2[i:i+n] for i in xrange(0,len(l2),n)])
+            #n = 40
+            #l2 = u"\n".join([l2[i:i+n] for i in xrange(0,len(l2),n)])
             ## Sept 2017: Shortened the paf by subtracting the $HOME dir out.
             try:
                 l2 = l2.replace( fpsys.iPC.home(), u"…" )

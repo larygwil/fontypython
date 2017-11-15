@@ -39,6 +39,20 @@ Reply from the fontconfig list:
 > fails.
 I tested it, it does not work. :(
 
+He got back to me with a vers that works!
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <dir>/usr/share/fonts</dir>
+  <selectfont>
+    <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+    <acceptfont>
+      <glob>/usr/share/fonts/truetype</glob>
+      <glob>/usr/share/fonts/truetype/dejavu</glob>
+      <glob>/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf</glob>
+    </acceptfont>
+  </selectfont>
+</fontconfig>
 --
 
 fc-query 

@@ -70,27 +70,46 @@ class TextPencil(Pencil):
             fcol = (0,0,0),
             points = "points_normal",
             style = wx.NORMAL, 
-            weight = wx.NORMAL ):
+            weight = wx.NORMAL,
+            split_path_and_wrap = False ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
         self.txt = txt
+        self.split_path_and_wrap = split_path_and_wrap
         ## I get point sizes from the SYSFONT dict
         points = SYSFONT[points]
         self.font =  wx.Font( points, SYSFONT["family"],
                 style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
+
+        self._measure()
+
+    def _measure(self):
+        self._measure2(self.txt)
+
+    def _measure2(self,txt):
+        dc = wx.ScreenDC()
+        dc.SetFont( self.font )
+        try:
+            sz = dc.GetTextExtent( txt )
+        except:
+            sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
+        # cache it in the class
+        TextPencil._text_extents_dict[self.txt] = sz
+        return sz
+        
         ## Measure a line of text in my font.
         ## Cache these widths in Pencil class variable, so that
         ## future identical strings can avoid work.
         ## Turned out I don't use this much.
-        if not self.txt in TextPencil._text_extents_dict:
-            dc = wx.ScreenDC()
-            dc.SetFont( self.font )
-            try:
-                sz = dc.GetTextExtent( self.txt )
-            except:
-                sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
-            # cache it in the class
-            TextPencil._text_extents_dict[self.txt] = sz
+        #if not self.txt in TextPencil._text_extents_dict:
+        #    dc = wx.ScreenDC()
+        #    dc.SetFont( self.font )
+        #    try:
+        #        sz = dc.GetTextExtent( self.txt )
+        #    except:
+        #        sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
+        #    # cache it in the class
+        #    TextPencil._text_extents_dict[self.txt] = sz
 
     def getwidth(self):
         return TextPencil._text_extents_dict[self.txt][0]
@@ -98,10 +117,59 @@ class TextPencil(Pencil):
     def getheight(self): 
         return TextPencil._text_extents_dict[self.txt][1]
 
+    def _wrap(self,cols):
+        i=0
+        x=2
+        s=""
+        rs=""
+        br="\n"
+        l = self.txt.split("/")
+        if "" in l: l.remove("")
+
+        if cols < len(l):
+            print "too short to bother"
+            raise SystemExit
+
+        while True:
+            w = l[i]
+            rs = rs + w
+
+            if len(rs) < cols:
+                s = s + w + "/"
+            else:
+                rs = w
+                s = s + w + "/" + br
+
+            i = i + 1
+
+            if i == len(l): break
+        print "wrapped to:",s
+        return s
+        
     def draw(self, memdc):
+        txt = self.txt
+        if self.split_path_and_wrap:
+            print "split me:", txt
+            dcw,dch = memdc.GetSize()
+            w,h = self._measure2(txt)
+            print "dcw:", dcw
+            print "w:", w
+            print "w + self.x:", w+self.x
+            if (w + self.x) > dcw:
+                nw = w + self.x 
+                cols = len(txt) - 5
+                print "while:",nw,dcw
+                while (nw > dcw):
+                    txt = self._wrap( cols )
+                    print txt
+                    nw,h = self._measure2(txt)
+                    print " nw:",nw
+                    cols = cols - 5
+
+
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
-        memdc.DrawText( self.txt, self.x, self.y )
+        memdc.DrawText( txt, self.x, self.y )
 
 class BitmapPencil(Pencil):
     def __init__( self, id, x=0, y=0, bitmap = None, use_mask = True ):
@@ -384,7 +452,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         tx += offx
         text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty,
-                points = pnts )
+                points = pnts,
+                split_path_and_wrap = True )
 
         self.add_pencil( iconpencil, text0, text1 )
 
@@ -404,8 +473,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
     def _gen_glyphs(self):
         """
         NB: Determines the intial measured width of a fitmap.
+        (badfonts don't even get this far.)
         """
-        w = 1 if not self.fitem.badfont else Fitmap.MIN_FITEM_WIDTH
+        w = 1 
         paf, points, text = self.fitem.glyphpaf, fpsys.config.points, " " + fpsys.config.text + "  "
         i = 0
         del self.face_image_stack[:]
@@ -521,7 +591,12 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         #print u"measure Draw state: {} for {}".format(self.state,self.name)
         max_glyph_width = self.width
         if self.is_block("A"):
-            max_glyph_width = self._gen_glyphs()
+            ## if badfont, just get a generic width
+            if self.fitem.badfont: 
+                max_glyph_width = Fitmap.MIN_FITEM_WIDTH
+            else:
+                ## Else go render the glyphs
+                max_glyph_width = self._gen_glyphs()
             self.state = self.state & ~Fitmap.flagA #Switch off flagA
         return max_glyph_width
 
