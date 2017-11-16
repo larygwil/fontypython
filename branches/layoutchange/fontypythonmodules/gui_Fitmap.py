@@ -109,14 +109,10 @@ class TextPencil(Pencil):
     def draw(self, memdc):
         txt = self.txt
         ## if we are to split, the size will change:
-        if self._split_path_and_wrap: 
+        if True: #self._split_path_and_wrap: 
             dcw,dch = memdc.GetSize()
-            txt = wordwrap(txt, dcw + self.x, memdc, breakLongWords = True )#, margin=self.x)
-            ##  Wrap and measure again
-            #w,h = self._size
-            #dcw,dch = memdc.GetSize()
-            #if (w + self.x) > dcw:
-            #    txt = wordwrap(txt, dcw + self.x, memdc, breakLongWords = True )#, margin=self.x)
+            ## Well ...hell. wx has a wordwrapper!
+            txt = wordwrap(txt, dcw + self.x, memdc, breakLongWords = True )
 
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
@@ -220,7 +216,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     'icon'   : "INFO_ITEM",
                 }
             }
-    MIN_FITEM_WIDTH = 500
+    MIN_FITEM_WIDTH = 400
     MIN_FITEM_HEIGHT = 10
     SPACER = 0
     LINEHEIGHT = 0
@@ -409,8 +405,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         tx += offx
         text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty,
-                points = pnts,
-                split_path_and_wrap = True )
+                points = pnts)#,
+                #split_path_and_wrap = True )
 
         self.add_pencil( iconpencil, text0, text1 )
 
