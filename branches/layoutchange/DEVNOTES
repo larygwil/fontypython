@@ -102,6 +102,10 @@ TODO
 
 * Distinguish TTC|OTC somehow
 
+HUSH TODO
+==
+* fpsys -> introduce the .config path too. :(
+* also: look for ~/.local/share explicitly if the GLib thing fails. Before falling back to old paths.
 
 
 

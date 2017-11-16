@@ -48,7 +48,7 @@ class OverOutSignal(object):
         self.truthstate = newtruth # Orwell would be proud! :D
         self.announce()
 
-
+from wx.lib.wordwrap import wordwrap
 
 class Pencil(object):
     """
@@ -64,7 +64,9 @@ class Pencil(object):
     def draw(self, memdc): pass
 
 class TextPencil(Pencil):
-    _text_extents_dict = {}
+    """
+    Text pencils are made over and over, never cached.
+    """
     def __init__( self, id, txt, 
             x = 0, y = 0, 
             fcol = (0,0,0),
@@ -73,99 +75,48 @@ class TextPencil(Pencil):
             weight = wx.NORMAL,
             split_path_and_wrap = False ):
         Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
+        
         self.txt = txt
-        self.split_path_and_wrap = split_path_and_wrap
+        self._split_path_and_wrap = split_path_and_wrap
+
         ## I get point sizes from the SYSFONT dict
         points = SYSFONT[points]
         self.font =  wx.Font( points, SYSFONT["family"],
                 style, weight, encoding=wx.FONTENCODING_DEFAULT )
 
+        self.em = self._measure(txt="n")
+        self._measure() #initial size
 
-        self._measure()
-
-    def _measure(self):
-        self._measure2(self.txt)
-
-    def _measure2(self,txt):
+    def _measure(self, txt = None ):
+        if not txt: txt = self.txt
         dc = wx.ScreenDC()
         dc.SetFont( self.font )
         try:
-            sz = dc.GetTextExtent( txt )
+            w,h,lh = dc.GetMultiLineTextExtent( txt, font=self.font )
+            sz = (w,h)
         except:
+            raise
             sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
-        # cache it in the class
-        TextPencil._text_extents_dict[self.txt] = sz
+        self._size = sz
         return sz
-        
-        ## Measure a line of text in my font.
-        ## Cache these widths in Pencil class variable, so that
-        ## future identical strings can avoid work.
-        ## Turned out I don't use this much.
-        #if not self.txt in TextPencil._text_extents_dict:
-        #    dc = wx.ScreenDC()
-        #    dc.SetFont( self.font )
-        #    try:
-        #        sz = dc.GetTextExtent( self.txt )
-        #    except:
-        #        sz = (Fitmap.MIN_FITEM_WIDTH,Fitmap.MIN_FITEM_HEIGHT)
-        #    # cache it in the class
-        #    TextPencil._text_extents_dict[self.txt] = sz
 
     def getwidth(self):
-        return TextPencil._text_extents_dict[self.txt][0]
+        return self._size[0]
 
     def getheight(self): 
-        return TextPencil._text_extents_dict[self.txt][1]
+        return self._size[1]
 
-    def _wrap(self,cols):
-        i=0
-        x=2
-        s=""
-        rs=""
-        br="\n"
-        l = self.txt.split("/")
-        if "" in l: l.remove("")
-
-        if cols < len(l):
-            print "too short to bother"
-            raise SystemExit
-
-        while True:
-            w = l[i]
-            rs = rs + w
-
-            if len(rs) < cols:
-                s = s + w + "/"
-            else:
-                rs = w
-                s = s + w + "/" + br
-
-            i = i + 1
-
-            if i == len(l): break
-        print "wrapped to:",s
-        return s
-        
     def draw(self, memdc):
         txt = self.txt
-        if self.split_path_and_wrap:
-            print "split me:", txt
+        ## if we are to split, the size will change:
+        if self._split_path_and_wrap: 
             dcw,dch = memdc.GetSize()
-            w,h = self._measure2(txt)
-            print "dcw:", dcw
-            print "w:", w
-            print "w + self.x:", w+self.x
-            if (w + self.x) > dcw:
-                nw = w + self.x 
-                cols = len(txt) - 5
-                print "while:",nw,dcw
-                while (nw > dcw):
-                    txt = self._wrap( cols )
-                    print txt
-                    nw,h = self._measure2(txt)
-                    print " nw:",nw
-                    cols = cols - 5
-
+            txt = wordwrap(txt, dcw + self.x, memdc, breakLongWords = True )#, margin=self.x)
+            ##  Wrap and measure again
+            #w,h = self._size
+            #dcw,dch = memdc.GetSize()
+            #if (w + self.x) > dcw:
+            #    txt = wordwrap(txt, dcw + self.x, memdc, breakLongWords = True )#, margin=self.x)
 
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
@@ -291,7 +242,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.gradientheight = 50
 
-        Fitmap.LINEHEIGHT = TextPencil("X", 0, 0, points = "points_smaller").getheight()
+        Fitmap.LINEHEIGHT = TextPencil("idX", "X", 0, 0, points = "points_smaller").getheight()
         Fitmap.SPACER = Fitmap.LINEHEIGHT * 3
 
         self.face_image_stack = []
@@ -307,6 +258,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         self.state = 0
 
         self.bitmap = None
+
+        self.badfont_dict = {}
 
         ## The charmap button
         self.CHARMAP_BUTTON_OVER = self.FVP.BUTTON_CHARMAP_OVER
@@ -403,7 +356,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         return self.state & Fitmap.blocks[c] == Fitmap.blocks[c]
 
     def accrue_height(self,n):
+        #h = self.height + n
         self.height = max(self.height, n)
+        #print "self.height set to:", self.height
 
     def add_pencil(self, *pencils):
         # Beware, this does not preserve the order of the
@@ -418,6 +373,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         Draw the Info Font block, or an Error message block. Much clearer than it was before.
         """
+        #print "New gen_info_or_badfont for {}".format(self)
+
         #Sept 2017: Move it all over by an offset
         offx = 10
 
@@ -444,9 +401,9 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                 points="points_large", weight=wx.NORMAL)
 
         ## Text 1 - under Text 0
-        ty += text0.getheight()
+        ty += text0.getheight() + Fitmap.LINEHEIGHT
         # if there are newlines in the first text, we need more space
-        if textTup[0].count("\n") == 0: ty += Fitmap.LINEHEIGHT + (Fitmap.LINEHEIGHT/3)
+        if textTup[0].count("\n") == 0: ty += (Fitmap.LINEHEIGHT/3)
         tx = 76 if isinfo else 5
         pnts = "points_normal" if isinfo else "points_smaller"
 
@@ -695,9 +652,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
                 ## Move TOP down to next BOTTOM (for next sub-face)
                 mainy += glyphHeight + Fitmap.SPACER
-
-        #if self.fitem.inactive:
-        #    mainy += (Fitmap.SPACER)# -10) what? TODO fix #want room for 'is in pog' message.
 
         mainy += Fitmap.SPACER
         self.accrue_height( mainy )
