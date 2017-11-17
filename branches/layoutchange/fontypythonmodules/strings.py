@@ -118,7 +118,20 @@ options=_("""Options:
   -z Pog, --zip=Pog
                 All the fonts inside Pog will be zipped and the zipfile will be 
                 named after the Pog. The file will be placed in the current
-                directory.""")
+                directory.
+  --cat=Pog
+                Cat the pog. This will list all the fonts within.
+  --hush
+                Hush all the fonts except the ones you have installed.
+                This makes font choosers in other apps (like Inkscape)
+                much easier to use as they won't be full of random
+                system fonts.
+                * NOTE: Ensure that the built-in Pog called "SYS" contains
+                contains at least one system font; this is so other apps
+                will have something to use in their interfaces!
+  --unhush
+                Restores all the system fonts after a hush.
+                """)
 
 
 

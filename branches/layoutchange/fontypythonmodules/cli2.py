@@ -46,6 +46,8 @@ class situation(object):
     allfromfolder = None
     alltargetpog=[]
     allrecurse = None
+    catpug = None
+    hush = None
     zip = None
 
 ## If non-ascii chars get entered on the cli, say a Japanese word for
@@ -68,9 +70,11 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-    opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldfc:ei:u:s:n:p:a:A:z:",\
-    ["help", "version", "list", "dir", "lsfonts", "check=","examples","install=",\
-    "uninstall=","size=","number=","purge=","all=","all-recurse=","zip="])
+    opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldfc:ei:u:s:n:p:a:A:z:",
+    ["help", "version", "list", "dir", "lsfonts", "check=","examples","install=",
+    "uninstall=","size=","number=","purge=","all=","all-recurse=","zip=", 
+    "cat=", "hush" # these two have no short opts.
+    ])
 except getopt.GetoptError, err:
     print _("Your arguments amuse me :) Please read the help.")
     print str(err) # will print something like "option -foob not recognized"
@@ -141,7 +145,7 @@ for option, argument in opts:
         strictly_cli_context_only = True
         situation.purge = argument
 
-    ## This is for a gui comtext, hence no strictly_cli_context_only
+    ## This is for a gui context, hence no strictly_cli_context_only
     elif option in ("-s", "--size"):
         try:
             n = int(argument)
@@ -178,6 +182,15 @@ for option, argument in opts:
         # TODO Unsure why, exactly. Must recheck..
         situation.zip = True
         situation.pog = argument
+    
+    elif option == "--cat":
+        strictly_cli_context_only = True
+        situation.cat = True
+        situation.pog = argument
+
+    elif option == "--hush":
+        strictly_cli_context_only = True
+        situation.hush = True
 
     else:
         ## We should not reach here at all.
@@ -201,7 +214,16 @@ if strictly_cli_context_only:
     ## This one is a warning only.
     except fontybugs.NoFontsDir as e:
         e.print_error()
-
+        ## Hushing requires installing a certain POG, hence 
+        ## must have fonts dir.
+        if situation.hush:
+            raise SystemExit
+    except fontybugs.NoFontconfigDir as e:
+        if situation.hush:
+            ## Hushing requires fontconfig etc.
+            print _("Can't hush.")
+            e.print_error_and_quit()
+        ## don't print any error here.
 
     if situation.showdir:
         ## E.g. of PathControl being trusted: we don't need to test appPath for errors here.
@@ -235,6 +257,10 @@ if strictly_cli_context_only:
             situation.allfromfolder,
             situation.alltargetpog,
             situation.allrecurse )
+
+    if situation.cat: clifuncs.cat( situation.pog )
+
+    if situation.hush: clifuncs.hush()
 
     ## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
     ## context has no meaning, so we'll simply ignore them.

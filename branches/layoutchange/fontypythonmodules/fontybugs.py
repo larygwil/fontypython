@@ -177,6 +177,19 @@ class NoFontsDir(Errors):
         """Used in gui; see the statusbar code."""
         return _(u"Missing fonts directory. See Help.")
 
+class NoFontconfigDir(Errors):
+    def __init__(self,path, associated_err):
+        self.path = path
+        self.associated_err = associated_err
+    def __unicode__(self):
+        return _(u"WARNING:\nThe {path} directory cannot be created or found.\n" \
+                "The python error was: {assocerr}\n\n").format(
+                        path = self.path,
+                        assocerr = self.associated_err)
+    def short_unicode_of_error(self):
+        """Used in gui; see the statusbar code."""
+        return _(u"Missing {} directory. See Help.".format(self.path))
+
 class UpgradeFail(Errors):
     """
     Any and all UpgradeFail errors should end the app after being caught.

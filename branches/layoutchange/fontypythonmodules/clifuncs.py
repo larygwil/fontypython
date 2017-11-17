@@ -76,6 +76,24 @@ def lsfonts():
     print ls ## is this already unicode?
 
 
+## Nov 2017 - also helps with dev
+def cat( pog ):
+    import subprocess
+    try:
+        p = os.path.join(fpsys.iPC.appPath(), "{}.pog".format(pog))
+        cat_res = subprocess.check_output(['cat', p])
+    except:
+        print _("Could not cat that pog.")
+        raise SystemExit
+    print cat_res
+
+def hush():
+    import hushfonts
+    try:
+        hushfonts.hush()
+    except:
+        raise
+
 def zip( pog ):
     ## Sep 2009 : ZIP
     ## Nov 2017: Much fixing of error handling.

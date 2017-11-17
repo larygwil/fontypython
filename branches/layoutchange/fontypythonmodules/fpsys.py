@@ -118,7 +118,7 @@ class PathControl:
             ## This is the user path I am going to use:
             ## $XDG_CONFIG_HOME/fontconfig/conf.d
             fcp = "fontconfig/conf.d"
-            fcp = os.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
+            fcp = os.path.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
             if os.path.exists( fcp ):
                 PathControl.__fontconfig_confd = fcp
 
@@ -319,14 +319,19 @@ class PathControl:
     def probeNoFontypythonDirError(self):
         self.__raiseOrContinue("NoFontypythonDir")
 
+    def probeNoFontconfigDirError(self):
+        self.__raiseOrContinue("NoFontconfigDir")
+
     def probeAllErrors(self):
         """
         For outsiders to probe these errors.
-        Most serious first. The last one means fonts can be viewed, but not installed.
+        Most serious first. The NoFontsDir one means fonts can 
+        be viewed, but not installed.
         """
         self.__raiseOrContinue("NoFontypythonDir")
         self.__raiseOrContinue("UpgradeFail")
         self.__raiseOrContinue("NoFontsDir")
+        self.__raiseOrContinue("NoFontconfigDir")
 
     def appPath(self):
         """Supplies the "fontypython" application directory."""
@@ -621,7 +626,7 @@ class Configure:
         self.text = Configure.atoz
         self.points = 64
         #Nov 2017
-        self.max_num_columns = 1
+        self.max_num_columns = 1 #Beware 0 = divide by zero
         self.lastview = "EMPTY" # a pog name or a folder path.
         self.usegui = "wxgui"
         self.max = True
@@ -637,7 +642,6 @@ class Configure:
 
         ## Oct 2009 -- The Character Map Controller.
         self.CMC = charmaps.CharMapController(  self.app_char_map_set )
-
 
         try:
             iPC.probeNoFontypythonDirError()

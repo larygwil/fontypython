@@ -31,6 +31,8 @@ fc-list : file | grep donn
 
 (I wonder if this could be a way to limit font cruft in choosers?)
 
+
+
 XGD info
 ===
 There's a movement to standard desktop ideas. One of the is to use a standard config, data and cache directory system.
@@ -70,20 +72,17 @@ BUGS
 ==
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
 *HTML stuff returns to top on window resize. I think this is a wx bug/thing.
-
+* cli args - the argument is not being checked - can be missing and goes bad. e.g. --check= <--nothing= bad
 
 TODO
 ==
-* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. Still the old idea for an HTML style pager control.
+Cleanup stuff:
 * NB::Don't forget to remove the wx debug stuff on the app object
 * UPDATE CHANGELOG
 * UPDATE README
 * THE FUCKING MAN PAGE :(
 * Update the WXLAYOUTNOTES diagram.
-
-* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
-
-
+* Remove the whatgui switches
 * Fix % outside brackets _("") % out here, not inside.
    _("text {}").format(stuff)
 * comments that are stale
@@ -92,25 +91,35 @@ TODO
 * PEP8 all up in da hizzle - well, the tabs to spaces part.
 * it's, its ...
 
-* Fitmaps widths of textpencils ...
-* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
+* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
+* FUTURE TODO: Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 * command line arg to print fonts in a pog...?
 * All command args have kind of shitty naming... Do I dare change them now?
 
-* key value error in config: when i add new keys, it bars and makes a new config file
-  This means all user's settings go poof. To fix this will take me a hell of a long time
-  and I'd rather spend that time in other places.
-  WONTFIX: it's not that serious anyway. Fonty's not that complex.
-
+* Sliders for point size, num cols etc. in settings?
 
 * Distinguish TTC|OTC somehow
 
 HUSH TODO
 ==
-* fpsys -> introduce the .config path too. :(
-* also: look for ~/.local/share explicitly if the GLib thing fails. Before falling back to old paths.
+* Add help info into cli and html
 
+
+FUTURE TODOS
+============
+* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
+* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
+* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
+
+* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
+* Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
+
+* WONTFIXNOW: key value error in config: when i add new keys, it bars and makes a new config file
+  This means all user's settings go poof. To fix this will take me a hell of a long time
+  and I'd rather spend that time in other places.
+  It's not that serious anyway. Fonty's not that complex.
 
 
 Oct 2017: A new Segfault!
@@ -151,16 +160,6 @@ How many do I have to cover?
     NOT YET ?? BDF fonts (including anti-aliased ones)
     NOT YET ?? PFR fonts
     NOT YET ?? Type 42 fonts (limited support)
-
-
-FUTURE IDEAS
-============
-* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
-* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
-* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
-* DONE! A font inspector - open a dialogue showing all the glyphs at each character position. This has been asked for, but may not make it into Fonty soon.
-
-
 
 
 
