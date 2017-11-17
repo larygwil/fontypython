@@ -43,11 +43,27 @@ try:
     ## '/home/donn/.local/share'
     from gi.repository import GLib
     XDG_DATA_HOME = GLib.get_user_data_dir() # ?? What kinds of errors can happen here?
+    XDG_CONFIG_HOME = GLib.get_user_config_dir()
 except:
-    # Bad things happened.
-    # "" vs None. When os.path.exists happens (later), None chokes. os.path.exists("") gives False, which is good.
+    ## Bad things happened.
+    ## Let's try a direct approach:
+    ## I set these to "" (vs None.) 
+    ##   When os.path.exists happens (later), None chokes. 
+    ##   os.path.exists("") gives False, which is good.
     XDG_DATA_HOME = ""
-    pass 
+    XDG_CONFIG_HOME = ""
+    try:
+        home = os.environ["HOME"] # Is a byte string under Linux.
+        try2 = os.path.join(home, ".local", "share")
+        if os.path.exists(try2): XDG_DATA_HOME = try2
+        try2 = ps.path.join(home, ".config")
+        if os.path.exists(try2): XDG_CONFIG_HOME = try2
+    except:
+        pass
+     
+#print XDG_DATA_HOME
+#print XDG_CONFIG_HOME
+#raise SystemExit
 
 ## debug test
 ##XDG_DATA_HOME = ""
@@ -64,9 +80,13 @@ class PathControl:
     . Switches on whether there exists a valid XDG_DATA_HOME directory.
        No : Falls-back to old ~/.fontypython and ~/.fonts (makes both if needs).
        Yes: Starts an "upgrade"
-            Makes new fontypython and fonts (if needs).
+            Makes new fontypython and fonts (if needs). Yes I am going to 
+            put all my shit in data_home.
             Moves all old contents into new fontypython.
             Moves all symlinks that were in ~/.fonts into new fonts.
+
+    . TODO Provides a config_home for my fontconfig hush code that's pending.
+
     . Provides methods to look for what errors happened after __init__
     . Provide paths for fontypython.
     . Provide list of pog names (without the .pog extension).
@@ -78,8 +98,9 @@ class PathControl:
     __fp_dir = "" # "" vs None. When os.path.exists happens, None chokes. "" gives False.
     __fonts_dir = ""
     __app_conf = ""
+    __fontconfig_confd = ""
 
-    def __init__( self, XDG_DATA_HOME ):
+    def __init__( self, XDG_DATA_HOME, XDG_CONFIG_HOME ):
 
         self.__ERROR_STATE={}
 
@@ -89,6 +110,18 @@ class PathControl:
             raise SystemExit
         else:
             PathControl.__FIRSTRUN = False
+
+            ## Fontconfig
+            ## ==
+            ## According to the spec:
+            ## https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
+            ## This is the user path I am going to use:
+            ## $XDG_CONFIG_HOME/fontconfig/conf.d
+            fcp = "fontconfig/conf.d"
+            fcp = os.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
+            if os.path.exists( fcp ):
+                PathControl.__fontconfig_confd = fcp
+
 
             ## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
             ## I don't know if this is even a possibility, because the docs are horrible.. :|
@@ -311,6 +344,9 @@ class PathControl:
     def home(self):
         #Not gonna bother error checking HOME
         return PathControl.__HOME
+
+    def user_fontconfig_confd(self):
+        return PathControl.__fontconfig_confd
 
     def getPogNames(self, someotherpath=None):
         """
@@ -888,7 +924,7 @@ def rm_lastFontBeforeSegfault_file():
 LSP = linux_safe_path_library.linuxSafePath()
 
 ## Ensure we have "fontypython" and "fonts" dirs.
-iPC = PathControl(XDG_DATA_HOME)
+iPC = PathControl(XDG_DATA_HOME, XDG_CONFIG_HOME)
 
 
 

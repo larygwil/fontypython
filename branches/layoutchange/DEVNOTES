@@ -98,7 +98,11 @@ TODO
 * command line arg to print fonts in a pog...?
 * All command args have kind of shitty naming... Do I dare change them now?
 
-* i HAVE to do the font mute thing....
+* key value error in config: when i add new keys, it bars and makes a new config file
+  This means all user's settings go poof. To fix this will take me a hell of a long time
+  and I'd rather spend that time in other places.
+  WONTFIX: it's not that serious anyway. Fonty's not that complex.
+
 
 * Distinguish TTC|OTC somehow
 
