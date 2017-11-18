@@ -95,7 +95,7 @@ def hush( pog ):
     has been done there, and errors were shown, etc.
     Thus we know fontconfig is installed and we can proceeed.
     """
-    def printer( pstr = "" ):
+    def printer( pstr = "", key = None ):
         pstr = fpsys.LSP.ensure_unicode(pstr)
         print pstr
 
@@ -108,6 +108,39 @@ def hush( pog ):
         print
         print strings.hush_howto
 
+def hush( pog ):
+    """
+    Called from cli2.py
+    A test for XDG_CONFIG_HOME as well as fontconfig/conf.d/
+    has been done there, and errors were shown, etc.
+    Thus we know fontconfig is installed and we can proceeed.
+    """
+    def printer( pstr = "", key = None ):
+        pstr = fpsys.LSP.ensure_unicode(pstr)
+        print pstr
+
+    buglist = fpsys.hush_with_pogs([pog], printer)
+
+    if buglist: 
+        ## All errors end with this text:
+        print strings.cant_hush
+        for bug in buglist: print bug
+        print
+        print strings.hush_howto
+
+def unhush( ):
+    def printer( pstr = "", key = None ):
+        pstr = fpsys.LSP.ensure_unicode(pstr)
+        print pstr
+
+    buglist = fpsys.un_hush( printer )
+
+    if buglist: 
+        ## All errors end with this text:
+        print strings.cant_unhush
+        for bug in buglist: print bug
+        print
+        print strings.hush_howto
 
 def zip( pog ):
     ## Sep 2009 : ZIP

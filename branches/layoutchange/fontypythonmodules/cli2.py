@@ -48,6 +48,7 @@ class situation(object):
     allrecurse = None
     cat = None
     hush = None
+    unhush = None
     zip = None
 
 ## If non-ascii chars get entered on the cli, say a Japanese word for
@@ -73,7 +74,7 @@ try:
     opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldfc:ei:u:s:n:p:a:A:z:",
     ["help", "version", "list", "dir", "lsfonts", "check=","examples","install=",
     "uninstall=","size=","number=","purge=","all=","all-recurse=","zip=", 
-    "cat=", "hush=" # these two have no short opts.
+    "cat=", "hush=", "unhush" # these have no short opts.
     ])
 except getopt.GetoptError, err:
     print _("Your arguments amuse me :) Please read the help.")
@@ -193,6 +194,10 @@ for option, argument in opts:
         situation.hush = True
         situation.pog = argument
 
+    elif option == "--unhush":
+        strictly_cli_context_only = True
+        situation.unhush = True
+
     else:
         ## We should not reach here at all.
         print _("Weirdo error. Keep calm and panic.")
@@ -224,9 +229,12 @@ if strictly_cli_context_only:
         e.print_error()
 
     except fontybugs.NoFontconfigDir as e:
-        if situation.hush:
+        if situation.hush or situation.unhush:
             ## Hushing requires fontconfig etc.
-            print strings.cant_hush
+            if situation.hush:
+                print strings.cant_hush
+            else:
+                print strings.cant_unhush
             print
             print strings.hush_howto
             e.print_error_and_quit()
@@ -268,6 +276,7 @@ if strictly_cli_context_only:
     if situation.cat: clifuncs.cat( situation.pog )
 
     if situation.hush: clifuncs.hush( situation.pog )
+    if situation.unhush: clifuncs.unhush( )
 
     ## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
     ## context has no meaning, so we'll simply ignore them.

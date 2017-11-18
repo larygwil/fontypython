@@ -298,8 +298,8 @@ The file "COPYING" cannot be found. Please check the installation directory for 
 
 ## Hush strings
 cant_hush = _("Can't hush!")
-hush_howto = _("""How to use hush.
-Hushing
+cant_unhush = _("Can't unhush!")
+hush_howto = _("""Hushing
 ==
 Have a Pog prepared that contains system fonts of some kind. Without these
 fonts, your apps might fail in weird ways. Have at least a sans, a serif 
@@ -314,4 +314,5 @@ Unhushing
 ==
 To release the hush, use --unhush from the command line, or ... in the gui.
 
-All the various fonts will be restored.""").format(fp="fontypython")
+The Pog(s) you installed when you hushed will be left installed. Remove
+it/them if you must.""").format(fp="fontypython")

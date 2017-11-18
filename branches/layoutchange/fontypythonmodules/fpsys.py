@@ -479,20 +479,37 @@ def getSegfontsList():
         ##TODO ??
         raise
 
-
+HUSH_XML_FILE="1.fontypythonhusher.conf"
+HUSH_XML="""<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+ <selectfont>
+  <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+ </selectfont>
+</fontconfig>"""
 def create_hush_xml():
-    pass
+    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+    f = open( paf, "w" )
+    hxml = LSP.ensure_bytes( HUSH_XML )
+    f.write( hxml )
+    f.close()
+
 def delete_hush_xml():
-    pass
+    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+    os.unlink(paf)
 
 def hush_with_pogs( poglist, printer ):
+    """
+    The printer func is under dev - aiming for a way to use this
+    same func from the gui and cli
+    """
     bugs = []
-    printer(_("Trying to hush..."))
+    printer(_("Trying to hush..."), key="starting")
     for pog in poglist:
         if isPog( pog ):
             hushpog = fontcontrol.Pog( pog )
             ## gen and install it!
-            printer( _(u"Installing (%s)") % pog)
+            printer( _(u"Installing (%s)") % pog, key="installing")
             try:
                 hushpog.genList()
                 ## Aside: it is not an error to 
@@ -500,7 +517,7 @@ def hush_with_pogs( poglist, printer ):
                 ## to worry about toggling this hush/unhush
                 ## thing.
                 hushpog.install()
-                raise fontybugs.PogInvalid
+                ##TESTING: raise fontybugs.PogInvalid
 
             except (fontybugs.PogInvalid,
                     fontybugs.PogEmpty,
@@ -523,10 +540,26 @@ def hush_with_pogs( poglist, printer ):
             
     if not bugs:
         printer( _("Done. A hush settles over your fonts. " \
-                    "Go: work in silence." ) )
+                    "Go: work in silence." ), key="success" )
     return bugs
 
+def un_hush( printer ):
+    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+    if not os.path.exists(paf):
+        printer (_("The hush is not on. Nothing to do."))
+        return
+    bugs = []
+    try:
+        printer( _("Trying to unhush..."), key = "starting")
+        delete_hush_xml()
+    except Exception as e:
+        raise
+        bugs.append(e)
 
+    if not bugs:
+        printer( _("The noise has returned; the hush is gone."),
+                key="success")
+    return bugs
 
 
 def checkFonts( dirtocheck, printer ):
