@@ -46,7 +46,7 @@ class situation(object):
     allfromfolder = None
     alltargetpog=[]
     allrecurse = None
-    catpug = None
+    cat = None
     hush = None
     zip = None
 
@@ -73,7 +73,7 @@ try:
     opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldfc:ei:u:s:n:p:a:A:z:",
     ["help", "version", "list", "dir", "lsfonts", "check=","examples","install=",
     "uninstall=","size=","number=","purge=","all=","all-recurse=","zip=", 
-    "cat=", "hush" # these two have no short opts.
+    "cat=", "hush=" # these two have no short opts.
     ])
 except getopt.GetoptError, err:
     print _("Your arguments amuse me :) Please read the help.")
@@ -150,7 +150,7 @@ for option, argument in opts:
         try:
             n = int(argument)
         except:
-            print _("Please use argument number for %s") % option
+            print strings.please_use_arg % option
             raise SystemExit
         situation.points = n
 
@@ -159,7 +159,7 @@ for option, argument in opts:
         try:
             n = int(argument)
         except:
-            print _("Please use a number for argument %s") % option
+            print strings.please_use_arg % option
             raise SystemExit
         situation.numinpage = n
 
@@ -191,6 +191,7 @@ for option, argument in opts:
     elif option == "--hush":
         strictly_cli_context_only = True
         situation.hush = True
+        situation.pog = argument
 
     else:
         ## We should not reach here at all.
@@ -213,15 +214,21 @@ if strictly_cli_context_only:
 
     ## This one is a warning only.
     except fontybugs.NoFontsDir as e:
-        e.print_error()
         ## Hushing requires installing a certain POG, hence 
         ## must have fonts dir.
         if situation.hush:
-            raise SystemExit
+            print strings.cant_hush
+            print
+            print strings.hush_howto
+            e.print_error_and_quit()
+        e.print_error()
+
     except fontybugs.NoFontconfigDir as e:
         if situation.hush:
             ## Hushing requires fontconfig etc.
-            print _("Can't hush.")
+            print strings.cant_hush
+            print
+            print strings.hush_howto
             e.print_error_and_quit()
         ## don't print any error here.
 
@@ -245,10 +252,10 @@ if strictly_cli_context_only:
     ## Purge
     if situation.purge: clifuncs.purgepog( situation.purge )
 
-    ## Install
+    ## Install - .install is actually a list in this case
     if situation.install: clifuncs.installpogs( situation.install )
 
-    ## Uninstall
+    ## Uninstall - ditto
     if situation.uninstall: clifuncs.uninstallpogs( situation.uninstall )
 
     ## Install ALL fonts in folder to given pog.
@@ -260,7 +267,7 @@ if strictly_cli_context_only:
 
     if situation.cat: clifuncs.cat( situation.pog )
 
-    if situation.hush: clifuncs.hush()
+    if situation.hush: clifuncs.hush( situation.pog )
 
     ## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
     ## context has no meaning, so we'll simply ignore them.

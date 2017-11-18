@@ -121,6 +121,10 @@ class PathControl:
             fcp = os.path.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
             if os.path.exists( fcp ):
                 PathControl.__fontconfig_confd = fcp
+            else:
+                ##Prepare an error for later probing
+                self.__ERROR_STATE["NoFontconfigDir"] = \
+                    fontybugs.NoFontconfigDir( path = fcp )
 
 
             ## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
@@ -474,6 +478,55 @@ def getSegfontsList():
     except:
         ##TODO ??
         raise
+
+
+def create_hush_xml():
+    pass
+def delete_hush_xml():
+    pass
+
+def hush_with_pogs( poglist, printer ):
+    bugs = []
+    printer(_("Trying to hush..."))
+    for pog in poglist:
+        if isPog( pog ):
+            hushpog = fontcontrol.Pog( pog )
+            ## gen and install it!
+            printer( _(u"Installing (%s)") % pog)
+            try:
+                hushpog.genList()
+                ## Aside: it is not an error to 
+                ## install again - hence I don't need
+                ## to worry about toggling this hush/unhush
+                ## thing.
+                hushpog.install()
+                raise fontybugs.PogInvalid
+
+            except (fontybugs.PogInvalid,
+                    fontybugs.PogEmpty,
+                    fontybugs.PogAllFontsFailedToInstall,
+                    fontybugs.PogSomeFontsDidNotInstall,
+                    fontybugs.NoFontsDir ), e:
+                bugs.append(e.get_error_string())
+        ## The arg was not a valid pog.
+        else:
+            bugs.append(_("(%s) cannot be found. " \
+                          "Try -l to see the names.")
+                            % pog )
+    ## Only if that/those pog/s was 100% do we hush:
+    ## This process can accrue new bugs too.
+    if not bugs:
+        try:
+            create_hush_xml()
+        except Exception as e:
+            bugs.append(e)
+            
+    if not bugs:
+        printer( _("Done. A hush settles over your fonts. " \
+                    "Go: work in silence." ) )
+    return bugs
+
+
 
 
 def checkFonts( dirtocheck, printer ):

@@ -16,8 +16,11 @@
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import wx
+import subprocess
 
+"""
+This is how you can get the system font from wx into python:
+import wx
 tmpapp = TmpApp(0)
 #app.MainLoop()
 class TmpApp(wx.App):
@@ -25,40 +28,27 @@ class TmpApp(wx.App):
         return True
 
 wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-SYS_POG_NAME="SYS"
-
 c = subprocess.check_output(['fc-list','--format=%{file}:',wxfont.GetFaceName()])
 if c: 
     l = c.split(":")
     l = l.remove("")
 
-## all done in cli2.py : fpsys.probeNoFontconfigDir and assoc err reporting
+Now you have the full pafs to all the system fonts in a list.
 
+sundry:
 
-def get_or_make_SYS_pog():
-    syspog = fontcontrol.Pog(SYS_POG_NAME)
-    if not fpsys.isPog(SYS_POG_NAME):
-        try:
-            syspog.write()
-        except fontybugs.PogWriteError, e:
-            e.print_error_and_quit()
-    return syspog
-
-def is_syspog_valid(syspog):
+def is_fclist_installed():
     try:
-        syspog.genList()
-    #except fontybugs.PogInvalid, e:
+        # run fc-list -V (version output)
+        c = subprocess.check_output(["fc-list" ,"-V"])
     except:
+        # nope
         return False
     return True
 
+"""
 
-Seek the SYS pog
-Make the SYS pog
-Check SYS pog empty
-Choose a default sys font and put into SYS pog
-INstall the SYS pog
-Uninstall the SYS pog
-create the XML
-remove the XML
+
+
+xmlpaf = 
 

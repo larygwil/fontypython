@@ -72,6 +72,9 @@ class Errors ( Exception ):
         print self._format_error()
         raise SystemExit
 
+    def get_error_string(self):
+        return self._format_error()
+
 
 class BadVoodoo ( Errors ):
     def __init__ ( self, item = None):
@@ -151,7 +154,7 @@ class NoFontypythonDir(Errors):
     def __unicode__(self):
 
         #import pdb; pdb.set_trace()
-        return _(u"The {path} directory cannot be created or found.\n" \
+        return _(u"The \"{path}\" directory cannot be created or found.\n" \
                 "Fonty cannot run until it exists. " \
                 "Please create it, and start me again." \
                 "\nExample:\n\tcd {subpath}\n\tmkdir fontypython" \
@@ -165,7 +168,7 @@ class NoFontsDir(Errors):
         self.path = path
         self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"WARNING:\nThe {path} directory cannot be created or found.\n" \
+        return _(u"WARNING:\nThe \"{path}\" directory cannot be created or found.\n" \
                 "Fonts cannot be installed until it exists. " \
                 "Please create it, and start me again." \
                 "\nExample:\n\tcd {subpath}\n\tmkdir fonts" \
@@ -177,18 +180,21 @@ class NoFontsDir(Errors):
         """Used in gui; see the statusbar code."""
         return _(u"Missing fonts directory. See Help.")
 
+
+
 class NoFontconfigDir(Errors):
-    def __init__(self,path, associated_err):
+    def __init__(self, path):
         self.path = path
-        self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"WARNING:\nThe {path} directory cannot be created or found.\n" \
-                "The python error was: {assocerr}\n\n").format(
-                        path = self.path,
-                        assocerr = self.associated_err)
+        return _(u"WARNING:\nThe fontconfig \"{path}\" directory " \
+                  "cannot be created or found.\n").format(
+                          path = self.path )
     def short_unicode_of_error(self):
         """Used in gui; see the statusbar code."""
-        return _(u"Missing {} directory. See Help.".format(self.path))
+        return _(u"Missing fontconfig \"{}\" directory. " \
+                  "See Help.".format(self.path))
+
+
 
 class UpgradeFail(Errors):
     """
@@ -200,4 +206,7 @@ class UpgradeFail(Errors):
         self.msg = msg
         self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"Failure during upgrade:\n{msg}\n\nThe python error was: {assocerr}\n\n").format(msg = self.msg,assocerr = self.associated_err)
+        return _(u"Failure during upgrade:\n{msg}\n\n" \
+                  "The python error was: {assocerr}\n\n").format(
+                          msg = self.msg,
+                          assocerr = self.associated_err)

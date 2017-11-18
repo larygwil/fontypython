@@ -741,7 +741,9 @@ class Pog(BasicFontList):
             #raise fontybugs.PogContentEncodingNotMatched( self.paf )
 
         ## Now to make Fontitems out of sourceList
-        for fi in itemGenerator( self, sourceList):
+        #for fi in itemGenerator( self, sourceList):
+        items_generated = itemGenerator( self, sourceList)
+        for fi in items_generated:
             self.append(fi) # store them in myself.
 
     def purge(self):

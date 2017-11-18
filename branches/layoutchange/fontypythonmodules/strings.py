@@ -21,6 +21,9 @@
 import fpversion
 import os
 
+## Some repeated strings
+please_use_arg = _("Please use a number for argument %s")
+
 ##copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
 copyright = u"Fonty Python Copyright © 2017 Donn.C.Ingle"
 contact = "Email: donn.ingle@gmail.com"
@@ -292,3 +295,23 @@ except:
 
 The file "COPYING" cannot be found. Please check the installation directory for the licence.
 """
+
+## Hush strings
+cant_hush = _("Can't hush!")
+hush_howto = _("""How to use hush.
+Hushing
+==
+Have a Pog prepared that contains system fonts of some kind. Without these
+fonts, your apps might fail in weird ways. Have at least a sans, a serif 
+and a mono font in that Pog.
+
+To hush from the comand line do this:
+{fp} --hush yourpoghere
+
+To hush from the gui, ...
+
+Unhushing
+==
+To release the hush, use --unhush from the command line, or ... in the gui.
+
+All the various fonts will be restored.""").format(fp="fontypython")
