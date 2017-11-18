@@ -300,18 +300,19 @@ The file "COPYING" cannot be found. Please check the installation directory for 
 cant_hush = _("Can't hush!")
 cant_unhush = _("Can't unhush!")
 hush_howto = _("""Hushing
-==
+=======
 Have a Pog prepared that contains system fonts of some kind. Without these
-fonts, your apps might fail in weird ways. Have at least a sans, a serif 
-and a mono font in that Pog.
+fonts, your apps may fail. 
 
-To hush from the comand line do this:
+Have at least a sans, a serif and a mono font in that Pog.
+
+To hush from the command line do this:
 {fp} --hush yourpoghere
 
 To hush from the gui, ...
 
 Unhushing
-==
+=========
 To release the hush, use --unhush from the command line, or ... in the gui.
 
 The Pog(s) you installed when you hushed will be left installed. Remove

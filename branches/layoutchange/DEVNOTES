@@ -73,6 +73,12 @@ BUGS
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
 *HTML stuff returns to top on window resize. I think this is a wx bug/thing.
 * cli args - the argument is not being checked - can be missing and goes bad. e.g. --check= <--nothing= bad
+  (Noticed it does not happen all the time. hard to pin)
+* cli -- there's no thought to when a command stops the app. Do we allow many things to run in sequence, or stop each time?
+  i.e. can multiple command line options all happen, or will only the ones that match in the if situation.x tests 
+  happen? Is the order random or does it have meaning? etc.
+
+
 
 TODO
 ==
@@ -95,7 +101,6 @@ Cleanup stuff:
 
 * FUTURE TODO: Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
 * Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
-* command line arg to print fonts in a pog...?
 * All command args have kind of shitty naming... Do I dare change them now?
 
 * Sliders for point size, num cols etc. in settings?
@@ -104,6 +109,7 @@ Cleanup stuff:
 
 HUSH TODO
 ==
+* Get gui interface going: it can be a button under the target pogs!
 * Add help info into cli and html
 
 

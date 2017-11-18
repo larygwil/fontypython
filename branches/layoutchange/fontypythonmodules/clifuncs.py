@@ -128,7 +128,7 @@ def hush( pog ):
         print
         print strings.hush_howto
 
-def unhush( ):
+def unhush():
     def printer( pstr = "", key = None ):
         pstr = fpsys.LSP.ensure_unicode(pstr)
         print pstr

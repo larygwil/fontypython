@@ -18,6 +18,11 @@ The reject file is:
  </selectfont>
 </fontconfig>
 
+Plan A is the one I am going with. As of Nov 2017, it's working! :D
+
+
+OLDER info
+===
 Reply from the fontconfig list:
 > Akira TAGOH <akira@tagoh.org> wrote:
 > Are you asking if there are any way to do something in XML instead of "ln -s"?
@@ -40,6 +45,7 @@ Reply from the fontconfig list:
 I tested it, it does not work. :(
 
 He got back to me with a vers that works!
+
 <?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
 <fontconfig>
@@ -53,7 +59,43 @@ He got back to me with a vers that works!
     </acceptfont>
   </selectfont>
 </fontconfig>
---
+
+USEFUL CODE
+===========
+This is how you can get the system font from wx into python. The wx.Font object
+does not contain a paf (as far as I could detect.) Therefore we must also employ
+fc-list...
+
+import wx
+tmpapp = TmpApp(0) # must happen in order for wx to work at all.
+#app.MainLoop()
+class TmpApp(wx.App):
+    def OnInit(self):
+        return True
+
+wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+
+c = subprocess.check_output(['fc-list','--format=%{file}:',wxfont.GetFaceName()])
+if c: 
+    l = c.split(":")
+    l = l.remove("")
+
+Now you have the full pafs to all the system fonts in a list.
+
+sundry:
+
+def is_fclist_installed():
+    try:
+        # run fc-list -V (version output)
+        c = subprocess.check_output(["fc-list" ,"-V"])
+    except:
+        # nope
+        return False
+    return True
+
+
+GEN
+===
 
 fc-query 
 tells you what fontconfig understand about the font file. Notably what attributes the file is for (for bitmap fonts for example) and what attributes can be used (for vector fonts).

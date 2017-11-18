@@ -487,14 +487,14 @@ HUSH_XML="""<?xml version="1.0"?>
   <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
  </selectfont>
 </fontconfig>"""
-def create_hush_xml():
-    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-    f = open( paf, "w" )
-    hxml = LSP.ensure_bytes( HUSH_XML )
-    f.write( hxml )
-    f.close()
 
 def delete_hush_xml():
+    """
+    The existence of the fontconfig conf.d directory has all
+    been confirmed before code gets here.
+    See cli2.py, for example. It happens in a probeAllErrors call.
+    """
+    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
     paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
     os.unlink(paf)
 
@@ -502,6 +502,10 @@ def hush_with_pogs( poglist, printer ):
     """
     The printer func is under dev - aiming for a way to use this
     same func from the gui and cli
+
+    The existence of the fontconfig conf.d directory has all
+    been confirmed before code gets here.
+    See cli2.py, for example. It happens in a probeAllErrors call.
     """
     bugs = []
     printer(_("Trying to hush..."), key="starting")
@@ -530,30 +534,38 @@ def hush_with_pogs( poglist, printer ):
             bugs.append(_("(%s) cannot be found. " \
                           "Try -l to see the names.")
                             % pog )
-    ## Only if that/those pog/s was 100% do we hush:
+    ## Only if that was 100% do we hush:
     ## This process can accrue new bugs too.
     if not bugs:
         try:
-            create_hush_xml()
+            paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+            f = open( paf, "w" )
+            hxml = LSP.ensure_bytes( HUSH_XML )
+            f.write( hxml )
+            f.close()
         except Exception as e:
             bugs.append(e)
             
     if not bugs:
         printer( _("Done. A hush settles over your fonts. " \
-                    "Go: work in silence." ), key="success" )
+                    "Go: work in silence."), key="success" )
     return bugs
 
 def un_hush( printer ):
+    """
+    The existence of the fontconfig conf.d directory has all
+    been confirmed before code gets here.
+    See cli2.py, for example. It happens in a probeAllErrors call.
+    """
     paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
     if not os.path.exists(paf):
-        printer (_("The hush is not on. Nothing to do."))
+        printer (_("The hush isn't there. Nothing to do."))
         return
     bugs = []
     try:
         printer( _("Trying to unhush..."), key = "starting")
         delete_hush_xml()
     except Exception as e:
-        raise
         bugs.append(e)
 
     if not bugs:
