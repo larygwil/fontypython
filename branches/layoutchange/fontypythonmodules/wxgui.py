@@ -310,8 +310,11 @@ class ReportPanel(DismissablePanel):
             self.printer.Clear()
             self.printer.Hide()
 
-    def printout(self, msg):
-        self.printer.write(msg + "\n")
+    def printout(self, msg, key=None):
+        if key: 
+            self.printer.write(key + "\n")
+            self.printer.write("----" + "\n")
+        self.printer.write(fpsys.LSP.ensure_unicode(msg)+ "\n")
         if not self.printer.IsShown(): 
             self.printer.Show()
             self.Layout()
@@ -802,7 +805,7 @@ class MainFrame(wx.Frame):
         ## 1. TargetPogChooser.multiClick --> Skip() to
         ## 2. Here.toggle_dismissable_panel --> Skip() to
         ## 3. Here:
-        ## See the Bind just below.
+        ## See the Bind to toggle_dismissable_panel just below.
         self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
         self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_unhush_button)
 
@@ -1010,8 +1013,8 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        print "toggleSelectionMenuItem runs."
-        print evt.GetId()
+        #print "toggleSelectionMenuItem runs."
+        #print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
         #print "got flag:", flag
         if flag:
@@ -1155,37 +1158,28 @@ class MainFrame(wx.Frame):
     def do_hush_unhush(self, e):
         id = e.GetId()
         print "do_hush_unhush {}".format(id)
-        return
+
+.. probeNoFontconfigDirError
+.. then report the fail
+
+
+        buglist = []
         if id == id_hush_button:
-            def printer( pstr = "", key = None ):
-                pstr = fpsys.LSP.ensure_unicode(pstr)
-                print pstr
-
-            buglist = fpsys.hush_with_pogs([pog], printer)
-
-            if buglist: 
-                ## All errors end with this text:
-                print strings.cant_hush
-                for bug in buglist: print bug
-                print
-                print strings.see_help_hush
+            printer = self.hush_panel.printout 
+            pogs = self.panelTargetPogChooser.list_of_target_pogs_selected
+            #printer( u"".join(pogs) )
+            buglist = fpsys.hush_with_pogs( pogs, printer )
 
         elif id == id_unhush_button:
-            def printer( pstr = "", key = None ):
-                pstr = fpsys.LSP.ensure_unicode(pstr)
-                print pstr
-
+            printer = self.unhush_panel.printout 
             buglist = fpsys.un_hush( printer )
 
-            if buglist: 
-                ## All errors end with this text:
-                print strings.cant_unhush
-                for bug in buglist: print bug
-                print
-                print strings.see_help_hush
-
-
-
+        if buglist: 
+            ## All errors end with this text:
+            printer( strings.cant_hush, key="title")
+            for bug in buglist: printer( bug )
+            printer()
+            printer( strings.see_help_hush, key="Help" )
 
 
     def do_pog_zip(self, e):
@@ -1338,7 +1332,8 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
             fpsys.iPC.probeAllErrors()
 
         ## App stopping errors:
-        except (fontybugs.NoFontypythonDir, fontybugs.UpgradeFail) as e:
+        except (fontybugs.NoFontypythonDir,
+                fontybugs.UpgradeFail ) as e:
             wx.MessageBox( e.unicode_of_error(),
                 caption=_("FATAL ERROR"),
                 style=wx.OK | wx.ICON_ERROR )
@@ -1346,7 +1341,8 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
             raise SystemExit
 
         ## Warning only
-        except fontybugs.NoFontsDir as e:
+        except (fontybugs.NoFontsDir,
+                fontybugs.NoFontconfigDir ) as e:
             ## This looks horrible. I will remark it.
             ## The app deals with it in context.
             #    wx.MessageBox( e.unicode_of_error(),

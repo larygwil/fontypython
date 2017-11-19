@@ -85,7 +85,7 @@ def cat( pog ):
         return
     print cat_res
 
-def hush( pog ):
+def hush_unhush( pog, switch = None):
     """
     Called from cli2.py
     A test for XDG_CONFIG_HOME as well as fontconfig/conf.d/
@@ -96,28 +96,17 @@ def hush( pog ):
         pstr = fpsys.LSP.ensure_unicode(pstr)
         print pstr
 
-    buglist = fpsys.hush_with_pogs([pog], printer)
+    if switch == "hush":
+        buglist = fpsys.hush_with_pogs([pog], printer)
+    else:
+        buglist = fpsys.un_hush( printer )
 
     if buglist: 
         ## All errors end with this text:
-        print strings.cant_hush
-        for bug in buglist: print bug
-        print
-        print strings.see_help_hush
-
-def unhush():
-    def printer( pstr = "", key = None ):
-        pstr = fpsys.LSP.ensure_unicode(pstr)
-        print pstr
-
-    buglist = fpsys.un_hush( printer )
-
-    if buglist: 
-        ## All errors end with this text:
-        print strings.cant_unhush
-        for bug in buglist: print bug
-        print
-        print strings.see_help_hush
+        printer( strings.cant_hush )
+        for bug in buglist: printer( bug )
+        printer ()
+        printer( strings.see_help_hush )
 
 def zip( pog ):
     ## Sep 2009 : ZIP

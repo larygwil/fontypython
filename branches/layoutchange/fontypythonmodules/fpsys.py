@@ -952,6 +952,9 @@ def hush_with_pogs( poglist, printer ):
     been confirmed before code gets here.
     See cli2.py, for example. It happens in a probeAllErrors call.
     """
+    if len(poglist) == 0:
+        printer(_("Please choose a target Pog with system fonts to install."))
+        return
     bugs = []
     printer(_("Trying to hush..."), key="starting")
     for pog in poglist:

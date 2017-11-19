@@ -49,8 +49,8 @@ class situation(object):
     alltargetpog=[]
     allrecurse = None
     cat = None
-    hush = None
-    unhush = None
+    hush = False
+    unhush = False
     zip = None
 
 ## If non-ascii chars get entered on the cli, say a Japanese word for
@@ -304,8 +304,8 @@ if strictly_cli_context_only:
 
     elif situation.cat: clifuncs.cat( situation.pog )
 
-    elif situation.hush: clifuncs.hush( situation.pog )
-    elif situation.unhush: clifuncs.unhush( )
+    elif situation.hush:   clifuncs.hush_unhush( situation.pog, switch = "hush" )
+    elif situation.unhush: clifuncs.hush_unhush( None, switch = "unhush" )
 
     ## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
     ## context has no meaning, so we'll simply ignore them.
