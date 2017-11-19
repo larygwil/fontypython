@@ -69,17 +69,25 @@ flag_help = 2
 flag_about = 4
 flag_settings = 8
 flag_choosedir = 16
+flag_hush = 32
+flag_unhush = 64
 
 ## ids
+## These are needed here, and to pass it into TargetPogChooser
 id_x_button=wx.NewId()
-id_zip_pog_button = wx.NewId() # I need it here, and to pass it into TargetPogChooser
+id_zip_pog_button = wx.NewId() 
 id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
+id_hush_button = wx.NewId()
+id_unhush_button = wx.NewId()
+
 # got a flag? get an id.
 id_from_flag = {
         flag_help       : wx.NewId(),
         flag_about      : wx.NewId(),
         flag_settings   : wx.NewId(),
-        flag_choosedir  : id_zip_pog_button
+        flag_choosedir  : id_zip_pog_button,
+        flag_hush       : id_hush_button,
+        flag_unhush     : id_unhush_button,
         }
 # got an id? get a flag.
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
@@ -269,6 +277,44 @@ class AboutPanel(DismissableHTMLPanel):
               "version": strings.version,
               "ticket" : strings.ticket_url,
               "GPL"    : strings.GPL.replace("\n","<br>")}
+
+
+class ReportPanel(DismissablePanel):
+    """
+    Prints shit.
+    """
+    def __init__(self, parent, flag, somelabel, someicon):
+        DismissablePanel.__init__(self,parent, flag, somelabel=somelabel, someicon=someicon ) 
+
+    def __post_init__(self):
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        self.printer = wx.TextCtrl(self,
+            -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
+        sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
+        self.printer.Hide()
+
+        self.Bind(wx.EVT_SHOW, self.show_or_hide)
+        return sizer
+
+    def show_or_hide(self,evt):
+        """The entire panel hide/show"""
+        if self.IsShown():
+            # I am being shown
+            if self.printer.IsEmpty():
+                self.printer.Hide()
+            else:
+                self.printer.Show()
+        else:
+            # I am being hidden ( esc, or x)
+            self.printer.Clear()
+            self.printer.Hide()
+
+    def printout(self, msg):
+        self.printer.write(msg + "\n")
+        if not self.printer.IsShown(): 
+            self.printer.Show()
+            self.Layout()
 
 
 
@@ -745,22 +791,29 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=self.id_selall)
         self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=self.id_selnone)
 
-        ## Nov 2017
-        ## Catch all stray button events: This is dealing with the 
-        ## close (X) button of the DismissablePanels at the moment.
-        self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel )
-
-        ## Catch the Apply button in the settings panel.
-        ## Placed *after* the generic catch for toggle_dismissable_panel
-        ## because it was being superceded.
+        ## Catch the Apply button *in* the settings panel.
         self.Bind(wx.EVT_BUTTON, self.apply_settings, id=wx.ID_APPLY)
 
-        ## Catch the Zip button in the choose_zipdir_panel 
-        ## Initial event caught and forwarded (Skip()) in TargetPogChooser
+        ## Catch the Zip button *in* the choose_zipdir_panel 
         self.Bind(wx.EVT_BUTTON, self.do_pog_zip, id=id_do_the_actual_zip)
 
+        ## Catch the Hush buttons - Second handler, after toggle_dismissable_panel runs.
+        ## The order was:
+        ## 1. TargetPogChooser.multiClick --> Skip() to
+        ## 2. Here.toggle_dismissable_panel --> Skip() to
+        ## 3. Here:
+        ## See the Bind just below.
+        self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
+        self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_unhush_button)
 
-
+        ## Nov 2017
+        ## Vague Bind. Not specific to id. Happens FIRST, even though it's
+        ## last in the code.
+        ## Catch any BUTTONS that should open a DismissablePanel
+        ## 1. The close (X) button of the DismissablePanels
+        ## 2. The ZIP button (Skip in TargetPogChooser)
+        ## 3. The Hush and Unhush buttons (Skip in TargetPogChooser)
+        self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel )
 
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
@@ -785,7 +838,7 @@ class MainFrame(wx.Frame):
             self.panelFontSources = FontSourcesPanel(self)
             self.panelFontSources.SetMinSize(ms)
 
-            self.panelTargetPogChooser = TargetPogChooser(self, id_zip_pog_button)
+            self.panelTargetPogChooser = TargetPogChooser(self, id_zip_pog_button, id_hush_button, id_unhush_button)
             self.panelTargetPogChooser.SetMinSize(ms)
 
             self.fontViewPanel = FontViewPanel(self)
@@ -806,9 +859,16 @@ class MainFrame(wx.Frame):
             self.settings_panel = SettingsPanel(self)
             self.settings_panel.Hide()
 
-            ## Zip Pog button
+            ## Zip Pog panel
             self.choose_zipdir_panel = ChooseZipDirPanel(self)
             self.choose_zipdir_panel.Hide()
+
+            ## Hush/Unhush panels
+            self.hush_panel = ReportPanel(self, flag_hush,
+                    _("Hush Report"), "fplogo")
+            self.unhush_panel = ReportPanel(self, flag_unhush,
+                    _("Unhush Report"), "fplogo")
+
 
             stsizer = wx.BoxSizer(wx.VERTICAL)
             stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
@@ -821,6 +881,8 @@ class MainFrame(wx.Frame):
             lrsizer.Add( self.about_panel, 1, wx.EXPAND )
             lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
             lrsizer.Add( self.choose_zipdir_panel, 1, wx.EXPAND )
+            lrsizer.Add( self.hush_panel, 1, wx.EXPAND )
+            lrsizer.Add( self.unhush_panel, 1, wx.EXPAND )
 
             self.SetSizer(lrsizer)
 
@@ -831,7 +893,9 @@ class MainFrame(wx.Frame):
                     flag_help    : self.help_panel,
                     flag_about   : self.about_panel,
                     flag_settings: self.settings_panel,
-                   flag_choosedir: self.choose_zipdir_panel
+                   flag_choosedir: self.choose_zipdir_panel,
+                   flag_hush     : self.hush_panel,
+                   flag_unhush   : self.unhush_panel 
             }
         elif self.whatgui == 3:
             #Very out of date. Left for future maybes.
@@ -946,13 +1010,16 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        #print "toggleSelectionMenuItem runs."
-        #print evt.GetId()
+        print "toggleSelectionMenuItem runs."
+        print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
         #print "got flag:", flag
         if flag:
             self.flag_state_exclusive_toggle(flag)
             self.hide_or_show_panels()
+
+        ## NB: I have more bindings after this handler is done:
+        evt.Skip()
 
 
     ##Only used if whatgui != 1
@@ -1082,6 +1149,45 @@ class MainFrame(wx.Frame):
             self.ensure_fontview_shown()
         return
 
+
+
+
+    def do_hush_unhush(self, e):
+        id = e.GetId()
+        print "do_hush_unhush {}".format(id)
+        return
+        if id == id_hush_button:
+            def printer( pstr = "", key = None ):
+                pstr = fpsys.LSP.ensure_unicode(pstr)
+                print pstr
+
+            buglist = fpsys.hush_with_pogs([pog], printer)
+
+            if buglist: 
+                ## All errors end with this text:
+                print strings.cant_hush
+                for bug in buglist: print bug
+                print
+                print strings.see_help_hush
+
+        elif id == id_unhush_button:
+            def printer( pstr = "", key = None ):
+                pstr = fpsys.LSP.ensure_unicode(pstr)
+                print pstr
+
+            buglist = fpsys.un_hush( printer )
+
+            if buglist: 
+                ## All errors end with this text:
+                print strings.cant_unhush
+                for bug in buglist: print bug
+                print
+                print strings.see_help_hush
+
+
+
+
+
     def do_pog_zip(self, e):
         """
         The button in the choose_zipdir_panel was clicked.
@@ -1091,7 +1197,7 @@ class MainFrame(wx.Frame):
         emsg = ""
         if todir:
             wx.BeginBusyCursor()
-            for p in self.panelTargetPogChooser.list_of_pogs_to_zip:
+            for p in self.panelTargetPogChooser.list_of_target_pogs_selected:
                 ipog = fontcontrol.Pog(p)
                 (bugs, fail, emsgs) = ipog.zip( todir )
                     

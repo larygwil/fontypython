@@ -314,6 +314,10 @@ except:
 The file "COPYING" cannot be found. Please check the installation directory for the licence.
 """
 
+
+ctrl_select_msg = _("Hold SHIFT or CTRL as you select Pogs, if you wish to select many at once.")
+
+
 ## Hush strings
 cant_hush = _("Can't hush because:")
 cant_unhush = _("Can't unhush because:")
@@ -339,6 +343,12 @@ Hushing
    I suggest these in /usr/share/fonts (where the '*' means 'whatever'): 
    DejaVu*, Free*, Ubuntu*, Liberation*
 
+The way it works is that fonty writes an XML file which rejects all fonts that 
+are on the path: "/usr/share/fonts"
+
+This may not work on your particular Linux distribution. Please open a ticket
+on our site if you have any trouble: {ticket_url}
+
 To hush from the command line do this:
 {fp} --hush yourpoghere
 
@@ -349,5 +359,5 @@ Unhushing
 To release the hush, use --unhush from the command line, or ... in the gui.
 
 The Pog(s) you installed when you hushed will be left installed. Remove
-it/them if you must.""").format(fp="fontypython")
+it/them if you must.""").format(fp="fontypython", ticket_url=ticket_url)
 ##{{fcpaf}} is doubled like that so I can swap it in later.

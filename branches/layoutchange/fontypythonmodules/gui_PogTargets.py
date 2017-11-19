@@ -38,6 +38,7 @@ from gui_PogChooser import *
 import fpsys # Global objects
 import fontyfilter
 import fontybugs
+import strings
 
 import fpwx
 
@@ -45,7 +46,7 @@ class TargetPogChooser(wx.Panel):
     """
     Far right-hand side control. Chooses target pogs. Houses control buttons.
     """
-    def __init__(self, parent, id_zip_pog_button):
+    def __init__(self, parent, id_zip_pog_button, id_hush, id_unhush ):
         wx.Panel.__init__(self, parent, id = -1)
 
         target_icon = fpwx.icon( self, 'icon_target' )
@@ -73,25 +74,33 @@ class TargetPogChooser(wx.Panel):
         self.idinstall = wx.NewId()
         self.iduninstall = wx.NewId()
         self.iddelete = wx.NewId()
-        #Sept 2009
-        self.idzip = id_zip_pog_button #Created in wxgui
+
+        ## Buttons will be handled in wxgui, so we pass ids in __init__
+        self.idzip = id_zip_pog_button
+        self.id_hush = id_hush
+        self.id_unhush = id_unhush
 
         self.buttNew = wx.Button(self, label = _("New Pog"), id = self.idnew )
         self.buttNew.SetToolTipString(_("Creates a new, empty Pog"))
 
-        self.buttInstall = wx.Button(self, label = _("Install Pog"), id = self.idinstall )
-        self.buttInstall.SetToolTipString(_("Installs all selected Pogs.\nHold SHIFT or CTRL as you select Pogs, if you wish to select many at once."))
+        self.buttInstall = wx.Button(self, label = _("Install Pog(s)"), id = self.idinstall )
+        self.buttInstall.SetToolTipString(_("Installs all selected Pogs.\n{}").format(strings.ctrl_select_msg))
 
-        self.buttUninstall = wx.Button(self, label = _("Uninstall Pog"), id = self.iduninstall )
-        self.buttUninstall.SetToolTipString(_("Uninstalls all selected Pogs.\nHold SHIFT or CTRL as you select Pogs, if you wish to select many at once."))
+        self.buttUninstall = wx.Button(self, label = _("Uninstall Pog(s)"), id = self.iduninstall )
+        self.buttUninstall.SetToolTipString(_("Uninstalls all selected Pogs.\n{}").format(strings.ctrl_select_msg))
 
-        self.buttDelete = wx.Button(self, label = _("Delete Pog") , id = self.iddelete)
+        self.buttDelete = wx.Button(self, label = _("Delete Pog(s)") , id = self.iddelete)
         self.buttDelete.SetToolTipString(_("Deletes the selected Pog(s)"))
 
         self.buttZip = wx.Button(self, label = _("Zip Pog(s)") , id = self.idzip)
-        self.buttZip.SetToolTipString(_("Save a zip file of the selected Pogs"))
-        self.list_of_pogs_to_zip = None # will be used in wxgui
+        self.buttZip.SetToolTipString(_("Save a zip file of the selected Pog(s)"))
+        self.list_of_target_pogs_selected = None # will be used in wxgui
 
+        self.buttHush = wx.Button(self, label = _("Hush with Pog(s)") , id = self.id_hush)
+        self.buttHush.SetToolTipString(_("Hush unwanted fonts by using the selected Pog(s)"))
+        
+        self.buttUnhush = wx.Button(self, label = _("Unhush") , id = self.id_unhush)
+        self.buttUnhush.SetToolTipString(_("Unhush to restore all system fonts."))
 
         mainvs = wx.BoxSizer(wx.VERTICAL)
         self.iconandtext = wx.BoxSizer(wx.HORIZONTAL)
@@ -102,14 +111,16 @@ class TargetPogChooser(wx.Panel):
         mainvs.Add(self.pogTargetlist, 1, wx.EXPAND)
 
         ## The buttons under the target:
-        gs = wx.GridSizer(3,2)
+        gs = wx.GridSizer(4,2)
         gs.AddMany( [
         (self.buttNoPog, 1, wx.EXPAND ),
-        (self.buttInstall, 1, wx.EXPAND),
-        (self.buttUninstall, 1, wx.EXPAND),
+        (self.buttZip, 1, wx.EXPAND),
+            (self.buttInstall, 1, wx.EXPAND),
+            (self.buttUninstall, 1, wx.EXPAND),
         (self.buttNew, 1, wx.EXPAND),
         (self.buttDelete, 1, wx.EXPAND),
-        (self.buttZip, 1, wx.EXPAND)
+            (self.buttHush, 1, wx.EXPAND),
+            (self.buttUnhush, 1, wx.EXPAND)
         ])
 
         mainvs.Add(gs, 0, wx.EXPAND)
@@ -125,6 +136,8 @@ class TargetPogChooser(wx.Panel):
         self.buttUninstall.Bind(e, self.multiClick)
         self.buttDelete.Bind(e, self.multiClick)
         self.buttZip.Bind(e, self.multiClick)
+        self.buttHush.Bind(e, self.multiClick)
+        self.buttUnhush.Bind(e, self.multiClick)
 
         self.toggleButtons()
 
@@ -320,8 +333,15 @@ class TargetPogChooser(wx.Panel):
             ## ==
             ## Moved the zip code into wxgui MainFrame
             ## it's in a DismissablePanel now.
-            self.list_of_pogs_to_zip = multipogs # I want the list of chosen pogs.
+            self.list_of_target_pogs_selected = multipogs # I want the list of chosen pogs.
             e.Skip() # fwd the event
+        
+        ## Nov 2017. Also use a panel, so code going into wxgui
+        if e.GetId() == self.id_hush:
+            self.list_of_target_pogs_selected = multipogs
+            e.Skip()
+        if e.GetId() == self.id_unhush:
+            e.Skip()
 
 
     def OnPogTargetClick(self, args):
