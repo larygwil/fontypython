@@ -33,9 +33,11 @@ class situation(object):
     A class that won't instantiate. It's a small packet of
     values that are set as-per the command line's arguments.
     """
+    version = False
+    help = None
     ls = False
     lsfonts = False
-    showdir=False
+    showdir = False
     points = None
     numinpage = None
     text = None
@@ -71,13 +73,21 @@ for a in sys.argv[1:]:
 uargs = tmp
 
 try:
-    opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "hvldfc:ei:u:s:n:p:a:A:z:",
-    ["help", "version", "list", "dir", "lsfonts", "check=","examples","install=",
+    opts, remaining_cli_arguments = getopt.gnu_getopt(uargs, "h:vldfc:i:u:s:n:p:a:A:z:",
+    ["help=", "version", "list", "dir", "lsfonts", "check=","install=",
     "uninstall=","size=","number=","purge=","all=","all-recurse=","zip=", 
     "cat=", "hush=", "unhush" # these have no short opts.
     ])
 except getopt.GetoptError, err:
-    print _("Your arguments amuse me :) Please read the help.")
+    ## Specific help on the help command
+    if err.opt in ("h", "help"): 
+        print strings.use
+        print
+        print _("For more help use:  \"-h b\" for basic help, \"-h e\" for examples," \
+                "\nor \"-h hush\" for help with hushing fonts.")
+        raise SystemExit
+    print _("Your arguments amuse me :) Please see the help by using -h")
+
     print str(err) # will print something like "option -foob not recognized"
     raise SystemExit
 
@@ -87,33 +97,23 @@ strictly_cli_context_only = False
 
 for option, argument in opts:
 
-    ## All the options that lead to a quick exit go first:
-    ## They don't need strictly_cli_context_only = True 'cos they exit.
-    ## Some of these decisions are arbitrary.
     if option in ("-v", "--version"):
-        print strings.version
-        raise SystemExit
+        strictly_cli_context_only = True
+        situation.version = True
 
-    if option in ("-h", "--help"):
-        print strings.use
-        print
-        print strings.options
-        print
-        print strings.copy_warranty_contact
-        raise SystemExit
-
-    if option in ("-e", "--examples"):
-        print strings.examples
-        raise SystemExit
+    ## Nov 2017
+    ## Help gets an argument.
+    elif option in ("-h", "--help"):
+        strictly_cli_context_only = True
+        situation.help = argument
 
     ## Checkdir will break the loop, skipping other args. It's a big job.
-    if option in (u"-c", u"--check"):
+    elif option in (u"-c", u"--check"):
         strictly_cli_context_only = True
         situation.checkdir = os.path.abspath( argument )
         break
 
-    ## Now the rest:
-    if option in ("-l", "--list"):
+    elif option in ("-l", "--list"):
         strictly_cli_context_only = True
         situation.ls = True
 
@@ -225,9 +225,9 @@ if strictly_cli_context_only:
         ## must have fonts dir.
         if situation.hush:
             print strings.cant_hush
-            print
-            print strings.hush_howto
-            e.print_error_and_quit()
+            e.print_error()
+            print strings.see_help_hush
+            raise SystemExit
         e.print_error()
 
     except fontybugs.NoFontconfigDir as e:
@@ -237,18 +237,45 @@ if strictly_cli_context_only:
                 print strings.cant_hush
             else:
                 print strings.cant_unhush
-            print
-            print strings.hush_howto
-            e.print_error_and_quit()
+            e.print_error()
+            print strings.see_help_hush
+            raise SystemExit
         ## don't print any error here.
 
-    if situation.showdir:
-        ## E.g. of PathControl being trusted: we don't need to test appPath for errors here.
-        print strings.fontyfolder.format(fpsys.LSP.to_unicode(fpsys.iPC.appPath()))
+    if situation.version:
+        print strings.version
+
+    elif situation.help:
+        # basics
+        if situation.help == "b":
+            print strings.use
+            print
+            print strings.options
+        # examples
+        elif situation.help == "e":
+            print strings.examples
+        # hushing
+        elif situation.help == "hush":
+            ## Format-in some paths to help user:
+            if fpsys.iPC.user_fontconfig_confd() == "":
+                fcpaf = _("unknown, try: {}").format(
+                        os.path.join(fpsys.iPC.home(),
+                            ".config/fontconfig/conf.d"))
+            else:
+                fcpaf = fpsys.iPC.user_fontconfig_confd()
+            print strings.hush_howto.format(fcpaf = fcpaf)
+        else:
+            print strings.use
+        print "---"
+        print strings.copy_warranty_contact
         raise SystemExit
 
+    elif situation.showdir:
+        ## E.g. of PathControl being trusted: we don't need to test appPath for errors here.
+        print strings.fontyfolder.format(fpsys.LSP.to_unicode(fpsys.iPC.appPath()))
+
     ## Check fonts
-    if situation.checkdir: clifuncs.checkfonts( situation.checkdir )
+    elif situation.checkdir: clifuncs.checkfonts( situation.checkdir )
 
     ## List
     elif situation.ls: clifuncs.listpogs()

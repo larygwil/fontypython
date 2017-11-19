@@ -85,8 +85,6 @@ class PathControl:
             Moves all old contents into new fontypython.
             Moves all symlinks that were in ~/.fonts into new fonts.
 
-    . TODO Provides a config_home for my fontconfig hush code that's pending.
-
     . Provides methods to look for what errors happened after __init__
     . Provide paths for fontypython.
     . Provide list of pog names (without the .pog extension).
@@ -260,8 +258,7 @@ class PathControl:
                     for f in files:
                         oldpaf = os.path.join(old_fp, f)
                         newpaf = os.path.join(new_fp, f)
-                        ##TESTER: 
-                        ## newpaf = os.path.join("/root/", f)
+                        ##TESTER: newpaf = os.path.join("/root/", f)
                         shutil.move(oldpaf, newpaf)
                 except Exception as e:
                     self.__ERROR_STATE["UpgradeFail"] = fontybugs.UpgradeFail(
@@ -479,99 +476,7 @@ def getSegfontsList():
         ##TODO ??
         raise
 
-HUSH_XML_FILE="1.fontypythonhusher.conf"
-HUSH_XML="""<?xml version="1.0"?>
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-<fontconfig>
- <selectfont>
-  <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
- </selectfont>
-</fontconfig>"""
 
-def delete_hush_xml():
-    """
-    The existence of the fontconfig conf.d directory has all
-    been confirmed before code gets here.
-    See cli2.py, for example. It happens in a probeAllErrors call.
-    """
-    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-    os.unlink(paf)
-
-def hush_with_pogs( poglist, printer ):
-    """
-    The printer func is under dev - aiming for a way to use this
-    same func from the gui and cli
-
-    The existence of the fontconfig conf.d directory has all
-    been confirmed before code gets here.
-    See cli2.py, for example. It happens in a probeAllErrors call.
-    """
-    bugs = []
-    printer(_("Trying to hush..."), key="starting")
-    for pog in poglist:
-        if isPog( pog ):
-            hushpog = fontcontrol.Pog( pog )
-            ## gen and install it!
-            printer( _(u"Installing (%s)") % pog, key="installing")
-            try:
-                hushpog.genList()
-                ## Aside: it is not an error to 
-                ## install again - hence I don't need
-                ## to worry about toggling this hush/unhush
-                ## thing.
-                hushpog.install()
-                ##TESTING: raise fontybugs.PogInvalid
-
-            except (fontybugs.PogInvalid,
-                    fontybugs.PogEmpty,
-                    fontybugs.PogAllFontsFailedToInstall,
-                    fontybugs.PogSomeFontsDidNotInstall,
-                    fontybugs.NoFontsDir ), e:
-                bugs.append(e.get_error_string())
-        ## The arg was not a valid pog.
-        else:
-            bugs.append(_("(%s) cannot be found. " \
-                          "Try -l to see the names.")
-                            % pog )
-    ## Only if that was 100% do we hush:
-    ## This process can accrue new bugs too.
-    if not bugs:
-        try:
-            paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-            f = open( paf, "w" )
-            hxml = LSP.ensure_bytes( HUSH_XML )
-            f.write( hxml )
-            f.close()
-        except Exception as e:
-            bugs.append(e)
-            
-    if not bugs:
-        printer( _("Done. A hush settles over your fonts. " \
-                    "Go: work in silence."), key="success" )
-    return bugs
-
-def un_hush( printer ):
-    """
-    The existence of the fontconfig conf.d directory has all
-    been confirmed before code gets here.
-    See cli2.py, for example. It happens in a probeAllErrors call.
-    """
-    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-    if not os.path.exists(paf):
-        printer (_("The hush isn't there. Nothing to do."))
-        return
-    bugs = []
-    try:
-        printer( _("Trying to unhush..."), key = "starting")
-        delete_hush_xml()
-    except Exception as e:
-        bugs.append(e)
-
-    if not bugs:
-        printer( _("The noise has returned; the hush is gone."),
-                key="success")
-    return bugs
 
 
 def checkFonts( dirtocheck, printer ):
@@ -1017,7 +922,103 @@ def rm_lastFontBeforeSegfault_file():
     except:
         pass 
 
+##Nov 2017
+## Hush code written
+HUSH_XML_FILE="1.fontypythonhusher.conf"
+HUSH_XML="""<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+ <selectfont>
+  <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+ </selectfont>
+</fontconfig>"""
 
+def delete_hush_xml():
+    """
+    The existence of the fontconfig conf.d directory has all
+    been confirmed before code gets here.
+    See cli2.py, for example. It happens in a probeAllErrors call.
+    """
+    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+    if os.path.exists(paf):
+        os.unlink(paf)
+
+def hush_with_pogs( poglist, printer ):
+    """
+    The printer func is under dev - aiming for a way to use this
+    same func from the gui and cli
+
+    The existence of the fontconfig conf.d directory has all
+    been confirmed before code gets here.
+    See cli2.py, for example. It happens in a probeAllErrors call.
+    """
+    bugs = []
+    printer(_("Trying to hush..."), key="starting")
+    for pog in poglist:
+        if isPog( pog ):
+            hushpog = fontcontrol.Pog( pog )
+            ## gen and install it!
+            printer( _(u"Installing (%s)") % pog, key="installing")
+            try:
+                hushpog.genList()
+                ## Aside: it is not an error to 
+                ## install again ( > once) - hence I don't need
+                ## to worry about toggling this hush/unhush
+                ## thing.
+                hushpog.install()
+                ##TESTING: raise fontybugs.PogInvalid
+
+            except (fontybugs.PogInvalid,
+                    fontybugs.PogEmpty,
+                    fontybugs.PogAllFontsFailedToInstall,
+                    fontybugs.PogSomeFontsDidNotInstall,
+                    fontybugs.NoFontsDir ), e:
+                bugs.append(e.get_error_string())
+        ## The arg was not a valid pog.
+        else:
+            bugs.append(_("(%s) cannot be found. " \
+                          "Try -l to see the names.")
+                            % pog )
+    ## Only if that was 100% do we hush:
+    ## This process can accrue new bugs too.
+    if not bugs:
+        try:
+            ## don't care if it's already there. Just overwrite.
+            paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+            f = open( paf, "w" )
+            hxml = LSP.ensure_bytes( HUSH_XML )
+            f.write( hxml )
+            f.close()
+        # some new bug..
+        except Exception as e:
+            bugs.append(e)
+            
+    if not bugs:
+        printer( _("Done. A hush settles over your fonts. " \
+                    "Go: work in silence."), key="success" )
+    return bugs
+
+def un_hush( printer ):
+    """
+    The existence of the fontconfig conf.d directory has all
+    been confirmed before code gets here.
+    See cli2.py, for example. It happens in a probeAllErrors call.
+    """
+    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+    if not os.path.exists(paf):
+        printer (_("The hush isn't there. Nothing to do."))
+        return
+    bugs = []
+    try:
+        printer( _("Trying to unhush..."), key = "starting")
+        delete_hush_xml()
+    except Exception as e:
+        bugs.append(e)
+
+    if not bugs:
+        printer( _("The noise has returned; the hush is gone."),
+                key="success")
+    return bugs
 
 ######      #######
 ## Setup globals ##

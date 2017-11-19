@@ -43,8 +43,13 @@ fonts_supported = _("""Fonts supported: TTF, OTF, TTC, WOFF, Type1 (PFB, PFA).""
 
 yaddayadda = _("""The basic format is:
 %(c)s [OPTIONS] || [VIEW] [TARGET]
-OPTIONS: Various flags for use on the command-line. See -h or --help for more.
+
+OPTIONS: Various flags for use on the command-line. See "-h b" or "--help b"
+for more details. (Long options can use an "=" sign or a space: --cat=foo 
+or --cat foo)
+
 Or:
+
 Two arguments which will determine what you see in the graphical user interface:
 VIEW   : A place where fonts are. A Pog or a folder where fonts are located.
 TARGET : A Pog. If this Pog does not exist, it will be created.
@@ -88,14 +93,14 @@ Please use -e to see more info.
 %(basic_idea)s""" ) % { "yadda":yaddayadda, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 options=_("""Options:
-Long options (like --cat) can use an "=" sign or not. 
-E.g. --cat=foo or --cat foo
 
   -v, --version Show program's version number and exit.
-  -h, --help    Show this help message and exit.
+  -h b|e|hush, --help b|e|hush
+                Show a help message and exit.
+                "b" is for basic help.
+                "e" to show some %$@#$ examples!
+                "hush" is for more detail on hushing fonts.
   -d, --dir     Show the "fontypython" path. Add this to your backup process!
-  -e, --examples
-                Show some %$@#$ examples!
   -i Pog, --install=Pog
                 Install the fonts in this Pog.
   -u Pog, --uninstall=Pog
@@ -147,6 +152,7 @@ E.g. --cat=foo or --cat foo
 
 
 examples = _("""%(yadda)s
+
 Examples: All using short options, see -h
 =========
 %(c)s /path/to/fonts/ttfs/a
@@ -204,9 +210,7 @@ Examples: All using short options, see -h
   now have fewer fonts to choose from, making life much easier for you.
   (Use --unhush later to restore all of them.)
 
-%(contact)s
-
-%(copy)s""") % { "yadda":yaddayadda, "c":"fontypython", "contact":contact, "copy":copyright }
+""") % { "yadda":yaddayadda, "c":"fontypython" }
 
 fontyfolder = _("""Your fontypython folder is:
 {}""")
@@ -311,14 +315,29 @@ The file "COPYING" cannot be found. Please check the installation directory for 
 """
 
 ## Hush strings
-cant_hush = _("Can't hush!")
-cant_unhush = _("Can't unhush!")
-hush_howto = _("""Hushing
+cant_hush = _("Can't hush because:")
+cant_unhush = _("Can't unhush because:")
+see_help_hush = _("See --help hush")
+hush_howto = _("""
+Hushing
 =======
-Have a Pog prepared that contains system fonts of some kind. Without these
-fonts, your apps may fail. 
+1. Fontconfig
+   Hush relies on fontconfig, which should be installed on most modern Linux desktops.
+   You can verify if it's there by trying this command:
+   fc-list
 
-Have at least a sans, a serif and a mono font in that Pog.
+   If that shows no error, you're good.
+
+2. Fontconfig's user directory:
+   The path is {{fcpaf}}
+   Make sure it exists and try fonty again.
+
+3. System fonts: in a Pog that you must create and choose.
+   Have a "HushPog", which you create, name and manage, that contains a few
+   system fonts; in order to supply a basic set to your desktop apps.
+
+   I suggest these in /usr/share/fonts (where the '*' means 'whatever'): 
+   DejaVu*, Free*, Ubuntu*, Liberation*
 
 To hush from the command line do this:
 {fp} --hush yourpoghere
@@ -331,3 +350,4 @@ To release the hush, use --unhush from the command line, or ... in the gui.
 
 The Pog(s) you installed when you hushed will be left installed. Remove
 it/them if you must.""").format(fp="fontypython")
+##{{fcpaf}} is doubled like that so I can swap it in later.
