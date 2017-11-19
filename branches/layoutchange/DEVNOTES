@@ -74,9 +74,11 @@ BUGS
 *HTML stuff returns to top on window resize. I think this is a wx bug/thing.
 * cli args - the argument is not being checked - can be missing and goes bad. e.g. --check= <--nothing= bad
   (Noticed it does not happen all the time. hard to pin)
+
 * cli -- there's no thought to when a command stops the app. Do we allow many things to run in sequence, or stop each time?
   i.e. can multiple command line options all happen, or will only the ones that match in the if situation.x tests 
   happen? Is the order random or does it have meaning? etc.
+  NOV 19 2017: Made them all one-at-a-time. They all lead to an exit after a chain of elifs.
 
 
 

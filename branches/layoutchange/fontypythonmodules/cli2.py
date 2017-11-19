@@ -202,6 +202,8 @@ for option, argument in opts:
         ## We should not reach here at all.
         print _("Weirdo error. Keep calm and panic.")
         raise SystemExit
+    
+    #print [(k,s) for k,s in situation.__dict__.iteritems()]
 
 ##Switch on the cli context
 if strictly_cli_context_only:
@@ -243,40 +245,40 @@ if strictly_cli_context_only:
     if situation.showdir:
         ## E.g. of PathControl being trusted: we don't need to test appPath for errors here.
         print strings.fontyfolder.format(fpsys.LSP.to_unicode(fpsys.iPC.appPath()))
-        print
+        raise SystemExit
 
     ## Check fonts
     if situation.checkdir: clifuncs.checkfonts( situation.checkdir )
 
     ## List
-    if situation.ls: clifuncs.listpogs()
+    elif situation.ls: clifuncs.listpogs()
 
     ## Sep 2017
-    if situation.lsfonts: clifuncs.lsfonts()
+    elif situation.lsfonts: clifuncs.lsfonts()
 
     ## Sep 2009: ZIP
-    if situation.zip: clifuncs.zip( situation.pog )
+    elif situation.zip: clifuncs.zip( situation.pog )
 
     ## Purge
-    if situation.purge: clifuncs.purgepog( situation.purge )
+    elif situation.purge: clifuncs.purgepog( situation.purge )
 
     ## Install - .install is actually a list in this case
-    if situation.install: clifuncs.installpogs( situation.install )
+    elif situation.install: clifuncs.installpogs( situation.install )
 
     ## Uninstall - ditto
-    if situation.uninstall: clifuncs.uninstallpogs( situation.uninstall )
+    elif situation.uninstall: clifuncs.uninstallpogs( situation.uninstall )
 
     ## Install ALL fonts in folder to given pog.
     ## the def wants: 1=foldername, 2=pogname. 3=recurseflag
-    if situation.allfromfolder: clifuncs.installall( 
+    elif situation.allfromfolder: clifuncs.installall( 
             situation.allfromfolder,
             situation.alltargetpog,
             situation.allrecurse )
 
-    if situation.cat: clifuncs.cat( situation.pog )
+    elif situation.cat: clifuncs.cat( situation.pog )
 
-    if situation.hush: clifuncs.hush( situation.pog )
-    if situation.unhush: clifuncs.unhush( )
+    elif situation.hush: clifuncs.hush( situation.pog )
+    elif situation.unhush: clifuncs.unhush( )
 
     ## Arguments for the final, right-hand side, [VIEW] [TARGET] in pure cli 
     ## context has no meaning, so we'll simply ignore them.

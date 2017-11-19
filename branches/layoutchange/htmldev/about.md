@@ -15,10 +15,7 @@ Written on Gnu\Linux using wxPython, Python and Gvim.
 
 Thanks
 ======
-Primarily to my mother, Marie, who keeps me going; and to the memory of my dad, Howard, who brought computers into my world.
-
 Many thanks to:
-
 * **Robin Dunn** - wxPython itself, and much sundry help.
 * **Martin v. Löwis** - Essential concepts regarding unicode and files.
 * **Pietro Battiston** - Italian translation.
@@ -32,6 +29,11 @@ Many thanks to:
 * **FichteFoll** - For catching a bug which prevented startup when there are no pogs! Which is... Ye Gods!
 * **Akira TAGOH** - For help with fontconfig voodoo: rejecting and accepting fonts in the 
   fontconfig XML (on the fontconfig mailing list).
+
+Special thanks to:
+* Marie (my mother) who keeps me going every day. Thanks for supporting me and Fonty!
+* Howard (my dad), in memory. He brought computers and code into my world. He died before Linux happened,
+  before the Internet happened. He would have been amazed.
 
 Licence
 =======

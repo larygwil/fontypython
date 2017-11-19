@@ -25,7 +25,7 @@ def checkfonts( dirtocheck ):
     # Check fonts
     if not os.path.exists( dirtocheck ):
         print _("I can't find %s") % dirtocheck
-        raise SystemExit
+        return
 
     def printer( pstr = "" ):
         """A func to print strings to cli, called back from checkFonts."""
@@ -35,7 +35,6 @@ def checkfonts( dirtocheck ):
 
     ##TODO ?? SHOULD this TRY/EXC
     fpsys.checkFonts( dirtocheck, printer )
-    raise SystemExit
 
 
 def listpogs():
@@ -45,7 +44,7 @@ def listpogs():
     poglist.sort( cmp=locale.strcoll, key=lambda obj:obj) #28 May 2009. Hope this works for other locales...
     if len(poglist) == 0:
         print _("There are no pogs available.")
-        raise SystemExit
+        return
     print _("Listing %d pog(s)") % len(poglist)
     print _(" * indicates installed pogs")
     for pog in poglist:
@@ -60,7 +59,6 @@ def listpogs():
         if installed.upper() == "INSTALLED":
             s = "*"
         print "%s %s" % (s,pog)
-    raise SystemExit
 
 
 ## Sept 2017: Added this because I was doing ls in testing so much.
@@ -84,7 +82,7 @@ def cat( pog ):
         cat_res = subprocess.check_output(['cat', p])
     except:
         print _("Could not cat that pog.")
-        raise SystemExit
+        return
     print cat_res
 
 
@@ -160,7 +158,6 @@ def zip( pog ):
                 for m in emsgs: print m
     else:
         print _("I can't find a pog named %s") % pog
-    raise SystemExit
 
 def purgepog(pogtopurge):
     ##Handle purge
@@ -180,10 +177,9 @@ def purgepog(pogtopurge):
             e.print_error()
     else:
         print _("(%s) cannot be found. Try -l to see the names.") % pogtopurge
-        raise SystemExit
+        return
     fpsys.config.Save()
     print strings.done
-    raise SystemExit
 
 
 
@@ -212,10 +208,9 @@ def installpogs( listofpogs ):
                 e.print_error()
         else: # not a pogname
             print _("(%s) cannot be found. Try -l to see the names.") % pogtoinstall
-            raise SystemExit
+            return
     fpsys.config.Save()
     print strings.done
-    raise SystemExit
 
 def uninstallpogs( listofpogs ):
     ## uninstall
@@ -239,10 +234,9 @@ def uninstallpogs( listofpogs ):
                 e.print_error()
         else:
             print _("Sorry, can't find (%s). Try -l to see the names.") % pogtouninstall
-            raise SystemExit
+            return
     fpsys.config.Save()
     print strings.done
-    raise SystemExit
 
 
 def installall( FOLDERNAME, POGNAME, recurseflag ):
@@ -285,22 +279,4 @@ def installall( FOLDERNAME, POGNAME, recurseflag ):
         print _("I have placed %(count)s fonts from %(folder)s into %(pog)s.") % {"count":str(count), "folder":FOLDERNAME, "pog":POGNAME }
     else:
         print _("The fonts from %(folder)s are *already* in %(pog)s.") % {"folder": FOLDERNAME, "pog":POGNAME  }
-    raise SystemExit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -88,6 +88,9 @@ Please use -e to see more info.
 %(basic_idea)s""" ) % { "yadda":yaddayadda, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 options=_("""Options:
+Long options (like --cat) can use an "=" sign or not. 
+E.g. --cat=foo or --cat foo
+
   -v, --version Show program's version number and exit.
   -h, --help    Show this help message and exit.
   -d, --dir     Show the "fontypython" path. Add this to your backup process!
@@ -124,16 +127,21 @@ options=_("""Options:
                 directory.
   --cat=Pog
                 Cat the pog. This will list all the fonts within.
-  --hush
-                Hush all the fonts except the ones you have installed.
-                This makes font choosers in other apps (like Inkscape)
-                much easier to use as they won't be full of random
-                system fonts.
-                * NOTE: Ensure that the built-in Pog called "SYS" contains
-                contains at least one system font; this is so other apps
-                will have something to use in their interfaces!
+  --hush=HushPog
+                Hush *all* the fonts except the ones you have installed.
+                Hushing makes font choosers in other apps (like Inkscape)
+                much easier to use as they won't be full of random fonts.
+
+                Uses "HushPog", which you create, name and manage, that should 
+                contain a few system fonts; in order to supply a basic set 
+                to your desktop apps.
+
+                I suggest these from /usr/share/fonts
+                (where the '*' means 'whatever'): DejaVu*, Free*, Ubuntu*, 
+                Liberation*
   --unhush
-                Restores all the system fonts after a hush.
+                Restores all the system fonts after a hush. Leaves your special
+                HushPog installed. It's up to you to manage it.
                 """)
 
 
@@ -189,6 +197,12 @@ Examples: All using short options, see -h
 %(c)s -A /some/path Tutto
   This will do the same as -a: starting in some path, but it will then walk 
   down through *all* sub-folders too. The fonts will be placed in Tutto.
+
+%(c)s --hush mysysfonts
+  Will hush (silence) all the fonts in your system except the ones in 
+  "mysysfonts" and any other pogs you have installed. Other apps will 
+  now have fewer fonts to choose from, making life much easier for you.
+  (Use --unhush later to restore all of them.)
 
 %(contact)s
 
