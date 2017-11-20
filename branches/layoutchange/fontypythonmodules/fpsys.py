@@ -320,8 +320,8 @@ class PathControl:
     def probeNoFontypythonDirError(self):
         self.__raiseOrContinue("NoFontypythonDir")
 
-    def probeNoFontconfigDirError(self):
-        self.__raiseOrContinue("NoFontconfigDir")
+    def get_fontconfig_dir_error(self):
+        return self.__ERROR_STATE.get( "NoFontconfigDir", None )
 
     def probeAllErrors(self):
         """
@@ -609,6 +609,9 @@ class FPState:
 
         ## How many tick marks.
         self.numticks = 0
+
+        ## On start, there's a test for fontconfig dir
+        self.fontconfig_confd_exists = False
 
 ####
 ## Save and Load the conf file
@@ -924,24 +927,7 @@ def rm_lastFontBeforeSegfault_file():
 
 ##Nov 2017
 ## Hush code written
-HUSH_XML_FILE="1.fontypythonhusher.conf"
-HUSH_XML="""<?xml version="1.0"?>
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-<fontconfig>
- <selectfont>
-  <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
- </selectfont>
-</fontconfig>"""
 
-def delete_hush_xml():
-    """
-    The existence of the fontconfig conf.d directory has all
-    been confirmed before code gets here.
-    See cli2.py, for example. It happens in a probeAllErrors call.
-    """
-    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-    if os.path.exists(paf):
-        os.unlink(paf)
 
 def hush_with_pogs( poglist, printer ):
     """
@@ -986,9 +972,9 @@ def hush_with_pogs( poglist, printer ):
     ## This process can accrue new bugs too.
     if not bugs:
         try:
+            ## Write the XML fontconfig .conf file.
             ## don't care if it's already there. Just overwrite.
-            paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-            f = open( paf, "w" )
+            f = open( HUSH_PAF, "w" )
             hxml = LSP.ensure_bytes( HUSH_XML )
             f.write( hxml )
             f.close()
@@ -1007,14 +993,13 @@ def un_hush( printer ):
     been confirmed before code gets here.
     See cli2.py, for example. It happens in a probeAllErrors call.
     """
-    paf = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
-    if not os.path.exists(paf):
+    if not os.path.exists(HUSH_PAF):
         printer (_("The hush isn't there. Nothing to do."))
         return
     bugs = []
     try:
         printer( _("Trying to unhush..."), key = "starting")
-        delete_hush_xml()
+        os.unlink( HUSH_PAF )
     except Exception as e:
         bugs.append(e)
 
@@ -1032,7 +1017,20 @@ LSP = linux_safe_path_library.linuxSafePath()
 ## Ensure we have "fontypython" and "fonts" dirs.
 iPC = PathControl(XDG_DATA_HOME, XDG_CONFIG_HOME)
 
-
+HUSH_XML_FILE="1.fontypythonhusher.conf"
+HUSH_PAF = os.path.join( iPC.user_fontconfig_confd(), HUSH_XML_FILE)
+HUSH_XML="""<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+<!--
+This file was created by fontypython.
+It rejects all fonts in /user/share/fonts
+You can delete this file at any time.
+-->
+<selectfont>
+ <rejectfont><glob>/usr/share/fonts/*</glob></rejectfont>
+</selectfont>
+</fontconfig>"""
 
 ## Borrowed from wxglade.py
 ## The reason for this is to find the path of this file

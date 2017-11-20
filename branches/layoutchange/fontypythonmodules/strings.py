@@ -323,10 +323,19 @@ cant_hush = _("Can't hush because:")
 cant_unhush = _("Can't unhush because:")
 see_help_hush = _("See --help hush")
 hush_howto = _("""
+The idea
+========
+Often there are too many fonts reported by your system. In your apps, like Inkscape,
+they clutter the font chooser. This is a way to "hush" that, to quieten the noise.
+
+Fonty will install a select Pog of system fonts (which you must pick) and then will
+reject *all* the system's fonts, leaving only the Pogs which you install.
+
+This does no damage and you can "unhush" at any time to reverse it.
+
 Hushing
 =======
-1. Fontconfig
-   Hush relies on fontconfig, which should be installed on most modern Linux desktops.
+1. Relies on fontconfig, which should be installed on most modern Linux desktops.
    You can verify if it's there by trying this command:
    fc-list
 
@@ -336,11 +345,8 @@ Hushing
    The path is {{fcpaf}}
    Make sure it exists and try fonty again.
 
-3. System fonts: in a Pog that you must create and choose.
-   Have a "HushPog", which you create, name and manage, that contains a few
-   system fonts; in order to supply a basic set to your desktop apps.
-
-   I suggest these in /usr/share/fonts (where the '*' means 'whatever'): 
+3. System fonts: Put some fonts in a Pog that you must create and choose.
+   I suggest those in /usr/share/fonts, like: 
    DejaVu*, Free*, Ubuntu*, Liberation*
 
 The way it works is that fonty writes an XML file which rejects all fonts that 
@@ -349,7 +355,7 @@ are on the path: "/usr/share/fonts"
 This may not work on your particular Linux distribution. Please open a ticket
 on our site if you have any trouble: {ticket_url}
 
-To hush from the command line do this:
+To hush, using your special Pog from the command line do this:
 {fp} --hush yourpoghere
 
 To hush from the gui, ...

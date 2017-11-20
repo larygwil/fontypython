@@ -69,16 +69,13 @@ flag_help = 2
 flag_about = 4
 flag_settings = 8
 flag_choosedir = 16
-flag_hush = 32
-flag_unhush = 64
+flag_hush_fonts = 32
 
 ## ids
 ## These are needed here, and to pass it into TargetPogChooser
 id_x_button=wx.NewId()
 id_zip_pog_button = wx.NewId() 
 id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
-id_hush_button = wx.NewId()
-id_unhush_button = wx.NewId()
 
 # got a flag? get an id.
 id_from_flag = {
@@ -86,8 +83,7 @@ id_from_flag = {
         flag_about      : wx.NewId(),
         flag_settings   : wx.NewId(),
         flag_choosedir  : id_zip_pog_button,
-        flag_hush       : id_hush_button,
-        flag_unhush     : id_unhush_button,
+        flag_hush_fonts : wx.NewId()
         }
 # got an id? get a flag.
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
@@ -279,28 +275,68 @@ class AboutPanel(DismissableHTMLPanel):
               "GPL"    : strings.GPL.replace("\n","<br>")}
 
 
-class ReportPanel(DismissablePanel):
+class HushPanel(DismissablePanel):
     """
     Prints shit.
     """
-    def __init__(self, parent, flag, somelabel, someicon):
-        DismissablePanel.__init__(self,parent, flag, somelabel=somelabel, someicon=someicon ) 
+    def __init__(self, parent):#, flag, somelabel, someicon):
+        DismissablePanel.__init__(self,parent, flag_hush_fonts,
+                somelabel = _("Hush fonts."),
+                someicon = "fplogo" ) 
 
     def __post_init__(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
+        self.hush_state_label = fpwx.h2( self, self.__update_heading() ) 
+        sizer.Add( self.hush_state_label, 0, wx.EXPAND | wx.TOP, border=10)
+
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
         sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
         self.printer.Hide()
 
+        ##
+        self.chosen_pog_label = fpwx.label( self, "???" )
+        sizer.Add( self.chosen_pog_label,0 )
+
+        ## The pog choice pulldown
+        self.pog_choice = wx.Choice(self, -1, choices = self.__get_pog_names() ) 
+        self.pog_choice.Bind(wx.EVT_CHOICE, self.__pog_chosen )
+        sizer.Add( self.pog_choice,0)
+
         self.Bind(wx.EVT_SHOW, self.show_or_hide)
         return sizer
+
+    def __pog_chosen(self,evt):
+        self.chosen_pog_label.SetLabel( evt.GetString() )
+
+    def __update_heading(self):
+        if os.path.exists(fpsys.HUSH_PAF):
+            return _("Hush is on.")
+        else:
+            return _("Hush is off.")
+    
+    def __get_pog_names(self):
+        ## Old Donn said this "pl will always be a BYTE STRING list"
+        ## Yeah, that's nice. WTF? I can't remember what's what
+        ## with unicode. I *think* a byte string is == unicode
+        ## in it's encoded state. Or something? Argh.
+        pl = fpsys.iPC.getPogNames()
+        return [u"{}".format(p) for p in pl]
+
+    def __update_pog_choice_control(self):
+        ## Empty the choice control.
+        self.pog_choice.Clear()
+        ## Now refill it
+        self.pog_choice.AppendItems(self.__get_pog_names())
+        #self.choicePage.SetSelection(self.pageindex-1)
 
     def show_or_hide(self,evt):
         """The entire panel hide/show"""
         if self.IsShown():
             # I am being shown
+            self.__update_pog_choice_control()
+            self.__update_heading()
             if self.printer.IsEmpty():
                 self.printer.Hide()
             else:
@@ -719,13 +755,14 @@ class MainFrame(wx.Frame):
 
         ## MENUS
         ## ---------------------------------------
+        # tools selection help
+
         self.menuBar = wx.MenuBar()
 
         ## FILE MENU : Changed to "Tools" menu Sep 2009
         menu1 = wx.Menu()
         menu1.Append( id_from_flag[flag_settings],
                 _("&Settings\tCtrl+S"), _("Change settings"))
-        menu1.AppendSeparator()
         ## Jan 18 2008
         ## Nov 2017: retired: menu1.Append( 102, 
         ##        _("&Check fonts"), _("Find those fonts that crash Fonty.") )
@@ -734,8 +771,15 @@ class MainFrame(wx.Frame):
 
         self.MENUPURGE = menu1
 
+        ## Nov 2017: Hush fonts
+        menu1.Append( id_from_flag[flag_hush_fonts], _("&Hush fonts\tCtrl+H"), _("Silence all the noisy system fonts and focus only on the fonts you want,"))
+        
+        menu1.AppendSeparator()
+
         self.id_exit = wx.NewId()
         self.exit = menu1.Append(self.id_exit, _("&Exit"), _("Close the app"))
+
+        ## Tools
         self.menuBar.Append(menu1, _("&Tools"))
 
 
@@ -806,16 +850,14 @@ class MainFrame(wx.Frame):
         ## 2. Here.toggle_dismissable_panel --> Skip() to
         ## 3. Here:
         ## See the Bind to toggle_dismissable_panel just below.
-        self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
-        self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_unhush_button)
+        #self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
+        #self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_unhush_button)
 
         ## Nov 2017
         ## Vague Bind. Not specific to id. Happens FIRST, even though it's
         ## last in the code.
-        ## Catch any BUTTONS that should open a DismissablePanel
         ## 1. The close (X) button of the DismissablePanels
-        ## 2. The ZIP button (Skip in TargetPogChooser)
-        ## 3. The Hush and Unhush buttons (Skip in TargetPogChooser)
+        ## 2. The ZIP button (Skipped to here from TargetPogChooser)
         self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel )
 
         ## THE MAIN GUI
@@ -841,7 +883,7 @@ class MainFrame(wx.Frame):
             self.panelFontSources = FontSourcesPanel(self)
             self.panelFontSources.SetMinSize(ms)
 
-            self.panelTargetPogChooser = TargetPogChooser(self, id_zip_pog_button, id_hush_button, id_unhush_button)
+            self.panelTargetPogChooser = TargetPogChooser(self, id_zip_pog_button)#, id_hush_button, id_unhush_button)
             self.panelTargetPogChooser.SetMinSize(ms)
 
             self.fontViewPanel = FontViewPanel(self)
@@ -852,25 +894,22 @@ class MainFrame(wx.Frame):
 
             ## Help
             self.help_panel = HelpPanel(self)
-            self.help_panel.Hide()
+            #self.help_panel.Hide()
 
             ## About
             self.about_panel = AboutPanel(self)
-            self.about_panel.Hide()
+            #self.about_panel.Hide()
 
             ## The Settings
             self.settings_panel = SettingsPanel(self)
-            self.settings_panel.Hide()
+            #self.settings_panel.Hide()
 
             ## Zip Pog panel
             self.choose_zipdir_panel = ChooseZipDirPanel(self)
-            self.choose_zipdir_panel.Hide()
+            #self.choose_zipdir_panel.Hide()
 
-            ## Hush/Unhush panels
-            self.hush_panel = ReportPanel(self, flag_hush,
-                    _("Hush Report"), "fplogo")
-            self.unhush_panel = ReportPanel(self, flag_unhush,
-                    _("Unhush Report"), "fplogo")
+            ## Hush panel
+            self.hush_panel = HushPanel(self)
 
 
             stsizer = wx.BoxSizer(wx.VERTICAL)
@@ -885,7 +924,7 @@ class MainFrame(wx.Frame):
             lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
             lrsizer.Add( self.choose_zipdir_panel, 1, wx.EXPAND )
             lrsizer.Add( self.hush_panel, 1, wx.EXPAND )
-            lrsizer.Add( self.unhush_panel, 1, wx.EXPAND )
+            #lrsizer.Add( self.unhush_panel, 1, wx.EXPAND )
 
             self.SetSizer(lrsizer)
 
@@ -895,10 +934,9 @@ class MainFrame(wx.Frame):
                     flag_normal  : self.fontViewPanel, 
                     flag_help    : self.help_panel,
                     flag_about   : self.about_panel,
-                    flag_settings: self.settings_panel,
-                   flag_choosedir: self.choose_zipdir_panel,
-                   flag_hush     : self.hush_panel,
-                   flag_unhush   : self.unhush_panel 
+                   flag_settings : self.settings_panel,
+                  flag_choosedir : self.choose_zipdir_panel,
+                 flag_hush_fonts : self.hush_panel,
             }
         elif self.whatgui == 3:
             #Very out of date. Left for future maybes.
@@ -1013,10 +1051,10 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        #print "toggleSelectionMenuItem runs."
-        #print evt.GetId()
+        print "toggleSelectionMenuItem runs."
+        print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
-        #print "got flag:", flag
+        print "got flag:", flag
         if flag:
             self.flag_state_exclusive_toggle(flag)
             self.hide_or_show_panels()
@@ -1159,8 +1197,8 @@ class MainFrame(wx.Frame):
         id = e.GetId()
         print "do_hush_unhush {}".format(id)
 
-.. probeNoFontconfigDirError
-.. then report the fail
+        #.. probeNoFontconfigDirError
+        #.. then report the fail
 
 
         buglist = []
@@ -1339,10 +1377,10 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
                 style=wx.OK | wx.ICON_ERROR )
             ## This one is unrecoverable:
             raise SystemExit
-
+        except fontybugs.NoFontconfigDir as e:
+            fpsys.state.fontconfig_confd_exists = False
         ## Warning only
-        except (fontybugs.NoFontsDir,
-                fontybugs.NoFontconfigDir ) as e:
+        except fontybugs.NoFontsDir as e:
             ## This looks horrible. I will remark it.
             ## The app deals with it in context.
             #    wx.MessageBox( e.unicode_of_error(),

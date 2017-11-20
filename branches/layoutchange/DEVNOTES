@@ -82,6 +82,14 @@ BUGS
 
 
 
+
+SETUP TODO
+==
+* Test with empty fontypython dir
+* Test with old config file
+* Write a script to do prep stuff:
+  * include the makehtml - so it's always fresh
+
 TODO
 ==
 Cleanup stuff:
@@ -108,6 +116,7 @@ Cleanup stuff:
 * Sliders for point size, num cols etc. in settings?
 
 * Distinguish TTC|OTC somehow
+* X bitmap for clear and close
 
 HUSH TODO
 ==
