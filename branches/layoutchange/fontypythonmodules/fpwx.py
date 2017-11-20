@@ -91,7 +91,7 @@ def h1( parent, ustr ):
     return p
 
 def h2( parent, ustr ):
-    p = xlabel( parent, ustr, size="points_x_normal", weight=wx.FONTWEIGHT_NORMAL )
+    p = xlabel( parent, ustr, size="points_large", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
 def xlabel(parent, 

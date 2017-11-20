@@ -643,6 +643,8 @@ class Configure:
         self.ignore_adjustments = False
         ## Added 3 Oct 2009
         self.app_char_map = "UNSET" # A string of an app name.
+        ## Nov 2017
+        self.hush_pog_name = ""
 
         self.__setData()
 
@@ -685,6 +687,7 @@ class Configure:
             self.lastdir = self.__data['lastdir']
             self.recurseFolders = self.__data['recurseFolders']
             self.ignore_adjustments = self.__data['ignore_adjustments']
+            self.hush_pog_name = self.__data['hush_pog_name']
             self.app_char_map = self.__data['app_char_map']
             ## We must also set our instance of the CharMap Controller:
             ##  This can be "UNSET" (default first run) or an appname
@@ -705,7 +708,8 @@ class Configure:
         self.__dontSaveNumInPage = flag
 
     def __setData(self):
-        self.__data = {"size" : self.size,
+        self.__data = {
+            "size" : self.size,
             "pos" : self.pos,
             "numinpage" : self.numinpage,
             "text" : self.text,
@@ -718,6 +722,7 @@ class Configure:
             "recurseFolders": self.recurseFolders,
             "ignore_adjustments": self.ignore_adjustments,
             "app_char_map" : self.app_char_map,
+            "hush_pog_name" : self.hush_pog_name,
          }
     def app_char_map_set( self, x ):
         '''

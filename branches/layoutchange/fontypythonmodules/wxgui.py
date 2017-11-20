@@ -279,28 +279,32 @@ class HushPanel(DismissablePanel):
     """
     Prints shit.
     """
-    def __init__(self, parent):#, flag, somelabel, someicon):
+    def __init__(self, parent):
         DismissablePanel.__init__(self,parent, flag_hush_fonts,
-                somelabel = _("Hush fonts."),
+                somelabel = _("Hush fonts"),
                 someicon = "fplogo" ) 
 
     def __post_init__(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
+        ## Big header announcing Hushed/Not hushed
         self.hush_state_label = fpwx.h2( self, self.__update_heading() ) 
         sizer.Add( self.hush_state_label, 0, wx.EXPAND | wx.TOP, border=10)
 
+        ## Area to print into
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
         sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
         self.printer.Hide()
 
-        ##
-        self.chosen_pog_label = fpwx.label( self, "???" )
+        ## Label showing selected/last pog 
+        lhp = fpsys.config.hush_pog_name
+        self.chosen_pog_label = fpwx.label( self, lhp )
         sizer.Add( self.chosen_pog_label,0 )
 
         ## The pog choice pulldown
-        self.pog_choice = wx.Choice(self, -1, choices = self.__get_pog_names() ) 
+        self.pog_choice = wx.Choice(self, -1, choices = ["-"])#self.__get_pog_names() ) 
+        self.__update_pog_choice_control()
         self.pog_choice.Bind(wx.EVT_CHOICE, self.__pog_chosen )
         sizer.Add( self.pog_choice,0)
 
@@ -308,13 +312,15 @@ class HushPanel(DismissablePanel):
         return sizer
 
     def __pog_chosen(self,evt):
-        self.chosen_pog_label.SetLabel( evt.GetString() )
+        s = evt.GetString()
+        self.chosen_pog_label.SetLabel( s )
+        fpsys.config.hush_pog_name = s
 
     def __update_heading(self):
         if os.path.exists(fpsys.HUSH_PAF):
-            return _("Hush is on.")
+            return _("Font are currently being hushed.")
         else:
-            return _("Hush is off.")
+            return _("Fonts are not being hushed right now.")
     
     def __get_pog_names(self):
         ## Old Donn said this "pl will always be a BYTE STRING list"
@@ -328,8 +334,14 @@ class HushPanel(DismissablePanel):
         ## Empty the choice control.
         self.pog_choice.Clear()
         ## Now refill it
-        self.pog_choice.AppendItems(self.__get_pog_names())
-        #self.choicePage.SetSelection(self.pageindex-1)
+        pl = self.__get_pog_names()
+        self.pog_choice.AppendItems( pl )
+        s = self.chosen_pog_label.GetLabel()
+        if s not in pl:
+            n = 0
+        else:
+            n = self.pog_choice.FindString(s)
+        self.pog_choice.SetSelection( n )
 
     def show_or_hide(self,evt):
         """The entire panel hide/show"""
@@ -363,7 +375,7 @@ class ChooseZipDirPanel(DismissablePanel):
     """
     def __init__(self, parent):
         DismissablePanel.__init__(self,parent, flag_choosedir, 
-                somelabel=_("Locate a directory for the zip file(s)."),
+                somelabel=_("Locate a directory for the zip file(s)"),
                 someicon = "icon_zip")
         self._chosen_path = None
 
@@ -772,7 +784,7 @@ class MainFrame(wx.Frame):
         self.MENUPURGE = menu1
 
         ## Nov 2017: Hush fonts
-        menu1.Append( id_from_flag[flag_hush_fonts], _("&Hush fonts\tCtrl+H"), _("Silence all the noisy system fonts and focus only on the fonts you want,"))
+        menu1.Append( id_from_flag[flag_hush_fonts], _("&Hush fonts\tCtrl+H"), _("Silence all the noisy system fonts and focus only on those you want,"))
         
         menu1.AppendSeparator()
 
