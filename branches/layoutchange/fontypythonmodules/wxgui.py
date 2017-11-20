@@ -76,6 +76,7 @@ flag_hush_fonts = 32
 id_x_button=wx.NewId()
 id_zip_pog_button = wx.NewId() 
 id_do_the_actual_zip = wx.NewId() # button is in the DismissablePanel
+id_hush_button = wx.NewId()
 
 # got a flag? get an id.
 id_from_flag = {
@@ -277,19 +278,44 @@ class AboutPanel(DismissableHTMLPanel):
 
 class HushPanel(DismissablePanel):
     """
-    Prints shit.
+    Shows the form for hushing and unhushing fonts.
     """
     def __init__(self, parent):
-        DismissablePanel.__init__(self,parent, flag_hush_fonts,
+         self.sd = {
+                 "hush_on" :{"h":_("Font are currently being hushed."),     "b":_("Un-hush fonts")},
+                 "hush_off":{"h":_("Fonts are not being hushed right now."),"b":_("Hush fonts")}
+                  }
+         DismissablePanel.__init__(self,parent, flag_hush_fonts,
                 somelabel = _("Hush fonts"),
                 someicon = "fplogo" ) 
+
 
     def __post_init__(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
         ## Big header announcing Hushed/Not hushed
-        self.hush_state_label = fpwx.h2( self, self.__update_heading() ) 
+        self.hush_state_label = fpwx.h2( self, self.__update_heading("h") ) 
         sizer.Add( self.hush_state_label, 0, wx.EXPAND | wx.TOP, border=10)
+
+        h = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.chosen_pog_label = fpwx.label( self, _("Hush with this pog:") )
+        h.Add( self.chosen_pog_label, 0 )
+
+        ## Label showing selected/last pog 
+        ## Gets it from config (which starts with "" first time)
+        #lhp = fpsys.config.hush_pog_name
+        #self.chosen_pog_label = fpwx.label( self, lhp )
+        #sizer.Add( self.chosen_pog_label,0 )
+
+        ## The pog choice pulldown
+        self.pog_choice = wx.Choice(self, -1, choices = ["-"])
+        self.__update_pog_choice_control()
+        self.pog_choice.Bind(wx.EVT_CHOICE, self.__pog_chosen )
+        
+        h.Add( self.pog_choice,0)
+
+        sizer.Add(h,1,wx.EXPAND)
 
         ## Area to print into
         self.printer = wx.TextCtrl(self,
@@ -297,58 +323,53 @@ class HushPanel(DismissablePanel):
         sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
         self.printer.Hide()
 
-        ## Label showing selected/last pog 
-        lhp = fpsys.config.hush_pog_name
-        self.chosen_pog_label = fpwx.label( self, lhp )
-        sizer.Add( self.chosen_pog_label,0 )
 
-        ## The pog choice pulldown
-        self.pog_choice = wx.Choice(self, -1, choices = ["-"])#self.__get_pog_names() ) 
-        self.__update_pog_choice_control()
-        self.pog_choice.Bind(wx.EVT_CHOICE, self.__pog_chosen )
-        sizer.Add( self.pog_choice,0)
+        ## The hush/unhush button
+        self.hb = wx.Button( self, label = self.__update_heading("b"), id = id_hush_button )
+        ## Make a button. Click also gets caught in MainFrame.
+        self.Bind(wx.EVT_BUTTON, self.__do_hush, id = id_hush_button)
+        sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
 
-        self.Bind(wx.EVT_SHOW, self.show_or_hide)
+
+        self.Bind(wx.EVT_SHOW, self.__show_or_hide)
         return sizer
 
     def __pog_chosen(self,evt):
+        """The choice was changed."""
         s = evt.GetString()
         self.chosen_pog_label.SetLabel( s )
+        ## s is a byte string
         fpsys.config.hush_pog_name = s
 
-    def __update_heading(self):
+    def __update_heading(self, key):
         if os.path.exists(fpsys.HUSH_PAF):
-            return _("Font are currently being hushed.")
+            return self.sd["hush_on"][key]
         else:
-            return _("Fonts are not being hushed right now.")
+            return self.sd["hush_off"][key]
     
-    def __get_pog_names(self):
-        ## Old Donn said this "pl will always be a BYTE STRING list"
-        ## Yeah, that's nice. WTF? I can't remember what's what
-        ## with unicode. I *think* a byte string is == unicode
-        ## in it's encoded state. Or something? Argh.
-        pl = fpsys.iPC.getPogNames()
-        return [u"{}".format(p) for p in pl]
-
     def __update_pog_choice_control(self):
+        """Refill the choice list, sort and select the last string."""
         ## Empty the choice control.
         self.pog_choice.Clear()
         ## Now refill it
-        pl = self.__get_pog_names()
-        self.pog_choice.AppendItems( pl )
-        s = self.chosen_pog_label.GetLabel()
-        if s not in pl:
+        pl = fpsys.iPC.getPogNames() # pl is all byte strings (encoded)
+        pl.sort(cmp=locale.strcoll) # sort accroding to locale
+        self.pog_choice.AppendItems( pl ) # stick it in the control
+        ## get the last label - make sure it's a byte too:
+        s = fpsys.LSP.ensure_bytes( fpsys.config.hush_pog_name )
+        if s not in pl: # else we get complaints here...
             n = 0
         else:
             n = self.pog_choice.FindString(s)
         self.pog_choice.SetSelection( n )
 
-    def show_or_hide(self,evt):
+    def __show_or_hide(self,evt):
         """The entire panel hide/show"""
         if self.IsShown():
-            # I am being shown
+            # I am being shown, so let's update shit:
             self.__update_pog_choice_control()
-            self.__update_heading()
+            self.hush_state_label.SetLabel(self.__update_heading("h"))
+            self.hb.SetLabel(self.__update_heading("b"))
             if self.printer.IsEmpty():
                 self.printer.Hide()
             else:
@@ -357,6 +378,13 @@ class HushPanel(DismissablePanel):
             # I am being hidden ( esc, or x)
             self.printer.Clear()
             self.printer.Hide()
+
+    def __do_hush(self, evt):
+        """
+        Forwards the click on to MainFrame where it's also bound.
+        """
+        #something 
+        evt.Skip()
 
     def printout(self, msg, key=None):
         if key: 

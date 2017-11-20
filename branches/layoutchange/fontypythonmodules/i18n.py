@@ -1,4 +1,4 @@
-##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+##	Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2017 Donn.C.Ingle
 ##	Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ##	This file is part of Fonty Python.
@@ -22,7 +22,7 @@ import locale, gettext, sys, os
 ## where fontypythonmodules actually lives.
 root = __file__
 if os.path.islink(root):
-	root = os.path.realpath(root)
+    root = os.path.realpath(root)
 fontyroot = os.path.dirname(os.path.abspath(root))
 
 ## Dec 2007
@@ -30,11 +30,11 @@ fontyroot = os.path.dirname(os.path.abspath(root))
 localedir = os.path.join(fontyroot, "locale")
 
 try:
-	loc = locale.setlocale( locale.LC_ALL, "" ) # This sets the locale to the system's default.
+    loc = locale.setlocale( locale.LC_ALL, "" ) # This sets the locale to the system's default.
 except:
-	print "And now for something completely different..."
-	print "setlocale failed. Please report this to us."
-	raise SystemExit
+    print "And now for something completely different..."
+    print "setlocale failed. Please report this to us."
+    raise SystemExit
 
 ## REMEMBER:
 ## locale.getlocale() -- DON'T USE getlocale
@@ -47,12 +47,12 @@ domain = "all"
 gettext.install( domain, localedir, unicode = True )
 
 try:
-	lang = gettext.translation (domain, localedir, languages=[loc])#have to have last param ...
-	lang.install(unicode = True )
+    lang = gettext.translation (domain, localedir, languages=[loc])#have to have last param ...
+    lang.install(unicode = True )
 
 except IOError:
-	## Could not find the domain.mo file.
-	## I won't print a message because this file runs twice (fontypython and start_fontypython)
-	## and that dumps two messages, which sucks.
-	pass # default to English.
+    ## Could not find the domain.mo file.
+    ## I won't print a message because this file runs twice (fontypython and start_fontypython)
+    ## and that dumps two messages, which sucks.
+    pass # default to English.
 
