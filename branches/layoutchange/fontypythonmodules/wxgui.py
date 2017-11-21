@@ -311,36 +311,38 @@ class HushPanel(DismissablePanel):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
         ## Big header announcing Hushed/Not hushed
-        self.hsmlp = wx.Panel(self,size=(-1,150), style=wx.SUNKEN_BORDER)
+        ## Real tortured code to center the fuckin' label text. Jeezuz.
+        hush_heading_panel = wx.Panel(self,size=(-1,150), style=wx.SUNKEN_BORDER)
         
-        bsp = wx.BoxSizer(wx.HORIZONTAL)
-        self.hush_state_label = fpwx.h0( self.hsmlp, u"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        ## Cannot get the damn text to be in the center of the panel. Giving up...
-        bsp.Add(self.hush_state_label, 1, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 30)
-        bsp.SetSizeHints(self)
-        self.hsmlp.SetSizer(bsp)
+        f = wx.BoxSizer(wx.HORIZONTAL)
+        bsp = wx.BoxSizer(wx.VERTICAL)
+        self.hush_state_label = fpwx.h0( hush_heading_panel, u"xxx")
+        bsp.Add(self.hush_state_label, 1, wx.ALIGN_CENTER_HORIZONTAL )# | wx.ALL)#, border = 60)
+        f.Add(bsp, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 40)
+        hush_heading_panel.SetSizer(f)#bsp)
 
-        sizer.Add( self.hsmlp, 0, wx.EXPAND | wx.BOTTOM, border = 10)
+        sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 10)
 
-        self.chosen_pog_label = fpwx.h1( self, _("Hush Pog:") )
+        ## The label to the intro text
+        self.chosen_pog_label = fpwx.h1( self, _("The Hush Pog:") )
         sizer.Add( self.chosen_pog_label, 0 )
-
-        p1 = fpwx.para( self, _("Hushing installs a Pog that you must manage. " \
-                "Please read the help for details.\nMake sure it contains a few system fonts. Look in /usr/share/fonts for ideas.") )
+        
+        ## The intro text
+        p1 = fpwx.para( self, _( u"Hushing installs a Pog that you must manage. " \
+                                  "Make sure it contains a few system fonts. " \
+                                  "Look in /usr/share/fonts for ideas." \
+                                  "\nPlease read the help for details."))
         sizer.Add( p1, 0, wx.TOP, border = 5 )
 
         h = wx.BoxSizer(wx.HORIZONTAL)
-        self.chosen_pog_label = fpwx.label( self, _("Current hush pog: ") )
-        h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
-        ## Label showing selected/last pog 
-        ## Gets it from config (which starts with "" first time)
-        #lhp = fpsys.config.hush_pog_name
-        #self.chosen_pog_label = fpwx.label( self, lhp )
-        #sizer.Add( self.chosen_pog_label,0 )
 
-        ## The pog choice pulldown
+        ## label to the choice box
+        self.chosen_pog_label = fpwx.label( self, _("Current Hush Pog: ") )
+        h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
+
+        ## The pog choice box
         self.pog_choice = wx.Choice(self, -1, choices = ["-"])
-        self.pog_choice.SetToolTip( wx.ToolTip( _("Choose your system pog") ) )
+        self.pog_choice.SetToolTip( wx.ToolTip( _("Choose your system Pog") ) )
         self._update_pog_choice_control()
         self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
         
@@ -349,7 +351,7 @@ class HushPanel(DismissablePanel):
         sizer.Add(h,0)
 
         ## Area to print into
-        pl = fpwx.label( self, _("Progress:") )
+        pl = fpwx.label( self, _("Progress report:") )
         sizer.Add( pl, 0, wx.TOP, border = 30)
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
@@ -366,7 +368,6 @@ class HushPanel(DismissablePanel):
     def _pog_chosen(self,evt):
         """The choice was changed."""
         s = evt.GetString()
-        #self.chosen_pog_label.SetLabel( s )
         ## s is a byte string
         fpsys.config.hush_pog_name = s
 
@@ -377,24 +378,32 @@ class HushPanel(DismissablePanel):
             return self.sd["hush_off"][key]
     
     def _update_pog_choice_control(self):
-        """Refill the choice list, sort and select the last string."""
+        """
+        In case Pogs were added/deleted, we must refresh this list.
+        Refill the choice list, sort and select the last string.
+        """
         ## Empty the choice control.
         self.pog_choice.Clear()
         ## Now refill it
         pl = fpsys.iPC.getPogNames() # pl is all byte strings (encoded)
         pl.sort(cmp=locale.strcoll) # sort accroding to locale
+        self.pog_choice.Append(_(u"None chosen"))
         self.pog_choice.AppendItems( pl ) # stick it in the control
-        ## get the last label - make sure it's a byte too:
+        ## get the last Pog - make sure it's a byte, else..
         s = fpsys.LSP.ensure_bytes( fpsys.config.hush_pog_name )
-        if s not in pl: # else we get complaints here...
+        if s not in pl: # ...we get complaints here.
             n = 0
+            # This means the choice is invalid, so:
+            fpsys.config.hush_pog_name = ""
         else:
+            # s is ok, let's seek its index in the control
             n = self.pog_choice.FindString(s)
+        # now set it as selected
         self.pog_choice.SetSelection( n )
 
     def _show_or_hide(self, showing):
         """The entire panel hide/show"""
-        if showing:#elf.IsShown():
+        if showing:
             print "showing"
             # I am being shown, so let's update shit:
             self._update_pog_choice_control()
@@ -406,8 +415,11 @@ class HushPanel(DismissablePanel):
 
     def _do_hushing(self, evt):
         """
-        Forwards the click on to MainFrame where it's also bound.
+        Forward the click on to MainFrame where it's also bound.
         """
+        if self.pog_choice.GetCurrentSelection() == 0:
+            return
+        fpsys.config.hush_pog_name = self.pog_choice.GetStringSelection()
         #something 
         evt.Skip()
 
@@ -912,7 +924,7 @@ class MainFrame(wx.Frame):
         ## 2. Here.toggle_dismissable_panel --> Skip() to
         ## 3. Here:
         ## See the Bind to toggle_dismissable_panel just below.
-        #self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
+        self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
         #self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_unhush_button)
 
         ## Nov 2017
@@ -1258,10 +1270,10 @@ class MainFrame(wx.Frame):
     def do_hush_unhush(self, e):
         id = e.GetId()
         print "do_hush_unhush {}".format(id)
-
+        print fpsys.config.hush_pog_name
         #.. probeNoFontconfigDirError
         #.. then report the fail
-
+        return
 
         buglist = []
         if id == id_hush_button:

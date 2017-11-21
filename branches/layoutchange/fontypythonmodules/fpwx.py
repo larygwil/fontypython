@@ -87,7 +87,7 @@ def boldlabel( parent, ustr ):
     return p
 
 def h0( parent, ustr ):
-    p = xlabel( parent, ustr, size="points_xxx_large", weight=wx.FONTWEIGHT_BOLD )
+    p = xlabel( parent, ustr, "points_xxx_large", wx.FONTWEIGHT_BOLD )
     return p
 
 def h1( parent, ustr ):
