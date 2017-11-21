@@ -400,6 +400,11 @@ class HushPanel(DismissablePanel):
         sizer.Add( pl, 0, wx.TOP, border = 30)
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
+        font = self.printer.GetFont()
+        font = wx.Font(font.GetPointSize(), wx.TELETYPE,
+                       font.GetStyle(),
+                       font.GetWeight(), font.GetUnderlined())
+        self.printer.SetFont(font)
         sizer.Add (self.printer, 1, wx.EXPAND )
 
         if self.fontconfig_error:
@@ -498,8 +503,9 @@ class HushPanel(DismissablePanel):
         """
         if self.pog_choice.GetCurrentSelection() == 0:
             return
+        self.printer.Clear() # fresh for new data
         fpsys.config.hush_pog_name = self.pog_choice.GetStringSelection()
-        #something 
+        ## Skip the event along to the main frame. See do_hush_unhush() there.
         evt.Skip()
 
     def printout(self, msg, key=None):
@@ -507,15 +513,22 @@ class HushPanel(DismissablePanel):
         A callback for the actual hush code to
         use as a printer.
         """
-        if key: 
+        if key:
+            key = key.upper()
+            c = "="
+            if key == "ERROR":
+                c = "*"
             self.printer.write(key + "\n")
-            self.printer.write("----" + "\n")
+            self.printer.write(c * len(key) + "\n")
+
         self.printer.write(fpsys.LSP.ensure_unicode(msg) + "\n")
-        if not self.printer.IsShown(): 
-            self.printer.Show()
-            self.Layout()
 
     def after_do_hushing(self):
+        """
+        Called after the do_hush_unhush in main frame.
+        Switches state and updates the form without 
+        clearing the printer.
+        """
         self._update_pog_choice_control()
         self.hush_state_label.SetLabel(self._update_heading("h"))
         self.hb.SetLabel(self._update_heading("b"))
@@ -545,6 +558,11 @@ class ChooseZipDirPanel(DismissablePanel):
 
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
+        font = self.printer.GetFont()
+        font = wx.Font(font.GetPointSize(), wx.TELETYPE,
+                       font.GetStyle(),
+                       font.GetWeight(), font.GetUnderlined())
+        self.printer.SetFont(font)
         sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
         self.printer.Hide()
 
@@ -1000,27 +1018,25 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.menuSelectionALL, id=self.id_selall)
         self.Bind(wx.EVT_MENU, self.menuSelectionNONE, id=self.id_selnone)
 
-        ## Catch the Apply button *in* the settings panel.
+        ## Catch buttons in various panels. The panels have not been
+        ## declared yet. See below.
+        ## NB: THESE BINDS HAPPEN SECOND, *AFTER* toggle_dismissable_panel 
+        ##     has Skipped.
+        ##     The first Bind EVT_BUTTON is last in the code, see just below.
+        ## 1. .toggle_dismissable_panel --> Does a Skip() to
+        ## 2. Here:
+        ## Catch the Apply button in the settings panel.
         self.Bind(wx.EVT_BUTTON, self.apply_settings, id=wx.ID_APPLY)
-
-        ## Catch the Zip button *in* the choose_zipdir_panel 
+        ## Catch the Zip button in the choose_zipdir_panel 
         self.Bind(wx.EVT_BUTTON, self.do_pog_zip, id=id_do_the_actual_zip)
-
-        ## Catch the Hush buttons - Second handler, after toggle_dismissable_panel runs.
-        ## The order was:
-        ## 1. TargetPogChooser.multiClick --> Skip() to
-        ## 2. Here.toggle_dismissable_panel --> Skip() to
-        ## 3. Here:
-        ## See the Bind to toggle_dismissable_panel just below.
+        ## Catch the Huch button in hush_panel
         self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_hush_button)
-        #self.Bind(wx.EVT_BUTTON, self.do_hush_unhush, id=id_unhush_button)
 
-        ## Nov 2017
-        ## Vague Bind. Not specific to id. Happens FIRST, even though it's
-        ## last in the code.
+        ## Vague Bind. Not specific to id. 
+        ## HAPPENS FIRST even though it's last in the code.
         ## 1. The close (X) button of the DismissablePanels
         ## 2. The ZIP button (Skipped to here from TargetPogChooser)
-        self.Bind(wx.EVT_BUTTON,self.toggle_dismissable_panel )
+        self.Bind(wx.EVT_BUTTON, self.toggle_dismissable_panel )
 
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
@@ -1356,10 +1372,13 @@ class MainFrame(wx.Frame):
 
 
     def do_hush_unhush(self, e):
-        id = e.GetId()
-        print id
-        buglist = []
-        if id == id_hush_button:
+        """
+        Use the code in fpsys to hush or unhush.
+        """
+        ## Just paranoid - want to make sure it's the correct button id
+        ## Only want to fire on press of button in the hush_panel:
+        if e.GetId() == id_hush_button:
+            buglist = []
             if not os.path.exists(fpsys.HUSH_PAF):
                 ## Hush
                 hush_pog = fpsys.config.hush_pog_name
@@ -1374,7 +1393,7 @@ class MainFrame(wx.Frame):
                 ## All errors end with this text:
                 printer( strings.cant_hush, key="title")
                 for bug in buglist: printer( bug, key="ERROR" )
-                printer()
+                printer("")
                 printer( strings.see_help_hush, key="Help" )
                 
             self.hush_panel.after_do_hushing()
@@ -1387,6 +1406,7 @@ class MainFrame(wx.Frame):
         czd = self.choose_zipdir_panel
         todir = czd.get_path()
         emsg = ""
+        printer = czd.printout
         if todir:
             wx.BeginBusyCursor()
             for p in self.panelTargetPogChooser.list_of_target_pogs_selected:
@@ -1394,25 +1414,25 @@ class MainFrame(wx.Frame):
                 (bugs, fail, emsgs) = ipog.zip( todir )
                     
                 if fail: 
-                    czd.printout(
+                    printer(
                        _("I could not create the zip for {}").format(ipog) )
-                    czd.printout( emsgs[0])
-                    czd.printout( "" )
+                    printer( emsgs[0])
+                    printer( "" )
                 else:
-                    czd.printout( 
+                    printer( 
                        _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (p, todir) )
-                    czd.printout( "" )
+                    printer( "" )
                     if bugs:
-                        czd.printout( _("Some bugs happened:") )
-                        for m in emsgs: czd.printout( m )
-                        czd.printout( "" )
+                        printer( _("Some bugs happened:") )
+                        for m in emsgs: printer( m )
+                        printer( "" )
             wx.EndBusyCursor()
 
             if bugs:
-                czd.printout(_("Some fonts were skipped, try purging the Pog(s) involved."))
+                printer(_("Some fonts were skipped, try purging the Pog(s) involved."))
                 ps.pub(print_to_status_bar,_("Something went wrong."))
             else:
-                czd.printout(_("Zip file(s) have been created."))
+                printer(_("Zip file(s) have been created."))
                 ps.pub(print_to_status_bar,_("Zip file(s) have been created.") )
 
                 #self.ensure_fontview_shown()

@@ -932,8 +932,6 @@ def rm_lastFontBeforeSegfault_file():
 
 ##Nov 2017
 ## Hush code written
-
-
 def hush_with_pog( pog, printer ):
     """
     The printer func is under dev - aiming for a way to use this
@@ -944,9 +942,6 @@ def hush_with_pog( pog, printer ):
 
     See cli2.py, for example. It happens in a probeAllErrors call.
     """
-    #if len(poglist) == 0:
-    #    printer(_("Please choose a target Pog with system fonts to install."))
-    #    return
     bugs = []
     printer(_("Trying to hush..."), key="starting")
     if isPog( pog ):
@@ -961,7 +956,6 @@ def hush_with_pog( pog, printer ):
             ## thing.
             hushpog.install()
             ##TESTING: raise fontybugs.PogInvalid
-
         except (fontybugs.PogInvalid,
                 fontybugs.PogEmpty,
                 fontybugs.PogAllFontsFailedToInstall,
