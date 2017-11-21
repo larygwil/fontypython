@@ -141,23 +141,28 @@ class DismissablePanel(wx.Panel):
         self.Layout()
         self.SetFocus()
 
+        self._firstshow = True
         self.Bind(wx.EVT_SHOW, self.__catch_show_or_hide)
 
     ## Private
+    def __post_init__(self):
+        pass
+
     def __x_pressed(self,evt):
         ## I don't want the button's id skipping-on, but the panel's
         evt.SetId(self.id)
         evt.Skip()
 
     def __catch_show_or_hide(self,evt):
-        self.show_or_hide( self.IsShown() )
+        if self._firstshow: 
+            self._firstshow = False
+            return
+        self._show_or_hide( self.IsShown() )
 
-    ## Public
-    def __post_init__(self):
+    def _show_or_hide(self, showing):
         pass
 
-    def show_or_hide(self, showing):
-        pass
+
 
 
 class DismissableHTMLPanel(DismissablePanel):
@@ -294,8 +299,8 @@ class HushPanel(DismissablePanel):
     """
     def __init__(self, parent):
          self.sd = {
-                 "hush_on" :{"h":_("Font are currently being hushed."),     "b":_("Un-hush fonts")},
-                 "hush_off":{"h":_("Fonts are not being hushed right now."),"b":_("Hush fonts")}
+                 "hush_on" :{"h":_("Hushing is on."), "b":_("Un-hush fonts")},
+                 "hush_off":{"h":_("Hushing is off."),"b":_("Hush fonts")}
                   }
          DismissablePanel.__init__(self,parent, flag_hush_fonts,
                 somelabel = _("Hush fonts"),
@@ -306,14 +311,27 @@ class HushPanel(DismissablePanel):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
         ## Big header announcing Hushed/Not hushed
-        self.hush_state_label = fpwx.h1( self, self._update_heading("h") ) 
-        sizer.Add( self.hush_state_label, 1, wx.EXPAND | wx.TOP | wx.BOTTOM , border=20)
+        self.hsmlp = wx.Panel(self,size=(-1,150), style=wx.SUNKEN_BORDER)
+        
+        bsp = wx.BoxSizer(wx.HORIZONTAL)
+        self.hush_state_label = fpwx.h0( self.hsmlp, u"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        ## Cannot get the damn text to be in the center of the panel. Giving up...
+        bsp.Add(self.hush_state_label, 1, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 30)
+        bsp.SetSizeHints(self)
+        self.hsmlp.SetSizer(bsp)
+
+        sizer.Add( self.hsmlp, 0, wx.EXPAND | wx.BOTTOM, border = 10)
+
+        self.chosen_pog_label = fpwx.h1( self, _("Hush Pog:") )
+        sizer.Add( self.chosen_pog_label, 0 )
+
+        p1 = fpwx.para( self, _("Hushing installs a Pog that you must manage. " \
+                "Please read the help for details.\nMake sure it contains a few system fonts. Look in /usr/share/fonts for ideas.") )
+        sizer.Add( p1, 0, wx.TOP, border = 5 )
 
         h = wx.BoxSizer(wx.HORIZONTAL)
-
-        self.chosen_pog_label = fpwx.label( self, _("Hush with this pog:") )
-        h.Add( self.chosen_pog_label, 0 )
-
+        self.chosen_pog_label = fpwx.label( self, _("Current hush pog: ") )
+        h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
         ## Label showing selected/last pog 
         ## Gets it from config (which starts with "" first time)
         #lhp = fpsys.config.hush_pog_name
@@ -322,19 +340,20 @@ class HushPanel(DismissablePanel):
 
         ## The pog choice pulldown
         self.pog_choice = wx.Choice(self, -1, choices = ["-"])
+        self.pog_choice.SetToolTip( wx.ToolTip( _("Choose your system pog") ) )
         self._update_pog_choice_control()
         self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
         
-        h.Add( self.pog_choice,0)
+        h.Add( self.pog_choice, 0, wx.ALIGN_TOP | wx.TOP, border = 20)
 
-        sizer.Add(h,1,wx.EXPAND)
+        sizer.Add(h,0)
 
         ## Area to print into
+        pl = fpwx.label( self, _("Progress:") )
+        sizer.Add( pl, 0, wx.TOP, border = 30)
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
-        sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
-        self.printer.Hide()
-
+        sizer.Add (self.printer, 1, wx.EXPAND )
 
         ## The hush/unhush button
         self.hb = wx.Button( self, label = self._update_heading("b"), id = id_hush_button )
@@ -373,21 +392,17 @@ class HushPanel(DismissablePanel):
             n = self.pog_choice.FindString(s)
         self.pog_choice.SetSelection( n )
 
-    def show_or_hide(self, showing):
+    def _show_or_hide(self, showing):
         """The entire panel hide/show"""
         if showing:#elf.IsShown():
+            print "showing"
             # I am being shown, so let's update shit:
             self._update_pog_choice_control()
             self.hush_state_label.SetLabel(self._update_heading("h"))
             self.hb.SetLabel(self._update_heading("b"))
-            if self.printer.IsEmpty():
-                self.printer.Hide()
-            else:
-                self.printer.Show()
         else:
             # I am being hidden ( esc, or x)
             self.printer.Clear()
-            self.printer.Hide()
 
     def _do_hushing(self, evt):
         """
@@ -439,10 +454,9 @@ class ChooseZipDirPanel(DismissablePanel):
         self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=id_do_the_actual_zip)
         sizer.Add(btn, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
 
-        #self.Bind(wx.EVT_SHOW, self.show_or_hide)
         return sizer
 
-    def show_or_hide(self, showing):#evt):
+    def _show_or_hide(self, showing):#evt):
         """The entire panel hide/show"""
         if showing:#self.IsShown():
             # I am being shown
@@ -593,8 +607,6 @@ class SettingsPanel(DismissablePanel):
         self.settings_sizer.Add((1,1),0) #a blank cell
         self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
 
-        #self.Bind(wx.EVT_SHOW, self.show_or_hide)
-
         return self.settings_sizer
 
     def settings_force_redraw(self):
@@ -607,7 +619,7 @@ class SettingsPanel(DismissablePanel):
         Used externally in MainFrame"""
         return self.form[key]["changed"]
 
-    def show_or_hide(self, showing):#evt):
+    def _show_or_hide(self, showing):#evt):
         """
         Fires when I hide or show.
         NOTE: Since __post_init__ only happens once, I need a way
