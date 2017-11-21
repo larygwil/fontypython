@@ -118,7 +118,7 @@ class DismissablePanel(wx.Panel):
 
         x_button = wx.Button(self, -1, label="X", 
                 style = wx.NO_BORDER | wx.BU_EXACTFIT)
-        self.Bind(wx.EVT_BUTTON, self._x_pressed, x_button)
+        self.Bind(wx.EVT_BUTTON, self.__x_pressed, x_button)
 
         x_button.SetToolTipString( _("Dismiss") )
 
@@ -141,13 +141,24 @@ class DismissablePanel(wx.Panel):
         self.Layout()
         self.SetFocus()
 
-    def __post_init__(self):
-        pass
+        self.Bind(wx.EVT_SHOW, self.__catch_show_or_hide)
 
-    def _x_pressed(self,evt):
+    ## Private
+    def __x_pressed(self,evt):
         ## I don't want the button's id skipping-on, but the panel's
         evt.SetId(self.id)
         evt.Skip()
+
+    def __catch_show_or_hide(self,evt):
+        self.show_or_hide( self.IsShown() )
+
+    ## Public
+    def __post_init__(self):
+        pass
+
+    def show_or_hide(self, showing):
+        pass
+
 
 class DismissableHTMLPanel(DismissablePanel):
     """
@@ -168,7 +179,7 @@ class DismissableHTMLPanel(DismissablePanel):
 
     def __post_init__(self):
         ## call one: get the HTML paf
-        self.paf = self.__post_init_set_paf__()
+        self.paf = self.post_init_set_paf()
         
         self.html = DismissableHTMLPanel.AnHtmlWindow(self)
         try:
@@ -187,7 +198,7 @@ class DismissableHTMLPanel(DismissablePanel):
         sd = {"SEP":sep}
 
         ## call two: get the replace strings in a dict
-        d = self.__post_init_setup_replace_dict__()
+        d = self.post_init_setup_replace_dict()
 
         # merge all the dicts
         sd.update(**d)
@@ -202,11 +213,12 @@ class DismissableHTMLPanel(DismissablePanel):
         self.html.SetPage( h )        
         return self.html
 
-    def __post_init_set_paf__(self):
+    ## Public
+    def post_init_set_paf(self):
         """Override and return a paf to an html file."""
         pass
 
-    def __post_init_setup_replace_dict__(self):
+    def post_init_setup_replace_dict(self):
         """Override and return a dict of keys to replace in the html."""
         pass
 
@@ -222,7 +234,7 @@ class HelpPanel(DismissableHTMLPanel):
                 somelabel=_("Help! Help! I'm being repressed!"),
                 someicon="fplogo") 
 
-    def __post_init_set_paf__(self):
+    def post_init_set_paf(self):
         ## langcode = locale.getlocale()[0] # I must not use getlocale...
         ## This is suggested by Martin:
         # use *one* of the categories (not LC_ALL)
@@ -239,7 +251,7 @@ class HelpPanel(DismissableHTMLPanel):
             helppaf = os.path.join(packpath, "help", "en", "help.html")
         return helppaf
 
-    def __post_init_setup_replace_dict__(self):
+    def post_init_setup_replace_dict(self):
         ## Drop some last-minute info into the html string
         s_fpdir = fpsys.LSP.to_unicode(fpsys.iPC.appPath())
 
@@ -262,11 +274,11 @@ class AboutPanel(DismissableHTMLPanel):
                 somelabel=_("About Fonty"),
                 someicon="fplogo") 
 
-    def __post_init_set_paf__(self):
+    def post_init_set_paf(self):
         packpath = fpsys.fontyroot
         return os.path.join(packpath, "about", "about.html")
 
-    def __post_init_setup_replace_dict__(self):
+    def post_init_setup_replace_dict(self):
         return {
              "warranty": strings.warranty.replace("\n","<br>"),
             "copyright": strings.copyright,
@@ -294,8 +306,8 @@ class HushPanel(DismissablePanel):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
         ## Big header announcing Hushed/Not hushed
-        self.hush_state_label = fpwx.h2( self, self.__update_heading("h") ) 
-        sizer.Add( self.hush_state_label, 0, wx.EXPAND | wx.TOP, border=10)
+        self.hush_state_label = fpwx.h1( self, self._update_heading("h") ) 
+        sizer.Add( self.hush_state_label, 1, wx.EXPAND | wx.TOP | wx.BOTTOM , border=20)
 
         h = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -310,8 +322,8 @@ class HushPanel(DismissablePanel):
 
         ## The pog choice pulldown
         self.pog_choice = wx.Choice(self, -1, choices = ["-"])
-        self.__update_pog_choice_control()
-        self.pog_choice.Bind(wx.EVT_CHOICE, self.__pog_chosen )
+        self._update_pog_choice_control()
+        self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
         
         h.Add( self.pog_choice,0)
 
@@ -325,29 +337,27 @@ class HushPanel(DismissablePanel):
 
 
         ## The hush/unhush button
-        self.hb = wx.Button( self, label = self.__update_heading("b"), id = id_hush_button )
+        self.hb = wx.Button( self, label = self._update_heading("b"), id = id_hush_button )
         ## Make a button. Click also gets caught in MainFrame.
-        self.Bind(wx.EVT_BUTTON, self.__do_hush, id = id_hush_button)
+        self.Bind(wx.EVT_BUTTON, self._do_hushing, id = id_hush_button)
         sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
 
-
-        self.Bind(wx.EVT_SHOW, self.__show_or_hide)
         return sizer
 
-    def __pog_chosen(self,evt):
+    def _pog_chosen(self,evt):
         """The choice was changed."""
         s = evt.GetString()
-        self.chosen_pog_label.SetLabel( s )
+        #self.chosen_pog_label.SetLabel( s )
         ## s is a byte string
         fpsys.config.hush_pog_name = s
 
-    def __update_heading(self, key):
+    def _update_heading(self, key):
         if os.path.exists(fpsys.HUSH_PAF):
             return self.sd["hush_on"][key]
         else:
             return self.sd["hush_off"][key]
     
-    def __update_pog_choice_control(self):
+    def _update_pog_choice_control(self):
         """Refill the choice list, sort and select the last string."""
         ## Empty the choice control.
         self.pog_choice.Clear()
@@ -363,13 +373,13 @@ class HushPanel(DismissablePanel):
             n = self.pog_choice.FindString(s)
         self.pog_choice.SetSelection( n )
 
-    def __show_or_hide(self,evt):
+    def show_or_hide(self, showing):
         """The entire panel hide/show"""
-        if self.IsShown():
+        if showing:#elf.IsShown():
             # I am being shown, so let's update shit:
-            self.__update_pog_choice_control()
-            self.hush_state_label.SetLabel(self.__update_heading("h"))
-            self.hb.SetLabel(self.__update_heading("b"))
+            self._update_pog_choice_control()
+            self.hush_state_label.SetLabel(self._update_heading("h"))
+            self.hb.SetLabel(self._update_heading("b"))
             if self.printer.IsEmpty():
                 self.printer.Hide()
             else:
@@ -379,7 +389,7 @@ class HushPanel(DismissablePanel):
             self.printer.Clear()
             self.printer.Hide()
 
-    def __do_hush(self, evt):
+    def _do_hushing(self, evt):
         """
         Forwards the click on to MainFrame where it's also bound.
         """
@@ -412,10 +422,10 @@ class ChooseZipDirPanel(DismissablePanel):
         self.treedir = ATree(self, os.getcwd())
         tree = self.treedir.GetTreeCtrl()
         #Clicks on the control will change the button's label
-        tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
+        tree.Bind(wx.EVT_TREE_SEL_CHANGED, self._on_dir_control_click)
         sizer.Add(self.treedir, 1, wx.EXPAND)
         
-        self.lbl = fpwx.label( self, self.__make_label() ) 
+        self.lbl = fpwx.label( self, self._make_label() ) 
         sizer.Add( self.lbl, 0, wx.EXPAND | wx.TOP, border=10)
 
         self.printer = wx.TextCtrl(self,
@@ -429,12 +439,12 @@ class ChooseZipDirPanel(DismissablePanel):
         self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=id_do_the_actual_zip)
         sizer.Add(btn, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
 
-        self.Bind(wx.EVT_SHOW, self.show_or_hide)
+        #self.Bind(wx.EVT_SHOW, self.show_or_hide)
         return sizer
 
-    def show_or_hide(self,evt):
+    def show_or_hide(self, showing):#evt):
         """The entire panel hide/show"""
-        if self.IsShown():
+        if showing:#self.IsShown():
             # I am being shown
             if self.printer.IsEmpty():
                 self.printer.Hide()
@@ -451,14 +461,14 @@ class ChooseZipDirPanel(DismissablePanel):
             self.printer.Show()
             self.Layout()
 
-    def __make_label(self, p=None):
+    def _make_label(self, p=None):
         if not p: p = os.getcwd()
         return _("The zip file(s) will be put into:\n{}").format(p)
 
-    def __onDirCtrlClick(self,e):
+    def _on_dir_control_click(self,e):
         cp = self.treedir.GetPath()
-        #self.btn.SetLabel(self.__make_label(cp))
-        self.lbl.SetLabel(self.__make_label(cp))
+        #self.btn.SetLabel(self._make_label(cp))
+        self.lbl.SetLabel(self._make_label(cp))
 
     def _do_actual_zip(self, evt):
         """
@@ -583,7 +593,7 @@ class SettingsPanel(DismissablePanel):
         self.settings_sizer.Add((1,1),0) #a blank cell
         self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
 
-        self.Bind(wx.EVT_SHOW, self.show_or_hide)
+        #self.Bind(wx.EVT_SHOW, self.show_or_hide)
 
         return self.settings_sizer
 
@@ -597,13 +607,13 @@ class SettingsPanel(DismissablePanel):
         Used externally in MainFrame"""
         return self.form[key]["changed"]
 
-    def show_or_hide(self,evt):
+    def show_or_hide(self, showing):#evt):
         """
         Fires when I hide or show.
         NOTE: Since __post_init__ only happens once, I need a way
         to alter the form as it comes and goes.
         """
-        if self.IsShown():
+        if showing:#self.IsShown():
             # Most of the controls will "remember" their last setting.
             # (This is all a show/hide game anyway.)
             # The only one that can change outside the settings is

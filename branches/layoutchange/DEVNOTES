@@ -93,6 +93,12 @@ SETUP TODO
 TODO
 ==
 Cleanup stuff:
+
+* NB:
+* I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
+* Try to use _ for private names. __ for the rare special private names.
+
+
 * NB::Don't forget to remove the wx debug stuff on the app object
 * UPDATE CHANGELOG
 * UPDATE README
