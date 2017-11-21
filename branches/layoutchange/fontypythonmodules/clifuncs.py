@@ -97,7 +97,7 @@ def hush_unhush( pog, switch = None):
         print pstr
 
     if switch == "hush":
-        buglist = fpsys.hush_with_pogs([pog], printer)
+        buglist = fpsys.hush_with_pog( pog, printer )
     else:
         buglist = fpsys.un_hush( printer )
 

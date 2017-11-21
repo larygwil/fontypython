@@ -934,49 +934,50 @@ def rm_lastFontBeforeSegfault_file():
 ## Hush code written
 
 
-def hush_with_pogs( poglist, printer ):
+def hush_with_pog( pog, printer ):
     """
     The printer func is under dev - aiming for a way to use this
     same func from the gui and cli
 
-    The existence of the fontconfig conf.d directory has all
-    been confirmed before code gets here.
+    The existence of the fontconfig conf.d directory must be
+    confirmed before code gets here.
+
     See cli2.py, for example. It happens in a probeAllErrors call.
     """
-    if len(poglist) == 0:
-        printer(_("Please choose a target Pog with system fonts to install."))
-        return
+    #if len(poglist) == 0:
+    #    printer(_("Please choose a target Pog with system fonts to install."))
+    #    return
     bugs = []
     printer(_("Trying to hush..."), key="starting")
-    for pog in poglist:
-        if isPog( pog ):
-            hushpog = fontcontrol.Pog( pog )
-            ## gen and install it!
-            printer( _(u"Installing (%s)") % pog, key="installing")
-            try:
-                hushpog.genList()
-                ## Aside: it is not an error to 
-                ## install again ( > once) - hence I don't need
-                ## to worry about toggling this hush/unhush
-                ## thing.
-                hushpog.install()
-                ##TESTING: raise fontybugs.PogInvalid
+    if isPog( pog ):
+        hushpog = fontcontrol.Pog( pog )
+        ## gen and install it!
+        printer( _(u"Installing (%s)") % pog, key="installing")
+        try:
+            hushpog.genList()
+            ## Aside: it is not an error to 
+            ## install again ( > once) - hence I don't need
+            ## to worry about toggling this hush/unhush
+            ## thing.
+            hushpog.install()
+            ##TESTING: raise fontybugs.PogInvalid
 
-            except (fontybugs.PogInvalid,
-                    fontybugs.PogEmpty,
-                    fontybugs.PogAllFontsFailedToInstall,
-                    fontybugs.PogSomeFontsDidNotInstall,
-                    fontybugs.NoFontsDir ), e:
-                bugs.append(e.get_error_string())
-        ## The arg was not a valid pog.
-        else:
-            bugs.append(_("(%s) cannot be found. " \
-                          "Try -l to see the names.")
-                            % pog )
+        except (fontybugs.PogInvalid,
+                fontybugs.PogEmpty,
+                fontybugs.PogAllFontsFailedToInstall,
+                fontybugs.PogSomeFontsDidNotInstall,
+                fontybugs.NoFontsDir ), e:
+            bugs.append(e.get_error_string())
+    ## The arg was not a valid pog.
+    else:
+        bugs.append(_(u"The Pog \"{}\", cannot be found.").format( pog ))
     ## Only if that was 100% do we hush:
     ## This process can accrue new bugs too.
     if not bugs:
         try:
+            ## Just because I'm nervous: Is my HUSH_PAF actually in "fontconfig"?
+            if not os.path.dirname(iPC.user_fontconfig_confd()).endswith("fontconfig"):
+                raise fontybugs.NoFontconfigDir(path=_("fontconfig"))
             ## Write the XML fontconfig .conf file.
             ## don't care if it's already there. Just overwrite.
             f = open( HUSH_PAF, "w" )
@@ -985,7 +986,7 @@ def hush_with_pogs( poglist, printer ):
             f.close()
         # some new bug..
         except Exception as e:
-            bugs.append(e)
+            bugs.append(unicode(e))
             
     if not bugs:
         printer( _("Done. A hush settles over your fonts. " \
@@ -994,8 +995,9 @@ def hush_with_pogs( poglist, printer ):
 
 def un_hush( printer ):
     """
-    The existence of the fontconfig conf.d directory has all
-    been confirmed before code gets here.
+    The existence of the fontconfig conf.d directory has
+    to be confirmed before code gets here.
+
     See cli2.py, for example. It happens in a probeAllErrors call.
     """
     if not os.path.exists(HUSH_PAF):
@@ -1006,7 +1008,7 @@ def un_hush( printer ):
         printer( _("Trying to unhush..."), key = "starting")
         os.unlink( HUSH_PAF )
     except Exception as e:
-        bugs.append(e)
+        bugs.append(unicode(e))
 
     if not bugs:
         printer( _("The noise has returned; the hush is gone."),

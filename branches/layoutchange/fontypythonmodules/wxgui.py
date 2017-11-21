@@ -296,59 +296,104 @@ class AboutPanel(DismissableHTMLPanel):
 class HushPanel(DismissablePanel):
     """
     Shows the form for hushing and unhushing fonts.
+    The whole thing can be in two states:
+    1. Error -> fontconfig/conf.d is not available.
+       The entire show is off. Go home!
+    2. Ok -> Continue to hush/unhush. Error can still
+       happen during that process, and they appear in
+       the printer.
+    
+    When ok, there are two states of hush:
+    1. Hush on -> offer to turn it on
+    2. Hush off-> offer to turn it off.
+
+    Ok state:
+    =========
+    Displays a large heading of the hush state.
+    Shows some help text.
+    Offers a choice of pog names to hush with.
+    Has a large printer for the call back to report into.
+    Button to hush/unhush.
+
+    Error state:
+    ============
+    Display error title.
+    Display some help.
+    Display the error itself, in the printer.
     """
     def __init__(self, parent):
-         self.sd = {
-                 "hush_on" :{"h":_("Hushing is on."), "b":_("Un-hush fonts")},
-                 "hush_off":{"h":_("Hushing is off."),"b":_("Hush fonts")}
+        #state dict
+        self.sd = {
+                 "hush_on" :{"h":_("Hushing is on."  ), "b":_("Un-hush fonts")},
+                 "hush_off":{"h":_("Hushing is off."  ),"b":_("Hush fonts")},
+         "fontconfig_error":{"h": strings.cant_hush    ,"b":_("Cannot hush")}
                   }
-         DismissablePanel.__init__(self,parent, flag_hush_fonts,
+
+        DismissablePanel.__init__(self,parent, flag_hush_fonts,
                 somelabel = _("Hush fonts"),
                 someicon = "fplogo" ) 
 
 
     def __post_init__(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
+
+        ## This decides the error vs ok states:
+        self.fontconfig_error = fpsys.iPC.get_fontconfig_dir_error()
+
+        if not self.fontconfig_error:
+            title = u"xx"
+        else:
+            title = self.sd["fontconfig_error"]["h"]
         
         ## Big header announcing Hushed/Not hushed
         ## Real tortured code to center the fuckin' label text. Jeezuz.
+        ## Half the time the text was chopped-off on first draw. :(
         hush_heading_panel = wx.Panel(self,size=(-1,150), style=wx.SUNKEN_BORDER)
         
         f = wx.BoxSizer(wx.HORIZONTAL)
         bsp = wx.BoxSizer(wx.VERTICAL)
-        self.hush_state_label = fpwx.h0( hush_heading_panel, u"xxx")
+        self.hush_state_label = fpwx.h0( hush_heading_panel, title)
         bsp.Add(self.hush_state_label, 1, wx.ALIGN_CENTER_HORIZONTAL )# | wx.ALL)#, border = 60)
         f.Add(bsp, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 40)
         hush_heading_panel.SetSizer(f)#bsp)
 
         sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 10)
 
-        ## The label to the intro text
-        self.chosen_pog_label = fpwx.h1( self, _("The Hush Pog:") )
-        sizer.Add( self.chosen_pog_label, 0 )
-        
-        ## The intro text
-        p1 = fpwx.para( self, _( u"Hushing installs a Pog that you must manage. " \
-                                  "Make sure it contains a few system fonts. " \
-                                  "Look in /usr/share/fonts for ideas." \
-                                  "\nPlease read the help for details."))
-        sizer.Add( p1, 0, wx.TOP, border = 5 )
+        if not self.fontconfig_error:
+            ## The label to the intro text
+            self.chosen_pog_label = fpwx.h1( self, _("The Hush Pog:") )
+            sizer.Add( self.chosen_pog_label, 0 )
+            
+            ## The intro text
+            p1 = fpwx.para( self, _( u"Hushing installs a Pog that you must manage. " \
+                                      "Make sure it contains a few system fonts so\n" \
+                                      "your applications can function properly. " \
+                                      "Look in /usr/share/fonts for ideas.\n" \
+                                      "Please see help for details."))
+            sizer.Add( p1, 0, wx.TOP, border = 5 )
 
-        h = wx.BoxSizer(wx.HORIZONTAL)
+            h = wx.BoxSizer(wx.HORIZONTAL)
 
-        ## label to the choice box
-        self.chosen_pog_label = fpwx.label( self, _("Current Hush Pog: ") )
-        h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
+            ## label to the choice box
+            self.chosen_pog_label = fpwx.label( self, _("Current Hush Pog: ") )
+            h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
 
-        ## The pog choice box
-        self.pog_choice = wx.Choice(self, -1, choices = ["-"])
-        self.pog_choice.SetToolTip( wx.ToolTip( _("Choose your system Pog") ) )
-        self._update_pog_choice_control()
-        self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
-        
-        h.Add( self.pog_choice, 0, wx.ALIGN_TOP | wx.TOP, border = 20)
+            ## The pog choice box
+            self.pog_choice = wx.Choice(self, -1, choices = ["-"])
+            self.pog_choice.SetToolTip( wx.ToolTip( _("Choose your system Pog") ) )
+            self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
+            
+            h.Add( self.pog_choice, 0, wx.ALIGN_TOP | wx.TOP, border = 20)
 
-        sizer.Add(h,0)
+            sizer.Add(h,0)
+        else:
+            ## Some help re the error
+            p1 = fpwx.para( self, _( u"Fontconfig is not properly installed; thus " \
+                                      "Fonty cannot hush fonts.\n" \
+                                      "Consult your distribution's help, or " \
+                                      "open a ticket so we can try to fix it.\n" \
+                                      "Please see help for details."))
+            sizer.Add( p1, 0, wx.TOP, border = 5 )
 
         ## Area to print into
         pl = fpwx.label( self, _("Progress report:") )
@@ -357,21 +402,43 @@ class HushPanel(DismissablePanel):
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
         sizer.Add (self.printer, 1, wx.EXPAND )
 
-        ## The hush/unhush button
-        self.hb = wx.Button( self, label = self._update_heading("b"), id = id_hush_button )
-        ## Make a button. Click also gets caught in MainFrame.
-        self.Bind(wx.EVT_BUTTON, self._do_hushing, id = id_hush_button)
-        sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+        if self.fontconfig_error:
+            ## Dump the error into the printer
+            self.printout( unicode(self.fontconfig_error), key="ERROR")
+
+        if not self.fontconfig_error:
+            ## The hush/unhush button
+            self.hb = wx.Button( self, label = self._update_heading("b"), id = id_hush_button )
+            ## Make a button. Click also gets caught in MainFrame.
+            self.Bind(wx.EVT_BUTTON, self._do_hushing, id = id_hush_button)
+            sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+            self._update_pog_choice_control()
 
         return sizer
 
     def _pog_chosen(self,evt):
-        """The choice was changed."""
-        s = evt.GetString()
+        """
+        The choice control was changed.
+        Forbid index 0 as a valid choice.
+        """
+        n = evt.GetSelection()
+        if n == 0:
+            s = ""
+            self.hb.Disable()
+        else:
+            s = evt.GetString()
+            self.hb.Enable()
         ## s is a byte string
         fpsys.config.hush_pog_name = s
 
     def _update_heading(self, key):
+        """
+        Get strings for either the heading or the button
+        depending on state.
+        """
+        if self.fontconfig_error:
+            return self.sd["fontconfig_error"][key]
+
         if os.path.exists(fpsys.HUSH_PAF):
             return self.sd["hush_on"][key]
         else:
@@ -381,30 +448,42 @@ class HushPanel(DismissablePanel):
         """
         In case Pogs were added/deleted, we must refresh this list.
         Refill the choice list, sort and select the last string.
+
+        We also ensure that there's no invalid choice in the control.
+        If the hush pog, from config, is *not* in the control's list
+        then we set the config to "" and start again.
         """
         ## Empty the choice control.
         self.pog_choice.Clear()
         ## Now refill it
         pl = fpsys.iPC.getPogNames() # pl is all byte strings (encoded)
         pl.sort(cmp=locale.strcoll) # sort accroding to locale
+        ## Let's add a "none" choice in index 0
         self.pog_choice.Append(_(u"None chosen"))
+        ## then the pogs:
         self.pog_choice.AppendItems( pl ) # stick it in the control
-        ## get the last Pog - make sure it's a byte, else..
+        ## get the last used hush Pog name - make sure it's a byte, else..
         s = fpsys.LSP.ensure_bytes( fpsys.config.hush_pog_name )
         if s not in pl: # ...we get complaints here.
-            n = 0
-            # This means the choice is invalid, so:
+            # ok - that name was not in the control. Something changed.
+            n = 0 # this has the effect of selecting "None chosen" 
+            # The choice was invalid, so empty the config too:
             fpsys.config.hush_pog_name = ""
+            self.hb.Disable()
         else:
             # s is ok, let's seek its index in the control
             n = self.pog_choice.FindString(s)
-        # now set it as selected
+            self.hb.Enable()
+        # now set it as selected in the control
         self.pog_choice.SetSelection( n )
 
     def _show_or_hide(self, showing):
-        """The entire panel hide/show"""
+        """
+        The entire panel hide/show
+        If in error state, just bail.
+        """
+        if self.fontconfig_error: return
         if showing:
-            print "showing"
             # I am being shown, so let's update shit:
             self._update_pog_choice_control()
             self.hush_state_label.SetLabel(self._update_heading("h"))
@@ -424,10 +503,14 @@ class HushPanel(DismissablePanel):
         evt.Skip()
 
     def printout(self, msg, key=None):
+        """
+        A callback for the actual hush code to
+        use as a printer.
+        """
         if key: 
             self.printer.write(key + "\n")
             self.printer.write("----" + "\n")
-        self.printer.write(fpsys.LSP.ensure_unicode(msg)+ "\n")
+        self.printer.write(fpsys.LSP.ensure_unicode(msg) + "\n")
         if not self.printer.IsShown(): 
             self.printer.Show()
             self.Layout()
@@ -1269,29 +1352,25 @@ class MainFrame(wx.Frame):
 
     def do_hush_unhush(self, e):
         id = e.GetId()
-        print "do_hush_unhush {}".format(id)
-        print fpsys.config.hush_pog_name
-        #.. probeNoFontconfigDirError
-        #.. then report the fail
-        return
-
+        print id
         buglist = []
         if id == id_hush_button:
-            printer = self.hush_panel.printout 
-            pogs = self.panelTargetPogChooser.list_of_target_pogs_selected
-            #printer( u"".join(pogs) )
-            buglist = fpsys.hush_with_pogs( pogs, printer )
+            if not os.path.exists(fpsys.HUSH_PAF):
+                ## Hush
+                hush_pog = fpsys.config.hush_pog_name
+                printer = self.hush_panel.printout 
+                buglist = fpsys.hush_with_pog( pog, printer )
+            else:
+                ## Un hush
+                printer = self.hush_panel.printout 
+                buglist = fpsys.un_hush( printer )
 
-        elif id == id_unhush_button:
-            printer = self.unhush_panel.printout 
-            buglist = fpsys.un_hush( printer )
-
-        if buglist: 
-            ## All errors end with this text:
-            printer( strings.cant_hush, key="title")
-            for bug in buglist: printer( bug )
-            printer()
-            printer( strings.see_help_hush, key="Help" )
+            if buglist: 
+                ## All errors end with this text:
+                printer( strings.cant_hush, key="title")
+                for bug in buglist: printer( bug, key="ERROR" )
+                printer()
+                printer( strings.see_help_hush, key="Help" )
 
 
     def do_pog_zip(self, e):
