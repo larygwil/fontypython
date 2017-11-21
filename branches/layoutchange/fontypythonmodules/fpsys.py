@@ -96,7 +96,7 @@ class PathControl:
     __fp_dir = "" # "" vs None. When os.path.exists happens, None chokes. "" gives False.
     __fonts_dir = ""
     __app_conf = ""
-    __fontconfig_confd = ""
+    __fontconfig_confd = "NOTSETWRONGBADHORRIBLE"
 
     def __init__( self, XDG_DATA_HOME, XDG_CONFIG_HOME ):
 
@@ -931,7 +931,8 @@ def rm_lastFontBeforeSegfault_file():
         pass 
 
 ##Nov 2017
-## Hush code written
+## Hush code used from clifuncs and wxgui
+##
 def hush_with_pog( pog, printer ):
     """
     The printer func is under dev - aiming for a way to use this
@@ -969,9 +970,10 @@ def hush_with_pog( pog, printer ):
     ## This process can accrue new bugs too.
     if not bugs:
         try:
-            ## Just because I'm nervous: Is my HUSH_PAF actually in "fontconfig"?
+            ## Just because I'm nervous: Is my path actually in "fontconfig"?
+            ## This should never happen...
             if not os.path.dirname(iPC.user_fontconfig_confd()).endswith("fontconfig"):
-                raise fontybugs.NoFontconfigDir(path=_("fontconfig"))
+                raise fontybugs.NoFontconfigDir(path="**HUSH_PAF WEIRDO ERROR. Please open a ticket on our bug tracker**")
             ## Write the XML fontconfig .conf file.
             ## don't care if it's already there. Just overwrite.
             f = open( HUSH_PAF, "w" )

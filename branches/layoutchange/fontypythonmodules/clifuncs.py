@@ -94,6 +94,13 @@ def hush_unhush( pog, switch = None):
     """
     def printer( pstr = "", key = None ):
         pstr = fpsys.LSP.ensure_unicode(pstr)
+        if key:
+            key = key.upper()
+            c = "="
+            if key == "ERROR":
+                c = "*"
+            print key
+            print c * len(key)
         print pstr
 
     if switch == "hush":
@@ -103,7 +110,7 @@ def hush_unhush( pog, switch = None):
 
     if buglist: 
         ## All errors end with this text:
-        printer( strings.cant_hush )
+        printer( strings.cant_hush, key="ERROR" )
         for bug in buglist: printer( bug )
         printer ()
         printer( strings.see_help_hush )

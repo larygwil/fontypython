@@ -508,10 +508,12 @@ class HushPanel(DismissablePanel):
         ## Skip the event along to the main frame. See do_hush_unhush() there.
         evt.Skip()
 
-    def printout(self, msg, key=None):
+    def printout(self, msg="\n", key=None):
         """
         A callback for the actual hush code to
         use as a printer.
+        The key is meant as a way to alter how
+        things display. Only using ERROR really.
         """
         if key:
             key = key.upper()
@@ -1393,9 +1395,10 @@ class MainFrame(wx.Frame):
                 ## All errors end with this text:
                 printer( strings.cant_hush, key="title")
                 for bug in buglist: printer( bug, key="ERROR" )
-                printer("")
-                printer( strings.see_help_hush, key="Help" )
+                #printer()
+                #printer( strings.see_help_hush, key="Help" )
                 
+            ## Go refresh the panel to update state
             self.hush_panel.after_do_hushing()
 
 
@@ -1435,7 +1438,6 @@ class MainFrame(wx.Frame):
                 printer(_("Zip file(s) have been created."))
                 ps.pub(print_to_status_bar,_("Zip file(s) have been created.") )
 
-                #self.ensure_fontview_shown()
 
 
     ##Retired NOV 2017
