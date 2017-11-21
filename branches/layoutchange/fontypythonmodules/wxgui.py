@@ -515,6 +515,11 @@ class HushPanel(DismissablePanel):
             self.printer.Show()
             self.Layout()
 
+    def after_do_hushing(self):
+        self._update_pog_choice_control()
+        self.hush_state_label.SetLabel(self._update_heading("h"))
+        self.hb.SetLabel(self._update_heading("b"))
+
 
 
 class ChooseZipDirPanel(DismissablePanel):
@@ -1359,7 +1364,7 @@ class MainFrame(wx.Frame):
                 ## Hush
                 hush_pog = fpsys.config.hush_pog_name
                 printer = self.hush_panel.printout 
-                buglist = fpsys.hush_with_pog( pog, printer )
+                buglist = fpsys.hush_with_pog( hush_pog, printer )
             else:
                 ## Un hush
                 printer = self.hush_panel.printout 
@@ -1371,6 +1376,8 @@ class MainFrame(wx.Frame):
                 for bug in buglist: printer( bug, key="ERROR" )
                 printer()
                 printer( strings.see_help_hush, key="Help" )
+                
+            self.hush_panel.after_do_hushing()
 
 
     def do_pog_zip(self, e):
