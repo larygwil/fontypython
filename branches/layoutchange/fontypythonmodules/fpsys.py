@@ -632,7 +632,7 @@ class Configure:
         self.text = Configure.atoz
         self.points = 64
         #Nov 2017
-        self.max_num_columns = 1 #Beware 0 = divide by zero
+        self.max_num_columns = 2 #Beware 0 = divide by zero
         self.lastview = "EMPTY" # a pog name or a folder path.
         self.usegui = "wxgui"
         self.max = True
@@ -644,7 +644,7 @@ class Configure:
         ## Added 3 Oct 2009
         self.app_char_map = "UNSET" # A string of an app name.
         ## Nov 2017
-        self.hush_pog_name = ""
+        self.hush_pog_name = "" # A string of a pog name (byte string)
 
         self.__setData()
 

@@ -3,7 +3,7 @@
 
 *Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
-[The Idea](#idea) | [User Fonts Info](#info) | [The Layout](#layout) | [Menus](#menus) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
+[The Idea](#idea) | [User Fonts Info](#info) | [The Layout](#layout) | [Menus](#menus) | [Hushing](#hushing) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
 
 <a name="idea"></a>
 Ye Olde Basic Idea
@@ -18,6 +18,8 @@ For example, you might have a Pog called "Logos" into which you place all the fo
 When you're done, uninstall "Logos" and all those fonts go away. (The links to the original files are removed, **not** the actual font files!)
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
+
+If you have any problems, please open a ticket: {ticket}
 
 [Top](#top)
 {SEP}
@@ -104,7 +106,52 @@ The Font View will also attempt to display in columns, so you can see many fonts
 * **Left/Right:** Arrow buttons for paging one forward or back. 
 
 [Top](#top)
+{SEP}
 
+<a name="hushing"></a>
+Hushing Fonts
+===
+When you want to see *only* the fonts that you have installed, you can **hush** (or quieten) the many system fonts that are unwelcome. Your apps will have only your installed fonts visible until you "unhush".
+
+This requires a working fontconfig setup, which most modern Linux distros have. Fonty looks for the directory:
+
+	$HOME/.config/fontconfig/conf.d
+
+If it's not found, you can't hush fonts. (If you have more information, please open a ticket.)
+
+
+The hush 
+--
+Writes a config file which instructs fontconfig to:
+
+* **Reject** all files that start with "/usr/share/fonts"
+* **Allow** all fonts installed in the user fonts directory. Just install Pogs via Fonty as normal.
+
+The effect is usually instantaneous, but you may need to restart certain apps for them to notice. If you find there are still fonts appearing that you do not want to see, please open a ticket on our site.
+
+Warning
+--
+As you can imagine, a hush could reject all fonts...
+
+In order to make sure that your system has fonts it can use, we require you to choose a Pog that is installed when a hush starts. We call this the "Hush Pog". 
+
+Create a Pog, call it whatever you like, and put some typical system fonts into it.
+
+Good choices are: **DejaVu, Sans, Serif, Mono, Free-, Liberation-, Ubuntu-** and so forth. 
+(These kinds of fonts are usually found in "/usr/share/fonts". Use Fonty to make the Pog, browse to that path and add some to it.)
+
+**You have been warned.**
+
+The Un-hush
+--
+To switch all the system fonts back on again, go into the hush screen where you can "Un-hush". The Hush Pog is not uninstalled; you can do this manually.
+
+If there's a problem, you can also manually delete the config file. Look for it on this path, and delete it:
+	
+	$HOME/.config/fontconfig/conf.d/1.fontypythonhusher.conf
+
+
+[Top](#top)
 {SEP}
 
 <a name="menus"></a>
@@ -112,12 +159,12 @@ Menus
 ====
 * **Tools menu**
   * <img src="fontypythonmodules/things/icon_settings.png">&nbsp;**Settings:** Access the settings for 
-    the font view. 
-    Shortcuts: Ctrl+S or middle-click on the font view.
+    the font view. Shortcuts: Ctrl+S or middle-click on the font view.
   * **Purge Pog:** The Pog you are currently viewing may contain fonts that are not there anymore.
     Use purge to remove them.<br>
      *Explanation*: A Pog contains a list of paths. If a font is somehow moved on your hard drive, 
      then the path in the Pog will be old. Purging will remove these ghost fonts.
+  * **Hush fonts**: See the [section on hushing](#hushing). Shortcut: Ctrl+H
   * **Exit:** Guess. :-)
 * **Selection menu**
   * **Select ALL the source fonts:** While only a few fonts are shown in a page at a time, there may 
@@ -195,7 +242,7 @@ You should see a list of locales. If you see one ending in "utf8" that looks lik
 
 (Where xx_YY and encoding are replaced by you.) After that, start Fonty again.
 
-If you want to help translate, please drop us a ticket on: https://savannah.nongnu.org/bugs/?group=fontypython
+If you want to help translate, please drop us a ticket on: {ticket}
 
 [Top](#top)
 

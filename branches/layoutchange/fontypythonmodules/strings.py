@@ -133,17 +133,13 @@ options=_("""Options:
   --cat=Pog
                 Cat the pog. This will list all the fonts within.
   --hush=HushPog
-                Hush *all* the fonts except the ones you have installed.
-                Hushing makes font choosers in other apps (like Inkscape)
-                much easier to use as they won't be full of random fonts.
+                Hush *all* the fonts except the Pogs you install.
 
-                Uses "HushPog", which you create, name and manage, that should 
-                contain a few system fonts; in order to supply a basic set 
-                to your desktop apps.
+                Uses "HushPog", which you create that must contain a few system 
+                fonts; in order to supply a basic set to your desktop apps.
 
-                I suggest these from /usr/share/fonts
-                (where the '*' means 'whatever'): DejaVu*, Free*, Ubuntu*, 
-                Liberation*
+                I suggest these from "/usr/share/fonts":
+                DejaVu*, Free*, Ubuntu*, Liberation*
   --unhush
                 Restores all the system fonts after a hush. Leaves your special
                 HushPog installed. It's up to you to manage it.

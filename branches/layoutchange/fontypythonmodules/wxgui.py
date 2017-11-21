@@ -267,6 +267,12 @@ class HelpPanel(DismissableHTMLPanel):
             s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
         except Exception as e:
             s_fontsdir = u"<h1>Missing User Fonts</h1><b>{}</b>".format( unicode(e).replace("\n","<br>") )
+..
+
+add home, tickets, fontconfig path
+
+..
+
 
         d={"STATS_1":s_fpdir, "STATS_2":s_fontsdir} 
         return d
@@ -298,10 +304,10 @@ class HushPanel(DismissablePanel):
     Shows the form for hushing and unhushing fonts.
     The whole thing can be in two states:
     1. Error -> fontconfig/conf.d is not available.
-       The entire show is off. Go home!
-    2. Ok -> Continue to hush/unhush. Error can still
-       happen during that process, and they appear in
-       the printer.
+       Fatal. The entire show is off. Go home!
+    2. Ok -> Continue to hush/unhush. Other errors can 
+       still happen during that process, and they appear
+       in the printer.
     
     When ok, there are two states of hush:
     1. Hush on -> offer to turn it on
@@ -353,9 +359,9 @@ class HushPanel(DismissablePanel):
         f = wx.BoxSizer(wx.HORIZONTAL)
         bsp = wx.BoxSizer(wx.VERTICAL)
         self.hush_state_label = fpwx.h0( hush_heading_panel, title)
-        bsp.Add(self.hush_state_label, 1, wx.ALIGN_CENTER_HORIZONTAL )# | wx.ALL)#, border = 60)
+        bsp.Add(self.hush_state_label, 1, wx.ALIGN_CENTER_HORIZONTAL )
         f.Add(bsp, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 40)
-        hush_heading_panel.SetSizer(f)#bsp)
+        hush_heading_panel.SetSizer( f )
 
         sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 10)
 
@@ -408,7 +414,7 @@ class HushPanel(DismissablePanel):
         sizer.Add (self.printer, 1, wx.EXPAND )
 
         if self.fontconfig_error:
-            ## Dump the error into the printer
+            ## Dump the initial NoFontconfigDir error into the printer
             self.printout( unicode(self.fontconfig_error), key="ERROR")
 
         if not self.fontconfig_error:
@@ -505,8 +511,10 @@ class HushPanel(DismissablePanel):
             return
         self.printer.Clear() # fresh for new data
         fpsys.config.hush_pog_name = self.pog_choice.GetStringSelection()
-        ## Skip the event along to the main frame. See do_hush_unhush() there.
+        ## Skip the event along to the main frame. See Bind there.
         evt.Skip()
+
+    ## Public defs
 
     def printout(self, msg="\n", key=None):
         """
@@ -576,9 +584,9 @@ class ChooseZipDirPanel(DismissablePanel):
 
         return sizer
 
-    def _show_or_hide(self, showing):#evt):
+    def _show_or_hide(self, showing):
         """The entire panel hide/show"""
-        if showing:#self.IsShown():
+        if showing:
             # I am being shown
             if self.printer.IsEmpty():
                 self.printer.Hide()
@@ -588,12 +596,6 @@ class ChooseZipDirPanel(DismissablePanel):
             # I am being hidden ( esc, or x)
             self.printer.Clear()
             self.printer.Hide()
-
-    def printout(self, msg):
-        self.printer.write(msg + "\n")
-        if not self.printer.IsShown(): 
-            self.printer.Show()
-            self.Layout()
 
     def _make_label(self, p=None):
         if not p: p = os.getcwd()
@@ -611,9 +613,16 @@ class ChooseZipDirPanel(DismissablePanel):
         self._chosen_path = self.treedir.GetPath()
         evt.Skip()
 
+    ## Public defs
+
     def get_path(self):
         return self._chosen_path
 
+    def printout(self, msg):
+        self.printer.write(msg + "\n")
+        if not self.printer.IsShown(): 
+            self.printer.Show()
+            self.Layout()
 
 
 
@@ -710,8 +719,8 @@ class SettingsPanel(DismissablePanel):
 
         ## Nov 2017 - Moving the recurse check box into settings
         k = "recurseFolders"
-        c = wx.CheckBox(self, -1, _("Tick to include all " \
-                                    "sub-folders in source view.") )
+        c = wx.CheckBox(self, -1, _("Tick to include all\n" \
+                                    "sub-folders in\nthe source view.") )
         c.SetValue( self.gv(k) )
         self.entry( k,_("Include sub-folders."), c,
                 extra = _("Caution: This will crash Fonty if\n" \
@@ -1395,8 +1404,6 @@ class MainFrame(wx.Frame):
                 ## All errors end with this text:
                 printer( strings.cant_hush, key="title")
                 for bug in buglist: printer( bug, key="ERROR" )
-                #printer()
-                #printer( strings.see_help_hush, key="Help" )
                 
             ## Go refresh the panel to update state
             self.hush_panel.after_do_hushing()
