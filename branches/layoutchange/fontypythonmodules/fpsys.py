@@ -115,7 +115,9 @@ class PathControl:
             ## https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
             ## This is the user path I am going to use:
             ## $XDG_CONFIG_HOME/fontconfig/conf.d
-            #fcp = "fontconfig/conf.d"
+            ##
+            ## If it's not there - I make the path.
+            ##
             fcp = os.path.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
             if os.path.exists( fcp ):
                 PathControl.__fontconfig_confd = fcp
@@ -125,13 +127,11 @@ class PathControl:
                     PathControl.__fontconfig_confd = fcp
                 except:
                     pass
-                ##Prepare an error for later probing
-                #self.__ERROR_STATE["NoFontconfigDir"] = \
-                #fontybugs.NoFontconfigDir( path = fcp )
 
-
-            ## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
-            ## I don't know if this is even a possibility, because the docs are horrible.. :|
+            ## If the fancy new XDG_DATA_HOME does not actually exist, we want 
+            ## to fall back:
+            ## I don't know if this is even a possibility, because the 
+            ## docs are horrible.. :|
             if not os.path.exists(XDG_DATA_HOME):
 
                 ## We are in fallback to the old fonty dirs etc.
@@ -165,7 +165,6 @@ class PathControl:
                     return #Serious error
                 else:
                     PathControl.__fp_dir = x_fp_dir + "/"
-
 
                 x_fonts_dir = os.path.join(XDG_DATA_HOME, "fonts")
                 try:
@@ -234,7 +233,7 @@ class PathControl:
 
     def __upgrade_fp_dir(self,  old_fp, new_fp):
         """
-        There are quie a few files to move:
+        There are quite a few files to move:
           fp.conf
           overlap_counts
           segfonts
@@ -297,11 +296,13 @@ class PathControl:
 
     def __upgrade_fonts_dir(self, old_fonts_dir, new_fonts_dir):
         """
-        Find all symlinks in ~/.fonts and re-link them in new_fonts_dir. Delete old link.
+        Find all symlinks in ~/.fonts and re-link them in new_fonts_dir. 
+        Delete old link.
         This method ignores all errors.
         
-        (I tried to re-link fonts to the new directory for all pogs that are installed, but
-        this is still the __init__ of PathControl and I can't make Pog objects yet.)
+        (I tried to re-link fonts to the new directory for all pogs that 
+        are installed, but this is still the __init__ of PathControl and 
+        I can't make Pog objects yet.)
 
         The ~/.fonts directory will not be removed.
         """
@@ -322,7 +323,10 @@ class PathControl:
 
     ## Public Interface:
     def probeNoFontsDirError(self):
-        """For outside probing of missing fonts dir. E.g. see fontcontrol.py"""
+        """
+        For outside probing of missing fonts dir.
+        E.g. see fontcontrol.py
+        """
         self.__raiseOrContinue("NoFontsDir")
 
     def probeNoFontypythonDirError(self):

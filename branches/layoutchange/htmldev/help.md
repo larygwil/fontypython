@@ -27,12 +27,12 @@ If you have any problems, please open a ticket: {TICKET_URL}
 <a name="info"></a>
 User Fonts Paths
 ===
-Your **fontypython** directory, where all your pogs are kept, is: 
+###Your fontypython directory
+Where all your pogs are kept. 
 
 {FP_DIR}
 
-Your **user fonts** directory is: 
-
+###Your user fonts directory
 {UF_DIR}
 
 If there's a dot in front (like .local) that means the directory is "hidden". You might not see it in your file manager.
@@ -41,8 +41,7 @@ Whatever it's called and wherever it is, any fonts listed in here are "installed
 
 If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
 
-Your **fontconfig** directory is:
-
+###Your fontconfig directory is
 {FC_DIR}
 
 [Top](#top)
