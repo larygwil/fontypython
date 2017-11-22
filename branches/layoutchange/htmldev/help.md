@@ -117,9 +117,9 @@ The Font View will also attempt to display in columns, so you can see many fonts
 {SEP}
 
 <a name="hushing"></a>
-Hushing Fonts
+<img src="fontypythonmodules/things/icon_hush.png">&nbsp;Hushing Fonts
 ===
-When you want to see *only* the fonts that you have installed, you can **hush** (or quieten) the many system fonts that are unwelcome. Your apps will have only your installed fonts visible until you "unhush".
+When you want to see *only* the fonts that you've installed: **hush** the fonts that are unwelcome. Your various apps will have **only** your installed fonts until you un-hush.
 
 This requires a working fontconfig setup, which most modern Linux distros have. Fonty looks for the directory:
 
@@ -127,32 +127,37 @@ This requires a working fontconfig setup, which most modern Linux distros have. 
 
 If it's not found, you can't hush fonts. (If you have more information, please open a ticket.)
 
-
 The hush 
 --
-Writes a config file which instructs fontconfig to:
+Simply install Pogs via Fonty as normal, and the hush will ensure they are visible to the system.
+
+####Details
+Fonty writes a config file which instructs fontconfig to:
 
 * **Reject** all files that start with "/usr/share/fonts"
-* **Allow** all fonts installed in the user fonts directory. Just install Pogs via Fonty as normal.
+* **Allow** all fonts installed in the user fonts directory. 
 
-The effect is usually instantaneous, but you may need to restart certain apps for them to notice. If you find there are still fonts appearing that you do not want to see, please open a ticket on our site.
+The effect is usually instantaneous, but you may need to restart certain apps for them to notice. (If you find there are still fonts appearing that you do not want to see, please open a ticket.)
 
 Warning
 --
 As you can imagine, a hush could reject all fonts...
 
-In order to make sure that your system has fonts it can use, we require you to choose a Pog that is installed when a hush starts. We call this the "Hush Pog". 
+In order to make sure that your system has fonts it can use, fonty requires you to choose a Pog that is installed when a hushing. Call it a "Hush Pog". 
 
-Create a Pog, call it whatever you like, and put some typical system fonts into it.
+Create a Pog, any name; put some typical system fonts into it. Good choices are: **DejaVu, Sans, Serif, Mono, Free-, Liberation-, Ubuntu-** and so forth.
 
-Good choices are: **DejaVu, Sans, Serif, Mono, Free-, Liberation-, Ubuntu-** and so forth. 
-(These kinds of fonts are usually found in "/usr/share/fonts". Use Fonty to make the Pog, browse to that path and add some to it.)
+(These kinds of fonts are usually found in "/usr/share/fonts".)
 
-**You have been warned.**
+Choose this Pog when you start a hush. If you don't, things may go weird.
 
-The Un-hush
+It's not serious, but **you have been warned.**
+
+Reversing a hush: the Un-hush
 --
-To switch all the system fonts back on again, go into the hush screen where you can "Un-hush". The Hush Pog is not uninstalled; you can do this manually.
+To switch all the system fonts on again, go into the hush screen where you can "Un-hush". 
+
+Your "Hush Pog" is not uninstalled; do this manually,
 
 If there's a problem, you can also manually delete the config file. Look for it on this path, and delete it:
 	

@@ -366,8 +366,8 @@ class HushPanel(DismissablePanel):
                   }
 
         DismissablePanel.__init__(self,parent, flag_hush_fonts,
-                somelabel = _("Hush fonts"),
-                someicon = "fplogo" ) 
+                somelabel = _("Hush. Silence! Call yourselves Pwaetowian fonts?"),
+                someicon = "icon_hush" ) 
 
 
     def __post_init__(self):
@@ -393,7 +393,7 @@ class HushPanel(DismissablePanel):
         f.Add(bsp, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 40)
         hush_heading_panel.SetSizer( f )
 
-        sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 10)
+        sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 30)
 
         if not self.fontconfig_error:
             ## The label to the intro text
@@ -421,7 +421,7 @@ class HushPanel(DismissablePanel):
             
             h.Add( self.pog_choice, 0, wx.ALIGN_TOP | wx.TOP, border = 20)
 
-            sizer.Add(h,0)
+            sizer.Add(h,0, wx.BOTTOM, border = 20)
         else:
             ## Some help re the error
             p1 = fpwx.para( self, _( u"Fontconfig is not properly installed; thus " \
@@ -433,7 +433,7 @@ class HushPanel(DismissablePanel):
 
         ## Area to print into
         pl = fpwx.label( self, _("Progress report:") )
-        sizer.Add( pl, 0, wx.TOP, border = 30)
+        sizer.Add( pl, 0, wx.BOTTOM, border = 10)
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
         font = self.printer.GetFont()
