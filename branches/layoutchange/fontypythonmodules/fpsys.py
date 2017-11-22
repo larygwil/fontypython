@@ -115,14 +115,19 @@ class PathControl:
             ## https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
             ## This is the user path I am going to use:
             ## $XDG_CONFIG_HOME/fontconfig/conf.d
-            fcp = "fontconfig/conf.d"
+            #fcp = "fontconfig/conf.d"
             fcp = os.path.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
             if os.path.exists( fcp ):
                 PathControl.__fontconfig_confd = fcp
             else:
+                try:
+                    self.__try_test_make_dir(fcp, "NoFontconfigDir")
+                    PathControl.__fontconfig_confd = fcp
+                except:
+                    pass
                 ##Prepare an error for later probing
-                self.__ERROR_STATE["NoFontconfigDir"] = \
-                    fontybugs.NoFontconfigDir( path = fcp )
+                #self.__ERROR_STATE["NoFontconfigDir"] = \
+                #fontybugs.NoFontconfigDir( path = fcp )
 
 
             ## If the fancy new XDG_DATA_HOME does not actually exist, we want to fall back:
@@ -164,8 +169,9 @@ class PathControl:
 
                 x_fonts_dir = os.path.join(XDG_DATA_HOME, "fonts")
                 try:
+                    ##TESTER: 
+                    #self.__try_test_make_dir("/root/foo", "NoFontsDir")
                     self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
-                    ##TESTER: self.__try_test_make_dir("/root/foo", "NoFontsDir")
                 except:
                     pass
                 else:   
@@ -212,6 +218,8 @@ class PathControl:
                     e = fontybugs.NoFontypythonDir(path, associated_err)
                 elif errkey=="NoFontsDir":
                     e = fontybugs.NoFontsDir(path, associated_err)
+                elif errkey=="NoFontconfigDir":
+                    e = fontybugs.NoFontconfigDir(path)
                 else:
                     # Unknown key
                     print "Bad key in PathControl.__try_test_make_dir on key:", errkey
