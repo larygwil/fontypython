@@ -1,0 +1,7 @@
+#!/bin/bash
+[[ -z "$1" ]] && echo "Need a py file." && exit
+
+expand -i -t 4 "$1" > /tmp/e && mv /tmp/e "$1"
+
+#echo "yeah, no..."
+#find . -maxdepth 1 -name '*.py' ! -type d -exec bash -c 'expand -i -t 4 "$0" > /tmp/e && mv /tmp/e "$0"' {} \;

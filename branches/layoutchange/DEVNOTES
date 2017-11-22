@@ -4,6 +4,65 @@ Work and notes in 2016/2017. Slow due to my ill health.
 ====
 See also the older "ROADMAP" file.
 
+SETUP TODO
+==
+* Test with empty fontypython dir
+* Test with old config file
+* Write a script to do prep stuff:
+  * include the makehtml - so it's always fresh
+
+TODO
+==
+Cleanup stuff:
+
+* NB:
+* I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
+* Try to use _ for private names. __ for the rare special private names.
+
+* Don't forget to remove the wx debug stuff on the app object
+* UPDATE CHANGELOG
+* UPDATE README
+* THE FUCKING MAN PAGE :(
+
+* Update/del the WXLAYOUTNOTES diagram.
+
+* Remove the whatgui switches
+
+* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
+
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
+
+* Sliders for point size, num cols etc. in settings?
+
+* Distinguish TTC|OTC somehow
+
+* A button to toggle the lhs gui open/close
+
+FUTURE TODOS
+============
+* Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
+* Fix % outside brackets _("") % out here, not inside.
+   _("text {}").format(stuff)
+* comments that are stale
+* copyright dates replace
+* pyc files in svn
+* PEP8 all up in da hizzle - well, the tabs to spaces part.
+* it's, its ...
+* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
+* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
+* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
+
+* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
+* Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
+
+* WONTFIXNOW: key value error in config: when i add new keys, it bars and makes a new config file
+  This means all user's settings go poof. To fix this will take me a hell of a long time
+  and I'd rather spend that time in other places.
+  It's not that serious anyway. Fonty's not that complex.
+
+GENERAL INFO
+============
+
 FONTCONFIG and "~.fonts" deprecated
 ===================================
 Info is vague, but it looks like ~/.local/share/fonts is the new place
@@ -83,69 +142,8 @@ BUGS
 
 
 
-SETUP TODO
-==
-* Test with empty fontypython dir
-* Test with old config file
-* Write a script to do prep stuff:
-  * include the makehtml - so it's always fresh
-
-TODO
-==
-Cleanup stuff:
-
-* NB:
-* I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
-* Try to use _ for private names. __ for the rare special private names.
 
 
-* NB::Don't forget to remove the wx debug stuff on the app object
-* UPDATE CHANGELOG
-* UPDATE README
-* THE FUCKING MAN PAGE :(
-* Update the WXLAYOUTNOTES diagram.
-* Remove the whatgui switches
-* Fix % outside brackets _("") % out here, not inside.
-   _("text {}").format(stuff)
-* comments that are stale
-* copyright dates replace
-* pyc files in svn
-* PEP8 all up in da hizzle - well, the tabs to spaces part.
-* it's, its ...
-
-* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
-
-* FUTURE TODO: Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
-* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
-* All command args have kind of shitty naming... Do I dare change them now?
-
-* Sliders for point size, num cols etc. in settings?
-
-* Distinguish TTC|OTC somehow
-* X bitmap for clear and close
-
-
-* A button to toggle the lhs gui open/close
-* look at pager - maybe make it a combo box, rather than a wx.choice
-
-HUSH TODO
-==
-* Add help info into cli and html
-
-
-FUTURE TODOS
-============
-* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
-* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
-* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
-
-* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
-* Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
-
-* WONTFIXNOW: key value error in config: when i add new keys, it bars and makes a new config file
-  This means all user's settings go poof. To fix this will take me a hell of a long time
-  and I'd rather spend that time in other places.
-  It's not that serious anyway. Fonty's not that complex.
 
 
 Oct 2017: A new Segfault!
