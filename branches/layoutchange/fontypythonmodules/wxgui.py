@@ -258,23 +258,53 @@ class HelpPanel(DismissableHTMLPanel):
 
     def post_init_setup_replace_dict(self):
         ## Drop some last-minute info into the html string
-        s_fpdir = fpsys.LSP.to_unicode(fpsys.iPC.appPath())
 
-        ## Let's use our fancy error stuff to swap-in a message about
-        ## the user fonts directory, should it be missing!
-        try:
-            fpsys.iPC.probeNoFontsDirError()
-            s_fontsdir = fpsys.LSP.to_unicode(fpsys.iPC.userFontPath())
-        except Exception as e:
-            s_fontsdir = u"<h1>Missing User Fonts</h1><b>{}</b>".format( unicode(e).replace("\n","<br>") )
-..
+        def h1(t,e):
+            return u"<h6>Missing {}</h6>" \
+                    "{}".format( 
+                            t, 
+                            unicode(e).replace("\n","<br>")
+                            )
 
-add home, tickets, fontconfig path
+        def pccp(t):
+            return u"<pre><code>{}</code></pre>".format(t)
 
-..
+        s_fpdir = pccp(
+                fpsys.LSP.to_unicode(fpsys.iPC.appPath()) )
 
+        ## Let's use our fancy error stuff to swap-in 
+        ## a message about the user fonts directory, 
+        ## should it be missing!
+        e = fpsys.iPC.get_error_or_none("NoFontsDir")
+        if e:
+            s_fontsdir = h1(_(u"User Fonts"), e)
+        else:
+            s_fontsdir = pccp(
+                    fpsys.LSP.to_unicode(
+                        fpsys.iPC.userFontPath()))
 
-        d={"STATS_1":s_fpdir, "STATS_2":s_fontsdir} 
+        ## Also fontconfig's directory
+        e = fpsys.iPC.get_error_or_none("NoFontconfigDir")
+        if e:
+            s_fcdir = h1(_(u"Fontconfig"), e)
+            s_fcpaf = _(u"No path: Fontconfig is not functioning.")
+        else:
+            s_fcdir = pccp(
+                    fpsys.LSP.to_unicode(
+                        fpsys.iPC.user_fontconfig_confd()))
+            s_fcpaf = pccp(fpsys.HUSH_PAF)
+
+        ## Show the home directory too.
+        s_home = fpsys.LSP.to_unicode(fpsys.iPC.home())
+        
+        d={
+            "FP_DIR" : s_fpdir,
+            "UF_DIR" : s_fontsdir,
+            "FC_DIR" : s_fcdir,
+            "FC_PAF" : s_fcpaf,
+              "HOME" : s_home,
+        "TICKET_URL" : strings.ticket_url,
+            } 
         return d
 
 
@@ -344,7 +374,7 @@ class HushPanel(DismissablePanel):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         ## This decides the error vs ok states:
-        self.fontconfig_error = fpsys.iPC.get_fontconfig_dir_error()
+        self.fontconfig_error = fpsys.iPC.get_error_or_none("NoFontconfigDir")
 
         if not self.fontconfig_error:
             title = u"xx"

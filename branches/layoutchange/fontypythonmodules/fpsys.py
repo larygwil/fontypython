@@ -320,9 +320,6 @@ class PathControl:
     def probeNoFontypythonDirError(self):
         self.__raiseOrContinue("NoFontypythonDir")
 
-    def get_fontconfig_dir_error(self):
-        return self.__ERROR_STATE.get( "NoFontconfigDir", None )
-
     def probeAllErrors(self):
         """
         For outsiders to probe these errors.
@@ -333,6 +330,14 @@ class PathControl:
         self.__raiseOrContinue("UpgradeFail")
         self.__raiseOrContinue("NoFontsDir")
         self.__raiseOrContinue("NoFontconfigDir")
+
+    def get_error_or_none(self, key):
+        """
+        General way to fetch an
+        error or None, on a key.
+        Would use this after probing.
+        """
+        return self.__ERROR_STATE.get( key, None )
 
     def appPath(self):
         """Supplies the "fontypython" application directory."""

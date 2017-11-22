@@ -124,6 +124,10 @@ Cleanup stuff:
 * Distinguish TTC|OTC somehow
 * X bitmap for clear and close
 
+
+* A button to toggle the lhs gui open/close
+* look at pager - maybe make it a combo box, rather than a wx.choice
+
 HUSH TODO
 ==
 * hush icon

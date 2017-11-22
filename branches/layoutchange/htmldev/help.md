@@ -3,7 +3,7 @@
 
 *Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
-[The Idea](#idea) | [User Fonts Info](#info) | [The Layout](#layout) | [Menus](#menus) | [Hushing](#hushing) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
+[The Idea](#idea) | [User Font Paths](#info) | [The Layout](#layout) | [Menus](#menus) | [Hushing](#hushing) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
 
 <a name="idea"></a>
 Ye Olde Basic Idea
@@ -19,22 +19,31 @@ When you're done, uninstall "Logos" and all those fonts go away. (The links to t
 
 Fonty is also great for just looking at fonts, wherever they are on your computer, without having to install them first. She also has a command line, allowing very quick use. You can install/uninstall Pogs without having to start the entire gui, which is neat.
 
-If you have any problems, please open a ticket: {ticket}
+If you have any problems, please open a ticket: {TICKET_URL}
 
 [Top](#top)
 {SEP}
 
 <a name="info"></a>
-User Fonts Info
+User Fonts Paths
 ===
-* Your **fontypython** directory, where all your pogs are kept, is: {STATS_1}
-* You **user fonts** directory is: {STATS_2}
+Your **fontypython** directory, where all your pogs are kept, is: 
 
-  (If there is a dot in front (like .fonts) it means the directory is "hidden". You might not see it in your file manager.)
+{FP_DIR}
 
-  Whatever it's called and wherever it is, any fonts listed in here are "installed". Fonty's job is to shuttle fonts in and out of here so you don't have to.
+Your **user fonts** directory is: 
 
-  If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
+{UF_DIR}
+
+If there's a dot in front (like .local) that means the directory is "hidden". You might not see it in your file manager.
+
+Whatever it's called and wherever it is, any fonts listed in here are "installed". Fonty's job is to shuttle fonts in and out of here so you don't have to.
+
+If your fonts are not working, it may be that you don't have a user fonts directory. You'll have to search around and figure it out.
+
+Your **fontconfig** directory is:
+
+{FC_DIR}
 
 [Top](#top)
 {SEP}
@@ -115,7 +124,7 @@ When you want to see *only* the fonts that you have installed, you can **hush** 
 
 This requires a working fontconfig setup, which most modern Linux distros have. Fonty looks for the directory:
 
-	$HOME/.config/fontconfig/conf.d
+	{HOME}/.config/fontconfig/conf.d
 
 If it's not found, you can't hush fonts. (If you have more information, please open a ticket.)
 
@@ -148,7 +157,7 @@ To switch all the system fonts back on again, go into the hush screen where you 
 
 If there's a problem, you can also manually delete the config file. Look for it on this path, and delete it:
 	
-	$HOME/.config/fontconfig/conf.d/1.fontypythonhusher.conf
+	{FC_PAF}
 
 
 [Top](#top)
@@ -242,7 +251,7 @@ You should see a list of locales. If you see one ending in "utf8" that looks lik
 
 (Where xx_YY and encoding are replaced by you.) After that, start Fonty again.
 
-If you want to help translate, please drop us a ticket on: {ticket}
+If you want to help translate, please drop us a ticket on: {TICKET_URL}
 
 [Top](#top)
 
