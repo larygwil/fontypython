@@ -116,8 +116,10 @@ class DismissablePanel(wx.Panel):
 
         l = fpwx.h1( self, somelabel )
 
-        x_button = wx.Button(self, -1, label="X", 
-                style = wx.NO_BORDER | wx.BU_EXACTFIT)
+        x_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "icon_X" ), style = wx.NO_BORDER)
+        x_button.SetToolTipString( _("Dismiss") )
+        #x_button = wx.Button(self, -1, label="X", 
+        #        style = wx.NO_BORDER | wx.BU_EXACTFIT)
         self.Bind(wx.EVT_BUTTON, self.__x_pressed, x_button)
 
         x_button.SetToolTipString( _("Dismiss") )

@@ -136,15 +136,22 @@ class FontViewPanel(wx.Panel):
         ## The filter text box
         self.textFilter = wx.StaticText(self, -1, _("Filter:"))
         #July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's EVT_TEXT_ENTER event to work. Go figure.
-        self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        #self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        self.inputFilter = wx.ComboBox(self, -1, value="",
+                choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
         self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
         self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
 
         self.last_filter_string = ""
 
         ## The pager pulldown
-        self.choicePage = wx.Choice(self, -1, choices = ["busy"])
-        self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
+        #self.choicePage = wx.Choice(self, -1, choices = ["busy"])
+        #self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
+
+        pagerlabel = fpwx.label(self, _(u"Page:"))
+        self.choicePage = wx.ComboBox(self, -1, value="1", choices=["busy"],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        self.choicePage.Bind(wx.EVT_COMBOBOX, self.onPagechoiceClick) #Bind choice event
+        self.choicePage.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
 
         ##Tried to replace the horrible pager pulldown. This is a slider:
         #self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
@@ -178,6 +185,7 @@ class FontViewPanel(wx.Panel):
 
         sizerOtherControls.Add( self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND )
 
+        sizerOtherControls.Add( pagerlabel, 0, wx.ALIGN_RIGHT )
         sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
         #sizerOtherControls.Add( self.choiceSlider, 1 , wx.ALIGN_RIGHT )
 
@@ -601,6 +609,32 @@ class FontViewPanel(wx.Panel):
         if doupdate: self.MainFontViewUpdate()
 
     def onPagechoiceClick(self,event) :
+        ##cb = event.GetEventObject()
+        n = int( event.GetString() )
+        wx.BeginBusyCursor()
+        if self.pageindex != n: #Only redraw if actually onto another page.
+            self.pageindex =  n
+            self.filterAndPageThenCallCreateFitmaps()
+        wx.EndBusyCursor()
+
+    def onPagerChoiceTextEnter(self, evt):
+        o=evt.GetEventObject()
+        #print dir(o)
+        try:
+            n = int(evt.GetString())
+        except:
+            n = 1
+        #n = n if n <= self.total_number_of_pages else self.total_number_of_pages
+        n = min(n, self.total_number_of_pages)
+        n = max(1,n)
+        o.SetValue(str(n))
+        wx.BeginBusyCursor()
+        if self.pageindex != n: #Only redraw if actually onto another page.
+            self.pageindex =  n
+            self.filterAndPageThenCallCreateFitmaps()
+        wx.EndBusyCursor()
+
+    def xxonPagechoiceClick(self,event) :
         wx.BeginBusyCursor()
         if self.pageindex != int(event.GetString() ) : #Only redraw if actually onto another page.
             self.pageindex =  int(event.GetString() )

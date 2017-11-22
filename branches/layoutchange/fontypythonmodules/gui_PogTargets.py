@@ -66,8 +66,10 @@ class TargetPogChooser(wx.Panel):
         ## The "no pog" button
         self.idnone = wx.NewId()
         self.buttNoPog = wx.Button(self, label = _("Clear selection"), id = self.idnone)
-
+        #self.buttNoPog = wx.BitmapButton(self, self.idnone,
+        #        fpwx.wxbmp( "icon_X" ) )#, style = wx.NO_BORDER)
         self.buttNoPog.SetToolTipString(_("Deselects any chosen Pogs."))
+
         ## The buttons under the pog list
         ## Giving them all id numbers so my single handler can tell them apart.
         self.idnew = wx.NewId()
