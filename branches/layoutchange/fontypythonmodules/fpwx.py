@@ -45,6 +45,7 @@ def setup_fonts_and_colours():
     "heading3":hcol,
     "heading4":hcol,
     "heading5":hcol,
+    "heading6":hcol,
     })
     # I need them all in #RRGGBB format:
     for k,v in HTMLCOLS.iteritems():
@@ -69,14 +70,6 @@ def setup_fonts_and_colours():
         "points_xxx_large": ps*2,
         })
 
-    #print "SYSFONT"
-    #print SYSFONT
-    #print dir(wxfont)
-    #print "id:", id(wxfont.FaceName)
-    #print "FaceName:", wxfont.FaceName
-    #print "GetFamily:", wxfont.GetFamily()
-    #print
-    #raise SystemExit
 
 def xlabel(parent, 
         ustr,
@@ -85,21 +78,9 @@ def xlabel(parent,
         align = wx.ALIGN_LEFT):
 
     lbl = wx.StaticText( parent, -1, ustr, style = align )
-    #f = wx.Font(SYSFONT[size], SYSFONT["family"], 
-    #            wx.NORMAL, weight)
     f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     f.SetPointSize(SYSFONT[size])
-    #style: wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_SLANT and wx.FONTSTYLE_ITALIC
-    #f.SetStyle(align)
     f.SetWeight(weight)    
-    #if ustr == u"Page:":
-    #    print "Making font"
-        #print SYSFONT["family"]
-    #    print dir(f)
-    #    print f.FaceName
-    #    print f.PointSize
-
-        #import pdb; pdb.set_trace()
 
     lbl.SetFont( f )
     return lbl
@@ -125,7 +106,7 @@ def small_label( parent, ustr ):
     return p
 
 def boldlabel( parent, ustr ):
-    p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_BOLD )
+    p = xlabel( parent, ustr, size="points_x_normal", weight=wx.FONTWEIGHT_BOLD )
     return p
 
 def h0( parent, ustr ):

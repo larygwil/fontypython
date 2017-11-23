@@ -77,35 +77,16 @@ class TextPencil(Pencil):
         Pencil.__init__(self, myid, x = x, y = y, fcol = fcol)
         
         self.txt = txt
-        self._split_path_and_wrap = split_path_and_wrap
 
+        ## But, get the actual font object every time. 
+        ## This avoids weird issues where all the font
+        ## start using "Sans" no matter what the system
+        ## is set to.
+        self.font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         ## I get point sizes from the SYSFONT dict
         pointsize = SYSFONT[points]
-        #print txt
-        #print points
-        #print SYSFONT[points]
-        #print
-        print "init"
-        #print myid
-        print txt
-        #sf = SYSFONT["font"]
-        self.font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-        #self.font = wx.Font(sf.GetPointSize(), sf.GetFamily(),wx.FONTSTYLE_NORMAL, weight)
-        #self.font = wx.Font(sf.GetPointSize(), wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL, weight)
-        #if txt == "Font may be bad and it cannot be drawn.":
-        #    print " match, setting to 52"
-        #    print " id(self.font):", id(self.font)
-            #print " sysfont id():", id(sf)
-        #    print " self.font.GetFamily:", self.font.GetFamily()
-            #print " sys.GetFamily:", sf.GetFamily()
-
-        #    pointsize = 52
         self.font.SetPointSize(pointsize)
         self.font.SetWeight(weight)
-        #if True:#txt == "Font may be bad and it cannot be drawn.":
-        #    print "self.font pointsize:", self.font.GetPointSize()
-        #    print "self.font.FaceName:", self.font.FaceName
-        #    print "self.font.GetFamily:", self.font.GetFamily()
             
         self.em = self._measure(txt="n")
         self._measure() #initial size
@@ -132,22 +113,12 @@ class TextPencil(Pencil):
     def draw(self, memdc):
         txt = self.txt
         ## if we are to split, the size will change:
-        if True: #self._split_path_and_wrap: 
-            dcw,dch = memdc.GetSize()
-            ## Well ...hell. wx has a wordwrapper!
-            txt = wordwrap(txt, dcw - self.x, memdc, breakLongWords = True )
+        dcw,dch = memdc.GetSize()
+        ## Well ...hell. wx has a wordwrapper!
+        txt = wordwrap(txt, dcw - self.x, memdc, breakLongWords = True )
 
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
-        #if True:#txt == "Font may be bad and it cannot be drawn.":
-        #    print "draw"
-        #    print txt
-        #    print " id(self.font):", id(self.font)
-        #    print " self.font.GetPointSize:", self.font.GetPointSize()
-        #    print " dcf.GetFont()"
-        #    dcf = memdc.GetFont()
-        #    print " dcf.GetPointSize():", dcf.GetPointSize()
-        #    print
         memdc.DrawText( txt, self.x, self.y )
 
 class BitmapPencil(Pencil):

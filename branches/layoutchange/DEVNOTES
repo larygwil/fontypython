@@ -38,6 +38,10 @@ Cleanup stuff:
 
 * A button to toggle the lhs gui open/close
 
+* tup0 fix string newlines etc.
+* tup0 spacing underneath...
+
+
 FUTURE TODOS
 ============
 * Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.

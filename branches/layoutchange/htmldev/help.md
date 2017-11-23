@@ -119,19 +119,31 @@ The Font View will also attempt to display in columns, so you can see many fonts
 <a name="hushing"></a>
 <img src="fontypythonmodules/things/icon_hush.png">&nbsp;Hushing Fonts
 ===
-When you want to see *only* the fonts that you've installed: **hush** the fonts that are unwelcome. Your various apps will have **only** your installed fonts until you un-hush.
+On Linux there are often too many fonts installed; it's hard to choose among them. To work with *only* the fonts that you install via Fonty, hit Ctrl+H to **hush**. Your apps will now list **only** your desired fonts. (Until you un-hush.)
 
-This requires a working fontconfig setup, which most modern Linux distros have. Fonty looks for the directory:
+Simply install Pogs via Fonty as normal and start a hush. In your other apps, you should see the difference. (For e.g. go into Inkscape and open the "Text & Font" dialogue.)
+
+####The "Hush Pog" and a mild Warning
+As you can imagine, a hush could reject many crucial fonts...
+
+In order to make sure that your system has a few it can use, Fonty requires you to choose a Pog that is installed when hushing. Call it a "Hush Pog". 
+
+Create a Pog of your own and put some typical system fonts into it. Good choices are: **DejaVu, Sans, Serif, Mono, Free-, Liberation-, Ubuntu-** and so forth. This depends on your locale and preferences, therefore we leave it to you.
+
+(These kinds of fonts are usually found in "/usr/share/fonts".)
+
+Fonty will ask for a Pog when you start a hush; select the one you prepared.
+
+It's not serious, but **you have been warned.**
+
+Details
+--
+This all requires a working fontconfig setup, which most modern Linux distros have. Fonty looks for the directory:
 
 	{HOME}/.config/fontconfig/conf.d
 
 If it's not found, you can't hush fonts. (If you have more information, please open a ticket.)
 
-The hush 
---
-Simply install Pogs via Fonty as normal, and the hush will ensure they are visible to the system.
-
-####Details
 Fonty writes a config file which instructs fontconfig to:
 
 * **Reject** all files that start with "/usr/share/fonts"
@@ -139,19 +151,7 @@ Fonty writes a config file which instructs fontconfig to:
 
 The effect is usually instantaneous, but you may need to restart certain apps for them to notice. (If you find there are still fonts appearing that you do not want to see, please open a ticket.)
 
-Warning
---
-As you can imagine, a hush could reject all fonts...
 
-In order to make sure that your system has fonts it can use, fonty requires you to choose a Pog that is installed when a hushing. Call it a "Hush Pog". 
-
-Create a Pog, any name; put some typical system fonts into it. Good choices are: **DejaVu, Sans, Serif, Mono, Free-, Liberation-, Ubuntu-** and so forth.
-
-(These kinds of fonts are usually found in "/usr/share/fonts".)
-
-Choose this Pog when you start a hush. If you don't, things may go weird.
-
-It's not serious, but **you have been warned.**
 
 Reversing a hush: the Un-hush
 --
@@ -177,7 +177,7 @@ Menus
     Use purge to remove them.<br>
      *Explanation*: A Pog contains a list of paths. If a font is somehow moved on your hard drive, 
      then the path in the Pog will be old. Purging will remove these ghost fonts.
-  * **Hush fonts**: See the [section on hushing](#hushing). Shortcut: Ctrl+H
+  * <img src="fontypythonmodules/things/icon_hush.png">&nbsp;**Hush fonts**: See the [section on hushing](#hushing). Shortcut: Ctrl+H
   * **Exit:** Guess. :-)
 * **Selection menu**
   * **Select ALL the source fonts:** While only a few fonts are shown in a page at a time, there may 
@@ -209,10 +209,10 @@ Tips
 ===
 
 * Try to use Fonty from the command-line (from a console). It's easy, simply type:
-   fontypython --help
+   fontypython -h
 * Pog files are merely text files. They are very, very simple and this was intentional. Here are some things you can do with them:
    * Open and edit them in any text editor.
-   * Append fonts to the end of them, just include the entire path and the font name.
+   * Append fonts to the end of them, just include the entire path (ends with the font file name).
    * *Note for Type1 fonts: Only include the PFA/B file types, not the various metric files that 
      follow them.*
    * If your paths change (say you renamed your folders, or re-installed your O/S) then you can use 
@@ -270,7 +270,7 @@ Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window
 
 If you are stuck, go into your "fontypython" folder and open the file named "lastFontBeforeSegfault", that will be the culprit!
 
-To find your fontypython directory, see the [Info](#info) section in this help. You can also ask fonty for the path. On the command-line, run:
+To find your fontypython directory, see the [Info](#info) section in this help. You can also ask Fonty for the path. On the command-line, run:
     
         fontypython -d
 
