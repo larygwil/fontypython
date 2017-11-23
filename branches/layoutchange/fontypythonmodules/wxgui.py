@@ -207,7 +207,7 @@ class DismissableHTMLPanel(DismissablePanel):
         ## call two: get the replace strings in a dict
         d = self.post_init_setup_replace_dict()
 
-        # merge all the dicts
+        # merge all the dicts. Missing keys will raise.
         sd.update(**d)
         sd.update(**fpwx.HTMLCOLS)
         
@@ -261,7 +261,7 @@ class HelpPanel(DismissableHTMLPanel):
     def post_init_setup_replace_dict(self):
         ## Drop some last-minute info into the html string
 
-        def h1(t,e):
+        def header(t,e):
             return u"<h6>Missing {}</h6>" \
                     "{}".format( 
                             t, 
@@ -279,7 +279,7 @@ class HelpPanel(DismissableHTMLPanel):
         ## should it be missing!
         e = fpsys.iPC.get_error_or_none("NoFontsDir")
         if e:
-            s_fontsdir = h1(_(u"User Fonts"), e)
+            s_fontsdir = header(_(u"User Fonts"), e)
         else:
             s_fontsdir = pccp(
                     fpsys.LSP.to_unicode(
@@ -288,7 +288,7 @@ class HelpPanel(DismissableHTMLPanel):
         ## Also fontconfig's directory
         e = fpsys.iPC.get_error_or_none("NoFontconfigDir")
         if e:
-            s_fcdir = h1(_(u"Fontconfig"), e)
+            s_fcdir = header(_(u"Fontconfig"), e)
             s_fcpaf = _(u"No path: Fontconfig is not functioning.")
         else:
             s_fcdir = pccp(

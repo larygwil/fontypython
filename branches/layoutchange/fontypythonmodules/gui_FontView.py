@@ -111,153 +111,161 @@ class FontViewPanel(wx.Panel):
         self.BUTTON_CHARMAP = fpwx.wxbmp( 'button_charmap' )
         self.BUTTON_CHARMAP_OVER = fpwx.wxbmp( 'button_charmap_over' )
 
-        ## Main Label on top
-        sizerMainLabel = wx.BoxSizer(wx.HORIZONTAL)
-        self.textMainInfo = fpwx.label(self, u"..")
-        self.textSubInfo = fpwx.small_label(self, u"Subinfo" )
-        viewIcon = fpwx.icon(self, 'icon_viewing')
+        ##
+        ## START GUI
+        ## ===
 
-        sizerMainLabel.Add( viewIcon, 0, wx.BOTTOM | wx.TOP | wx.LEFT, border = 4 )
-        ## Added a sub-label for the status news to free the status bar for other
-        ## messages.
-        vb = wx.BoxSizer(wx.VERTICAL)
-        vb.Add(self.textMainInfo, 1, wx.LEFT )
-        vb.Add(self.textSubInfo,  1, wx.LEFT | wx.TOP , border = 4)
-        sizerMainLabel.Add(vb, 1, wx.LEFT | wx.TOP, border = 4)
+        ## Sizer: to hold all the others
+        main_view_sizer = wx.BoxSizer( wx.VERTICAL )
 
-        ## Page choice and Filter controls
-        sizerOtherControls = wx.BoxSizer(wx.HORIZONTAL)
+        ## Sizer: Icon and Main Label
+        icon_and_text_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        ## Sizer: Filter and Pager controls
+        filter_clear_pager_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+
+        ## Icon, Main Font Info label
+        view_icon = fpwx.icon(self, 'icon_viewing')
+        self.main_font_info_label = fpwx.label(self, u"..")
+        icon_and_text_sizer.Add(view_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
+        icon_and_text_sizer.Add(self.main_font_info_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
+
+        ## The SubInfo label
+        self.textSubInfo = fpwx.label(self, u"Subinfo" )
+
 
         ## The clear filter button: added 10 Jan 2008
-        self.clearButton = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ), style = wx.NO_BORDER)
-        self.clearButton.SetToolTipString( _("Clear filter") )
-        self.clearButton.Bind( wx.EVT_BUTTON, self.OnClearClick )
+        clear_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ), style = wx.NO_BORDER)
+        clear_button.SetToolTipString( _("Clear filter") )
+        clear_button.Bind( wx.EVT_BUTTON, self.on_clear_button_click )
 
         ## The filter text box
-        #textFilter = wx.StaticText(self, -1, _("Filter:"))
         filter_label = fpwx.label(self, _(u"Filter:"))
 
         # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
         # EVT_TEXT_ENTER event to work. Go figure.
-        # self.inputFilter = wx.ComboBox(self, 500
-        self.inputFilter = wx.ComboBox(self, -1, value="",
+        self.input_filter_combo = wx.ComboBox(self, -1, value="",
                 choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
-        self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
-        self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.inputFilter)
+        self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.input_filter_combo)
+        self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.input_filter_combo)
 
         self.last_filter_string = ""
 
         ## The pager pulldown
-        #self.pager_combo = wx.Choice(self, -1, choices = ["busy"])
-        #self.pager_combo.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
-
         pager_label = fpwx.label(self, _(u"Page:"))
-        self.pager_combo = wx.ComboBox(self, -1, value="1", choices=["busy"],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        self.pager_combo = wx.ComboBox(self, -1, value="1", choices=["busy"],
+                style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
         self.pager_combo.Bind(wx.EVT_COMBOBOX, self.onPagechoiceClick )
         self.pager_combo.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
 
         #self.SA=SearchAssistant(self)
 
-        ## put them into the sizer
-        sizerOtherControls.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
+        ## Fill the filter_clear_pager_sizer
+        filter_clear_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
         ## Quick search Bold Italic Regular buttons
         idBold = wx.NewId()
         idItalic = wx.NewId()
         self.idRegular = wx.NewId()
         self.BIR = {
-           idBold: {'style': "bold",   'label': _("b"), 'truth': False, 'instance': None},
+           idBold  : {'style': "bold",   'label': _("b"), 'truth': False, 'instance': None},
            idItalic: {'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
-           self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 
-               'instance': None}
+     self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
            }
         for id, dic in self.BIR.iteritems():
-            bBIR = wx.ToggleButton( self, id=id, label=dic['label'] )
+            bBIR = wx.ToggleButton( self, id=id, label=dic['label'])
             self.BIR[id]['instance'] =  bBIR
-            sizerOtherControls.Add( bBIR, 1, wx.BU_EXACTFIT )
+            filter_clear_pager_sizer.Add( bBIR, 0, wx.EXPAND )
             bBIR.Bind( wx.EVT_TOGGLEBUTTON, self.onBIR )
 
-        sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
 
-        sizerOtherControls.Add( self.inputFilter, 6, wx.ALIGN_LEFT | wx.EXPAND )
+        #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
+        filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
 
-        sizerOtherControls.Add( pager_label, 0, wx.ALIGN_RIGHT )
-        sizerOtherControls.Add( self.pager_combo, 0 , wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
+        filter_clear_pager_sizer.Add( self.input_filter_combo, 1, wx.ALIGN_LEFT | wx.EXPAND )
+
+        filter_clear_pager_sizer.Add( pager_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL  )
+        filter_clear_pager_sizer.Add( self.pager_combo, 0 )#, wx.ALIGN_RIGHT )
 
         ## The SCROLLED FONT VIEW panel:
         self.scrolledFontView = ScrolledFontView(self)
 
-        buttonsSizer = wx.BoxSizer(wx.HORIZONTAL)
+        ## Sizer: for buttons prev, main, next
+        bottom_buttons_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         #July 2016
         #=========
         #The stock icon on the button was not showing under gtk3.
         #I have switched to a bitmapbutton. I hope this works...
-        #self.buttPrev = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
-        self.buttPrev = wx.BitmapButton( self, wx.ID_BACKWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
+        #self.previous_button = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
+        self.previous_button = wx.BitmapButton( self, wx.ID_BACKWARD, 
+                wx.ArtProvider.GetBitmap( wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
 
-        self.buttMain = wx.Button(self, label=" ")
+        self.button_main = wx.Button(self, label=" ")
         self.buttMainLastLabel=" "
 
         ## This stock button has not been translated into Afrikaans yet. (Dec 2007)
         ## I can't tell you how this fkuced me around!
-        # July 2016 - remarked : self.buttNext = wx.Button(self, wx.ID_FORWARD)  
-        self.buttNext = wx.BitmapButton( self, wx.ID_FORWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
-        self.buttPrev.Enable(False)  #Starts out disabled
+        # July 2016 - remarked : self.next_button = wx.Button(self, wx.ID_FORWARD)  
+        self.next_button = wx.BitmapButton( self, wx.ID_FORWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
+        self.previous_button.Enable(False)  #Starts out disabled
 
-        buttonsSizer.Add(self.buttPrev,0,wx.EXPAND)
-        buttonsSizer.Add((10,1) ,0,wx.EXPAND)
-        buttonsSizer.Add(self.buttMain,1,wx.EXPAND)
-        buttonsSizer.Add((10,1) ,0,wx.EXPAND)
-        buttonsSizer.Add(self.buttNext,0,wx.EXPAND)
 
-        ## Now the sizer to hold all the fontview controls
-        self.sizerScrolledFontView = wx.BoxSizer( wx.VERTICAL )
+        bottom_buttons_sizer.Add( self.previous_button, 0, wx.EXPAND)
+        bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
+        bottom_buttons_sizer.Add( self.button_main,1, wx.EXPAND)
+        bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
+        bottom_buttons_sizer.Add( self.next_button, 0, wx.EXPAND)
 
-        ## The SIZER FOR THE SCROLLED FONT VIEW
-        self.sizerScrolledFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
 
-        ## The Main label
-        self.sizerScrolledFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.BOTTOM, border = 0 )
+        ## Start at the top: the icon and label
+        main_view_sizer.Add(icon_and_text_sizer, 0, wx.EXPAND )
+
+        ## Fill the SIZER FOR THE SCROLLED FONT VIEW
+        main_view_sizer.Add(self.scrolledFontView, 1, wx.EXPAND )
+
+        ## Fill the SubInfo label
+        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
+        si_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        si_sizer.Add( (16,1), 0)        
+        si_sizer.Add( self.textSubInfo, 1, wx.TOP, border = 12)
+
+        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
+        main_view_sizer.Add(si_sizer, 0, wx.BOTTOM, border = 8 )
+
         ## The Search Assistant
-        #self.sizerScrolledFontView.Add( self.SA, 0, wx.EXPAND)
+        #main_view_sizer.Add( self.SA, 0, wx.EXPAND)
 
-        ## Choice and Filter
-        self.sizerScrolledFontView.Add(sizerOtherControls, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
-        ## The buttons   
-        self.sizerScrolledFontView.Add(buttonsSizer,0,wx.EXPAND)
+        ## Fill the Choice and Filter
+        main_view_sizer.Add(filter_clear_pager_sizer, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
 
-        self.SetSizer(self.sizerScrolledFontView)
+        ## Fill the bottom buttons   
+        main_view_sizer.Add(bottom_buttons_sizer, 0, wx.EXPAND )
+
+        ## Do the voodoo thang
+        self.SetSizer(main_view_sizer)
         self.Fit()
 
+        ## Bind events
         e = wx.EVT_BUTTON #was wx.EVT_LEFT_UP
-        self.buttPrev.Bind(e,self.navClick)
-        self.buttNext.Bind(e,self.navClick)
-        #self.buttMain.Bind(e,self.onMainClick) 
-        self.Bind(e,self.onMainClick,self.buttMain)#.GetId() ) 
+        self.previous_button.Bind(e,self.navClick)
+        self.next_button.Bind(e,self.navClick)
+        #self.button_main.Bind(e,self.onMainClick) 
+        self.Bind(e, self.onMainClick, self.button_main)#.GetId() ) 
 
         ## Advertise some local functions:
         ps.sub( left_or_right_key_pressed, self.OnLeftOrRightKey ) ##DND: class FontViewPanel
-        
 
         ps.sub( toggle_main_button, self.ToggleMainButton ) ##DND: class FontViewPanel
         ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
         ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
 
-        #def DoGetBestSize(self):
-        # DOES NOT RUN FOR A wx.Panel
 
 
-        #self.Bind(wx.EVT_SIZE,	self.TESTOnResize)
-    #def	TESTOnResize(self,	*args,	**kwargs):#KILL ME
-        #print	"Test Resizing in AUI stuff."
-        #self.MainFontViewUpdate()
-
-
-
-    def OnClearClick( self, event ):
-        self.inputFilter.SetValue("") #was .Clear(), but that does not work for a combo box.
+    def on_clear_button_click( self, event ):
+        self.input_filter_combo.SetValue("") #was .Clear(), but that does not work for a combo box.
         self.filter = ""
 
         # Clear the BIR toggle buttons
@@ -267,7 +275,7 @@ class FontViewPanel(wx.Panel):
         ## First, return user to page 1:
         self.pageindex = 1
         self.filterAndPageThenCallCreateFitmaps()
-        self.buttMain.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
+        self.button_main.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 
     def setOneBIR( self, id, truth ):
         self.BIR[id]['truth'] = truth
@@ -293,7 +301,7 @@ class FontViewPanel(wx.Panel):
             ss = ss[:-1]
         print ss
 
-        self.inputFilter.SetValue( ss )
+        self.input_filter_combo.SetValue( ss )
         self.startSearch( ss )
 
     # Capture events when the user types something into the control then
@@ -308,7 +316,7 @@ class FontViewPanel(wx.Panel):
         #print termsstring
         self.startSearch(termsstring)
 
-        self.buttMain.SetFocus()
+        self.button_main.SetFocus()
         evt.Skip()
 
     # When the user selects something in the combo pull-down area, we go here.
@@ -316,7 +324,7 @@ class FontViewPanel(wx.Panel):
         cb = evt.GetEventObject()
         termsstring = evt.GetString()
         self.startSearch(termsstring)
-        self.buttMain.SetFocus()
+        self.button_main.SetFocus()
 
     def startSearch(self, terms):
         self.filter = terms
@@ -433,7 +441,7 @@ class FontViewPanel(wx.Panel):
         if Vpatt == "E": #NOTE : TESTING VPATT, not PATT - ergo: this covers E, EN, EP
             ## Empty ("E") - when the chosen Folder or Pog has NO FONTS IN IT.
             if Tpatt == "P":
-                lab = _("Your active Target is %s") % T.name
+                lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
                 status = _("Please choose a Source.")
             else:
                 lab = _("There are no fonts in here.")
@@ -444,50 +452,55 @@ class FontViewPanel(wx.Panel):
 
         elif Patt == "FN":
             #View a Folder, no target
-            lab = _("Viewing Folder %s") % V.label()
-            if fpsys.config.recurseFolders: lab = "{} (And all sub-folders)".format(lab)
+            lab = _("Viewing Folder \"{}\"").format( V.label() )
+            if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
             fpsys.state.cantick = False
             btext = _("Nothing to do")
             fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
             status = _("Viewing a folder.")
+
         elif Patt == "PN": #A single Pog in the VIEW
             #View a pog, no target
             if V.isInstalled():
                 ## Cannot remove fonts from an installed pog
-                lab = _("Viewing (installed Pog)  %s") % V.name
+                lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
-                status = _("You cannot change an installed Pog.")
+                status = _("You can't change an installed Pog.")
             else:
-                lab = _("Viewing (editable Pog)  %s") % V.name
+                lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
                 fpsys.state.cantick = True
                 btext = _("Remove fonts from %s") % V.name
                 self.TICKMAP = self._CROSS
                 fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
                 status = _("You can remove fonts from the selected Target Pog.")
+
         elif Patt == "FP":
             #Folder to Pog
             if T.isInstalled():
                 ## We cannot put stuff into an installed pog
-                lab = _("Viewing Folder %s") % V.label()
-                if fpsys.config.recurseFolders: lab = "{} (And all sub-folders)".format(lab)
+                lab = _("Viewing Folder \"{}\"").format( V.label() )
+                if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
-                status = _("You cannot change an installed Pog.")
+                status = _("You can't change an installed Pog.")
             else:
-                lab = _("Append from %(source)s to %(target)s") % { "source":V.label(), "target":T.name }
+                lab = _("Append from \"{source}\" to \"{target}\"").format( 
+                                            source=V.label(), target=T.name )
                 btext = _("Put fonts into %s") % T.name
                 self.TICKMAP = self._TICK
                 fpsys.state.cantick = True
                 fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
                 status = _("You can append fonts to your target Pog.")
+
         elif Patt == "PP":
             #Pog to Pog
             if T.isInstalled():
                 ## We cannot put fonts into an installed pog
-                lab = _("Viewing %(source)s, but Pog %(target)s is installed.") % {"source":V.name, "target":T.name}
+                lab = _("Viewing \"{source}\", but Pog \"{target}\" is installed.").format(
+                        source = V.name, target = T.name )
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
@@ -495,18 +508,20 @@ class FontViewPanel(wx.Panel):
             else: #Not installed.
                 if fpsys.state.samepogs: #Are the two pogs the same?
                     ## The validate routines determined the samepogs value.
-                    lab = _("These two are the same Pog.")
+                    lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
                     fpsys.state.cantick = True
                     btext = _("Nothing to do")
                     fpsys.state.action = "NOTHING_TO_DO"
                     status = _("Your Source and Target are the same Pog.")
                 else: # Normal pog to pog
-                    lab = _("Append from %(source)s into %(target)s") % {"source":V.name, "target":T.name}
+                    lab = _("Append from \"{source}\" into \"{target}\"").format(
+                            source = V.name, target = T.name )
                     btext = _("Put fonts into %s") % T.name
                     self.TICKMAP = self._TICK
                     fpsys.state.cantick = True
                     fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
                     status = _("You can append fonts to your target Pog.")
+
         else:
             print "MOJO ERROR: %s and trouble" % Patt
             raise SystemExit
@@ -518,8 +533,9 @@ class FontViewPanel(wx.Panel):
                 ps.pub( toggle_purge_menu_item, True )
 
         self.buttMainLastLabel=btext
-        self.textMainInfo.SetLabel( lab )
-        self.textMainInfo.Show()
+        self.main_font_info_label.SetLabel( lab )
+        self.main_font_info_label.Show()
+
         if status is not "":
             self.textSubInfo.SetLabel( status )
             #ps.pub(print_to_status_bar, status)
@@ -528,9 +544,6 @@ class FontViewPanel(wx.Panel):
 
         fpsys.markInactive()
         self.filterAndPageThenCallCreateFitmaps()
-
-
-
 
 
     def onMainClick(self, evt) :
@@ -661,7 +674,7 @@ class FontViewPanel(wx.Panel):
         if self.pageindex == 0:
             self.pageindex = 1
 
-        self.buttMain.SetFocus()  #a GTK bug demands this move.
+        self.button_main.SetFocus()  #a GTK bug demands this move.
         self.filterAndPageThenCallCreateFitmaps()
         wx.EndBusyCursor()
 
@@ -673,10 +686,10 @@ class FontViewPanel(wx.Panel):
         ## the button (left/right) is enabled or not. So determine that and then
         ## pass on to the other handler.
         if id==wx.ID_FORWARD: #right arrow was pressed
-            if self.buttNext.IsEnabled():
+            if self.next_button.IsEnabled():
                 self.navClick( evt )
         else:
-            if self.buttPrev.IsEnabled():
+            if self.previous_button.IsEnabled():
                 self.navClick( evt )
         #evt.Skip() # If this is here, the keyboard shortcuts get really buggy....
 
@@ -690,21 +703,21 @@ class FontViewPanel(wx.Panel):
             n = False
         if self.pageindex == 1:
             p = False
-        self.buttNext.Enable(n)
-        self.buttPrev.Enable(p)
+        self.next_button.Enable(n)
+        self.previous_button.Enable(p)
 
     def ToggleMainButton(self):
         ps.pub( toggle_selection_menu_item, True )
-        self.buttMain.SetLabel( self.buttMainLastLabel )
+        self.button_main.SetLabel( self.buttMainLastLabel )
         if fpsys.state.action == "NOTHING_TO_DO":
-            self.buttMain.Enable( False )
+            self.button_main.Enable( False )
             ps.pub( toggle_selection_menu_item, False )
             return
 
         if fpsys.state.numticks > 0:
-            self.buttMain.Enable(True)
+            self.button_main.Enable(True)
         else:
-            self.buttMain.SetLabel( _("Choose some fonts") )
+            self.button_main.SetLabel( _("Choose some fonts") )
 
     def ResetToPageOne(self):
         self.pageindex = 1 # I start here
