@@ -382,7 +382,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         iconpencil = None
         if icon:
             Icon = self.FVP.__dict__[icon] #See gui_FontView.py ~line 97
-            ix,iy = (6,10) if isinfo else (2,10)
+            if isinfo:
+                ix,iy = (6,10) 
+            else:
+                if self.fitem.badstyle == "FILE_NOT_FOUND":
+                    ix,iy = (2,18) #"?"
+                else:
+                    ix,iy = (2,3)  #"A"
 
             ix += offx
             iconpencil = BitmapPencil( "infoicon", ix, iy, Icon)

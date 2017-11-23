@@ -132,7 +132,7 @@ class FontViewPanel(wx.Panel):
         icon_and_text_sizer.Add(self.main_font_info_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
 
         ## The SubInfo label
-        self.textSubInfo = fpwx.label(self, u"Subinfo" )
+        self.textSubInfo = fpwx.small_label(self, u"Subinfo" )
 
 
         ## The clear filter button: added 10 Jan 2008
@@ -215,7 +215,12 @@ class FontViewPanel(wx.Panel):
 
         bottom_buttons_sizer.Add( self.previous_button, 0, wx.EXPAND)
         bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
-        bottom_buttons_sizer.Add( self.button_main,1, wx.EXPAND)
+        
+        info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
+        info_and_main_sizer.Add( self.textSubInfo, 0)#1, wx.EXPAND)#, border = 12)
+        info_and_main_sizer.Add( self.button_main, 1, wx.EXPAND)
+        bottom_buttons_sizer.Add( info_and_main_sizer, 1, wx.EXPAND )
+
         bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
         bottom_buttons_sizer.Add( self.next_button, 0, wx.EXPAND)
 
@@ -224,25 +229,25 @@ class FontViewPanel(wx.Panel):
         main_view_sizer.Add(icon_and_text_sizer, 0, wx.EXPAND )
 
         ## Fill the SIZER FOR THE SCROLLED FONT VIEW
-        main_view_sizer.Add(self.scrolledFontView, 1, wx.EXPAND )
+        main_view_sizer.Add(self.scrolledFontView, 20, wx.EXPAND )
 
-        ## Fill the SubInfo label
-        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
-        si_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        si_sizer.Add( (16,1), 0)        
-        si_sizer.Add( self.textSubInfo, 1, wx.TOP, border = 12)
 
-        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
-        main_view_sizer.Add(si_sizer, 0, wx.BOTTOM, border = 8 )
 
         ## The Search Assistant
         #main_view_sizer.Add( self.SA, 0, wx.EXPAND)
 
         ## Fill the Choice and Filter
-        main_view_sizer.Add(filter_clear_pager_sizer, 0, wx.EXPAND | wx.TOP | wx.BOTTOM, border = 3)
+        main_view_sizer.Add(filter_clear_pager_sizer, 1, wx.EXPAND | wx.TOP, border = 12)
 
+        ## Fill the SubInfo label
+        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
+        #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
+        #info_and_main_sizer.Add( self.textSubInfo, 1, wx.TOP, border = 12)
+
+        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
+        #main_view_sizer.Add(si_sizer, 0, wx.BOTTOM, border = 10 )
         ## Fill the bottom buttons   
-        main_view_sizer.Add(bottom_buttons_sizer, 0, wx.EXPAND )
+        main_view_sizer.Add(bottom_buttons_sizer, 2, wx.EXPAND | wx.TOP, border = 10)
 
         ## Do the voodoo thang
         self.SetSizer(main_view_sizer)
