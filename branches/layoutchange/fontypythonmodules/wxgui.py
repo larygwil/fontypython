@@ -368,7 +368,7 @@ class HushPanel(DismissablePanel):
                   }
 
         DismissablePanel.__init__(self,parent, flag_hush_fonts,
-                somelabel = _("Hush. Silence! Call yourselves Pwaetowian fonts?"),
+                somelabel = _("Hush Fonts"),
                 someicon = "icon_hush" ) 
 
 
@@ -657,7 +657,11 @@ class ChooseZipDirPanel(DismissablePanel):
             self.Layout()
 
 
-
+##Slider code - maybe for settings form
+#self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
+#self.choiceSlider.SetTickFreq(1,1)
+#self.choiceSlider.Bind(wx.EVT_SCROLL, self.OnSliderScroll)
+## ... it sucked!
 class SettingsPanel(DismissablePanel):
     def __init__(self, parent):
         """The settings form.
@@ -826,7 +830,7 @@ class SettingsPanel(DismissablePanel):
             ## We have some extra text to stuff in somewhere.
             sb = wx.BoxSizer(wx.VERTICAL)
             sb.Add( lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
-            e = fpwx.parar(self, extra, size="points_smaller" )
+            e = fpwx.parar(self, extra, size="points_tiny" )
             sb.Add( e, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
             self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
         else:

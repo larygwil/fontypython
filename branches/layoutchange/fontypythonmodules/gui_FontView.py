@@ -134,9 +134,12 @@ class FontViewPanel(wx.Panel):
         self.clearButton.Bind( wx.EVT_BUTTON, self.OnClearClick )
 
         ## The filter text box
-        self.textFilter = wx.StaticText(self, -1, _("Filter:"))
-        #July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's EVT_TEXT_ENTER event to work. Go figure.
-        #self.inputFilter = wx.ComboBox(self, 500, value="", choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        #textFilter = wx.StaticText(self, -1, _("Filter:"))
+        filter_label = fpwx.label(self, _(u"Filter:"))
+
+        # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
+        # EVT_TEXT_ENTER event to work. Go figure.
+        # self.inputFilter = wx.ComboBox(self, 500
         self.inputFilter = wx.ComboBox(self, -1, value="",
                 choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
         self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.inputFilter)
@@ -145,24 +148,18 @@ class FontViewPanel(wx.Panel):
         self.last_filter_string = ""
 
         ## The pager pulldown
-        #self.choicePage = wx.Choice(self, -1, choices = ["busy"])
-        #self.choicePage.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
+        #self.pager_combo = wx.Choice(self, -1, choices = ["busy"])
+        #self.pager_combo.Bind(wx.EVT_CHOICE, self.onPagechoiceClick) #Bind choice event
 
-        pagerlabel = fpwx.label(self, _(u"Page:"))
-        self.choicePage = wx.ComboBox(self, -1, value="1", choices=["busy"],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
-        self.choicePage.Bind(wx.EVT_COMBOBOX, self.onPagechoiceClick) #Bind choice event
-        self.choicePage.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
-
-        ##Tried to replace the horrible pager pulldown. This is a slider:
-        #self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
-        #self.choiceSlider.SetTickFreq(1,1)
-        #self.choiceSlider.Bind(wx.EVT_SCROLL, self.OnSliderScroll)
-        ## ... it sucked!
+        pager_label = fpwx.label(self, _(u"Page:"))
+        self.pager_combo = wx.ComboBox(self, -1, value="1", choices=["busy"],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        self.pager_combo.Bind(wx.EVT_COMBOBOX, self.onPagechoiceClick )
+        self.pager_combo.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
 
         #self.SA=SearchAssistant(self)
 
         ## put them into the sizer
-        sizerOtherControls.Add(self.textFilter, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        sizerOtherControls.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
 
         ## Quick search Bold Italic Regular buttons
@@ -183,12 +180,10 @@ class FontViewPanel(wx.Panel):
 
         sizerOtherControls.Add( self.clearButton, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
 
-        sizerOtherControls.Add( self.inputFilter, 7, wx.ALIGN_LEFT | wx.EXPAND )
+        sizerOtherControls.Add( self.inputFilter, 6, wx.ALIGN_LEFT | wx.EXPAND )
 
-        sizerOtherControls.Add( pagerlabel, 0, wx.ALIGN_RIGHT )
-        sizerOtherControls.Add( self.choicePage, 0 , wx.ALIGN_RIGHT )
-        #sizerOtherControls.Add( self.choiceSlider, 1 , wx.ALIGN_RIGHT )
-
+        sizerOtherControls.Add( pager_label, 0, wx.ALIGN_RIGHT )
+        sizerOtherControls.Add( self.pager_combo, 0 , wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL )
 
         ## The SCROLLED FONT VIEW panel:
         self.scrolledFontView = ScrolledFontView(self)
@@ -219,12 +214,12 @@ class FontViewPanel(wx.Panel):
 
         ## Now the sizer to hold all the fontview controls
         self.sizerScrolledFontView = wx.BoxSizer( wx.VERTICAL )
-        ## The Main label
-        self.sizerScrolledFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.BOTTOM, border = 0 )
 
         ## The SIZER FOR THE SCROLLED FONT VIEW
         self.sizerScrolledFontView.Add(self.scrolledFontView, 1, wx.EXPAND )
 
+        ## The Main label
+        self.sizerScrolledFontView.Add(sizerMainLabel, 0, wx.EXPAND | wx.BOTTOM, border = 0 )
         ## The Search Assistant
         #self.sizerScrolledFontView.Add( self.SA, 0, wx.EXPAND)
 
@@ -380,11 +375,11 @@ class FontViewPanel(wx.Panel):
             sublist = fpsys.state.filteredViewObject[start:fin]
 
             ## Empty the choice control.
-            self.choicePage.Clear()
+            self.pager_combo.Clear()
 
             ## Now refill it
-            [self.choicePage.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)]
-            self.choicePage.SetSelection(self.pageindex-1)
+            [self.pager_combo.Append(str(n)) for n in xrange(1, self.total_number_of_pages +1)]
+            self.pager_combo.SetSelection(self.pageindex-1)
             #self.choiceSlider.SetRange(1,self.total_number_of_pages+1)
 
         ## The viewobject is empty anyway.
@@ -392,10 +387,10 @@ class FontViewPanel(wx.Panel):
             sublist = []
 
         if self.total_number_of_pages == 1:
-            self.choicePage.Enable(False) #I tried to hide/show the choice, but it would not redraw properly.
+            self.pager_combo.Enable(False) #I tried to hide/show the choice, but it would not redraw properly.
             #self.choiceSlider.Enable(False)
         else:
-            self.choicePage.Enable(True)
+            self.pager_combo.Enable(True)
             #self.choiceSlider.Enable(True)
 
         self.scrolledFontView.MinimalCreateFitmaps( sublist ) # Tell my child to draw the fonts

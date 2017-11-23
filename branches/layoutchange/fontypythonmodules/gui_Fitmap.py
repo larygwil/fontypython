@@ -57,8 +57,8 @@ class Pencil(object):
     ordering in time and overlapping too.
     I can loop and draw them all in one go.
     """
-    def __init__( self, id, x = 0, y = 0, fcol = (0,0,0)):
-        self.id = id; self.x = x; self.y = y
+    def __init__( self, myid, x = 0, y = 0, fcol = (0,0,0)):
+        self.id = myid; self.x = x; self.y = y
         self._fcol = fcol
     def getwidth(self): return 0 
     def draw(self, memdc): pass
@@ -67,23 +67,46 @@ class TextPencil(Pencil):
     """
     Text pencils are made over and over, never cached.
     """
-    def __init__( self, id, txt, 
+    def __init__( self, myid, txt, 
             x = 0, y = 0, 
             fcol = (0,0,0),
             points = "points_normal",
             style = wx.NORMAL, 
             weight = wx.NORMAL,
             split_path_and_wrap = False ):
-        Pencil.__init__(self, id, x = x, y = y, fcol = fcol)
+        Pencil.__init__(self, myid, x = x, y = y, fcol = fcol)
         
         self.txt = txt
         self._split_path_and_wrap = split_path_and_wrap
 
         ## I get point sizes from the SYSFONT dict
-        points = SYSFONT[points]
-        self.font =  wx.Font( points, SYSFONT["family"],
-                style, weight, encoding=wx.FONTENCODING_DEFAULT )
+        pointsize = SYSFONT[points]
+        #print txt
+        #print points
+        #print SYSFONT[points]
+        #print
+        print "init"
+        #print myid
+        print txt
+        #sf = SYSFONT["font"]
+        self.font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        #self.font = wx.Font(sf.GetPointSize(), sf.GetFamily(),wx.FONTSTYLE_NORMAL, weight)
+        #self.font = wx.Font(sf.GetPointSize(), wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL, weight)
+        #if txt == "Font may be bad and it cannot be drawn.":
+        #    print " match, setting to 52"
+        #    print " id(self.font):", id(self.font)
+            #print " sysfont id():", id(sf)
+        #    print " self.font.GetFamily:", self.font.GetFamily()
+            #print " sys.GetFamily:", sf.GetFamily()
 
+        #    pointsize = 52
+        self.font.SetPointSize(pointsize)
+        self.font.SetWeight(weight)
+        #if True:#txt == "Font may be bad and it cannot be drawn.":
+        #    print "self.font pointsize:", self.font.GetPointSize()
+        #    print "self.font.FaceName:", self.font.FaceName
+        #    print "self.font.GetFamily:", self.font.GetFamily()
+            
         self.em = self._measure(txt="n")
         self._measure() #initial size
 
@@ -112,10 +135,19 @@ class TextPencil(Pencil):
         if True: #self._split_path_and_wrap: 
             dcw,dch = memdc.GetSize()
             ## Well ...hell. wx has a wordwrapper!
-            txt = wordwrap(txt, dcw + self.x, memdc, breakLongWords = True )
+            txt = wordwrap(txt, dcw - self.x, memdc, breakLongWords = True )
 
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
+        #if True:#txt == "Font may be bad and it cannot be drawn.":
+        #    print "draw"
+        #    print txt
+        #    print " id(self.font):", id(self.font)
+        #    print " self.font.GetPointSize:", self.font.GetPointSize()
+        #    print " dcf.GetFont()"
+        #    dcf = memdc.GetFont()
+        #    print " dcf.GetPointSize():", dcf.GetPointSize()
+        #    print
         memdc.DrawText( txt, self.x, self.y )
 
 class BitmapPencil(Pencil):
@@ -238,7 +270,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
 
         self.gradientheight = 50
 
-        Fitmap.LINEHEIGHT = TextPencil("idX", "X", 0, 0, points = "points_smaller").getheight()
+        Fitmap.LINEHEIGHT = TextPencil("idX", "X", 0, 0, points = "points_small").getheight()
         Fitmap.SPACER = Fitmap.LINEHEIGHT * 3
 
         self.face_image_stack = []
@@ -401,7 +433,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         # if there are newlines in the first text, we need more space
         if textTup[0].count("\n") == 0: ty += (Fitmap.LINEHEIGHT/3)
         tx = 76 if isinfo else 5
-        pnts = "points_normal" if isinfo else "points_smaller"
+        pnts = "points_normal" if isinfo else "points_small"
 
         tx += offx
         text1 = TextPencil( "tup1", textTup[1], fcol=fcol,x=tx,y=ty,
@@ -642,7 +674,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                         28,
                         mainy + glyphHeight + (Fitmap.SPACER/3),
                         fcol,
-                        points = "points_smaller")
+                        points = "points_small")
 
                 self.add_pencil( glyph, caption )
 

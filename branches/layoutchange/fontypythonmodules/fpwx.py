@@ -53,18 +53,56 @@ def setup_fonts_and_colours():
     
     wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     ps = wxfont.GetPointSize()
+    # I had this in SYSFONT:
+    #"font"            : wxfont, 
+    # But it acts weirdly later on.
+    # Do not store refs to a font...
     SYSFONT.update(
-       {"font"            : wxfont,
-        "family"          : wxfont.GetFamily(),
-        "points_smaller"  : ps*0.8,
-        "points_small"    : ps*0.9,
+       {
+        "points_tiny"     : ps-2,
+        "points_small"    : ps-1,
         "points_normal"   : ps,
-        "points_x_normal" : ps*1.05,
-        "points_large"    : ps*1.07,
-        "points_x_large"  : ps*1.2,
-        "points_xx_large" : ps*1.5,
+        "points_x_normal" : ps+1,
+        "points_large"    : ps+2,
+        "points_x_large"  : ps+5,
+        "points_xx_large" : ps+8,
         "points_xxx_large": ps*2,
         })
+
+    #print "SYSFONT"
+    #print SYSFONT
+    #print dir(wxfont)
+    #print "id:", id(wxfont.FaceName)
+    #print "FaceName:", wxfont.FaceName
+    #print "GetFamily:", wxfont.GetFamily()
+    #print
+    #raise SystemExit
+
+def xlabel(parent, 
+        ustr,
+        size,
+        weight,
+        align = wx.ALIGN_LEFT):
+
+    lbl = wx.StaticText( parent, -1, ustr, style = align )
+    #f = wx.Font(SYSFONT[size], SYSFONT["family"], 
+    #            wx.NORMAL, weight)
+    f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+    f.SetPointSize(SYSFONT[size])
+    #style: wx.FONTSTYLE_NORMAL, wx.FONTSTYLE_SLANT and wx.FONTSTYLE_ITALIC
+    #f.SetStyle(align)
+    f.SetWeight(weight)    
+    #if ustr == u"Page:":
+    #    print "Making font"
+        #print SYSFONT["family"]
+    #    print dir(f)
+    #    print f.FaceName
+    #    print f.PointSize
+
+        #import pdb; pdb.set_trace()
+
+    lbl.SetFont( f )
+    return lbl
 
 def parar( parent, ustr, size="points_normal" ):
     p = xlabel( parent, ustr, size, weight=wx.FONTWEIGHT_NORMAL, align=wx.ALIGN_RIGHT )
@@ -76,6 +114,10 @@ def para( parent, ustr, size="points_normal" ):
 
 def label( parent, ustr ):
     p = xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL )
+    return p
+
+def large_label( parent, ustr ):
+    p = xlabel( parent, ustr, size="points_x_normal", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
 def small_label( parent, ustr ):
@@ -98,13 +140,7 @@ def h2( parent, ustr ):
     p = xlabel( parent, ustr, size="points_large", weight=wx.FONTWEIGHT_NORMAL )
     return p
 
-def xlabel(parent, 
-        ustr, size, weight,
-        align = wx.ALIGN_LEFT):
-    lbl = wx.StaticText( parent, -1, ustr, style = align )
-    lbl.SetFont( wx.Font(SYSFONT[size], SYSFONT["family"], 
-                wx.NORMAL, weight) )
-    return lbl
+
 
 def wxbmp( filename ):
     return wx.Bitmap( fpsys.mythingsdir + filename+".png", 

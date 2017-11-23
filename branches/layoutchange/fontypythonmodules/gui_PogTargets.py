@@ -50,7 +50,7 @@ class TargetPogChooser(wx.Panel):
         wx.Panel.__init__(self, parent, id = -1)
 
         target_icon = fpwx.icon( self, 'icon_target' )
-        target_label = fpwx.label(self, _("Target Pogs") )
+        target_label = fpwx.large_label(self, _("Target Pogs") )
 
         s = None
         if fpsys.state.targetpattern == "P":

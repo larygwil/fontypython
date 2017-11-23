@@ -143,7 +143,7 @@ class FontItem( object ):
                 fileDoesExist = os.path.exists( self.glyphpaf )
                 if not fileDoesExist:
                     self.badfont = True
-                    self.badfontmsg = _("Font cannot be found. Purge lost fonts from this Pog.\n(See the Tools menu.)")
+                    self.badfontmsg = _("Font cannot be found. Purge lost fonts from this Pog. (See the Tools menu.)")
                     self.badstyle = "FILE_NOT_FOUND"
                     ## If the multi face font is damaged after the
                     ## first face, then this won't catch it...

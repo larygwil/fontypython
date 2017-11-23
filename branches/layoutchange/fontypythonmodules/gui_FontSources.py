@@ -58,7 +58,7 @@ class FontSourcesPanel(wx.Panel):
 
         ## Notebook label and icon
         view_icon = fpwx.icon(self, 'icon_source')
-        view_label = fpwx.label(self,_("Sources: Folders or Pogs") )
+        view_label = fpwx.large_label(self,_("Sources: Folders or Pogs") )
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
