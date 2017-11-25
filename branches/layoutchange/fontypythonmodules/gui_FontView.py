@@ -81,6 +81,73 @@ import fpwx
 #		border.Add(nameLbl, 1, wx.EXPAND|wx.ALL, 5)
 #		pane.SetSizer(border)
 
+class SearchFilter(wx.SearchCtrl):
+    """
+    Borrowed, as always, from the superb wxPython demo.
+    This new control replaces my old combo box
+    for the filtering of font items.
+    """
+    max_searches = 5
+    def __init__(self, parent, id=-1, value="",
+                 pos=wx.DefaultPosition, size=wx.DefaultSize, style=0,
+                 doSearchFunc=None, 
+                 doCancelFunc=None):
+        style |= wx.TE_PROCESS_ENTER
+        wx.SearchCtrl.__init__(self, parent, id, value, pos, size, style)
+
+        self.ShowCancelButton(True)
+        self.SetCancelBitmap(fpwx.wxbmp("clear"))
+
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnTextEntered)
+        self.Bind(wx.EVT_MENU_RANGE, self.OnMenuItem,
+                id=1, id2=self.max_searches)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.onCancel)
+        
+        ## Callbacks
+        self.doSearch = doSearchFunc
+        self.doCancel = doCancelFunc
+
+        ## History
+        self.searches = []
+
+    def onCancel(self,e):
+        self.doCancel()
+        self.SetValue("")
+
+    def OnTextEntered(self, evt):
+        if self.doSearch( self.GetValue() ):
+            self.add_to_history()
+        self.SetValue("")
+
+    def set_BIR(self,t):
+        """
+        When one of the 
+        Bold, Italic, Regular 
+        are clicked, we call this.
+        """
+        self.SetValue(t)
+        self.add_to_history()
+
+    def add_to_history(self):
+        self.searches.append( self.GetValue() )
+        if len(self.searches) > self.max_searches:
+            del self.searches[0]
+        self.SetMenu( self.make_new_menu() )
+
+    def OnMenuItem(self, evt):
+        text = self.searches[evt.GetId()-1]
+        self.SetValue(text)
+        self.doSearch(text)
+        
+    def make_new_menu(self):
+        menu = wx.Menu()
+        item = menu.Append(-1, _("Recent Filters"))
+        item.Enable(False)
+        for idx, txt in enumerate(self.searches):
+            menu.Append( 1+idx, txt )
+        return menu
+
+
 class FontViewPanel(wx.Panel):
     """
     Standalone visual control to select fonts.
@@ -136,19 +203,22 @@ class FontViewPanel(wx.Panel):
 
 
         ## The clear filter button: added 10 Jan 2008
-        clear_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ), style = wx.NO_BORDER)
-        clear_button.SetToolTipString( _("Clear filter") )
-        clear_button.Bind( wx.EVT_BUTTON, self.on_clear_button_click )
+        #clear_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ), style = wx.NO_BORDER)
+        #clear_button.SetToolTipString( _("Clear filter") )
+        #clear_button.Bind( wx.EVT_BUTTON, self.on_clear_button_click )
 
         ## The filter text box
         filter_label = fpwx.label(self, _(u"Filter:"))
 
         # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
         # EVT_TEXT_ENTER event to work. Go figure.
-        self.input_filter_combo = wx.ComboBox(self, -1, value="",
-                choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
-        self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.input_filter_combo)
-        self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.input_filter_combo)
+        #self.input_filter_combo = wx.ComboBox(self, -1, value="",
+        #        choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        self.input_filter_combo = SearchFilter(self,
+                doSearchFunc = self.DoSearch,
+                doCancelFunc = self.on_clear_button_click)
+        #self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.input_filter_combo)
+        #self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.input_filter_combo)
 
         self.last_filter_string = ""
 
@@ -182,7 +252,7 @@ class FontViewPanel(wx.Panel):
 
 
         #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
-        filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
+        #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
 
         filter_clear_pager_sizer.Add( self.input_filter_combo, 1, wx.ALIGN_LEFT | wx.EXPAND )
 
@@ -269,8 +339,8 @@ class FontViewPanel(wx.Panel):
 
 
 
-    def on_clear_button_click( self, event ):
-        self.input_filter_combo.SetValue("") #was .Clear(), but that does not work for a combo box.
+    def on_clear_button_click( self):#, event ):
+        #self.input_filter_combo.SetValue("") #was .Clear(), but that does not work for a combo box.
         self.filter = ""
 
         # Clear the BIR toggle buttons
@@ -306,30 +376,41 @@ class FontViewPanel(wx.Panel):
             ss = ss[:-1]
         print ss
 
-        self.input_filter_combo.SetValue( ss )
+        #self.input_filter_combo.SetValue( ss )
+        self.input_filter_combo.set_BIR(ss)#add_to_history( ss )
         self.startSearch( ss )
 
     # Capture events when the user types something into the control then
     # hits ENTER.
-    def EvtTextEnter(self, evt):
-        o=evt.GetEventObject()
-        #print dir(o)
-        termsstring = evt.GetString()
-        history=o.GetItems()
-        if termsstring not in history:
-            o.Insert( termsstring,0 ) #record this search in the top of the 'history'
-        #print termsstring
-        self.startSearch(termsstring)
-
-        self.button_main.SetFocus()
-        evt.Skip()
+    #def EvtTextEnter(self, evt):
+    #    o=evt.GetEventObject()
+    #    #print dir(o)
+    #    termsstring = evt.GetString()
+    #    history=o.GetItems()
+    #    if termsstring not in history:
+    #        o.Insert( termsstring,0 ) #record this search in the top of the 'history'
+    #    #print termsstring
+    #    self.startSearch(termsstring)
+    #
+    #   self.button_main.SetFocus()
+    #    evt.Skip()
 
     # When the user selects something in the combo pull-down area, we go here.
-    def EvtComboBox(self, evt):
-        cb = evt.GetEventObject()
-        termsstring = evt.GetString()
-        self.startSearch(termsstring)
+    #def EvtComboBox(self, evt):
+    #    cb = evt.GetEventObject()
+    #    termsstring = evt.GetString()
+    #    self.startSearch(termsstring)
+    #    self.button_main.SetFocus()
+
+    
+    def DoSearch(self, sstring):
+        """
+        SearchFilter control will call this with
+        sstring being the filter term.
+        """
+        self.startSearch(sstring)
         self.button_main.SetFocus()
+        return True # to store in history
 
     def startSearch(self, terms):
         self.filter = terms
