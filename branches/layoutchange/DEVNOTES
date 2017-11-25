@@ -1,3 +1,24 @@
+NOTE TO THE FUTURE
+==
+It's 25 Nov 2017. I am not well. Today my PC did not want to boot. I have told it to ignore the problem (p/s over voltage, I think) but I do not know if it will continue to work. I have no second PC.
+
+If Fonty dev just stops, that will be why.
+
+The active branch called "layoutchange" is the latest fonty. It's very close to working. Last I left it, I was experimenting with control layouts under the font view.
+
+I am stuck on Python 2.x because wxPython has not released their new version on Linux. It seems they are actually disinterested in Linux. I hope wxPython 4 comes to a distro near you soon. It's a bloody great framework.
+
+If I can, assuming the best, I will finish this new version soon and get it out. I intend to try python-gobject gtk, what a nightmare, but I have zero confidence that I can move Fonty to Gtk. Whatever I do will take several years anyway. If I have several years.
+
+So, good luck. She runs. The transaltions are all broken (because I fucked with the strings so much) and I don't know if the setup procedure is working.
+
+Donn Ingle
+RSA
+2017
+
+
+
+
 Fonty started in ~ 2006 (In Hermanus, South Africa. On an early Ubuntu.)
 
 Work and notes in 2016/2017. Slow due to my ill health.
