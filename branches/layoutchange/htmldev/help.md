@@ -28,7 +28,7 @@ If you have any problems, please open a ticket: {TICKET_URL}
 User Fonts Paths
 ===
 ###Your fontypython directory
-Where all your pogs are kept. 
+Where all your Pogs are kept. 
 
 {FP_DIR}
 
@@ -72,7 +72,7 @@ For Targets, you can select many Pogs at once by holding control (Ctrl) as you s
 
 ###Pog management buttons
 * **Clear selection:** Will unselect whatever Pogs you selected.
-* **Install:** All the Pogs selected will be installed. i.e. The fonts in them will be available to the system.
+* **Install:** All the Pogs selected will be installed. I.e. The fonts in them will be available to the system.
 * **Uninstall:** All those selected will be uninstalled.
 * **New Pog:** This will ask you for a name and make a new Pog.
 * **Delete:** All selected Pogs will be deleted. It will ask you if you are sure.
@@ -304,7 +304,7 @@ the Free Software Foundation, either version 3 of the License, or<br>
 
 Fonty Python is distributed in the hope that it will be useful,<br>
 but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
-MERCHANTABIliTY or FITNESS FOR A PARTICULAR PURPOSE. See the<br>
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the<br>
 GNU General Public License for more details.<br>
 
 You should have received a copy of the GNU General Public License<br>

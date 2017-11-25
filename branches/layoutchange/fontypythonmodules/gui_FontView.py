@@ -120,7 +120,7 @@ class SearchFilter(wx.SearchCtrl):
     def OnTextEntered(self, evt):
         if self.do_search_func( self.GetValue() ):
             self.add_to_history()
-        self.SetValue("")
+        #self.SetValue("")
 
     def set_BIR(self,t):
         """
@@ -239,6 +239,9 @@ class FontViewPanel(wx.Panel):
         filter_clear_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
         ## Quick search Bold Italic Regular buttons
+        ## It occurs to me that these are English words...
+        ## Do fonts contain i18n on styles?
+        ## See: https://fontforge.github.io/fontstyles.html
         idBold = wx.NewId()
         idItalic = wx.NewId()
         self.idRegular = wx.NewId()
