@@ -215,13 +215,13 @@ class FontViewPanel(wx.Panel):
 
         # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
         # EVT_TEXT_ENTER event to work. Go figure.
-        #self.input_filter_combo = wx.ComboBox(self, -1, value="",
+        #self.search_filter = wx.ComboBox(self, -1, value="",
         #        choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
-        self.input_filter_combo = SearchFilter(self,
+        self.search_filter = SearchFilter(self,
                 search_func = self.do_search,
                 cancel_func = self.on_clear_button_click)
-        #self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.input_filter_combo)
-        #self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.input_filter_combo)
+        #self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.search_filter)
+        #self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.search_filter)
 
         self.last_filter_string = ""
 
@@ -257,7 +257,7 @@ class FontViewPanel(wx.Panel):
         #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
         #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
 
-        filter_clear_pager_sizer.Add( self.input_filter_combo, 1, wx.ALIGN_LEFT | wx.EXPAND )
+        filter_clear_pager_sizer.Add( self.search_filter, 1, wx.ALIGN_LEFT | wx.EXPAND )
 
         filter_clear_pager_sizer.Add( pager_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL  )
         filter_clear_pager_sizer.Add( self.pager_combo, 0 )#, wx.ALIGN_RIGHT )
@@ -289,10 +289,11 @@ class FontViewPanel(wx.Panel):
         bottom_buttons_sizer.Add( self.previous_button, 0, wx.EXPAND)
         bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
         
-        info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
-        info_and_main_sizer.Add( self.textSubInfo, 0)#1, wx.EXPAND)#, border = 12)
-        info_and_main_sizer.Add( self.button_main, 1, wx.EXPAND)
-        bottom_buttons_sizer.Add( info_and_main_sizer, 1, wx.EXPAND )
+        #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
+        #info_and_main_sizer.Add( self.textSubInfo, 0)#1, wx.EXPAND)#, border = 12)
+        #info_and_main_sizer.Add( self.button_main, 1, wx.EXPAND)
+        #bottom_buttons_sizer.Add( info_and_main_sizer, 1, wx.EXPAND )
+        bottom_buttons_sizer.Add( self.button_main, 1, wx.EXPAND )
 
         bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
         bottom_buttons_sizer.Add( self.next_button, 0, wx.EXPAND)
@@ -300,6 +301,12 @@ class FontViewPanel(wx.Panel):
 
         ## Start at the top: the icon and label
         main_view_sizer.Add(icon_and_text_sizer, 0, wx.EXPAND )
+
+        ## Sub label
+        main_view_sizer.Add(self.textSubInfo,0)
+
+        ## Fill the Choice and Filter
+        main_view_sizer.Add(filter_clear_pager_sizer, 1, wx.EXPAND | wx.TOP, border = 12)
 
         ## Fill the SIZER FOR THE SCROLLED FONT VIEW
         main_view_sizer.Add(self.scrolledFontView, 20, wx.EXPAND )
@@ -309,8 +316,6 @@ class FontViewPanel(wx.Panel):
         ## The Search Assistant
         #main_view_sizer.Add( self.SA, 0, wx.EXPAND)
 
-        ## Fill the Choice and Filter
-        main_view_sizer.Add(filter_clear_pager_sizer, 1, wx.EXPAND | wx.TOP, border = 12)
 
         ## Fill the SubInfo label
         #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
@@ -343,7 +348,7 @@ class FontViewPanel(wx.Panel):
 
 
     def on_clear_button_click( self):#, event ):
-        #self.input_filter_combo.SetValue("") #was .Clear(), but that does not work for a combo box.
+        #self.search_filter.SetValue("") #was .Clear(), but that does not work for a combo box.
         self.filter = ""
 
         # Clear the BIR toggle buttons
@@ -379,8 +384,8 @@ class FontViewPanel(wx.Panel):
             ss = ss[:-1]
         print ss
 
-        #self.input_filter_combo.SetValue( ss )
-        self.input_filter_combo.set_BIR(ss)#add_to_history( ss )
+        #self.search_filter.SetValue( ss )
+        self.search_filter.set_BIR(ss)#add_to_history( ss )
         self.startSearch( ss )
 
     # Capture events when the user types something into the control then
