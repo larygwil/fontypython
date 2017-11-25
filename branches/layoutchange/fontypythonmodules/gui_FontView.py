@@ -86,12 +86,15 @@ class SearchFilter(wx.SearchCtrl):
     Borrowed, as always, from the superb wxPython demo.
     This new control replaces my old combo box
     for the filtering of font items.
+
+    Uses two callbacks.
     """
     max_searches = 5
     def __init__(self, parent, id=-1, value="",
                  pos=wx.DefaultPosition, size=wx.DefaultSize, style=0,
-                 doSearchFunc=None, 
-                 doCancelFunc=None):
+                 search_func = None, 
+                 cancel_func = None):
+
         style |= wx.TE_PROCESS_ENTER
         wx.SearchCtrl.__init__(self, parent, id, value, pos, size, style)
 
@@ -101,21 +104,21 @@ class SearchFilter(wx.SearchCtrl):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnTextEntered)
         self.Bind(wx.EVT_MENU_RANGE, self.OnMenuItem,
                 id=1, id2=self.max_searches)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.onCancel)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.on_cancel)
         
         ## Callbacks
-        self.doSearch = doSearchFunc
-        self.doCancel = doCancelFunc
+        self.do_search_func = search_func
+        self.do_clear_func = cancel_func
 
         ## History
         self.searches = []
 
-    def onCancel(self,e):
-        self.doCancel()
+    def on_cancel(self,e):
+        self.do_clear_func()
         self.SetValue("")
 
     def OnTextEntered(self, evt):
-        if self.doSearch( self.GetValue() ):
+        if self.do_search_func( self.GetValue() ):
             self.add_to_history()
         self.SetValue("")
 
@@ -137,7 +140,7 @@ class SearchFilter(wx.SearchCtrl):
     def OnMenuItem(self, evt):
         text = self.searches[evt.GetId()-1]
         self.SetValue(text)
-        self.doSearch(text)
+        self.do_search_func(text)
         
     def make_new_menu(self):
         menu = wx.Menu()
@@ -215,8 +218,8 @@ class FontViewPanel(wx.Panel):
         #self.input_filter_combo = wx.ComboBox(self, -1, value="",
         #        choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
         self.input_filter_combo = SearchFilter(self,
-                doSearchFunc = self.DoSearch,
-                doCancelFunc = self.on_clear_button_click)
+                search_func = self.do_search,
+                cancel_func = self.on_clear_button_click)
         #self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.input_filter_combo)
         #self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.input_filter_combo)
 
@@ -403,7 +406,7 @@ class FontViewPanel(wx.Panel):
     #    self.button_main.SetFocus()
 
     
-    def DoSearch(self, sstring):
+    def do_search(self, sstring):
         """
         SearchFilter control will call this with
         sstring being the filter term.
