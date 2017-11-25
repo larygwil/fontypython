@@ -202,7 +202,7 @@ class FontViewPanel(wx.Panel):
         icon_and_text_sizer.Add(self.main_font_info_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
 
         ## The SubInfo label
-        self.textSubInfo = fpwx.small_label(self, u"Subinfo" )
+        self.status_text = fpwx.label(self, u"Subinfo" )
 
 
         ## The clear filter button: added 10 Jan 2008
@@ -263,7 +263,7 @@ class FontViewPanel(wx.Panel):
         filter_clear_pager_sizer.Add( self.search_filter, 1, wx.ALIGN_LEFT | wx.EXPAND )
 
         filter_clear_pager_sizer.Add( pager_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL  )
-        filter_clear_pager_sizer.Add( self.pager_combo, 0 )#, wx.ALIGN_RIGHT )
+        filter_clear_pager_sizer.Add( self.pager_combo, 1 )#, wx.ALIGN_RIGHT )
 
         ## The SCROLLED FONT VIEW panel:
         self.scrolledFontView = ScrolledFontView(self)
@@ -293,7 +293,7 @@ class FontViewPanel(wx.Panel):
         bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
         
         #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
-        #info_and_main_sizer.Add( self.textSubInfo, 0)#1, wx.EXPAND)#, border = 12)
+        #info_and_main_sizer.Add( self.status_text, 0)#1, wx.EXPAND)#, border = 12)
         #info_and_main_sizer.Add( self.button_main, 1, wx.EXPAND)
         #bottom_buttons_sizer.Add( info_and_main_sizer, 1, wx.EXPAND )
         bottom_buttons_sizer.Add( self.button_main, 1, wx.EXPAND )
@@ -306,7 +306,7 @@ class FontViewPanel(wx.Panel):
         main_view_sizer.Add(icon_and_text_sizer, 0, wx.EXPAND )
 
         ## Sub label
-        main_view_sizer.Add(self.textSubInfo,0)
+        main_view_sizer.Add(self.status_text,0)
 
         ## Fill the Choice and Filter
         main_view_sizer.Add(filter_clear_pager_sizer, 1, wx.EXPAND | wx.TOP, border = 12)
@@ -321,11 +321,11 @@ class FontViewPanel(wx.Panel):
 
 
         ## Fill the SubInfo label
-        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
+        #main_view_sizer.Add(self.status_text, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
         #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
-        #info_and_main_sizer.Add( self.textSubInfo, 1, wx.TOP, border = 12)
+        #info_and_main_sizer.Add( self.status_text, 1, wx.TOP, border = 12)
 
-        #main_view_sizer.Add(self.textSubInfo, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
+        #main_view_sizer.Add(self.status_text, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
         #main_view_sizer.Add(si_sizer, 0, wx.BOTTOM, border = 10 )
         ## Fill the bottom buttons   
         main_view_sizer.Add(bottom_buttons_sizer, 2, wx.EXPAND | wx.TOP, border = 10)
@@ -542,7 +542,7 @@ class FontViewPanel(wx.Panel):
                 status = _("Please choose a Source.")
             else:
                 lab = _("There are no fonts in here.")
-                status = _("Please choose a Pog or a Font folder on the left.")
+                status = _("Choose a Source Pog or folder.")
             btext = _("Nothing to do")
             fpsys.state.cantick = False
             fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
@@ -554,7 +554,7 @@ class FontViewPanel(wx.Panel):
             fpsys.state.cantick = False
             btext = _("Nothing to do")
             fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
-            status = _("Viewing a folder.")
+            status = ""#_("Viewing a folder.")
 
         elif Patt == "PN": #A single Pog in the VIEW
             #View a pog, no target
@@ -582,26 +582,30 @@ class FontViewPanel(wx.Panel):
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
-                status = _("You can't change an installed Pog.")
+                #status = _("You can't change an installed Pog.")
+                status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
             else:
-                lab = _("Append from \"{source}\" to \"{target}\"").format( 
-                                            source=V.label(), target=T.name )
+                #lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
+                lab = _("Viewing Folder \"{}\"").format( V.label() )
                 btext = _("Put fonts into %s") % T.name
                 self.TICKMAP = self._TICK
                 fpsys.state.cantick = True
                 fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-                status = _("You can append fonts to your target Pog.")
+                #status = _("You can append fonts to your target Pog.")
+                status = _("You can append fonts to \"{}\".").format(T.name)
 
         elif Patt == "PP":
             #Pog to Pog
             if T.isInstalled():
                 ## We cannot put fonts into an installed pog
-                lab = _("Viewing \"{source}\", but Pog \"{target}\" is installed.").format(
-                        source = V.name, target = T.name )
+                #lab = _("Viewing \"{source}\", but Pog \"{target}\" is installed.").format(
+                #        source = V.name, target = T.name )
+                lab = _("Viewing Pog \"{}\"").format( V.name)
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
-                status = _("You cannot change an installed Pog.")
+                status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+                #status = _("You cannot change an installed Pog.")
             else: #Not installed.
                 if fpsys.state.samepogs: #Are the two pogs the same?
                     ## The validate routines determined the samepogs value.
@@ -609,15 +613,16 @@ class FontViewPanel(wx.Panel):
                     fpsys.state.cantick = True
                     btext = _("Nothing to do")
                     fpsys.state.action = "NOTHING_TO_DO"
-                    status = _("Your Source and Target are the same Pog.")
+                    status = ""#_("Your Source and Target are the same Pog.")
                 else: # Normal pog to pog
-                    lab = _("Append from \"{source}\" into \"{target}\"").format(
-                            source = V.name, target = T.name )
+                    #lab = _("Append from \"{source}\" into \"{target}\"").format(
+                    #        source = V.name, target = T.name )
+                    lab = _("Viewing Pog \"{}\"").format( V.name)
                     btext = _("Put fonts into %s") % T.name
                     self.TICKMAP = self._TICK
                     fpsys.state.cantick = True
                     fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-                    status = _("You can append fonts to your target Pog.")
+                    status = _("You can append fonts to \"{}\".").format(T.name)
 
         else:
             print "MOJO ERROR: %s and trouble" % Patt
@@ -633,8 +638,8 @@ class FontViewPanel(wx.Panel):
         self.main_font_info_label.SetLabel( lab )
         self.main_font_info_label.Show()
 
-        if status is not "":
-            self.textSubInfo.SetLabel( status )
+        #if True:#status is not "":
+        self.status_text.SetLabel( status )
             #ps.pub(print_to_status_bar, status)
 
         self.ToggleMainButton()
