@@ -186,13 +186,12 @@ class FontViewPanel(wx.Panel):
         ##
         self._setup_state_dicts()
 
-
         ##
         ## START GUI
         ## ===
-        icon_open_folder = fpwx.wxbmp("icon_open_folder")
-        icon_pog = fpwx.wxbmp("pog16x16")
-        icon_pog_installed = fpwx.wxbmp("pog16x16.installed")
+        #icon_open_folder = fpwx.wxbmp("icon_open_folder")
+        #icon_pog = fpwx.wxbmp("pog16x16")
+        #icon_pog_installed = fpwx.wxbmp("pog16x16.installed")
 
         ## Sizer: to hold all the others
         main_view_sizer = wx.BoxSizer( wx.VERTICAL )
@@ -201,21 +200,25 @@ class FontViewPanel(wx.Panel):
         icon_and_text_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         ## Sizer: Filter and Pager controls
-        filter_clear_pager_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        filter_and_pager_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
 
         ## Icon, Main Font Info label
         view_icon = fpwx.icon(self, 'icon_viewing')
         self.main_font_info_label = fpwx.h1(self, u"..")
-        icon_and_text_sizer.Add(view_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
-        icon_and_text_sizer.Add(self.main_font_info_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
+        icon_and_text_sizer.Add(view_icon, 0,
+                wx.TOP, border = 8)
+        icon_and_text_sizer.Add(self.main_font_info_label, 1,
+           wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
 
         ## The SubInfo label
         self.status_text = fpwx.label(self, u"Subinfo" )
 
 
         ## The clear filter button: added 10 Jan 2008
-        #clear_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ), style = wx.NO_BORDER)
+        ## Removed Nov 2017: Using a SearchCtrl instead.
+        #clear_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ),
+        #style = wx.NO_BORDER)
         #clear_button.SetToolTipString( _("Clear filter") )
         #clear_button.Bind( wx.EVT_BUTTON, self.on_clear_button_click )
 
@@ -229,8 +232,6 @@ class FontViewPanel(wx.Panel):
         self.search_filter = SearchFilter(self,
                 search_func = self.do_search,
                 cancel_func = self.on_clear_button_click)
-        #self.Bind(wx.EVT_COMBOBOX, self.EvtComboBox, self.search_filter)
-        #self.Bind(wx.EVT_TEXT_ENTER, self.EvtTextEnter, self.search_filter)
 
         self.last_filter_string = ""
 
@@ -244,8 +245,8 @@ class FontViewPanel(wx.Panel):
         #self.SA=SearchAssistant(self)
 
 
-        ## Fill the filter_clear_pager_sizer
-        filter_clear_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        ## Fill the filter_and_pager_sizer
+        filter_and_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
         ## Quick search Bold Italic Regular buttons
         ## It occurs to me that these are English words...
@@ -262,17 +263,17 @@ class FontViewPanel(wx.Panel):
         for id, dic in self.BIR.iteritems():
             bBIR = wx.ToggleButton( self, id=id, label=dic['label'])
             self.BIR[id]['instance'] =  bBIR
-            filter_clear_pager_sizer.Add( bBIR, 0, wx.EXPAND )
+            filter_and_pager_sizer.Add( bBIR, 0, wx.EXPAND )
             bBIR.Bind( wx.EVT_TOGGLEBUTTON, self.onBIR )
 
 
-        #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
-        #filter_clear_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
+        #filter_and_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
+        #filter_and_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
 
-        filter_clear_pager_sizer.Add( self.search_filter, 1, wx.ALIGN_LEFT | wx.EXPAND )
+        filter_and_pager_sizer.Add( self.search_filter, 1, wx.ALIGN_LEFT | wx.EXPAND )
 
-        filter_clear_pager_sizer.Add( pager_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL  )
-        filter_clear_pager_sizer.Add( self.pager_combo, 1 )#, wx.ALIGN_RIGHT )
+        filter_and_pager_sizer.Add( pager_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL  )
+        filter_and_pager_sizer.Add( self.pager_combo, 1 )#, wx.ALIGN_RIGHT )
 
         ## The SCROLLED FONT VIEW panel:
         self.scrolledFontView = ScrolledFontView(self)
@@ -298,16 +299,18 @@ class FontViewPanel(wx.Panel):
         self.previous_button.Enable(False)  #Starts out disabled
 
 
-        bottom_buttons_sizer.Add( self.previous_button, 0, wx.EXPAND)
-        bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
+        bottom_buttons_sizer.Add( self.previous_button, 0, 
+                wx.EXPAND | wx.RIGHT, border = 10)
+        #bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
         
         #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
         #info_and_main_sizer.Add( self.status_text, 0)#1, wx.EXPAND)#, border = 12)
         #info_and_main_sizer.Add( self.button_main, 1, wx.EXPAND)
         #bottom_buttons_sizer.Add( info_and_main_sizer, 1, wx.EXPAND )
-        bottom_buttons_sizer.Add( self.button_main, 1, wx.EXPAND )
+        bottom_buttons_sizer.Add( self.button_main, 1,#,
+                wx.EXPAND | wx.RIGHT, border = 10)
 
-        bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
+        #bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
         bottom_buttons_sizer.Add( self.next_button, 0, wx.EXPAND)
 
 
@@ -318,10 +321,12 @@ class FontViewPanel(wx.Panel):
         main_view_sizer.Add(self.status_text,0)
 
         ## Fill the Choice and Filter
-        main_view_sizer.Add(filter_clear_pager_sizer, 1, wx.EXPAND | wx.TOP, border = 12)
+        main_view_sizer.Add(filter_and_pager_sizer, 0,
+                wx.EXPAND | wx.TOP, border = 12 )
 
         ## Fill the SIZER FOR THE SCROLLED FONT VIEW
-        main_view_sizer.Add(self.scrolledFontView, 20, wx.EXPAND )
+        main_view_sizer.Add(self.scrolledFontView, 1,#22,
+                wx.EXPAND | wx.TOP, border = 12 )
 
 
 
@@ -337,7 +342,8 @@ class FontViewPanel(wx.Panel):
         #main_view_sizer.Add(self.status_text, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
         #main_view_sizer.Add(si_sizer, 0, wx.BOTTOM, border = 10 )
         ## Fill the bottom buttons   
-        main_view_sizer.Add(bottom_buttons_sizer, 2, wx.EXPAND | wx.TOP, border = 10)
+        main_view_sizer.Add(bottom_buttons_sizer, 0,#2,
+                wx.EXPAND | wx.TOP, border = 10)
 
         ## Do the voodoo thang
         self.SetSizer(main_view_sizer)
@@ -358,7 +364,6 @@ class FontViewPanel(wx.Panel):
 
 
     def on_clear_button_click( self):#, event ):
-        #self.search_filter.SetValue("") #was .Clear(), but that does not work for a combo box.
         self.filter = ""
 
         # Clear the BIR toggle buttons
@@ -390,35 +395,13 @@ class FontViewPanel(wx.Panel):
             self.setOneBIR( self.idRegular, False )
             ss=""
             for id, dic in self.BIR.iteritems():
-                if dic['truth']: ss += "%s%s" % (dic['style']," ") # Builds AND regex (space is and)
+                # Builds AND regex (space is and)
+                if dic['truth']: ss += "%s%s" % (dic['style']," ")
             ss = ss[:-1]
-        print ss
 
-        #self.search_filter.SetValue( ss )
-        self.search_filter.set_BIR(ss)#add_to_history( ss )
+        self.search_filter.set_BIR(ss)
         self.startSearch( ss )
 
-    # Capture events when the user types something into the control then
-    # hits ENTER.
-    #def EvtTextEnter(self, evt):
-    #    o=evt.GetEventObject()
-    #    #print dir(o)
-    #    termsstring = evt.GetString()
-    #    history=o.GetItems()
-    #    if termsstring not in history:
-    #        o.Insert( termsstring,0 ) #record this search in the top of the 'history'
-    #    #print termsstring
-    #    self.startSearch(termsstring)
-    #
-    #   self.button_main.SetFocus()
-    #    evt.Skip()
-
-    # When the user selects something in the combo pull-down area, we go here.
-    #def EvtComboBox(self, evt):
-    #    cb = evt.GetEventObject()
-    #    termsstring = evt.GetString()
-    #    self.startSearch(termsstring)
-    #    self.button_main.SetFocus()
 
     
     def do_search(self, sstring):
@@ -799,14 +782,16 @@ class FontViewPanel(wx.Panel):
                 if not bug:
                     ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
                 else:
-                    ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done."))
+                    ps.pub(print_to_status_bar,_("There was an error writing the pog "\
+                        "to disk. Nothing has been done."))
 
         ## APPEND - Copy font to a pog.
         if fpsys.state.action == "APPEND":
             ## We must append the fonts to the Pog
             vo = fpsys.state.viewobject
             to = fpsys.state.targetobject
-            print _("Copying fonts from %(source)s to %(target)s") % {"source":vo.label(), "target":to.label()}
+            print _("Copying fonts from %(source)s to %(target)s") % {
+                    "source":vo.label(), "target":to.label()}
             dowrite = False
             for fi in vo:
                 if fi.ticked:
@@ -824,9 +809,11 @@ class FontViewPanel(wx.Panel):
                 doupdate = True
 
                 if not bug:
-                    ps.pub(print_to_status_bar,_("Selected fonts are now in %s.") % to.label())
+                    ps.pub(print_to_status_bar,_(
+                        "Selected fonts are now in %s.") % to.label())
                 else:
-                    ps.pub(print_to_status_bar,_("There was an error writing the pog to disk. Nothing has been done"))
+                    ps.pub(print_to_status_bar,_(
+                        "There was an error writing the pog to disk. Nothing has been done"))
 
         wx.EndBusyCursor()
         self.scrolledFontView.Scroll(xPos, yPos)

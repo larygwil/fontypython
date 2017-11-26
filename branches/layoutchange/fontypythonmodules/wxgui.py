@@ -99,7 +99,10 @@ class DismissablePanel(wx.Panel):
     Provides a bar with an icon, title and an X close button.
     Under that is .. whatever: usually a sizer.
     """
-    def __init__(self, parent, flag, someicon=None, somelabel="...", extra_padding=0):
+    def __init__(self, parent, flag,
+            someicon = None,
+            somelabel="...",
+            extra_padding = 0):
         id = id_from_flag[flag]
         self.id = id
         wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
