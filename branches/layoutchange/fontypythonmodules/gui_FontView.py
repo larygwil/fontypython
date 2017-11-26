@@ -184,6 +184,9 @@ class FontViewPanel(wx.Panel):
         ##
         ## START GUI
         ## ===
+        icon_open_folder = fpwx.wxbmp("icon_open_folder")
+        icon_pog = fpwx.wxbmp("pog16x16")
+        icon_pog_installed = fpwx.wxbmp("pog16x16.installed")
 
         ## Sizer: to hold all the others
         main_view_sizer = wx.BoxSizer( wx.VERTICAL )
@@ -197,7 +200,7 @@ class FontViewPanel(wx.Panel):
 
         ## Icon, Main Font Info label
         view_icon = fpwx.icon(self, 'icon_viewing')
-        self.main_font_info_label = fpwx.label(self, u"..")
+        self.main_font_info_label = fpwx.h1(self, u"..")
         icon_and_text_sizer.Add(view_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4)
         icon_and_text_sizer.Add(self.main_font_info_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
 
@@ -502,6 +505,238 @@ class FontViewPanel(wx.Panel):
 
         self.EnableDisablePrevNext()
 
+E
+EN
+lab = _("There are no fonts in here.")
+status = _("Choose a Source Pog or folder.")
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+EP
+lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
+status = _("Please choose a Source.")
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+FN
+lab = _("Viewing Folder \"{}\"").format( V.label() )
+if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+status = ""
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+PrN
+lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
+status = _("You can't change an installed Pog.")
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+PwN
+lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
+status = _("You can remove fonts from the selected Target Pog.")
+btext = _("Remove fonts from %s") % V.name
+fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
+fpsys.state.cantick = True
+self.TICKMAP = self._CROSS
+
+FPr
+lab = _("Viewing Folder \"{}\"").format( V.label() )
+if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+FPw
+#lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
+lab = _("Viewing Folder \"{}\"").format( V.label() )
+status = _("You can append fonts to \"{}\".").format(T.name)
+btext = _("Put fonts into %s") % T.name
+fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+fpsys.state.cantick = True
+self.TICKMAP = self._TICK
+
+PPr
+lab = _("Viewing Pog \"{}\"").format( V.name)
+status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+PPs
+if fpsys.state.samepogs:
+lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = True (?)
+self.TICKMAP = None
+
+PP+w
+if not fpsys.state.samepogs:
+lab = _("Viewing Pog \"{}\"").format( V.name)
+status = _("You can append fonts to \"{}\".").format(T.name)
+btext = _("Put fonts into %s") % T.name
+fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+fpsys.state.cantick = True
+self.TICKMAP = self._TICK
+
+
+
+
+V, T, 
+
+#nothing add remove samepogs dict
+n_a_r_s = { 'n' : {
+            'btext': _("Nothing to do"),
+        'txtaction': "",
+           'action': "NOTHING_TO_DO",
+          'cantick': False,
+             'tmap': None
+             },
+         '-' : {
+            'btext': _("Remove fonts from {VIEW}"),
+        'txtaction': _("You can remove fonts from the selected Target Pog."),
+           'action': "REMOVE",
+          'cantick': True,
+             'tmap': self._CROSS
+             },
+         '+' : {
+            'btext': _("Put fonts into {TARGET}"),
+        'txtaction': _("You can append fonts to \"{TARGET}\"."),
+           'action': "APPEND",
+          'cantick': True,
+             'tmap': self._TICK
+            }}
+n_a_r_s.update( {'s' : n_a_r_s['n'] ) #samepogs, key 's', same as key 'n'
+
+recurse_test = lambda: _(" (and all sub-folders.)") \
+                       if fpsys.config.recurseFolders else ""
+
+choose_source = _("Choose a Source Pog or folder.")
+lbl_d = { 'EN' : {
+            'lab': _("There are no fonts in here."),
+             'do': choose_source
+             },
+          'EP' : {
+              'lab': _("Source is empty. Active Target is \"{TARGET}\""),
+               'do': choose_source
+               },
+          'FN' : {
+                'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+                 'do': ""
+              'rtest': recurse_test
+                 },
+          'PrN' : {
+            'lab': _("Viewing (installed Pog) \"{VIEW}\""),
+             'do': _("You can't change an installed Pog.")
+             },
+
+
+
+
+
+
+
+
+
+
+E
+EN
+lab = _("There are no fonts in here.")
+status = _("Choose a Source Pog or folder.")
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+EP
+lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
+status = _("Please choose a Source.")
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+FN
+lab = _("Viewing Folder \"{}\"").format( V.label() )
+if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+status = ""
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+PN+r
+lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
+status = _("You can't change an installed Pog.")
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+PN+w
+lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
+status = _("You can remove fonts from the selected Target Pog.")
+btext = _("Remove fonts from %s") % V.name
+fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
+fpsys.state.cantick = True
+self.TICKMAP = self._CROSS
+
+FP+r
+lab = _("Viewing Folder \"{}\"").format( V.label() )
+if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+FP+w
+#lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
+lab = _("Viewing Folder \"{}\"").format( V.label() )
+status = _("You can append fonts to \"{}\".").format(T.name)
+btext = _("Put fonts into %s") % T.name
+fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+fpsys.state.cantick = True
+self.TICKMAP = self._TICK
+
+PP+r
+lab = _("Viewing Pog \"{}\"").format( V.name)
+status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = False
+self.TICKMAP = None
+
+PP=
+if fpsys.state.samepogs:
+lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
+btext = _("Nothing to do")
+fpsys.state.action = "NOTHING_TO_DO"
+fpsys.state.cantick = True (?)
+self.TICKMAP = None
+
+PP+w
+if not fpsys.state.samepogs:
+lab = _("Viewing Pog \"{}\"").format( V.name)
+status = _("You can append fonts to \"{}\".").format(T.name)
+btext = _("Put fonts into %s") % T.name
+fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+fpsys.state.cantick = True
+self.TICKMAP = self._TICK
+
+
+
 
     def MainFontViewUpdate(self):
         """
@@ -579,6 +814,7 @@ class FontViewPanel(wx.Panel):
                 ## We cannot put stuff into an installed pog
                 lab = _("Viewing Folder \"{}\"").format( V.label() )
                 if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+                print fpsys.config.recurseFolders
                 btext = _("Nothing to do")
                 fpsys.state.action = "NOTHING_TO_DO"
                 fpsys.state.cantick = False
