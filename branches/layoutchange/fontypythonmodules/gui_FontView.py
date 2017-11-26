@@ -514,113 +514,13 @@ class FontViewPanel(wx.Panel):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def _setup_state_dicts(self):
         """
-        E
-        EN
-        lab = _("There are no fonts in here.")
-        status = _("Choose a Source Pog or folder.")
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = False
-        self.TICKMAP = None
-
-        EP
-        lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
-        status = _("Please choose a Source.")
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = False
-        self.TICKMAP = None
-
-        FN
-        lab = _("Viewing Folder \"{}\"").format( V.label() )
-        if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-        status = ""
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = False
-        self.TICKMAP = None
-
-        PrN
-        lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
-        status = _("You can't change an installed Pog.")
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = False
-        self.TICKMAP = None
-
-        PwN
-        lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
-        status = _("You can remove fonts from the selected Target Pog.")
-        btext = _("Remove fonts from %s") % V.name
-        fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
-        fpsys.state.cantick = True
-        self.TICKMAP = self._CROSS
-
-        FPr
-        lab = _("Viewing Folder \"{}\"").format( V.label() )
-        if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-        status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = False
-        self.TICKMAP = None
-
-        FPw
-        #lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
-        lab = _("Viewing Folder \"{}\"").format( V.label() )
-        status = _("You can append fonts to \"{}\".").format(T.name)
-        btext = _("Put fonts into %s") % T.name
-        fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-        fpsys.state.cantick = True
-        self.TICKMAP = self._TICK
-
-        PPr
-        lab = _("Viewing Pog \"{}\"").format( V.name)
-        status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = False
-        self.TICKMAP = None
-
-        PPs
-        if fpsys.state.samepogs:
-        lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
-        btext = _("Nothing to do")
-        fpsys.state.action = "NOTHING_TO_DO"
-        fpsys.state.cantick = True (?)
-        self.TICKMAP = None
-
-        PP+w
-        if not fpsys.state.samepogs:
-        lab = _("Viewing Pog \"{}\"").format( V.name)
-        status = _("You can append fonts to \"{}\".").format(T.name)
-        btext = _("Put fonts into %s") % T.name
-        fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-        fpsys.state.cantick = True
-        self.TICKMAP = self._TICK
-
         These dicts are used in MainFontViewUpdate.
+        They hold the variables and such for various
+        states of the app i.t.o Source/View and Target.
         """
-
-        #nothing add remove samepogs dict
+        # The "nothing add remove samepogs" dict
         self.n_a_r_s = { 'n' : {
             'btext': _("Nothing to do"),
            'action': "NOTHING_TO_DO",
@@ -642,16 +542,21 @@ class FontViewPanel(wx.Panel):
           'cantick': True,
              'tmap': self._TICK
             }}
-        ## Samepogs, key 's', same as key 'n'
+
+        # Samepogs, key 's', same as key 'n'
         self.n_a_r_s.update( {'s' : self.n_a_r_s['n']} )
 
+        # A way to test for recurse flag later
         recurse_test = lambda: _(" (and all sub-folders.)") \
                                if fpsys.config.recurseFolders else ""
 
+        # Some common strings
         vF = _("Viewing Folder \"{VIEW}\"{{RT}}")
         vP  =_("Viewing Pog \"{VIEW}\"")
         choose_source = _("Choose a Source Pog or folder.")
 
+        # The main "label" dict.
+        # See remarks in MainFontViewUpdate for details.
         self.lbl_d = { 
           'EN' : {
             'lab': _("There are no fonts in here."),
@@ -727,86 +632,104 @@ class FontViewPanel(wx.Panel):
         VC = fpsys.state.viewpattern # View Char
         TC = fpsys.state.targetpattern # Target Char
 
-        P = VC + TC
+        P = VC + TC # a two-char flag
 
-        ## [S][rw][T][rws] <-- basic shape
+        ## Okay, let's make a key:..
+
+        ## [S][rw][T][rws] <-- key's basic shape
         ## Where S is Source, T is Target:
         ##  E == Empty View/Source - no fonts in chosen Source.
         ##  N == Empty Target - no fonts.
         ##  P is Pog
         ##  F is Folder     
         ## And rw:
-        ## r is read (i.e. view)
+        ## r is read (i.e. only can view)
         ## w is write (i.e. remove or append)
         ## s is same (S/T pogs are the same)
-
         ## Example:
         ## PrN -> Source pog+read. No target pog.
-        #  i.e: We are viewing a pog that is installed (no write)
+        ##     i.e: We are viewing a pog that is installed
+        ##     (no write.)
         ## FPw -> Source folder. Target pog+write
-        ## i.e. We are viewing a folder and have a Pog which
-        ##      is not installed and so can be written-to.
+        ##     i.e. We are viewing a folder and have a Pog
+        ##     which is *not* installed, so can be 'written'
+        ##     i.e. have fonts appended.
 
-        #EN -> EN
-        #EP -> EP
-        #FN -> FN
+        # EN -> EN (Empty source, No target)
+        # EP -> EP (Empty source, Pog target (weird) )
+        # FN -> FN (Folder source, No target)
         if P in ('EN', 'EP', 'FN'):
             key = P
-        #PN -> PrN or PwN
+
+        # PN -> PrN or PwN
+        # Pog source, No target. 
+        # Because 1) source is a Pog
+        #     and 2) there's no target,
+        # the Pog can be:
+        #  r = view it only (i.e. it's installed)
+        #  w = remove fonts
         elif P == "PN":
             key = "PrN" if V.isInstalled() else "PwN"
-        #FP -> FPr or FPw
+
+        # FP -> FPr or FPw
+        # Folder source, Pog target. Target r or w.
+        # Similar logic. If target pog is installed
+        # it can't be added-to, i.e. it's 'r' only.
+        # else it can be 'w'
         elif P == "FP":
             key = "FPr" if T.isInstalled() else "FPw"
-        #PP -> PPr or PPw or PPs
+
+        # PP -> PPr or PPw or PPs
+        # Target pog is either 'r' or 'w' or ...
+        # Target pog 's' means source and target are same.
         elif P == "PP":
             if fpsys.state.samepogs:
                 key = "PPs"
             else:
                 key = "PPr" if T.isInstalled() else "PPw"
+        # Some kind of error
         else:
             print _("FontView state error: Pattern is \"{}\"").format( P )
             raise SystemExit
 
-        ## use dict 1
+        ## ..and use it to fetch from dict self.lbl_d
         d = self.lbl_d[key]
         
-        lab = d['lab']
-        if "VIEW" in lab: lab = lab.format(VIEW=V.label())
-        if "TARGET" in lab: lab = lab.format(TARGET=T.label())
+        # Little func to replace substrings.
+        def rep(s):
+            if "VIEW"   in s: s = s.format(VIEW=V.label())
+            if "TARGET" in s: s = s.format(TARGET=T.label())
+            return s
+
+        lab = rep(d['lab'])
 
         ## Do we add extra text about recursing?
         rtest = d.get('rtest',None)
         if rtest:
             lab = lab.format(RT=rtest()) # yes
 
-        info = d.get('info',"")
-        if "TARGET" in info: info = info.format(TARGET=T.label())
-        print info
+        info = rep(d.get('info',""))
 
         action = d.get('act','n')
         status = d['info']
         
-        ## use dict 2
+        ## using dict n_a_r_s
         nars = self.n_a_r_s[action]
-        btext = nars['btext']
-        if "VIEW" in btext: btext = btext.format(VIEW=V.label())
-        if "TARGET" in btext: btext = btext.format(TARGET=T.label())
-
+        btext = rep(nars['btext'])
 
         fpsys.state.cantick = nars['cantick']
-        print "cantick:", nars['cantick']
         fpsys.state.action = nars['action']
-        print "action:", nars['action']
         self.TICKMAP = nars['tmap']
 
 
         ## Enable/Disable the Purge menu item
         ## Switch it off, then: if the view is a Pog
         ## and it's *not* installed, we can switch it on.
+        ## (Because you can't purge an installed font.)
+        ## This has nothing to do with whatever target
+        ## may be selected.
         ps.pub( toggle_purge_menu_item, False )
-        if VC=="P":
-            if not fpsys.state.viewobject.isInstalled():
+        if VC=="P" and not V.isInstalled():
                 ps.pub( toggle_purge_menu_item, True )
 
         self.buttMainLastLabel = btext
