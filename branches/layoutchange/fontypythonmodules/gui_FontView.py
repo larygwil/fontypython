@@ -708,7 +708,7 @@ class FontViewPanel(wx.Panel):
               }
           }
 
-    def xxMainFontViewUpdate(self):
+    def MainFontViewUpdate(self):
         """
         Vital routine - the heart if the app.
 
@@ -1015,7 +1015,7 @@ class FontViewPanel(wx.Panel):
 
 
 
-    def MainFontViewUpdate(self):
+    def xxMainFontViewUpdate(self):
         """
         Vital routine - the heart if the app.
 

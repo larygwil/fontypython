@@ -284,16 +284,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Redraw event
         self.Bind(wx.EVT_PAINT,  self.onPaint)
 
-        ## Get cursors setup
         self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
-        print "cursor. action says:", fpsys.state.action
-        if fpsys.state.action in ("REMOVE", "APPEND"):
-            self.CURSOR = wx.StockCursor( wx.CURSOR_HAND )
-            print " change to cursor dude."
-        #if self.fitem.badstyle == "FILE_NOT_FOUND":
-        #    self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
-        #if self.fitem.inactive:
-        #    self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+
 
     def has_changed(self, key, something):
         """
@@ -553,6 +545,13 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         self.determine_draw_state()
 
+        ## Toggle the hand/arrow as per
+        if fpsys.state.action in ("REMOVE", "APPEND"):
+            self.CURSOR = wx.StockCursor( wx.CURSOR_HAND )
+        else:
+            self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
+        self.SetCursor( self.CURSOR )
+
         #print u"measure Draw state: {} for {}".format(self.state,self.name)
         max_glyph_width = self.width
         if self.is_block("A"):
@@ -585,13 +584,6 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         ## Go determine_draw_state my draw state. 
         self.determine_draw_state()
         #print u"assemble_bitmap Draw state: {} for {}".format(self.state,self.name)
-
-
-        if fpsys.state.action in ("REMOVE", "APPEND"):
-            self.CURSOR = wx.StockCursor( wx.CURSOR_HAND )
-        else:
-            self.CURSOR = wx.StockCursor( wx.CURSOR_ARROW )
-        self.SetCursor( self.CURSOR )
 
         if self.is_block("B"):
             # Block B: Draw the entire fitmap
