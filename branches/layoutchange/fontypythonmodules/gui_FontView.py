@@ -181,6 +181,12 @@ class FontViewPanel(wx.Panel):
         self.BUTTON_CHARMAP = fpwx.wxbmp( 'button_charmap' )
         self.BUTTON_CHARMAP_OVER = fpwx.wxbmp( 'button_charmap_over' )
 
+        ## --
+        ## Dicts for use in state
+        ##
+        self._setup_state_dicts()
+
+
         ##
         ## START GUI
         ## ===
@@ -505,103 +511,122 @@ class FontViewPanel(wx.Panel):
 
         self.EnableDisablePrevNext()
 
-E
-EN
-lab = _("There are no fonts in here.")
-status = _("Choose a Source Pog or folder.")
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-EP
-lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
-status = _("Please choose a Source.")
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-FN
-lab = _("Viewing Folder \"{}\"").format( V.label() )
-if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-status = ""
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-PrN
-lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
-status = _("You can't change an installed Pog.")
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-PwN
-lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
-status = _("You can remove fonts from the selected Target Pog.")
-btext = _("Remove fonts from %s") % V.name
-fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
-fpsys.state.cantick = True
-self.TICKMAP = self._CROSS
-
-FPr
-lab = _("Viewing Folder \"{}\"").format( V.label() )
-if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-FPw
-#lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
-lab = _("Viewing Folder \"{}\"").format( V.label() )
-status = _("You can append fonts to \"{}\".").format(T.name)
-btext = _("Put fonts into %s") % T.name
-fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-fpsys.state.cantick = True
-self.TICKMAP = self._TICK
-
-PPr
-lab = _("Viewing Pog \"{}\"").format( V.name)
-status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-PPs
-if fpsys.state.samepogs:
-lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = True (?)
-self.TICKMAP = None
-
-PP+w
-if not fpsys.state.samepogs:
-lab = _("Viewing Pog \"{}\"").format( V.name)
-status = _("You can append fonts to \"{}\".").format(T.name)
-btext = _("Put fonts into %s") % T.name
-fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-fpsys.state.cantick = True
-self.TICKMAP = self._TICK
 
 
 
 
-V, T, 
 
-#nothing add remove samepogs dict
-n_a_r_s = { 'n' : {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def _setup_state_dicts(self):
+        """
+        E
+        EN
+        lab = _("There are no fonts in here.")
+        status = _("Choose a Source Pog or folder.")
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = False
+        self.TICKMAP = None
+
+        EP
+        lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
+        status = _("Please choose a Source.")
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = False
+        self.TICKMAP = None
+
+        FN
+        lab = _("Viewing Folder \"{}\"").format( V.label() )
+        if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+        status = ""
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = False
+        self.TICKMAP = None
+
+        PrN
+        lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
+        status = _("You can't change an installed Pog.")
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = False
+        self.TICKMAP = None
+
+        PwN
+        lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
+        status = _("You can remove fonts from the selected Target Pog.")
+        btext = _("Remove fonts from %s") % V.name
+        fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
+        fpsys.state.cantick = True
+        self.TICKMAP = self._CROSS
+
+        FPr
+        lab = _("Viewing Folder \"{}\"").format( V.label() )
+        if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+        status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = False
+        self.TICKMAP = None
+
+        FPw
+        #lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
+        lab = _("Viewing Folder \"{}\"").format( V.label() )
+        status = _("You can append fonts to \"{}\".").format(T.name)
+        btext = _("Put fonts into %s") % T.name
+        fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+        fpsys.state.cantick = True
+        self.TICKMAP = self._TICK
+
+        PPr
+        lab = _("Viewing Pog \"{}\"").format( V.name)
+        status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = False
+        self.TICKMAP = None
+
+        PPs
+        if fpsys.state.samepogs:
+        lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
+        btext = _("Nothing to do")
+        fpsys.state.action = "NOTHING_TO_DO"
+        fpsys.state.cantick = True (?)
+        self.TICKMAP = None
+
+        PP+w
+        if not fpsys.state.samepogs:
+        lab = _("Viewing Pog \"{}\"").format( V.name)
+        status = _("You can append fonts to \"{}\".").format(T.name)
+        btext = _("Put fonts into %s") % T.name
+        fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+        fpsys.state.cantick = True
+        self.TICKMAP = self._TICK
+
+        These dicts are used in MainFontViewUpdate.
+        """
+
+        #nothing add remove samepogs dict
+        self.n_a_r_s = { 'n' : {
             'btext': _("Nothing to do"),
-        'txtaction': "",
            'action': "NOTHING_TO_DO",
+        'txtaction': _("There's nothing much to do."),
           'cantick': False,
-             'tmap': None
+             'tmap':self._TICK #default, but is not drawn. 
              },
          '-' : {
             'btext': _("Remove fonts from {VIEW}"),
@@ -617,152 +642,73 @@ n_a_r_s = { 'n' : {
           'cantick': True,
              'tmap': self._TICK
             }}
-n_a_r_s.update( {'s' : n_a_r_s['n'] ) #samepogs, key 's', same as key 'n'
+        ## Samepogs, key 's', same as key 'n'
+        self.n_a_r_s.update( {'s' : self.n_a_r_s['n']} )
 
-recurse_test = lambda: _(" (and all sub-folders.)") \
-                       if fpsys.config.recurseFolders else ""
+        recurse_test = lambda: _(" (and all sub-folders.)") \
+                               if fpsys.config.recurseFolders else ""
 
-choose_source = _("Choose a Source Pog or folder.")
-lbl_d = { 'EN' : {
+        vF = _("Viewing Folder \"{VIEW}\"{{RT}}")
+        vP  =_("Viewing Pog \"{VIEW}\"")
+        choose_source = _("Choose a Source Pog or folder.")
+
+        self.lbl_d = { 
+          'EN' : {
             'lab': _("There are no fonts in here."),
-           'info': choose_source
+           'info': choose_source,
+            'act': 'n'
                },
           'EP' : {
             'lab': _("Source is empty. Active Target is \"{TARGET}\""),
-           'info': choose_source
+           'info': choose_source,
+            'act': 'n'
                },
           'FN' : {
-            'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+            'lab': vF,
+           'info': self.n_a_r_s['n']['txtaction'],
+            'act': 'n',
           'rtest': recurse_test
                },
           'PrN' : {
             'lab': _("Viewing (installed Pog) \"{VIEW}\""),
-           'info': _("You can't change an installed Pog.")
+           'info': _("You can't change an installed Pog."),
+            'act': 'n'
                },
           'PwN': {
             'lab': _("Viewing (editable Pog) \"{VIEW}\""),
+            'info': self.n_a_r_s['-']['txtaction'],
+            'act': '-'
                },
           'FPr': {
-            'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+            'lab': vF,
+           'info': _("You can't change an installed Pog."),
+            'act': 'n',
           'rtest': recurse_test,
                },
           'FPw': {
-            'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+            'lab': vF,
+           'info': self.n_a_r_s['+']['txtaction'],
+            'act': '+',
           'rtest': recurse_test,
               },
           'PPr': {
-            'lab': _("Viewing Pog \"{VIEW}\""),
-           'info': _("Pog \"{TARGET}\" is installed. It cannot be changed.")
+            'lab': vP,
+           'info': _("Pog \"{TARGET}\" is installed. It cannot be changed."),
+            'act': 'n'
               },
           'PPs': {
-            'lab':  _(u"Source and Target \"{VIEW}\" are the same.")
-              }
+            'lab':  _("Source and Target \"{VIEW}\" are the same."),
+           'info': _("Clear the target, or choose another Pog."),
+            'act': 's'
+              },
           'PPw': {
-            'lab':  _("Viewing Pog \"{VIEW}\"")
+            'lab': vP,
+           'info': self.n_a_r_s['+']['txtaction'],
+            'act': '+'
               }
           }
 
-
-
-
-
-
-
-
-
-
-
-
-
-E
-EN
-lab = _("There are no fonts in here.")
-status = _("Choose a Source Pog or folder.")
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-EP
-lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
-status = _("Please choose a Source.")
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-FN
-lab = _("Viewing Folder \"{}\"").format( V.label() )
-if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-status = ""
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-PN+r
-lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
-status = _("You can't change an installed Pog.")
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-PN+w
-lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
-status = _("You can remove fonts from the selected Target Pog.")
-btext = _("Remove fonts from %s") % V.name
-fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
-fpsys.state.cantick = True
-self.TICKMAP = self._CROSS
-
-FP+r
-lab = _("Viewing Folder \"{}\"").format( V.label() )
-if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-FP+w
-#lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
-lab = _("Viewing Folder \"{}\"").format( V.label() )
-status = _("You can append fonts to \"{}\".").format(T.name)
-btext = _("Put fonts into %s") % T.name
-fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-fpsys.state.cantick = True
-self.TICKMAP = self._TICK
-
-PP+r
-lab = _("Viewing Pog \"{}\"").format( V.name)
-status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = False
-self.TICKMAP = None
-
-PP=
-if fpsys.state.samepogs:
-lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
-btext = _("Nothing to do")
-fpsys.state.action = "NOTHING_TO_DO"
-fpsys.state.cantick = True (?)
-self.TICKMAP = None
-
-PP+w
-if not fpsys.state.samepogs:
-lab = _("Viewing Pog \"{}\"").format( V.name)
-status = _("You can append fonts to \"{}\".").format(T.name)
-btext = _("Put fonts into %s") % T.name
-fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-fpsys.state.cantick = True
-self.TICKMAP = self._TICK
-
-
-
-
-    def MainFontViewUpdate(self):
+    def xxMainFontViewUpdate(self):
         """
         Vital routine - the heart if the app.
 
@@ -771,141 +717,111 @@ self.TICKMAP = self._TICK
         It also sets flags in fpsys.state
         """
 
-        ## If the help panel is open, hide it:
+        ## If any DismissablePanels are open, hide them:
         ps.pub( ensure_fontview_shown )
 
         ## Get shorter vars to use.
         V = fpsys.state.viewobject
         T = fpsys.state.targetobject
 
-        Vpatt = fpsys.state.viewpattern # View Pattern
-        Tpatt = fpsys.state.targetpattern # Target pattern
+        VC = fpsys.state.viewpattern # View Char
+        TC = fpsys.state.targetpattern # Target Char
 
-        Patt = Vpatt + Tpatt
+        P = VC + TC
 
-        lab = ""
-        status = ""
+        ## [S][rw][T][rws] <-- basic shape
+        ## Where S is Source, T is Target:
+        ##  E == Empty View/Source - no fonts in chosen Source.
+        ##  N == Empty Target - no fonts.
+        ##  P is Pog
+        ##  F is Folder     
+        ## And rw:
+        ## r is read (i.e. view)
+        ## w is write (i.e. remove or append)
+        ## s is same (S/T pogs are the same)
 
-        ## June 2009: A default value for this:
-        self.TICKMAP = self._TICK
+        ## Example:
+        ## PrN -> Source pog+read. No target pog.
+        #  i.e: We are viewing a pog that is installed (no write)
+        ## FPw -> Source folder. Target pog+write
+        ## i.e. We are viewing a folder and have a Pog which
+        ##      is not installed and so can be written-to.
 
-        ## E == Empty View - no fonts in chosen Source.
-        ## N == Empty Target - no fonts.
-        ## P is Pog
-        ## F is Folder
-
-        if Vpatt == "E": #NOTE : TESTING VPATT, not PATT - ergo: this covers E, EN, EP
-            ## Empty ("E") - when the chosen Folder or Pog has NO FONTS IN IT.
-            if Tpatt == "P":
-                lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
-                status = _("Please choose a Source.")
+        #EN -> EN
+        #EP -> EP
+        #FN -> FN
+        if P in ('EN', 'EP', 'FN'):
+            key = P
+        #PN -> PrN or PwN
+        elif P == "PN":
+            key = "PrN" if V.isInstalled() else "PwN"
+        #FP -> FPr or FPw
+        elif P == "FP":
+            key = "FPr" if T.isInstalled() else "FPw"
+        #PP -> PPr or PPw or PPs
+        elif P == "PP":
+            if fpsys.state.samepogs:
+                key = "PPs"
             else:
-                lab = _("There are no fonts in here.")
-                status = _("Choose a Source Pog or folder.")
-            btext = _("Nothing to do")
-            fpsys.state.cantick = False
-            fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
-
-        elif Patt == "FN":
-            #View a Folder, no target
-            lab = _("Viewing Folder \"{}\"").format( V.label() )
-            if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-            fpsys.state.cantick = False
-            btext = _("Nothing to do")
-            fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
-            status = ""#_("Viewing a folder.")
-
-        elif Patt == "PN": #A single Pog in the VIEW
-            #View a pog, no target
-            if V.isInstalled():
-                ## Cannot remove fonts from an installed pog
-                lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
-                btext = _("Nothing to do")
-                fpsys.state.action = "NOTHING_TO_DO"
-                fpsys.state.cantick = False
-                status = _("You can't change an installed Pog.")
-            else:
-                lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
-                fpsys.state.cantick = True
-                btext = _("Remove fonts from %s") % V.name
-                self.TICKMAP = self._CROSS
-                fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
-                status = _("You can remove fonts from the selected Target Pog.")
-
-        elif Patt == "FP":
-            #Folder to Pog
-            if T.isInstalled():
-                ## We cannot put stuff into an installed pog
-                lab = _("Viewing Folder \"{}\"").format( V.label() )
-                if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
-                print fpsys.config.recurseFolders
-                btext = _("Nothing to do")
-                fpsys.state.action = "NOTHING_TO_DO"
-                fpsys.state.cantick = False
-                #status = _("You can't change an installed Pog.")
-                status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-            else:
-                #lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
-                lab = _("Viewing Folder \"{}\"").format( V.label() )
-                btext = _("Put fonts into %s") % T.name
-                self.TICKMAP = self._TICK
-                fpsys.state.cantick = True
-                fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-                #status = _("You can append fonts to your target Pog.")
-                status = _("You can append fonts to \"{}\".").format(T.name)
-
-        elif Patt == "PP":
-            #Pog to Pog
-            if T.isInstalled():
-                ## We cannot put fonts into an installed pog
-                #lab = _("Viewing \"{source}\", but Pog \"{target}\" is installed.").format(
-                #        source = V.name, target = T.name )
-                lab = _("Viewing Pog \"{}\"").format( V.name)
-                btext = _("Nothing to do")
-                fpsys.state.action = "NOTHING_TO_DO"
-                fpsys.state.cantick = False
-                status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
-                #status = _("You cannot change an installed Pog.")
-            else: #Not installed.
-                if fpsys.state.samepogs: #Are the two pogs the same?
-                    ## The validate routines determined the samepogs value.
-                    lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
-                    fpsys.state.cantick = True
-                    btext = _("Nothing to do")
-                    fpsys.state.action = "NOTHING_TO_DO"
-                    status = ""#_("Your Source and Target are the same Pog.")
-                else: # Normal pog to pog
-                    #lab = _("Append from \"{source}\" into \"{target}\"").format(
-                    #        source = V.name, target = T.name )
-                    lab = _("Viewing Pog \"{}\"").format( V.name)
-                    btext = _("Put fonts into %s") % T.name
-                    self.TICKMAP = self._TICK
-                    fpsys.state.cantick = True
-                    fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
-                    status = _("You can append fonts to \"{}\".").format(T.name)
-
+                key = "PPr" if T.isInstalled() else "PPw"
         else:
-            print "MOJO ERROR: %s and trouble" % Patt
+            print _("FontView state error: Pattern is \"{}\"").format( P )
             raise SystemExit
 
+        ## use dict 1
+        d = self.lbl_d[key]
+        
+        lab = d['lab']
+        if "VIEW" in lab: lab = lab.format(VIEW=V.label())
+        if "TARGET" in lab: lab = lab.format(TARGET=T.label())
+
+        ## Do we add extra text about recursing?
+        rtest = d.get('rtest',None)
+        if rtest:
+            lab = lab.format(RT=rtest()) # yes
+
+        info = d.get('info',"")
+        if "TARGET" in info: info = info.format(TARGET=T.label())
+        print info
+
+        action = d.get('act','n')
+        status = d['info']
+        
+        ## use dict 2
+        nars = self.n_a_r_s[action]
+        btext = nars['btext']
+        if "VIEW" in btext: btext = btext.format(VIEW=V.label())
+        if "TARGET" in btext: btext = btext.format(TARGET=T.label())
+
+
+        fpsys.state.cantick = nars['cantick']
+        print "cantick:", nars['cantick']
+        fpsys.state.action = nars['action']
+        print "action:", nars['action']
+        self.TICKMAP = nars['tmap']
+
+
         ## Enable/Disable the Purge menu item
+        ## Switch it off, then: if the view is a Pog
+        ## and it's *not* installed, we can switch it on.
         ps.pub( toggle_purge_menu_item, False )
-        if Vpatt=="P":
+        if VC=="P":
             if not fpsys.state.viewobject.isInstalled():
                 ps.pub( toggle_purge_menu_item, True )
 
-        self.buttMainLastLabel=btext
+        self.buttMainLastLabel = btext
         self.main_font_info_label.SetLabel( lab )
         self.main_font_info_label.Show()
 
-        #if True:#status is not "":
-        self.status_text.SetLabel( status )
-            #ps.pub(print_to_status_bar, status)
+        self.status_text.SetLabel( info )
 
         self.ToggleMainButton()
 
         fpsys.markInactive()
         self.filterAndPageThenCallCreateFitmaps()
+
+
+
 
 
     def onMainClick(self, evt) :
@@ -1083,3 +999,163 @@ self.TICKMAP = self._TICK
 
     def ResetToPageOne(self):
         self.pageindex = 1 # I start here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def MainFontViewUpdate(self):
+        """
+        Vital routine - the heart if the app.
+
+        This decides what to do based on what has been selected.
+        It draws the controls and the fonts as appropriate.
+        It also sets flags in fpsys.state
+        """
+
+        ## If the help panel is open, hide it:
+        ps.pub( ensure_fontview_shown )
+
+        ## Get shorter vars to use.
+        V = fpsys.state.viewobject
+        T = fpsys.state.targetobject
+
+        Vpatt = fpsys.state.viewpattern # View Pattern
+        Tpatt = fpsys.state.targetpattern # Target pattern
+
+        Patt = Vpatt + Tpatt
+
+        lab = ""
+        status = ""
+
+        ## June 2009: A default value for this:
+        self.TICKMAP = self._TICK
+
+        ## E == Empty View - no fonts in chosen Source.
+        ## N == Empty Target - no fonts.
+        ## P is Pog
+        ## F is Folder
+
+        if Vpatt == "E": #NOTE : TESTING VPATT, not PATT - ergo: this covers E, EN, EP
+            ## Empty ("E") - when the chosen Folder or Pog has NO FONTS IN IT.
+            if Tpatt == "P":
+                lab = _("Source is empty. Active Target is \"{}\"").format( T.name )
+                status = _("Please choose a Source.")
+            else:
+                lab = _("There are no fonts in here.")
+                status = _("Choose a Source Pog or folder.")
+            btext = _("Nothing to do")
+            fpsys.state.cantick = False
+            fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
+
+        elif Patt == "FN":
+            #View a Folder, no target
+            lab = _("Viewing Folder \"{}\"").format( V.label() )
+            if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+            fpsys.state.cantick = False
+            btext = _("Nothing to do")
+            fpsys.state.action = "NOTHING_TO_DO" # We will test this in mainframe::OnMainClick
+            status = ""#_("Viewing a folder.")
+
+        elif Patt == "PN": #A single Pog in the VIEW
+            #View a pog, no target
+            if V.isInstalled():
+                ## Cannot remove fonts from an installed pog
+                lab = _("Viewing (installed Pog) \"{}\"").format( V.name )
+                btext = _("Nothing to do")
+                fpsys.state.action = "NOTHING_TO_DO"
+                fpsys.state.cantick = False
+                status = _("You can't change an installed Pog.")
+            else:
+                lab = _("Viewing (editable Pog) \"{}\"").format( V.name )
+                fpsys.state.cantick = True
+                btext = _("Remove fonts from %s") % V.name
+                self.TICKMAP = self._CROSS
+                fpsys.state.action = "REMOVE" # We will test this in mainframe::OnMainClick
+                status = _("You can remove fonts from the selected Target Pog.")
+
+        elif Patt == "FP":
+            #Folder to Pog
+            if T.isInstalled():
+                ## We cannot put stuff into an installed pog
+                lab = _("Viewing Folder \"{}\"").format( V.label() )
+                if fpsys.config.recurseFolders: lab = "{} and all sub-folders".format(lab)
+                print fpsys.config.recurseFolders
+                btext = _("Nothing to do")
+                fpsys.state.action = "NOTHING_TO_DO"
+                fpsys.state.cantick = False
+                #status = _("You can't change an installed Pog.")
+                status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+            else:
+                #lab = _("Append from \"{source}\" to \"{target}\"").format(source=V.label(), target=T.name )
+                lab = _("Viewing Folder \"{}\"").format( V.label() )
+                btext = _("Put fonts into %s") % T.name
+                self.TICKMAP = self._TICK
+                fpsys.state.cantick = True
+                fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+                #status = _("You can append fonts to your target Pog.")
+                status = _("You can append fonts to \"{}\".").format(T.name)
+
+        elif Patt == "PP":
+            #Pog to Pog
+            if T.isInstalled():
+                ## We cannot put fonts into an installed pog
+                #lab = _("Viewing \"{source}\", but Pog \"{target}\" is installed.").format(
+                #        source = V.name, target = T.name )
+                lab = _("Viewing Pog \"{}\"").format( V.name)
+                btext = _("Nothing to do")
+                fpsys.state.action = "NOTHING_TO_DO"
+                fpsys.state.cantick = False
+                status = _("Pog \"{}\" is installed. It cannot be changed.").format(T.name)
+                #status = _("You cannot change an installed Pog.")
+            else: #Not installed.
+                if fpsys.state.samepogs: #Are the two pogs the same?
+                    ## The validate routines determined the samepogs value.
+                    lab = _(u"Source and Target \"{}\" are the same.").format(V.name)
+                    fpsys.state.cantick = True
+                    btext = _("Nothing to do")
+                    fpsys.state.action = "NOTHING_TO_DO"
+                    status = ""#_("Your Source and Target are the same Pog.")
+                else: # Normal pog to pog
+                    #lab = _("Append from \"{source}\" into \"{target}\"").format(
+                    #        source = V.name, target = T.name )
+                    lab = _("Viewing Pog \"{}\"").format( V.name)
+                    btext = _("Put fonts into %s") % T.name
+                    self.TICKMAP = self._TICK
+                    fpsys.state.cantick = True
+                    fpsys.state.action = "APPEND" # We will test this in mainframe::OnMainClick
+                    status = _("You can append fonts to \"{}\".").format(T.name)
+
+        else:
+            print "MOJO ERROR: %s and trouble" % Patt
+            raise SystemExit
+
+        ## Enable/Disable the Purge menu item
+        ps.pub( toggle_purge_menu_item, False )
+        if Vpatt=="P":
+            if not fpsys.state.viewobject.isInstalled():
+                ps.pub( toggle_purge_menu_item, True )
+
+        self.buttMainLastLabel = btext
+        self.main_font_info_label.SetLabel( lab )
+        self.main_font_info_label.Show()
+
+        #if True:#status is not "":
+        self.status_text.SetLabel( status )
+            #ps.pub(print_to_status_bar, status)
+
+        self.ToggleMainButton()
+
+        fpsys.markInactive()
+        self.filterAndPageThenCallCreateFitmaps()

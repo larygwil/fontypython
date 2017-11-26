@@ -631,7 +631,6 @@ class Pog(BasicFontList):
     def label(self):
         """
         A handy way to refer to Folders & Pogs in certain circumstances.
-        See around line 1296 wxgui.OnMainClick()
         Pog.label returns the name (in unicode)
         Folder.label return the path
         These are both the full paf of the font.
