@@ -625,21 +625,45 @@ recurse_test = lambda: _(" (and all sub-folders.)") \
 choose_source = _("Choose a Source Pog or folder.")
 lbl_d = { 'EN' : {
             'lab': _("There are no fonts in here."),
-             'do': choose_source
-             },
+           'info': choose_source
+               },
           'EP' : {
-              'lab': _("Source is empty. Active Target is \"{TARGET}\""),
-               'do': choose_source
+            'lab': _("Source is empty. Active Target is \"{TARGET}\""),
+           'info': choose_source
                },
           'FN' : {
-                'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
-                 'do': ""
-              'rtest': recurse_test
-                 },
+            'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+          'rtest': recurse_test
+               },
           'PrN' : {
             'lab': _("Viewing (installed Pog) \"{VIEW}\""),
-             'do': _("You can't change an installed Pog.")
-             },
+           'info': _("You can't change an installed Pog.")
+               },
+          'PwN': {
+            'lab': _("Viewing (editable Pog) \"{VIEW}\""),
+               },
+          'FPr': {
+            'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+          'rtest': recurse_test,
+               },
+          'FPw': {
+            'lab': _("Viewing Folder \"{VIEW}\"{RT}"),
+          'rtest': recurse_test,
+              },
+          'PPr': {
+            'lab': _("Viewing Pog \"{VIEW}\""),
+           'info': _("Pog \"{TARGET}\" is installed. It cannot be changed.")
+              },
+          'PPs': {
+            'lab':  _(u"Source and Target \"{VIEW}\" are the same.")
+              }
+          'PPw': {
+            'lab':  _("Viewing Pog \"{VIEW}\"")
+              }
+          }
+
+
+
 
 
 
