@@ -36,8 +36,8 @@ Many thanks to:
 Special thanks to:
 
 * Marie, my mom, who keeps me going. Thanks for supporting me and Fonty!
-* Howard, my late dad. He brought computers and code into my world. 
-  Died before Linux happened; before the Internet happened. He would have 
+* Howard, my late father. He brought computers and code into my world. 
+  He died before Linux happened; before the Internet happened. He would have 
   been amazed.
 
 Licence

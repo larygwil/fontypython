@@ -657,7 +657,7 @@ class Configure:
         self.max = True
         self.lastdir = iPC.home()
         ## Added June 2009
-        self.recurseFolders = False
+        self.recurseFolders = False # Going to stop saving this one to config.
         ## Added Sept 2009
         self.ignore_adjustments = False
         ## Added 3 Oct 2009
@@ -704,7 +704,6 @@ class Configure:
             self.usegui = self.__data['usegui']
             self.max = self.__data['max']
             self.lastdir = self.__data['lastdir']
-            self.recurseFolders = self.__data['recurseFolders']
             self.ignore_adjustments = self.__data['ignore_adjustments']
             self.hush_pog_name = self.__data['hush_pog_name']
             self.app_char_map = self.__data['app_char_map']
@@ -712,6 +711,8 @@ class Configure:
             ##  This can be "UNSET" (default first run) or an appname
             ##  That appname may be valid or not (it may have been uninstalled...)
             self.CMC.set_current_appname(self.app_char_map)
+
+            #self.recurseFolders = self.__data['recurseFolders']
 
         except KeyError:
             ## The conf file has keys that don't work for this version, chances are it's old.
@@ -738,10 +739,10 @@ class Configure:
             "usegui" : self.usegui,
             "max" : self.max,
             "lastdir" : self.lastdir,
-            "recurseFolders": self.recurseFolders,
             "ignore_adjustments": self.ignore_adjustments,
             "app_char_map" : self.app_char_map,
             "hush_pog_name" : self.hush_pog_name,
+            #"recurseFolders": False, # Nov 2017: Force this to always be off on startup #self.recurseFolders,
          }
     def app_char_map_set( self, x ):
         '''
@@ -785,7 +786,7 @@ def instantiateViewFolder( foldername, recurse=None ):
     # Made recurse default to None in the def sig.
     # This has the effect of allowing THREE states to enter:
     # None, True, False
-    # None means the call came from cli.py
+    # None means the call came from gui_FontSources
     #  If so, we want to fetch the recurse from config -  
     #  so it becomes either T or F, depending on last state.
     #  This has stopped that initial Schroedinger's Cat state
