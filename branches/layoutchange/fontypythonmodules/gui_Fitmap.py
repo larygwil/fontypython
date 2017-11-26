@@ -668,7 +668,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
             xx = 40
             #x,y=(25,self.height-20) if self.fitem.badfont else (48,self.height-26)
             #y= self.height-20 if self.fitem.badfont else self.height-26
-            y = self.height - 25
+            y = self.height - 30
             self.add_pencil( BitmapPencil( "bmpinactive", xx, y, self.TICKSMALL) )
 
             txt = self.fitem.activeInactiveMsg

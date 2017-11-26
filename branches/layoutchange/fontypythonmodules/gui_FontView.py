@@ -519,12 +519,8 @@ class FontViewPanel(wx.Panel):
         states of the app i.t.o Source/View and Target.
         """
         # Some common strings
-        vF = _("Viewing Folder \"{VIEW}\"{{RT}}")
-        vP  =_("Viewing Pog \"{VIEW}\"")
-        choose_source = _("Choose a Source Pog or folder.")
         nadatd = _("There's nothing much to do.")
-        ntd = _("Nothing to do")
-
+        ntd = _("Choose some fonts")
         # The "nothing add remove samepogs" dict
         # Will be used in the main dict below.
         n_a_r_s = { 
@@ -544,14 +540,14 @@ class FontViewPanel(wx.Panel):
              },
          '-' : { #Remove
             'btext': _("Remove fonts from {VIEW}"),
-             'info': _("You can remove fonts from the selected Target Pog."),
+             'info': _("You can remove fonts from this source Pog."),
            'action': "REMOVE",
           'cantick': True,
              'tmap': self._CROSS
              },
          '+' : { #Append
             'btext': _("Put fonts into {TARGET}"),
-             'info': _("You can append fonts to \"{TARGET}\"."),
+             'info': _("You can append fonts to the active target Pog \"{TARGET}\"."),
            'action': "APPEND",
           'cantick': True,
              'tmap': self._TICK
@@ -561,70 +557,75 @@ class FontViewPanel(wx.Panel):
         recurse_test = lambda: _(" (and all sub-folders.)") \
                                if fpsys.config.recurseFolders else ""
 
+        # Some common strings
+        vF = _("Viewing source Folder \"{VIEW}\"{{RT}}")
+        vP  =_("Viewing source Pog \"{VIEW}\"")
+        choose_source = _("Choose a Source Pog or Folder.")
+        nochangetarget = _("The target Pog \"{TARGET}\" is installed. "\
+                        "It cannot be changed until you uninstall it.")
+
         # The main "label" dict.
         # See remarks in MainFontViewUpdate for details.
         self.lbl_d = { 
+          ## Empty to Nothing
           'EN' : {
             'lab': _("There are no fonts in here."),
-           'info': choose_source,
-            'act': 'n',
-            'nars': n_a_r_s['n']
-               },
-          'EP' : {
-            'lab': _("Source is empty. Active Target is \"{TARGET}\""),
-           'info': choose_source,
-            'act': 'n',
+            'tip': choose_source,
            'nars': n_a_r_s['n']
                },
+
+          ## Empty to Pog
+          'EP' : {
+            'lab': _("Source is empty. The active target Pog is \"{TARGET}\""),
+            'tip': choose_source,
+           'nars': n_a_r_s['n']
+               },
+
+          ## Folder to Nothing  
           'FN' : {
             'lab': vF,
-           'info': n_a_r_s['n']['info'],
-            'act': 'n', 
            'nars': n_a_r_s['n'],
           'rtest': recurse_test
                },
-         'PrN' : {
+
+          ## Pog to Nothing  
+          'PrN': {
             'lab': _("Viewing (installed Pog) \"{VIEW}\""),
-           'info': _("You can't change an installed Pog."),
-            'act': 'n',
+            'tip': _("You can't change an installed Pog."),
            'nars': n_a_r_s['n']
                },
-          'PwN': {
+          'PwN': { # '-' Remove from source pog
             'lab': _("Viewing (editable Pog) \"{VIEW}\""),
-            'info': n_a_r_s['-']['info'],
-            'act': '-',
+            'tip': _("There is no active target."),
            'nars': n_a_r_s['-']
                },
+
+          ## Folder to Pog
           'FPr': {
             'lab': vF,
-           'info': _("You can't change an installed Pog."),
-            'act': 'n',
+            'tip': nochangetarget,
            'nars': n_a_r_s['n'],
           'rtest': recurse_test,
                },
-          'FPw': {
+          'FPw': { # Add to target Pog
             'lab': vF,
-           'info': n_a_r_s['+']['info'],
-            'act': '+',
            'nars': n_a_r_s['+'],
           'rtest': recurse_test,
               },
+
+          ## Pog to Pog
           'PPr': {
             'lab': vP,
-           'info': _("Pog \"{TARGET}\" is installed. It cannot be changed."),
-            'act': 'n',
+            'tip': nochangetarget,
            'nars': n_a_r_s['n'],
               },
           'PPs': {
             'lab':  _("Source and Target \"{VIEW}\" are the same."),
-           'info': _("Clear the target, or choose another Pog."),
-            'act': 's',
+            'tip': _("Clear the target, or choose another Pog."),
            'nars': n_a_r_s['s'],
               },
-          'PPw': {
+          'PPw': { # Add to target Pog
             'lab': vP,
-           'info': n_a_r_s['+']['info'],
-            'act': '+',
            'nars': n_a_r_s['+'],
               }
           }
@@ -724,15 +725,9 @@ class FontViewPanel(wx.Panel):
         if rtest:
             lab = lab.format(RT=rtest()) # yes
 
-        info = rep(d.get('info',""))
-
-        #action = d.get('act','n')
-        status = d['info']
         
         ## using dict n_a_r_s
-        #nars = self.n_a_r_s[action]
         nars = d['nars']
-        btext = rep(nars['btext'])
 
         fpsys.state.cantick = nars['cantick']
         fpsys.state.action = nars['action']
@@ -749,12 +744,15 @@ class FontViewPanel(wx.Panel):
         if VC=="P" and not V.isInstalled():
                 ps.pub( toggle_purge_menu_item, True )
 
-        self.buttMainLastLabel = btext
+        self.buttMainLastLabel = rep(nars['btext'])
 
         self.main_font_info_label.SetLabel( lab )
         self.main_font_info_label.Show()
 
-        self.status_text.SetLabel( info )
+        i = nars['info']
+        t = d.get('tip',"")
+        st = rep( u"{} {}".format(i,t) )
+        self.status_text.SetLabel( st )
 
         self.ToggleMainButton()
 
@@ -938,13 +936,9 @@ class FontViewPanel(wx.Panel):
             ps.pub( toggle_selection_menu_item, False )
             return
 
-        #if fpsys.state.numticks > 0:
-        #    self.button_main.Enable(True)
-        #else:
-        #    self.button_main.SetLabel( _("Choose some fonts") )
         if fpsys.state.numticks == 0:
             self.button_main.Enable( False )
-            self.button_main.SetLabel( _("Choose some fonts") )
+            #self.button_main.SetLabel( _("Choose some fonts") )
 
     def ResetToPageOne(self):
         self.pageindex = 1 # I start here
