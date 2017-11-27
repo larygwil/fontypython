@@ -225,8 +225,7 @@ class FontViewPanel(wx.Panel):
            border = 4)
 
         ## The status label
-        self.status_text = fpwx.label(self, u"Subinfo",
-                ellip = wx.ST_ELLIPSIZE_END )
+        self.status_text = fpwx.label(self, u"Subinfo", autowrap = True )
 
         ## Quick search Bold Italic Regular buttons
         ## It occurs to me that these are English words...
