@@ -592,15 +592,23 @@ class ChooseZipDirPanel(DismissablePanel):
 
     def __post_init__(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
+
+        # A top, shows what pogs are going to be zipped
+        self.what_pogs_lbl = fpwx.label( self, u"..", ellip = wx.ST_ELLIPSIZE_END )
+        sizer.Add( self.what_pogs_lbl, 0, wx.EXPAND | wx.TOP, border = 10)
+
+        # The tree to find a path
         self.treedir = ATree(self, os.getcwd())
         tree = self.treedir.GetTreeCtrl()
         #Clicks on the control will change the button's label
         tree.Bind(wx.EVT_TREE_SEL_CHANGED, self._on_dir_control_click)
-        sizer.Add(self.treedir, 1, wx.EXPAND)
-        
-        self.lbl = fpwx.label( self, self._make_label() ) 
-        sizer.Add( self.lbl, 0, wx.EXPAND | wx.TOP, border=10)
+        sizer.Add(self.treedir, 1, wx.EXPAND | wx.TOP, border = 10)
 
+        # Label to show the directory chosen (or the default)
+        self.what_dir_lbl = fpwx.label( self, self._make_label(), ellip = wx.ST_ELLIPSIZE_END ) 
+        sizer.Add( self.what_dir_lbl, 0, wx.EXPAND | wx.TOP, border=10)
+
+        # A printer that will show when it has to.
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
         font = self.printer.GetFont()
@@ -623,6 +631,8 @@ class ChooseZipDirPanel(DismissablePanel):
         """The entire panel hide/show"""
         if showing:
             # I am being shown
+            wpogs = u", ".join( self.parent.panelTargetPogChooser.list_of_target_pogs_selected )
+            self.what_pogs_lbl.SetLabel( u"Pog(s) to zip: {}".format(wpogs) )
             if self.printer.IsEmpty():
                 self.printer.Hide()
             else:
@@ -638,8 +648,7 @@ class ChooseZipDirPanel(DismissablePanel):
 
     def _on_dir_control_click(self,e):
         cp = self.treedir.GetPath()
-        #self.btn.SetLabel(self._make_label(cp))
-        self.lbl.SetLabel(self._make_label(cp))
+        self.what_dir_lbl.SetLabel(self._make_label(cp))
 
     def _do_actual_zip(self, evt):
         """
@@ -649,7 +658,6 @@ class ChooseZipDirPanel(DismissablePanel):
         evt.Skip()
 
     ## Public defs
-
     def get_path(self):
         return self._chosen_path
 
