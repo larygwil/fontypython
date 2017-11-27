@@ -128,8 +128,12 @@ class SearchFilter(wx.SearchCtrl):
         Bold, Italic, Regular 
         are clicked, we call this.
         """
-        self.SetValue(t)
-        self.add_to_history()
+        if t:
+            self.SetValue(t)
+            if t not in self.searches:
+                self.add_to_history()
+        else:
+            self.SetValue("")
 
     def add_to_history(self):
         self.searches.append( self.GetValue() )
@@ -207,10 +211,14 @@ class FontViewPanel(wx.Panel):
         view_icon = fpwx.icon(self, 'icon_viewing')
         self.main_font_info_label = fpwx.h1(self, u"..",
                 ellip = wx.ST_ELLIPSIZE_END )
+
         icon_and_text_sizer.Add(view_icon, 0,
-                wx.TOP, border = 8)
+                wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
+                border = 8)
+
         icon_and_text_sizer.Add(self.main_font_info_label, 1,
-           wx.LEFT | wx.TOP | wx.ALIGN_CENTER_HORIZONTAL, border = 4)
+           wx.LEFT | wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
+           border = 4)
 
         ## The SubInfo label
         print "HERE!"
@@ -227,30 +235,16 @@ class FontViewPanel(wx.Panel):
         #clear_button.Bind( wx.EVT_BUTTON, self.on_clear_button_click )
 
         ## The filter text box
-        filter_label = fpwx.label(self, _(u"Filter:"))
+        #filter_label = fpwx.label(self, _(u"Filter:"))
 
-        # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
-        # EVT_TEXT_ENTER event to work. Go figure.
-        #self.search_filter = wx.ComboBox(self, -1, value="",
-        #        choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
-        self.search_filter = SearchFilter(self,
-                search_func = self.do_search,
-                cancel_func = self.on_clear_button_click)
 
-        self.last_filter_string = ""
 
-        ## The pager pulldown
-        pager_label = fpwx.label(self, _(u"Page:"))
-        self.pager_combo = wx.ComboBox(self, -1, value="1", choices=["busy"],
-                style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
-        self.pager_combo.Bind(wx.EVT_COMBOBOX, self.onPagechoiceClick )
-        self.pager_combo.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
 
         #self.SA=SearchAssistant(self)
 
 
         ## Fill the filter_and_pager_sizer
-        filter_and_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        #filter_and_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
         ## Quick search Bold Italic Regular buttons
         ## It occurs to me that these are English words...
@@ -264,19 +258,51 @@ class FontViewPanel(wx.Panel):
            idItalic: {'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
      self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
            }
-        for id, dic in self.BIR.iteritems():
-            bBIR = wx.ToggleButton( self, id=id, label=dic['label'])
-            self.BIR[id]['instance'] =  bBIR
-            filter_and_pager_sizer.Add( bBIR, 0, wx.EXPAND )
+        toggle_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        for idy, dic in self.BIR.iteritems():
+            bBIR = wx.ToggleButton( self, idy, size=(32,-1), style=wx.NO_BORDER )
+            #Remarked label to show icons instead, label=dic['label'])
             bBIR.Bind( wx.EVT_TOGGLEBUTTON, self.onBIR )
+            print dic['label'], idy 
+            bmp = fpwx.wxbmp( 'icon_{}'.format(dic['style']) )
+            bBIR.SetBitmap( bmp )
+            
+            bBIR.SetToolTipString( _("Filter {} fonts").format(dic['style']) )
+
+            self.BIR[idy]['instance'] =  bBIR
+            
+            toggle_sizer.Add( bBIR, 1, wx.EXPAND )
+
+        filter_and_pager_sizer.Add(toggle_sizer, 0, wx.EXPAND )
 
 
-        #filter_and_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL | wx.BU_EXACTFIT ) # Clear button
-        #filter_and_pager_sizer.Add( clear_button, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL ) # Clear button
+        # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
+        # EVT_TEXT_ENTER event to work. Go figure.
+        #self.search_filter = wx.ComboBox(self, -1, value="",
+        #        choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        self.search_filter = SearchFilter(self,
+                search_func = self.do_search,
+                cancel_func = self.on_clear_button_click)
 
-        filter_and_pager_sizer.Add( self.search_filter, 1, wx.ALIGN_LEFT | wx.EXPAND )
+        self.last_filter_string = ""
 
-        filter_and_pager_sizer.Add( pager_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL  )
+        filter_and_pager_sizer.Add( self.search_filter, 4,
+                wx.ALIGN_LEFT | wx.EXPAND \
+                | wx.RIGHT, border = 6)
+
+        ## The pager pulldown
+        pager_label = fpwx.label(self, _(u"Page:"))
+        self.pager_combo = wx.ComboBox(self, -1,
+                value="1", choices=["busy"],
+                style = wx.CB_DROPDOWN | wx.TE_PROCESS_ENTER )
+
+        self.pager_combo.Bind(wx.EVT_COMBOBOX, self.onPagechoiceClick )
+        self.pager_combo.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
+
+        filter_and_pager_sizer.Add( pager_label, 0,
+                wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL \
+                | wx.RIGHT,
+                border = 6  )
         filter_and_pager_sizer.Add( self.pager_combo, 1 )#, wx.ALIGN_RIGHT )
 
         ## The SCROLLED FONT VIEW panel:
@@ -385,26 +411,33 @@ class FontViewPanel(wx.Panel):
         self.filterAndPageThenCallCreateFitmaps()
         self.button_main.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
 
-    def setOneBIR( self, id, truth ):
-        self.BIR[id]['truth'] = truth
-        self.BIR[id]['instance'].SetValue( truth )
+    def setOneBIR( self, idy, truth ):
+        self.BIR[idy]['truth'] = truth
+        self.BIR[idy]['instance'].SetValue( truth )
 
     def setAllBIRFalse( self ):
-        for id in self.BIR.keys():
-            self.setOneBIR( id, False )
+        for idy in self.BIR.keys():
+            self.setOneBIR( idy, False )
 
     def onBIR( self, e ):
-        id=e.GetId()
-        self.BIR[id]['truth']=self.BIR[id]['instance'].GetValue()
-        if self.BIR[id]['style'] == "regular":
-            # can't have regular with bold/italic
-            self.setAllBIRFalse() # switch all off
-            self.setOneBIR( id, True )
-            ss = "regular|normal"
+        idy=e.GetId()
+        print "got idy:", idy
+
+        on_off = self.BIR[idy]['instance'].GetValue()
+
+        self.BIR[idy]['truth'] = on_off
+
+        ss=""
+
+        if self.BIR[idy]['style'] == "regular":
+            if on_off is True:
+                # can't have regular with bold/italic
+                self.setAllBIRFalse() # switch all off
+                self.setOneBIR( idy, True )
+                ss = "regular|normal"
         else:
             self.setOneBIR( self.idRegular, False )
-            ss=""
-            for id, dic in self.BIR.iteritems():
+            for idy, dic in self.BIR.iteritems():
                 # Builds AND regex (space is and)
                 if dic['truth']: ss += "%s%s" % (dic['style']," ")
             ss = ss[:-1]
