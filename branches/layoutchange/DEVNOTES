@@ -38,12 +38,15 @@ Cleanup stuff:
 
 * NB:
 * I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
+
 * Try to use _ for private names. __ for the rare special private names.
 
 * Don't forget to remove the wx debug stuff on the app object
 * UPDATE CHANGELOG
 * UPDATE README
 * THE FUCKING MAN PAGE :(
+
+* ESC being swallowed by something in the filter area....
 
 * Update/del the WXLAYOUTNOTES diagram.
 
@@ -73,25 +76,42 @@ Cleanup stuff:
 FUTURE TODOS
 ============
 * Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
+
 * Fix % outside brackets _("") % out here, not inside.
    _("text {}").format(stuff)
+
 * comments that are stale
 * copyright dates replace
 * pyc files in svn
 * PEP8 all up in da hizzle - well, the tabs to spaces part.
 * it's, its ...
+
 * Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
+
 * Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
+
 * Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
 
 * I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
+
 * Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
 
-* WONTFIXNOW: key value error in config: when i add new keys, it bars and makes a new config file
+* WONTFIXNOW: key value error in config: when i add new keys, it barfs and makes a new config file
   This means all user's settings go poof. To fix this will take me a hell of a long time
-  and I'd rather spend that time in other places.
-  It's not that serious anyway. Fonty's not that complex.
+  and I'd rather spend that time in other places. It's not that serious anyway. Fonty's not that complex.
 
+Oct 2017: A new Segfault!
+===
+/home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
+MinimalCreateFitmaps runs
+OrderedDict([(<fontypythonmodules.fontcontrol.TruetypeItem object at 0x7f3d556e20d0>, <fontypythonmodules.gui_Fitmap.Fitmap; proxy of <Swig Object of type 'wxPyControl *' at 0x29384b0> >)])
+refresh: ANUDI___.ttf
+self.fitem.name ticked: False
+   Set cols 0
+adding to sizer: ANUDI___.ttf (94, 1047)
+Floating point exception (core dumped)
+
+Can't reproduce... :(
 GENERAL INFO
 ============
 
@@ -178,18 +198,6 @@ BUGS
 
 
 
-Oct 2017: A new Segfault!
-===
-/home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
-MinimalCreateFitmaps runs
-OrderedDict([(<fontypythonmodules.fontcontrol.TruetypeItem object at 0x7f3d556e20d0>, <fontypythonmodules.gui_Fitmap.Fitmap; proxy of <Swig Object of type 'wxPyControl *' at 0x29384b0> >)])
-refresh: ANUDI___.ttf
-self.fitem.name ticked: False
-   Set cols 0
-adding to sizer: ANUDI___.ttf (94, 1047)
-Floating point exception (core dumped)
-
-Can't reproduce... :(
 
 
 

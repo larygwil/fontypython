@@ -95,7 +95,10 @@ class SearchFilter(wx.SearchCtrl):
                  search_func = None, 
                  cancel_func = None):
 
+        # wx.TE_PROCESS_ENTER is required for
+        # EVT_TEXT_ENTER event to work.
         style |= wx.TE_PROCESS_ENTER
+
         wx.SearchCtrl.__init__(self, parent, id, value, pos, size, style)
 
         self.ShowCancelButton(True)
@@ -206,9 +209,10 @@ class FontViewPanel(wx.Panel):
         ## Sizer: Filter and Pager controls
         filter_and_pager_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-
-        ## Icon, Main Font Info label
+        ## Icon
         view_icon = fpwx.icon(self, 'icon_viewing')
+
+        # Main heading
         self.main_font_info_label = fpwx.h1(self, u"..",
                 ellip = wx.ST_ELLIPSIZE_END )
 
@@ -220,31 +224,9 @@ class FontViewPanel(wx.Panel):
            wx.LEFT | wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
            border = 4)
 
-        ## The SubInfo label
-        print "HERE!"
+        ## The status label
         self.status_text = fpwx.label(self, u"Subinfo",
                 ellip = wx.ST_ELLIPSIZE_END )
-        #self.Bind(wx.EVT_SIZE, self.on_evt_size)
-
-
-        ## The clear filter button: added 10 Jan 2008
-        ## Removed Nov 2017: Using a SearchCtrl instead.
-        #clear_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "clear" ),
-        #style = wx.NO_BORDER)
-        #clear_button.SetToolTipString( _("Clear filter") )
-        #clear_button.Bind( wx.EVT_BUTTON, self.on_clear_button_click )
-
-        ## The filter text box
-        #filter_label = fpwx.label(self, _(u"Filter:"))
-
-
-
-
-        #self.SA=SearchAssistant(self)
-
-
-        ## Fill the filter_and_pager_sizer
-        #filter_and_pager_sizer.Add(filter_label, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
 
         ## Quick search Bold Italic Regular buttons
         ## It occurs to me that these are English words...
@@ -263,7 +245,7 @@ class FontViewPanel(wx.Panel):
             bBIR = wx.ToggleButton( self, idy, size=(32,-1), style=wx.NO_BORDER )
             #Remarked label to show icons instead, label=dic['label'])
             bBIR.Bind( wx.EVT_TOGGLEBUTTON, self.onBIR )
-            print dic['label'], idy 
+
             bmp = fpwx.wxbmp( 'icon_{}'.format(dic['style']) )
             bBIR.SetBitmap( bmp )
             
@@ -273,20 +255,17 @@ class FontViewPanel(wx.Panel):
             
             toggle_sizer.Add( bBIR, 1, wx.EXPAND )
 
-        filter_and_pager_sizer.Add(toggle_sizer, 0, wx.EXPAND )
+        filter_and_pager_sizer.Add(toggle_sizer, 1,
+                wx.EXPAND )
 
-
-        # July 5th, 2016: Had to add "|wx.TE_PROCESS_ENTER" to get the input filter's
-        # EVT_TEXT_ENTER event to work. Go figure.
-        #self.search_filter = wx.ComboBox(self, -1, value="",
-        #        choices=[],style=wx.CB_DROPDOWN|wx.TE_PROCESS_ENTER )
+        # Search box - has two callbacks
         self.search_filter = SearchFilter(self,
                 search_func = self.do_search,
                 cancel_func = self.on_clear_button_click)
 
         self.last_filter_string = ""
 
-        filter_and_pager_sizer.Add( self.search_filter, 4,
+        filter_and_pager_sizer.Add( self.search_filter, 5,
                 wx.ALIGN_LEFT | wx.EXPAND \
                 | wx.RIGHT, border = 6)
 
@@ -300,8 +279,7 @@ class FontViewPanel(wx.Panel):
         self.pager_combo.Bind(wx.EVT_TEXT_ENTER, self.onPagerChoiceTextEnter )
 
         filter_and_pager_sizer.Add( pager_label, 0,
-                wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL \
-                | wx.RIGHT,
+                wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT,
                 border = 6  )
         filter_and_pager_sizer.Add( self.pager_combo, 1 )#, wx.ALIGN_RIGHT )
 
@@ -313,66 +291,65 @@ class FontViewPanel(wx.Panel):
 
         #July 2016
         #=========
-        #The stock icon on the button was not showing under gtk3.
-        #I have switched to a bitmapbutton. I hope this works...
-        #self.previous_button = wx.Button(self, wx.ID_BACKWARD) # Also not in Afrikaans.
-        self.previous_button = wx.BitmapButton( self, wx.ID_BACKWARD, 
-                wx.ArtProvider.GetBitmap( wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
+        # The stock icon on the button was not showing under gtk3.
+        # This stock button has not been translated into Afrikaans yet. (Dec 2007)
+        # I can't tell you how this fkuced me around!
+        # July 2016 - remarked : self.next_button = wx.Button(self, wx.ID_FORWARD)  
+        # I have switched to a bitmapbutton. I hope this works...
+        ###
+        # For future:
+        # example = wx.BitmapButton(self, -1, fpwx.wxbmp( "xxx" ),
+        #  style = wx.NO_BORDER)
 
+        # Previous button
+        self.previous_button = wx.BitmapButton( self, wx.ID_BACKWARD, 
+                wx.ArtProvider.GetBitmap( 
+                    wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
+
+        # Main button
         self.button_main = wx.Button(self, label=" ")
         self.buttMainLastLabel=" "
 
-        ## This stock button has not been translated into Afrikaans yet. (Dec 2007)
-        ## I can't tell you how this fkuced me around!
-        # July 2016 - remarked : self.next_button = wx.Button(self, wx.ID_FORWARD)  
-        self.next_button = wx.BitmapButton( self, wx.ID_FORWARD, wx.ArtProvider.GetBitmap( wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
-        self.previous_button.Enable(False)  #Starts out disabled
+        # Next button
+        self.next_button = wx.BitmapButton( self, wx.ID_FORWARD,
+                wx.ArtProvider.GetBitmap( 
+                    wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
+        self.previous_button.Enable( False ) # Starts out disabled
 
 
         bottom_buttons_sizer.Add( self.previous_button, 0, 
-                wx.EXPAND | wx.RIGHT, border = 10)
-        #bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
-        
-        #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
-        #info_and_main_sizer.Add( self.status_text, 0)#1, wx.EXPAND)#, border = 12)
-        #info_and_main_sizer.Add( self.button_main, 1, wx.EXPAND)
-        #bottom_buttons_sizer.Add( info_and_main_sizer, 1, wx.EXPAND )
-        bottom_buttons_sizer.Add( self.button_main, 1,#,
-                wx.EXPAND | wx.RIGHT, border = 10)
+                wx.EXPAND | wx.RIGHT,
+                border = 8)
 
-        #bottom_buttons_sizer.Add( (10,1), 0, wx.EXPAND)
-        bottom_buttons_sizer.Add( self.next_button, 0, wx.EXPAND)
+        bottom_buttons_sizer.Add( self.button_main, 1,
+                wx.EXPAND | wx.RIGHT,
+                border = 8)
+
+        bottom_buttons_sizer.Add( self.next_button, 0,
+                wx.EXPAND)
 
 
         ## Start at the top: the icon and label
-        main_view_sizer.Add(icon_and_text_sizer, 0, wx.EXPAND )
+        main_view_sizer.Add(icon_and_text_sizer, 0,
+                wx.EXPAND )
 
         ## Sub label
-        main_view_sizer.Add(self.status_text, 0, wx.EXPAND)
+        main_view_sizer.Add(self.status_text, 0, 
+                wx.EXPAND | wx.TOP,
+                border = 4)
 
         ## Fill the Choice and Filter
         main_view_sizer.Add(filter_and_pager_sizer, 0,
-                wx.EXPAND | wx.TOP, border = 12 )
+                wx.EXPAND | wx.TOP,
+                border = 8 )
 
         ## Fill the SIZER FOR THE SCROLLED FONT VIEW
-        main_view_sizer.Add(self.scrolledFontView, 1,#22,
-                wx.EXPAND | wx.TOP, border = 12 )
+        main_view_sizer.Add(self.scrolledFontView, 1,
+                wx.EXPAND | wx.TOP,
+                border = 8 )
 
-
-
-        ## The Search Assistant
-        #main_view_sizer.Add( self.SA, 0, wx.EXPAND)
-
-
-        ## Fill the SubInfo label
-        #main_view_sizer.Add(self.status_text, 0, wx.ALIGN_CENTER | wx.ALL, border = 3 )
-        #info_and_main_sizer = wx.BoxSizer(wx.VERTICAL)
-        #info_and_main_sizer.Add( self.status_text, 1, wx.TOP, border = 12)
-
-        #main_view_sizer.Add(self.status_text, 0, wx.ALIGN_LEFT | wx.ALL, border = 3 )
-        #main_view_sizer.Add(si_sizer, 0, wx.BOTTOM, border = 10 )
         ## Fill the bottom buttons   
-        main_view_sizer.Add(bottom_buttons_sizer, 0,#2,
+        main_view_sizer.Add(bottom_buttons_sizer, 0,
                 wx.EXPAND | wx.TOP, border = 10)
 
         ## Do the voodoo thang
@@ -421,16 +398,15 @@ class FontViewPanel(wx.Panel):
 
     def onBIR( self, e ):
         idy=e.GetId()
-        print "got idy:", idy
+        toggstate = self.BIR[idy]['instance'].GetValue()
 
-        on_off = self.BIR[idy]['instance'].GetValue()
-
-        self.BIR[idy]['truth'] = on_off
+        self.BIR[idy]['truth'] = toggstate
 
         ss=""
-
         if self.BIR[idy]['style'] == "regular":
-            if on_off is True:
+            # only if this is toggle on, do we want
+            # action anything:
+            if toggstate is True:
                 # can't have regular with bold/italic
                 self.setAllBIRFalse() # switch all off
                 self.setOneBIR( idy, True )
@@ -441,10 +417,11 @@ class FontViewPanel(wx.Panel):
                 # Builds AND regex (space is and)
                 if dic['truth']: ss += "%s%s" % (dic['style']," ")
             ss = ss[:-1]
-
+        # Go alter the search text box
         self.search_filter.set_BIR(ss)
-        self.startSearch( ss )
 
+        # Start the process
+        self.startSearch( ss )
 
     
     def do_search(self, sstring):
