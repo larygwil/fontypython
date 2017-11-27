@@ -302,18 +302,23 @@ class FontViewPanel(wx.Panel):
         #  style = wx.NO_BORDER)
 
         # Previous button
-        self.previous_button = wx.BitmapButton( self, wx.ID_BACKWARD, 
-                wx.ArtProvider.GetBitmap( 
-                    wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
+        #self.previous_button = wx.BitmapButton( self, wx.ID_BACKWARD, 
+        #        wx.ArtProvider.GetBitmap( 
+        #            wx.ART_GO_BACK, wx.ART_BUTTON, (32,32) ))
 
+        self.previous_button = wx.BitmapButton( self, wx.ID_BACKWARD,
+                fpwx.wxbmp( 'icon_prev_page'))
         # Main button
         self.button_main = wx.Button(self, label=" ")
         self.buttMainLastLabel=" "
 
         # Next button
+        #self.next_button = wx.BitmapButton( self, wx.ID_FORWARD,
+        #        wx.ArtProvider.GetBitmap( 
+        #            wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
+
         self.next_button = wx.BitmapButton( self, wx.ID_FORWARD,
-                wx.ArtProvider.GetBitmap( 
-                    wx.ART_GO_FORWARD, wx.ART_BUTTON, (32,32) ))
+                fpwx.wxbmp( 'icon_next_page'))
         self.previous_button.Enable( False ) # Starts out disabled
 
 
