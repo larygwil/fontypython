@@ -205,14 +205,18 @@ class FontViewPanel(wx.Panel):
 
         ## Icon, Main Font Info label
         view_icon = fpwx.icon(self, 'icon_viewing')
-        self.main_font_info_label = fpwx.h1(self, u"..")
+        self.main_font_info_label = fpwx.h1(self, u"..",
+                ellip = wx.ST_ELLIPSIZE_END )
         icon_and_text_sizer.Add(view_icon, 0,
                 wx.TOP, border = 8)
         icon_and_text_sizer.Add(self.main_font_info_label, 1,
-           wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 4)
+           wx.LEFT | wx.TOP | wx.ALIGN_CENTER_HORIZONTAL, border = 4)
 
         ## The SubInfo label
-        self.status_text = fpwx.label(self, u"Subinfo" )
+        print "HERE!"
+        self.status_text = fpwx.label(self, u"Subinfo",
+                ellip = wx.ST_ELLIPSIZE_END )
+        #self.Bind(wx.EVT_SIZE, self.on_evt_size)
 
 
         ## The clear filter button: added 10 Jan 2008
@@ -318,7 +322,7 @@ class FontViewPanel(wx.Panel):
         main_view_sizer.Add(icon_and_text_sizer, 0, wx.EXPAND )
 
         ## Sub label
-        main_view_sizer.Add(self.status_text,0)
+        main_view_sizer.Add(self.status_text, 0, wx.EXPAND)
 
         ## Fill the Choice and Filter
         main_view_sizer.Add(filter_and_pager_sizer, 0,
@@ -361,7 +365,13 @@ class FontViewPanel(wx.Panel):
         ps.sub( update_font_view, self.MainFontViewUpdate ) ##DND: class FontViewPanel
         ps.sub( reset_to_page_one, self.ResetToPageOne ) ##DND: class FontViewPanel 
 
-
+    # Tried to implement wrapping on some of the labels.
+    # It flickers and fails. Fuck it.
+    #def on_evt_size(self,e):
+        #w = e.GetSize()[0]
+        #w = max(w+5,200)
+        #self.status_text.Wrap(w)
+     #   e.Skip()
 
     def on_clear_button_click( self):#, event ):
         self.filter = ""

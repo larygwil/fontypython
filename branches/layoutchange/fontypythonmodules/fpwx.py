@@ -74,11 +74,15 @@ def setup_fonts_and_colours():
 
 def xlabel(parent, 
         ustr,
-        size,
-        weight,
-        align = wx.ALIGN_LEFT):
+        size = None,
+        weight=None,
+        align = wx.ALIGN_LEFT,
+        ellip = None):
 
-    lbl = wx.StaticText( parent, -1, ustr, style = align )
+    s = align
+    if ellip: s |= ellip
+
+    lbl = wx.StaticText( parent, -1, ustr, style = s)
 
     f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
     f.SetPointSize(SYSFONT[size])
@@ -88,31 +92,42 @@ def xlabel(parent,
     return lbl
 
 def parar( parent, ustr, size="points_normal" ):
-    return xlabel( parent, ustr, size, weight=wx.FONTWEIGHT_NORMAL, align=wx.ALIGN_RIGHT )
+    return xlabel( parent, ustr, size,
+            weight=wx.FONTWEIGHT_NORMAL,
+            align=wx.ALIGN_RIGHT )
 
 def para( parent, ustr, size="points_normal" ):
-    return xlabel( parent, ustr, size, weight=wx.FONTWEIGHT_NORMAL )
+    return xlabel( parent, ustr, size,
+            weight=wx.FONTWEIGHT_NORMAL )
 
-def label( parent, ustr, align = wx.ALIGN_LEFT ):
-    return xlabel( parent, ustr, size="points_normal", weight=wx.FONTWEIGHT_NORMAL, align = align )
+def label( parent, ustr, align = wx.ALIGN_LEFT, ellip = None ):
+    return xlabel( parent, ustr, size="points_normal",
+            weight=wx.FONTWEIGHT_NORMAL,
+            align = align, ellip=ellip )
 
 def large_label( parent, ustr ):
-    return xlabel( parent, ustr, size="points_x_normal", weight=wx.FONTWEIGHT_NORMAL )
+    return xlabel( parent, ustr, size="points_x_normal",
+            weight=wx.FONTWEIGHT_NORMAL )
 
 def small_label( parent, ustr ):
-    return xlabel( parent, ustr, size="points_small", weight=wx.FONTWEIGHT_NORMAL )
+    return xlabel( parent, ustr, size="points_small",
+            weight=wx.FONTWEIGHT_NORMAL )
 
 def boldlabel( parent, ustr ):
-    return xlabel( parent, ustr, size="points_x_normal", weight=wx.FONTWEIGHT_BOLD )
+    return xlabel( parent, ustr, size="points_x_normal",
+            weight=wx.FONTWEIGHT_BOLD )
 
 def h0( parent, ustr ):
-    return xlabel( parent, ustr, "points_xxx_large", wx.FONTWEIGHT_BOLD )
+    return xlabel( parent, ustr, "points_xxx_large",
+            wx.FONTWEIGHT_BOLD )
 
-def h1( parent, ustr ):
-    return xlabel( parent, ustr, size="points_large", weight=wx.FONTWEIGHT_BOLD )
+def h1( parent, ustr, ellip = None ):
+    return xlabel( parent, ustr, size="points_large",
+            weight=wx.FONTWEIGHT_BOLD, ellip = ellip )
 
 def h2( parent, ustr ):
-    return xlabel( parent, ustr, size="points_large", weight=wx.FONTWEIGHT_NORMAL )
+    return xlabel( parent, ustr, size="points_large",
+            weight=wx.FONTWEIGHT_NORMAL )
 
 
 def wxbmp( filename ):
