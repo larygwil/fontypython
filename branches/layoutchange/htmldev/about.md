@@ -2,7 +2,7 @@
 <table>
 <tr>
 <td><img src="fontypythonmodules/things/splash.png"></td>
-<td valign=top><font size=40 color="{fontyblue}"><i><b>Fonty Python</b></i></font><br>
+<td valign=top><font size=40 color="{logotype}"><i><b>Fonty Python</b></i></font><br>
 {copyright}<br>
 {version}<br><br>
 Contact me: {contact}<br>

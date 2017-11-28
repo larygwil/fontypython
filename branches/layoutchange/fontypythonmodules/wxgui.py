@@ -129,11 +129,11 @@ class DismissablePanel(wx.Panel):
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         if someicon:
-            hbox.Add( fpwx.icon( self, someicon ), 0, wx.EXPAND | wx.RIGHT, border = 12 )
+            hbox.Add( fpwx.icon( self, someicon ), 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, border = 12 )
         else:
             hbox.Add( (1,1), 0, wx.EXPAND )
         # push the label down to better align with the X
-        hbox.Add( l, 1, wx.EXPAND | wx.TOP, border = 8 ) 
+        hbox.Add( l, 1, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL | wx.TOP, border = 6 ) 
         hbox.Add( x_button, 0, wx.ALIGN_RIGHT  | wx.BOTTOM, 
                 border = 4 )
         hbox.Add( (8,8),0)
