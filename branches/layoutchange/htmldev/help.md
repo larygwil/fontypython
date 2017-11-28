@@ -71,7 +71,7 @@ These Pogs are the *Targets*: you put fonts into them.
 For Targets, you can select many Pogs at once by holding control (Ctrl) as you select them; this is for installing/uninstalling/etc. many Pogs at once.
 
 ###Pog management buttons
-The managements buttons all work with the selected **target** Pog(s). It's a little counter-intuitive sometimes. Sorry.
+The managements buttons all work with the selected **target** Pog(s). It's a little counter-intuitive sometimes. Sorry. It was done because you can select multiple targets. (But not multiple sources.)
 
 * **Clear selection:** Will unselect whatever Pogs you selected.
 * **Install:** All the Pogs selected will be installed. I.e. The fonts in them will be available to the system.

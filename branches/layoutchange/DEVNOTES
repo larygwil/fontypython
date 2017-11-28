@@ -4,7 +4,7 @@ It's 25 Nov 2017. I am not well. Today my PC did not want to boot. I have told i
 
 If Fonty dev just stops, that will be why.
 
-The active branch called "layoutchange" is the latest fonty. It's very close to working. Last I left it, I was experimenting with control layouts under the font view.
+The active branch called "layoutchange" is the latest fonty. It's very close to working. Last I left it, I was experimenting with control layouts under the font view. This will change as I continue to hack. I probably won't be able to keep this file up to date.
 
 I am stuck on Python 2.x because wxPython has not released their new version on Linux. It seems they are actually disinterested in Linux. I hope wxPython 4 comes to a distro near you soon. It's a bloody great framework.
 
@@ -34,17 +34,20 @@ SETUP TODO
 
 TODO
 ==
-Cleanup stuff:
+
+* Test...
 
 * NB:
-* I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
-
-* Try to use _ for private names. __ for the rare special private names.
+  I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
+  I must try to use _ for private names. __ for the rare special private names.
 
 * Don't forget to remove the wx debug stuff on the app object
 * UPDATE CHANGELOG
 * UPDATE README
 * THE FUCKING MAN PAGE :(
+
+* Do my best to repair the i18n files - maybe I can copy-paste some of the translations to match all the 
+  new strings I am using.
 
 * ESC being swallowed by something in the filter area....
 
@@ -67,6 +70,8 @@ Cleanup stuff:
 * kill random prints
 
 * SetSearchBitmap on search filter. Maybe?
+
+
 
 FUTURE TODOS
 ============
