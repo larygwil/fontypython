@@ -89,7 +89,7 @@ class SearchFilter(wx.SearchCtrl):
 
     Uses two callbacks.
     """
-    max_searches = 5
+    max_searches = 25
     def __init__(self, parent, id=-1, value="",
                  pos=wx.DefaultPosition, size=wx.DefaultSize, style=0,
                  search_func = None, 
@@ -225,7 +225,8 @@ class FontViewPanel(wx.Panel):
            border = 4)
 
         ## The status label
-        self.status_text = fpwx.label(self, u"Subinfo", autowrap = True )
+        self.status_text = fpwx.label(self, u"Subinfo",
+                ellip = wx.ST_ELLIPSIZE_END )# autowrap = True )
 
         ## Quick search Bold Italic Regular buttons
         ## It occurs to me that these are English words...
@@ -569,7 +570,7 @@ class FontViewPanel(wx.Panel):
         vP  =_("Viewing source Pog \"{VIEW}\"")
         choose_source = _("Choose a Source Pog or Folder.")
         nochangetarget = _("The target Pog \"{TARGET}\" is installed. "\
-                        "It cannot be changed until you uninstall it.")
+                        "It can't be changed.")
 
         # The main "label" dict.
         # See remarks in MainFontViewUpdate for details.

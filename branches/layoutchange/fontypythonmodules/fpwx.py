@@ -74,6 +74,8 @@ def setup_fonts_and_colours():
 class AutoWrapStaticText(wx.PyControl):
     """
     By Robin Dunn
+    Under hackery. Not working right now.
+    :(
     """
     def __init__(self, parent,
             ustr,
