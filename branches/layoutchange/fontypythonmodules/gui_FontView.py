@@ -236,9 +236,9 @@ class FontViewPanel(wx.Panel):
         idItalic = wx.NewId()
         self.idRegular = wx.NewId()
         self.BIR = {
-           idBold  : {'style': "bold",   'label': _("b"), 'truth': False, 'instance': None},
-           idItalic: {'style': "italic", 'label': _("i"), 'truth': False, 'instance': None},
-     self.idRegular: {'style': "regular",'label': _("r"), 'truth': False, 'instance': None}
+           idBold  : {'style': "bold",    'truth': False, 'instance': None},
+           idItalic: {'style': "italic",  'truth': False, 'instance': None},
+     self.idRegular: {'style': "regular", 'truth': False, 'instance': None}
            }
         toggle_sizer = wx.BoxSizer(wx.HORIZONTAL)
         for idy, dic in self.BIR.iteritems():

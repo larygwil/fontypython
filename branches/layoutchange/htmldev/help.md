@@ -71,6 +71,8 @@ These Pogs are the *Targets*: you put fonts into them.
 For Targets, you can select many Pogs at once by holding control (Ctrl) as you select them; this is for installing/uninstalling/etc. many Pogs at once.
 
 ###Pog management buttons
+The managements buttons all work with the selected **target** Pog(s). It's a little counter-intuitive sometimes. Sorry.
+
 * **Clear selection:** Will unselect whatever Pogs you selected.
 * **Install:** All the Pogs selected will be installed. I.e. The fonts in them will be available to the system.
 * **Uninstall:** All those selected will be uninstalled.
@@ -194,10 +196,11 @@ Shortcut keys
 If shortcut keys don't work, click in the filter text box. This seems to kick them back to life. Don't ask me what's going on....
 
 * **Esc** key will close any panels that may be open, or close the whole app quickly.
-* **Ctrl+LeftArrow/Ctrl+RightArrow** will step through fonts like the Next and Previous buttons do.
+* **Ctrl + LeftArrow/Ctrl + RightArrow** will step through fonts like the Next and Previous buttons do.
 * **Middle-click (the wheel-button)** in the font view (position 3 above) will open the Settings 
    screen (like Ctrl+S does)
 * **Ctrl + Scroll mouse wheel up/down** will increase/decrease the size of your font previews quickly.
+* **Ctrl + H** will open the hush panel.
 
 
 [Top](#top)
