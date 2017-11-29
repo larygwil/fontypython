@@ -83,22 +83,20 @@ class AutoWrapStaticText(wx.PyControl):
     def __init__(self, parent,
             ustr,
             point_size,
-            weight = wx.FONTWEIGHT_NORMAL,
-            align = wx.ALIGN_LEFT,
-            ellip = None):
+            style,
+            weight):
 
-        s = align
-        if ellip: s |= ellip
-        
         pos = wx.DefaultPosition
 
         self.p = parent
         wx.PyControl.__init__(self, parent, -1,
                 wx.DefaultPosition,
                 wx.DefaultSize, wx.NO_BORDER,
-                wx.DefaultValidator)#, name)
+                wx.DefaultValidator)
 
-        self.st = wx.StaticText(self, -1, ustr, style = s )
+        # Make our static text and give it
+        # default system properties
+        self.st = wx.StaticText(self, -1, ustr, style = style )
         
         f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         f.SetPointSize(SYSFONT[point_size])
@@ -109,7 +107,7 @@ class AutoWrapStaticText(wx.PyControl):
         self._label = ustr # save the unwrapped text
         self._rows = 0
 
-        # Measure the string once, to ge a line height.
+        # Measure the string once, to get a line height.
         f = self.st.GetFont()
         dc = wx.ScreenDC()
         dc.SetFont(f)
@@ -127,7 +125,8 @@ class AutoWrapStaticText(wx.PyControl):
         print "rows:", rows
         h = rows * self._lineheight
         #sz = wx.Size( self.GetParent().GetSize()[0], h )
-        sz = wx.Size( self.GetSize().width, h )
+        sw = self.GetSize().width
+        sz = wx.Size( max(sw, 300), h )
         print sz
         return sz
 
@@ -141,7 +140,8 @@ class AutoWrapStaticText(wx.PyControl):
         self._label = label
         #self._anew()
         self._Rewrap()
-        self.GetParent().Layout()
+        print self.GetParent()
+        self.GetParent().GetParent().Layout()
 
     def GetLabel(self):
         return self._label
@@ -161,8 +161,9 @@ class AutoWrapStaticText(wx.PyControl):
         #self.st.Freeze()
         self.st.SetLabel(self._label)
         w=self.GetSize().width
-        print "wrap to w:",w
-        self.st.Wrap(w)
+        if w > 360:
+            print "wrap to w:",w
+            self.st.Wrap(w)
         # here I count the rows:
         #self._rows = self.st.GetLabel().count("\n") + 1
         #self.st.Thaw()
@@ -180,18 +181,40 @@ def xlabel(parent,
         size = None,
         weight=None,
         align = wx.ALIGN_LEFT,
-        ellip = None):
+        ellip = None,
+        wrap = False):
 
     s = align
     if ellip: s |= ellip
+    
+    if wrap: 
+        # This is a live version that can have its
+        # label set and will resize properly.
+        lbl = AutoWrapStaticText( parent,
+                ustr,
+                size,
+                s,
+                weight)
+    else:
+        # This is a single-use static text
+        lbl = wx.StaticText( parent, -1, ustr, style = s)
 
-    lbl = wx.StaticText( parent, -1, ustr, style = s)
+        f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        f.SetPointSize(SYSFONT[size])
+        f.SetWeight(weight)    
+        
+        # Wrap the text once, to get it to fit better
+        # Reach up two parents to the MainFrame. I think.
+        ppw = lbl.GetParent().GetParent().GetSize().width
+        # wrap to half that.
+        lbl.Wrap( ppw/2 )
+        # get a pixel height for this font
+        pxh = f.GetPixelSize()[1] + 2
+        rows = ustr.count("\n") + 1
+        h = pxh * rows
 
-    f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-    f.SetPointSize(SYSFONT[size])
-    f.SetWeight(weight)    
-
-    lbl.SetFont( f )
+        lbl.SetSize( ( -1, h) )
+        lbl.SetFont( f )
     return lbl
 
 def parar( parent, ustr, size="points_normal" ):
@@ -199,24 +222,14 @@ def parar( parent, ustr, size="points_normal" ):
             weight=wx.FONTWEIGHT_NORMAL,
             align=wx.ALIGN_RIGHT )
 
-def para( parent, ustr, size="points_normal" ):
+def para( parent, ustr, align="wx.ALIGN_TOP", size="points_normal" ):
     return xlabel( parent, ustr, size,
-            weight=wx.FONTWEIGHT_NORMAL )
+            weight=wx.FONTWEIGHT_NORMAL, wrap = True )
 
-def label( parent, ustr, align = wx.ALIGN_LEFT, ellip = None, autowrap = False ):
-    if autowrap: return AutoWrapStaticText( parent, ustr,
-                        point_size = "points_normal",
-                        weight=wx.FONTWEIGHT_NORMAL,
-                        align = align, ellip=ellip )        
+def label( parent, ustr, align = wx.ALIGN_LEFT, ellip = None, wrap = False ):
     return xlabel( parent, ustr, size="points_normal",
            weight=wx.FONTWEIGHT_NORMAL,
-           align = align, ellip=ellip)
-
-def wrap_label( parent, ustr, align = wx.ALIGN_LEFT, ellip = None):
-    return AutoWrapStaticText( parent, ustr,
-            point_size = "points_normal",
-            weight=wx.FONTWEIGHT_NORMAL,
-            align = align, ellip=ellip )
+           align = align, ellip=ellip, wrap=wrap)
 
 def large_label( parent, ustr ):
     return xlabel( parent, ustr, size="points_x_normal",
@@ -234,9 +247,9 @@ def h0( parent, ustr ):
     return xlabel( parent, ustr, "points_xxx_large",
             wx.FONTWEIGHT_BOLD )
 
-def h1( parent, ustr, ellip = None ):
+def h1( parent, ustr, ellip = None, wrap = False ):
     return xlabel( parent, ustr, size="points_large",
-            weight=wx.FONTWEIGHT_BOLD, ellip = ellip )
+            weight=wx.FONTWEIGHT_BOLD, ellip = ellip, wrap=wrap )
 
 def h2( parent, ustr ):
     return xlabel( parent, ustr, size="points_large",

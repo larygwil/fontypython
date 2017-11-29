@@ -106,6 +106,8 @@ class DismissablePanel(wx.Panel):
         id = id_from_flag[flag]
         self.id = id
         wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
+        self.SetMinSize( (400,600) ) # this was vital
+
         self.parent = parent
         self.flag = flag
 
@@ -143,16 +145,19 @@ class DismissablePanel(wx.Panel):
                 border = 16 ) #Wanted more space above.
         self.vbox.Add( whatever_sizer, 1, wx.EXPAND)
         self.SetSizer( self.vbox )
+       
         self.Layout()
+        #self.Fit()
         self.SetFocus()
 
         self._firstshow = True
         self.Bind(wx.EVT_SHOW, self.__catch_show_or_hide)
 
-    ## Private
+    ## Weirdly public
     def __post_init__(self):
         pass
 
+    ## Private
     def __x_pressed(self,evt):
         ## I don't want the button's id skipping-on, but the panel's
         evt.SetId(self.id)
@@ -398,19 +403,20 @@ class HushPanel(DismissablePanel):
         f.Add(bsp, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 40)
         hush_heading_panel.SetSizer( f )
 
-        sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 30)
+        sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 5)
 
         if not self.fontconfig_error:
             ## The label to the intro text
             self.chosen_pog_label = fpwx.h1( self, _("The Hush Pog:") )
-            sizer.Add( self.chosen_pog_label, 0 )
+            sizer.Add( self.chosen_pog_label, 0, wx.ALIGN_TOP)
             
             ## The intro text
             p1 = fpwx.para( self, _( u"Hushing installs a Pog that you must manage. " \
-                                      "Make sure it contains a few system fonts so\n" \
-                                      "your applications can function properly. " \
-                                      "Look in /usr/share/fonts for ideas.\n" \
+                                      "Make sure it contains a few system fonts so that " \
+                                      "your applications function properly! " \
+                                      "Look in /usr/share/fonts for ideas. " \
                                       "Please see help for details."))
+                                      
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 
             h = wx.BoxSizer(wx.HORIZONTAL)
@@ -430,9 +436,9 @@ class HushPanel(DismissablePanel):
         else:
             ## Some help re the error
             p1 = fpwx.para( self, _( u"Fontconfig is not properly installed; thus " \
-                                      "Fonty cannot hush fonts.\n" \
+                                      "Fonty cannot hush fonts. " \
                                       "Consult your distribution's help, or " \
-                                      "open a ticket so we can try to fix it.\n" \
+                                      "open a ticket so we can try fix it. " \
                                       "Please see help for details."))
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 
