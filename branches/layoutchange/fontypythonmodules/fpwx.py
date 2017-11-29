@@ -106,10 +106,8 @@ class AutoWrapStaticText(wx.PyControl):
 
         self.st.SetFont( f )       
 
-        self._orig_ustr = ustr # save the unwrapped text
-        self._wrapped_str = ustr
-
-
+        self._label = ustr # save the unwrapped text
+        self._rows = 0
 
         # Measure the string once, to ge a line height.
         f = self.st.GetFont()
@@ -118,36 +116,35 @@ class AutoWrapStaticText(wx.PyControl):
         w,h,lh = dc.GetMultiLineTextExtent(ustr,f)
         self._lineheight = lh
 
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add( self.st, 0, wx.EXPAND )
-        self.SetSizer( self.sizer )
-        self.Fit()
-
         self._Rewrap()
         self.Bind(wx.EVT_SIZE, self.OnSize)
        
+    def _lh(self):
+        # return a tup of parent width, text height
+        # lineheight * rows should == ~ height
+        #print "_lh() on :",self.st.GetLabel()
+        rows = self.st.GetLabel().count("\n") + 1
+        print "rows:", rows
+        h = rows * self._lineheight
+        #sz = wx.Size( self.GetParent().GetSize()[0], h )
+        sz = wx.Size( self.GetSize().width, h )
+        print sz
+        return sz
 
-    def SetLabel(self, ustr):
-        #print "## SetLabel runs with new string:",ustr
-        self._orig_ustr = ustr
+    def SetLabel(self, label):
+        # This is the NB one. I need to set different
+        # strings - and they can be long or short.
+        # I.e. they can wrap or not.
+        # The space the string is in should resize,
+        # but I can't get it right.
+        print "SetLabel:",label
+        self._label = label
+        #self._anew()
         self._Rewrap()
-        sz = self._lh()
-        self.st.SetSize(sz)#self._lh())
-        self.sizer.Clear()
-        self.sizer.Add( self.st, 0, wx.EXPAND )
-        #self.Layout()
-        self.Fit()
-        self.p.Fit()
-        #print "Before call _lh:",self.GetSize()
-        #sz = self._lh()
-        #print "_lh sz:",sz
-        #self.st.SetSize(sz)#self._lh())
-        #print "After SetSize:",self.GetSize()
-        #self.sizer.SetSizeHints(self)
-        #self.Layout()
-        #self.p.Fit()#Refresh()
+        self.GetParent().Layout()
+
     def GetLabel(self):
-        return self._orig_ustr
+        return self._label
 
     def SetFont(self, font):
         self.st.SetFont(font)
@@ -155,39 +152,26 @@ class AutoWrapStaticText(wx.PyControl):
     def GetFont(self):
         return self.st.GetFont()
 
-
     def OnSize(self, evt):
-        #print "@@ onsize runs"
-        self.st.SetSize( self.GetSize() )#[0], 17) )
+        self.st.SetSize(self.GetSize())#GetSize())
         self._Rewrap()
         #evt.Skip()
 
     def _Rewrap(self):
-        self.st.Freeze()
-        self.st.SetLabel(self._orig_ustr)
-        self.st.Wrap(self.GetSize().width)
-        self._wrapped_str = self.st.GetLabel()
-        self.st.Thaw()
-
-    def _lh(self):
-        s = self._wrapped_str
-        nlc = s.count("\n") + 1
-        h = nlc * self._lineheight
-        #print s
-        sz = ( self.p.GetSize()[0], h )
-        #print "measuring: sz", sz
-        #print "***"
-        return sz
+        #self.st.Freeze()
+        self.st.SetLabel(self._label)
+        w=self.GetSize().width
+        print "wrap to w:",w
+        self.st.Wrap(w)
+        # here I count the rows:
+        #self._rows = self.st.GetLabel().count("\n") + 1
+        #self.st.Thaw()
 
     def DoGetBestSize(self):
-        # I return the width of parent and
-        # the lineheight times number of newlines
-        # works ok.
-        #print 
-        #print "***************************"
-        #print "***DoGetBestSize runs for:", self._orig_ustr
-        #print "**************************"
-        return self._lh()
+        # Trying to use the lineheight etc.
+        sz = self._lh()
+        #self.CacheBestSize(sz)
+        return sz
 
 
 
