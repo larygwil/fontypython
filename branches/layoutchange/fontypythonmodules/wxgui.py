@@ -102,11 +102,25 @@ class DismissablePanel(wx.Panel):
     def __init__(self, parent, flag,
             someicon = None,
             somelabel="...",
-            extra_padding = 0):
+            extra_padding = 0,
+            wfunc = None):
         id = id_from_flag[flag]
         self.id = id
-        wx.Panel.__init__(self, parent, id, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
-        self.SetMinSize( (400,600) ) # this was vital
+    
+        sz = (-1,-1)
+        if wfunc: sz = (wfunc()[0],-1)
+
+        wx.Panel.__init__(self, parent, id, size=sz, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
+        self.SetMinSize(sz)
+        
+        print "** in init of DismissablePanel self.GetSize:", self.GetSize()
+        print "** in init of DismissablePanel parent.GetSize:", parent.GetSize()
+        print "** size:",sz
+
+        #print "** in init of DismissablePanel parent.GetSize:", parent.GetSize()
+        #self.SetMinSize( (400,600) ) # this was vital
+
+        ps.sub(wxgui_layout, self.Layout)
 
         self.parent = parent
         self.flag = flag
@@ -367,7 +381,7 @@ class HushPanel(DismissablePanel):
     Display some help.
     Display the error itself, in the printer.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, wfunc):
         #state dict
         self.sd = {
                  "hush_on" :{"h":_("Hushing is on."  ), "b":_("Un-hush fonts")},
@@ -375,10 +389,11 @@ class HushPanel(DismissablePanel):
          "fontconfig_error":{"h": strings.cant_hush    ,"b":_("Cannot hush")}
                   }
 
+
         DismissablePanel.__init__(self,parent, flag_hush_fonts,
                 somelabel = _("Hush Fonts"),
-                someicon = "icon_hush" ) 
-
+                someicon = "icon_hush",
+                wfunc = wfunc) 
 
     def __post_init__(self):
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -415,7 +430,9 @@ class HushPanel(DismissablePanel):
                                       "Make sure it contains a few system fonts so that " \
                                       "your applications function properly! " \
                                       "Look in /usr/share/fonts for ideas. " \
-                                      "Please see help for details."))
+                                      "Please see help for details."),
+                                      wrap = True,
+                                      pub_topic = wxgui_layout)
                                       
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 
@@ -1150,8 +1167,11 @@ class MainFrame(wx.Frame):
             self.choose_zipdir_panel = ChooseZipDirPanel(self)
             #self.choose_zipdir_panel.Hide()
 
+            print "** Just before HushPanel:", self.GetSize()
+            print "** Just before HushPanel fontViewPanel is:", self.fontViewPanel.GetSize()
+            print "** Just before HushPanel fontViewPanel is:", self.fontViewPanel.GetSize()
             ## Hush panel
-            self.hush_panel = HushPanel(self)
+            self.hush_panel = HushPanel(self, lambda: self.fontViewPanel.GetSize() )
 
 
             stsizer = wx.BoxSizer(wx.VERTICAL)
@@ -1221,6 +1241,7 @@ class MainFrame(wx.Frame):
         self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
         ## Now to subscribe to have my various def called from other places:
+
         ps.sub(show_error, self.ErrorBox)
         ps.sub(show_error_and_abort, self.ErrorAbort)
         ps.sub(show_message, self.MessageBox)
