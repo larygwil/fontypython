@@ -55,11 +55,10 @@ TODO
 
 * Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
-* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
-
 * Sliders for point size, num cols etc. in settings?
 
 * Distinguish TTC|OTC somehow
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
 
 * A button to toggle the lhs gui open/close
 

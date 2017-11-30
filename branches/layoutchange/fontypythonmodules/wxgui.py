@@ -147,9 +147,11 @@ class MainFrame(wx.Frame):
     """
     def __init__(self,parent,title) :
         ## Draw the frame
-        title = title + "   -   " + locale.getpreferredencoding()
-        wx.Frame.__init__( self, parent, -1, title,
-                fpsys.config.pos, fpsys.config.size )
+        title = u"{} - {}".format( title, locale.getpreferredencoding() )
+        wx.Frame.__init__( self, parent, -1,
+                title,
+                fpsys.config.pos,
+                fpsys.config.size )
 
         #print "Main frame:", self.GetSizeTuple()[0]
 
@@ -287,9 +289,9 @@ class MainFrame(wx.Frame):
         ## ------------------------------------------------------------------
 
         MINSCREENWIDTH = 800 #old skool
-        minw = 360
-        fvminw = MINSCREENWIDTH - minw
-        ms = wx.Size(minw,1)
+        minw = 360 # pretty much the width of the left hand side.
+        fvminw = MINSCREENWIDTH - minw # The width of the rhs.
+        ms = wx.Size( minw, 1 )
 
         ## PRIMARY GUI
         ## ===========
