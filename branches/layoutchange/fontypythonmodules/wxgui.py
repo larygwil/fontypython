@@ -98,34 +98,37 @@ class DismissablePanel(wx.Panel):
     Only for subclassing.
     Provides a bar with an icon, title and an X close button.
     Under that is .. whatever: usually a sizer.
+
+    wfunc: Is a function that will return a size. The caller
+           must decide whom it trusts to return a sane value.
+           We use it to set a sane size on the Panel we will
+           soon construct. This, in turn, helps any labels,
+           and paragraphs (various text controls) fit and
+           helps with those that must wrap.
     """
     def __init__(self, parent, flag,
             someicon = None,
-            somelabel="...",
-            extra_padding = 0,
-            wfunc = None):
+           somelabel ="...",
+       extra_padding = 0,
+               wfunc = None):
+
         id = id_from_flag[flag]
         self.id = id
     
         sz = (-1,-1)
-        if wfunc: sz = (wfunc()[0],-1)
+        if wfunc: sz = wfunc()# seems work.. was:(wfunc()[0],-1)
 
-        wx.Panel.__init__(self, parent, id, size=sz, style=wx.NO_FULL_REPAINT_ON_RESIZE)# | wx.SIMPLE_BORDER)
-        self.SetMinSize(sz)
+        wx.Panel.__init__(self, parent, id,
+                size = sz,
+               style = wx.NO_FULL_REPAINT_ON_RESIZE )
+
+        #self.SetMinSize(sz) # necc? Meh. Seems not..
         
-        print "** in init of DismissablePanel self.GetSize:", self.GetSize()
-        print "** in init of DismissablePanel parent.GetSize:", parent.GetSize()
-        print "** size:",sz
-
-        #print "** in init of DismissablePanel parent.GetSize:", parent.GetSize()
-        #self.SetMinSize( (400,600) ) # this was vital
-
-        #ps.sub(wxgui_layout, self.Layout)
-
         self.parent = parent
         self.flag = flag
 
         ## Go fetch the .. whatever 
+        ## Seems I settled on returning a sizer from __post_init__
         whatever = self.__post_init__()
         
         ## Pad the whole thing some
@@ -425,7 +428,7 @@ class HushPanel(DismissablePanel):
             self.chosen_pog_label = fpwx.h1( self, _("The Hush Pog:") )
             sizer.Add( self.chosen_pog_label, 0, wx.ALIGN_TOP)
             
-            ## The intro text
+            ## The intro text - is wrappable!
             p1 = fpwx.para( self, _(
                 u"Hushing installs a Pog that you must manage. " \
                  "Make sure it contains a few system fonts so that " \
@@ -451,7 +454,7 @@ class HushPanel(DismissablePanel):
 
             sizer.Add(h,0, wx.BOTTOM, border = 20)
         else:
-            ## Some help re the error
+            ## Some help re the error - also wrappable!
             p1 = fpwx.para( self, _( 
                 u"Fontconfig is not properly installed; thus " \
                  "Fonty cannot hush fonts.\n" \
@@ -529,7 +532,7 @@ class HushPanel(DismissablePanel):
         self.pog_choice.Clear()
         ## Now refill it
         pl = fpsys.iPC.getPogNames() # pl is all byte strings (encoded)
-        pl.sort(cmp=locale.strcoll) # sort accroding to locale
+        pl.sort(cmp=locale.strcoll) # sort according to locale
         ## Let's add a "none" choice in index 0
         self.pog_choice.Append(_(u"None chosen"))
         ## then the pogs:
@@ -621,8 +624,9 @@ class ChooseZipDirPanel(DismissablePanel):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         # A top, shows what pogs are going to be zipped
+        # Because it's writable, we send along a layout
+        # function. See AutoWrapStaticText
         self.what_pogs_lbl = fpwx.label( self, u"..",
-                ellip = wx.ST_ELLIPSIZE_END,
                 Layout_func = self.Layout )
         sizer.Add( self.what_pogs_lbl, 0, wx.EXPAND | wx.TOP, border = 10)
 
@@ -634,7 +638,8 @@ class ChooseZipDirPanel(DismissablePanel):
         sizer.Add(self.treedir, 1, wx.EXPAND | wx.TOP, border = 10)
 
         # Label to show the directory chosen (or the default)
-        #self.what_dir_lbl = fpwx.label( self, self._make_label(), ellip = wx.ST_ELLIPSIZE_END ) 
+        # Tries to wrap. Paths without spaces don't wrap, so we use
+        # ellipses.
         self.what_dir_lbl = fpwx.label( self, 
                 self._make_label(),
                 ellip = wx.ST_ELLIPSIZE_END,
@@ -1169,20 +1174,21 @@ class MainFrame(wx.Frame):
             ## About
             self.about_panel = AboutPanel(self)
             #self.about_panel.Hide()
-
+            
+            ## I will use fontViewPanel as the standard to 
+            ## measure widths in these DismissablePanels
+            wfunc = lambda: self.fontViewPanel.GetSize()
+            
             ## The Settings
-            self.settings_panel = SettingsPanel(self, lambda: self.fontViewPanel.GetSize())
+            self.settings_panel = SettingsPanel( self, wfunc )
             #self.settings_panel.Hide()
 
             ## Zip Pog panel
-            self.choose_zipdir_panel = ChooseZipDirPanel(self, lambda: self.fontViewPanel.GetSize())
+            self.choose_zipdir_panel = ChooseZipDirPanel( self, wfunc )
             #self.choose_zipdir_panel.Hide()
 
-            print "** Just before HushPanel:", self.GetSize()
-            print "** Just before HushPanel fontViewPanel is:", self.fontViewPanel.GetSize()
-            print "** Just before HushPanel fontViewPanel is:", self.fontViewPanel.GetSize()
             ## Hush panel
-            self.hush_panel = HushPanel(self, lambda: self.fontViewPanel.GetSize() )
+            self.hush_panel = HushPanel( self, wfunc )
 
 
             stsizer = wx.BoxSizer(wx.VERTICAL)
@@ -1325,10 +1331,10 @@ class MainFrame(wx.Frame):
         Looks for an id in the flag_from_id dict. If found,
         we know it's to do with a DismissablePanel.
         """
-        print "toggleSelectionMenuItem runs."
-        print evt.GetId()
+        #print "toggleSelectionMenuItem runs."
+        #print evt.GetId()
         flag = flag_from_id.get(evt.GetId(),None)
-        print "got flag:", flag
+        #print "got flag:", flag
         if flag:
             self.flag_state_exclusive_toggle(flag)
             self.hide_or_show_panels()

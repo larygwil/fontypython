@@ -76,6 +76,7 @@ def setup_fonts_and_colours():
         "points_xxx_large": ps*2,
         })
 
+
 class AutoWrapStaticText(wx.PyControl):
     """
     Mostly by Robin Dunn
@@ -109,8 +110,6 @@ class AutoWrapStaticText(wx.PyControl):
         #  remove it and nothing works.
         sz = wx.Size( parent.GetSize()[0], -1)
 
-        self.p = parent
-
         self._lf = Layout_func
 
         wx.PyControl.__init__(self, parent, -1,
@@ -120,36 +119,34 @@ class AutoWrapStaticText(wx.PyControl):
                 wx.DefaultValidator)
 
         # Make our static text and give it
-        # default system properties.
-        self.st = wx.StaticText(self, -1, ustr, size=sz, style = style )
-        
+        # some default system properties.
+        self.st = wx.StaticText(self, -1, ustr,
+                size=sz, style = style )
+        # Stuff that can't go into the constructor:
         f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         f.SetPointSize(SYSFONT[point_size])
         f.SetWeight(weight)    
-
         self.st.SetFont( f )       
 
         self._label = ustr # save the unwrapped text
         self._rows = 0 # Will be the number of rows after a wrap.
 
-        # Found a func that gives me pixels!
+        # Found a func that gives me pixels! I don't need
+        # the whole dc measure thing.
         self._lineheight = f.GetPixelSize()[1] + 2 # add some extra padding.
    
         self._Rewrap()
         self.Bind(wx.EVT_SIZE, self.OnSize)    
 
     def _lh(self):
-        # return a tup of parent width, text height
-        # lineheight * rows should == ~ height
-        #print "_lh() on :",self.st.GetLabel()
+        """
+        return a tup of my width, text's height
+        lineheight * rows = +/- height
+        """
         rows = self.st.GetLabel().count("\n") + 1
-        print "rows:", rows
         h = rows * self._lineheight
-        #sz = wx.Size( self.GetParent().GetSize()[0], h )
         sw = self.GetSize().width
-        #sz = wx.Size( max(sw, 300), h )
         sz = wx.Size( sw, h )
-        print sz
         return sz
 
     def SetLabel(self, label):
@@ -263,6 +260,9 @@ def xlabel(parent,
 
     return lbl
 
+
+# A bunch of funcs that all feed into xlabel
+# I prefer web concepts like p, h1, to the argument-heavy stuff.
 def parar( parent, ustr, pointsize="points_normal" ):
     return xlabel( parent, ustr, pointsize,
             weight=wx.FONTWEIGHT_NORMAL,
@@ -309,11 +309,12 @@ def h2( parent, ustr, **args ):
             weight=wx.FONTWEIGHT_NORMAL,
             **args)
 
-
+# A quick way to get a file form the things directory:
 def wxbmp( filename ):
     return wx.Bitmap( fpsys.mythingsdir + filename+".png", 
             wx.BITMAP_TYPE_PNG )
 
+# I don't even recall...
 def icon(parent, filename):
     b = wxbmp( filename )
     i = wx.StaticBitmap( parent, -1, b )

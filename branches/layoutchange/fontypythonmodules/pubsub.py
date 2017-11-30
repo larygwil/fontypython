@@ -48,7 +48,6 @@ reset_top_left_adjustments = 2000
 
 fake_click_the_source_dir_control = 2500
 
-wxgui_layout = 3000
 
 ## A hack to allow values to return from published topics
 globRetVal = {}
@@ -93,7 +92,7 @@ class CPubsub:
         #m = CMessage(topic, messagelist)
         #print "pub called"
         ret = None
-        if topic not in self.__ears: print "{} not called.".format(topic)
+        #debuggery: if topic not in self.__ears: print "{} not called.".format(topic)
         for key, top in self.__ears.iteritems():
 
             if top.topic == topic:
