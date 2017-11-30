@@ -456,7 +456,9 @@ class HushPanel(DismissablePanel):
                                       "Fonty cannot hush fonts. " \
                                       "Consult your distribution's help, or " \
                                       "open a ticket so we can try fix it. " \
-                                      "Please see help for details."))
+                                      "Please see help for details."),
+                                      wrap = True,
+                                      layout_func = self.parent.Layout)
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 
         ## Area to print into
@@ -864,7 +866,7 @@ class SettingsPanel(DismissablePanel):
             ## We have some extra text to stuff in somewhere.
             sb = wx.BoxSizer(wx.VERTICAL)
             sb.Add( lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
-            e = fpwx.parar(self, extra, size="points_tiny" )
+            e = fpwx.parar(self, extra, pointsize = "points_tiny" )
             sb.Add( e, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
             self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
         else:
