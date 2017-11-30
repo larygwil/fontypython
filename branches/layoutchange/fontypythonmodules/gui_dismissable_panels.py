@@ -17,8 +17,8 @@
 
 """
 These classes comprise the "dismissable" panels that appear in the 
-gui - over the top of the fontview (hide/show trickery) - to give 
-functionality to:
+gui on top of the fontview (hide/show trickery).
+They do:
     1. Help
     2. About
     3. Settings
@@ -67,7 +67,7 @@ class DismissablePanel(wx.Panel):
     """
     def __init__(self, parent, flag,
             someicon = None,
-           somelabel ="...",
+           somelabel = "...",
        extra_padding = 0,
                wfunc = None):
 

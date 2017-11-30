@@ -74,6 +74,8 @@ flag_choosedir = 16
 flag_hush_fonts = 32
 
 ## button ids
+# I put them in a dict so I could more easily import them over in
+# gui_dismissable_panels
 button_ids = {
           'id_x_button' : wx.NewId(), # close a dism. panel (top right)
     'id_zip_pog_button' : wx.NewId(), # the button is in TargetPogChooser
@@ -113,7 +115,6 @@ class StatusBar(wx.StatusBar):
             shorterr = e.short_unicode_of_error()
         else:
             no_fonts_dir = False
-        
 
         ## Field 1 is Welcome...
         ## Field 2 is normal conversation.
@@ -136,15 +137,19 @@ class StatusBar(wx.StatusBar):
         self.SetStatusText(msg, 1)
         print msg
 
+
+
+
 class MainFrame(wx.Frame):
 
     """
-    The main frame for the app.
+    The main frame for the app. Start at the bottom of this file.
     """
     def __init__(self,parent,title) :
         ## Draw the frame
         title = title + "   -   " + locale.getpreferredencoding()
-        wx.Frame.__init__(self,parent,-1,title,fpsys.config.pos,fpsys.config.size)
+        wx.Frame.__init__( self, parent, -1, title,
+                fpsys.config.pos, fpsys.config.size )
 
         #print "Main frame:", self.GetSizeTuple()[0]
 
@@ -177,17 +182,23 @@ class MainFrame(wx.Frame):
         ## Nov 2017: retired: menu1.Append( 102, 
         ##        _("&Check fonts"), _("Find those fonts that crash Fonty.") )
         self.id_purge = wx.NewId()
-        menu1.Append( self.id_purge, _("&Purge Pog.See TogglePurgeMenuItem for actual string."), _("Remove all ghost fonts from the selected Pog.") )
+        menu1.Append( self.id_purge, 
+            _("&Purge Pog.See TogglePurgeMenuItem for actual string."),
+            _("Remove all ghost fonts from the selected Pog.") )
 
         self.MENUPURGE = menu1
 
         ## Nov 2017: Hush fonts
-        menu1.Append( id_from_flag[flag_hush_fonts], _("&Hush fonts\tCtrl+H"), _("Silence all the noisy system fonts and focus only on those you want,"))
+        menu1.Append( id_from_flag[flag_hush_fonts],
+            _("&Hush fonts\tCtrl+H"),
+            _("Silence all the noisy system fonts and focus only on those you want,"))
         
         menu1.AppendSeparator()
 
         self.id_exit = wx.NewId()
-        self.exit = menu1.Append(self.id_exit, _("&Exit"), _("Close the app"))
+        self.exit = menu1.Append(self.id_exit,
+                _("&Exit"),
+                _("Close the app"))
 
         ## Tools
         self.menuBar.Append(menu1, _("&Tools"))
@@ -196,9 +207,13 @@ class MainFrame(wx.Frame):
         ## SELECT MENU: June 2009
         menu3 = wx.Menu()
         self.id_selall = wx.NewId()
-        menu3.Append( self.id_selall, _("&Select ALL the source fonts"), _("Select ABSOLUTELY ALL the fonts in the chosen source."))
+        menu3.Append( self.id_selall,
+            _("&Select ALL the source fonts"),
+            _("Select ABSOLUTELY ALL the fonts in the chosen source."))
         self.id_selnone = wx.NewId()
-        menu3.Append( self.id_selnone, _("&Clear ENTIRE selection"), _("Clear the selection completely.") )
+        menu3.Append( self.id_selnone,
+                _("&Clear ENTIRE selection"),
+                _("Clear the selection completely.") )
         self.menuBar.Append(menu3, _("&Selection"))
         self.MENUSELECTION = menu3
 
