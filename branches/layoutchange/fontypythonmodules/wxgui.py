@@ -426,13 +426,13 @@ class HushPanel(DismissablePanel):
             sizer.Add( self.chosen_pog_label, 0, wx.ALIGN_TOP)
             
             ## The intro text
-            p1 = fpwx.para( self, _( u"Hushing installs a Pog that you must manage. " \
-                                      "Make sure it contains a few system fonts so that " \
-                                      "your applications function properly! " \
-                                      "Look in /usr/share/fonts for ideas. " \
-                                      "Please see help for details."),
-                                      wrap = True,
-                                      layout_func = self.parent.Layout)
+            p1 = fpwx.para( self, _(
+                u"Hushing installs a Pog that you must manage. " \
+                 "Make sure it contains a few system fonts so that " \
+                 "your applications function properly! " \
+                 "Look in /usr/share/fonts for ideas. " \
+                 "Please see help for details."),
+                 wrap = True)
                                       
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 
@@ -452,13 +452,14 @@ class HushPanel(DismissablePanel):
             sizer.Add(h,0, wx.BOTTOM, border = 20)
         else:
             ## Some help re the error
-            p1 = fpwx.para( self, _( u"Fontconfig is not properly installed; thus " \
-                                      "Fonty cannot hush fonts. " \
-                                      "Consult your distribution's help, or " \
-                                      "open a ticket so we can try fix it. " \
-                                      "Please see help for details."),
-                                      wrap = True,
-                                      layout_func = self.parent.Layout)
+            p1 = fpwx.para( self, _( 
+                u"Fontconfig is not properly installed; thus " \
+                 "Fonty cannot hush fonts. " \
+                 "Consult your distribution's help, or " \
+                 "open a ticket so we can try fix it. " \
+                 "Please see help for details."),
+                 wrap = True)
+
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 
         ## Area to print into
@@ -609,10 +610,11 @@ class ChooseZipDirPanel(DismissablePanel):
     """
     Deals with all the crap the zip functionality needs.
     """
-    def __init__(self, parent):
+    def __init__(self, parent, wfunc):
         DismissablePanel.__init__(self,parent, flag_choosedir, 
                 somelabel=_("Locate a directory for the zip file(s)"),
-                someicon = "icon_zip")
+                someicon = "icon_zip",
+                wfunc = wfunc) 
         self._chosen_path = None
 
     def __post_init__(self):
@@ -630,7 +632,11 @@ class ChooseZipDirPanel(DismissablePanel):
         sizer.Add(self.treedir, 1, wx.EXPAND | wx.TOP, border = 10)
 
         # Label to show the directory chosen (or the default)
-        self.what_dir_lbl = fpwx.label( self, self._make_label(), ellip = wx.ST_ELLIPSIZE_END ) 
+        #self.what_dir_lbl = fpwx.label( self, self._make_label(), ellip = wx.ST_ELLIPSIZE_END ) 
+        self.what_dir_lbl = fpwx.label( self, 
+                self._make_label(),
+                ellip = wx.ST_ELLIPSIZE_END,
+                SetLabel_func = self.Layout)  # SetLabel_func bec. we use SetLabel
         sizer.Add( self.what_dir_lbl, 0, wx.EXPAND | wx.TOP, border=10)
 
         # A printer that will show when it has to.
@@ -699,7 +705,7 @@ class ChooseZipDirPanel(DismissablePanel):
 #self.choiceSlider.Bind(wx.EVT_SCROLL, self.OnSliderScroll)
 ## ... it sucked!
 class SettingsPanel(DismissablePanel):
-    def __init__(self, parent):
+    def __init__(self, parent, wfunc):
         """The settings form.
         I went a little mad. It started simple, the old code. A few gets,
         a few sets. Then I thought, "I can make this generic! Shit yeah!"
@@ -716,7 +722,8 @@ class SettingsPanel(DismissablePanel):
         DismissablePanel.__init__(self, parent, flag_settings,
                 somelabel = _("Settings"),
                 someicon = "icon_settings",
-                extra_padding = 12)
+                extra_padding = 12,
+                wfunc = wfunc) 
 
     def __post_init__(self):
         """
@@ -1162,11 +1169,11 @@ class MainFrame(wx.Frame):
             #self.about_panel.Hide()
 
             ## The Settings
-            self.settings_panel = SettingsPanel(self)
+            self.settings_panel = SettingsPanel(self, lambda: self.fontViewPanel.GetSize())
             #self.settings_panel.Hide()
 
             ## Zip Pog panel
-            self.choose_zipdir_panel = ChooseZipDirPanel(self)
+            self.choose_zipdir_panel = ChooseZipDirPanel(self, lambda: self.fontViewPanel.GetSize())
             #self.choose_zipdir_panel.Hide()
 
             print "** Just before HushPanel:", self.GetSize()

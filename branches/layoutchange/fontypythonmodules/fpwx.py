@@ -81,13 +81,26 @@ class AutoWrapStaticText(wx.PyControl):
     By Robin Dunn
     Under hackery. Not working right now.
     :(
+
+    wrapping *and* SetLabel
+    
+    wrap: Alone, does not need a SetLabel_func
+    SetLabel: Is the one that needs the SetLabel_func
+
+    SetLabel_func : Called when SetLabel happens.
+    Nominate some object in the parent
+    tree which can have .Layout() called on it such
+    that this control will be re-drawn. It's the only
+    way to get this StaticText to fit the space.
+    I can't predict which object will work, so it's
+    left to the caller.
     """
     def __init__(self, parent,
             ustr,
             point_size,
             style,
             weight,
-            layout_func = None):
+            SetLabel_func = None):
 
         pos = wx.DefaultPosition
 
@@ -99,9 +112,8 @@ class AutoWrapStaticText(wx.PyControl):
         sz = wx.Size( parent.GetSize()[0],-1) # must be a valid width.
 
         self.p = parent
-        self._lf = parent.Layout
-        if layout_func:
-            self._lf = layout_func
+
+        self._lf = SetLabel_func
 
         wx.PyControl.__init__(self, parent, -1,
                 wx.DefaultPosition,
@@ -140,6 +152,7 @@ class AutoWrapStaticText(wx.PyControl):
         print "6.",self.GetParent().GetParent().GetVirtualSize()
    
         self._Rewrap()
+        self._lf()
         self.Bind(wx.EVT_SIZE, self.OnSize)    
 
     def _lh(self):
@@ -163,6 +176,9 @@ class AutoWrapStaticText(wx.PyControl):
         # The space the string is in should resize,
         # but I can't get it right.
         print "SetLabel:",label
+        if not self._lf:
+            print "Empty layout func"
+            raise SystemExit
         self._label = label
         #self._anew()
         self._Rewrap()
@@ -211,21 +227,23 @@ def xlabel(parent,
            weight = None,
             align = wx.ALIGN_LEFT,
             ellip = None,
-             wrap = False,
-      layout_func = None):
+    SetLabel_func = None,
+             wrap = False):
 
     s = align
     if ellip: s |= ellip
     
-    if wrap: 
-        # This is a live version that can have its
-        # label set and will resize properly.
+    if wrap or SetLabel_func:
+        # Either flags: we must use the AutoWrapStaticText control
+        # This is a live static text that wraps and can have its 
+        # label set (it will resize properly by calling 
+        # SetLabel_func() to force a proper redraw.
         lbl = AutoWrapStaticText( parent,
                 ustr,
                 pointsize,
                 s,
                 weight,
-                layout_func = layout_func)
+                SetLabel_func = SetLabel_func)
     else:
         # This is a single-use static text
         lbl = wx.StaticText( parent, -1, ustr, style = s)
@@ -258,7 +276,7 @@ def para( parent, ustr, align="wx.ALIGN_TOP", pointsize="points_normal", **args)
             weight=wx.FONTWEIGHT_NORMAL,
             **args)
 
-def label( parent, ustr, align = wx.ALIGN_LEFT,**args):
+def label( parent, ustr, align = wx.ALIGN_LEFT, **args):
     return xlabel( parent, ustr, pointsize="points_normal",
            weight=wx.FONTWEIGHT_NORMAL,
            align = align,

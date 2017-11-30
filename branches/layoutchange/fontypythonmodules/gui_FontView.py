@@ -214,7 +214,7 @@ class FontViewPanel(wx.Panel):
 
         # Main heading
         self.main_font_info_label = fpwx.h1(self, u"..",
-                ellip = wx.ST_ELLIPSIZE_END, wrap = True )
+                ellip = wx.ST_ELLIPSIZE_END, layout_func = self.Layout )
 
         icon_and_text_sizer.Add(view_icon, 0,
                 wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
@@ -226,7 +226,7 @@ class FontViewPanel(wx.Panel):
 
         ## The status label
         self.status_text = fpwx.label(self, u"Subinfo",
-                ellip = wx.ST_ELLIPSIZE_END, wrap = True)#, layout_func = self.Layout )
+                ellip = wx.ST_ELLIPSIZE_END, layout_func = self.Layout )
 
         ## Quick search Bold Italic Regular buttons
         ## It occurs to me that these are English words...
