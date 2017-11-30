@@ -54,8 +54,9 @@ import fpwx
 class DismissablePanel(wx.Panel):
     """
     Only for subclassing.
-    Provides a bar with an icon, title and an X close button.
-    Under that is .. whatever: usually a sizer.
+
+    Provides a panel with an icon, title and X close button.
+    Under that is.. whatever: usually a sizer.
 
     wfunc: Is a function that will return a size. The caller
            must decide whom it trusts to return a sane value.
@@ -96,7 +97,8 @@ class DismissablePanel(wx.Panel):
 
         l = fpwx.h1( self, somelabel )
 
-        x_button = wx.BitmapButton(self, -1, fpwx.wxbmp( "icon_X" ), style = wx.NO_BORDER)
+        x_button = wx.BitmapButton(self, -1, 
+                fpwx.wxbmp( "icon_X" ), style = wx.NO_BORDER)
         x_button.SetToolTipString( _("Dismiss") )
         #x_button = wx.Button(self, -1, label="X", 
         #        style = wx.NO_BORDER | wx.BU_EXACTFIT)
@@ -106,11 +108,14 @@ class DismissablePanel(wx.Panel):
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         if someicon:
-            hbox.Add( fpwx.icon( self, someicon ), 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, border = 12 )
+            hbox.Add( fpwx.icon( self, someicon ), 0, wx.EXPAND |
+                    wx.ALIGN_CENTER_VERTICAL |
+                    wx.RIGHT, border = 12 )
         else:
             hbox.Add( (1,1), 0, wx.EXPAND )
         # push the label down to better align with the X
-        hbox.Add( l, 1, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL | wx.TOP, border = 6 ) 
+        hbox.Add( l, 1, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL
+                | wx.TOP, border = 6 ) 
         hbox.Add( x_button, 0, wx.ALIGN_RIGHT  | wx.BOTTOM, 
                 border = 4 )
         hbox.Add( (8,8),0)
@@ -122,7 +127,6 @@ class DismissablePanel(wx.Panel):
         self.SetSizer( self.vbox )
        
         self.Layout()
-        #self.Fit()
         self.SetFocus()
 
         self._firstshow = True
@@ -134,7 +138,8 @@ class DismissablePanel(wx.Panel):
 
     ## Private
     def __x_pressed(self,evt):
-        ## I don't want the button's id skipping-on, but the panel's
+        ## I don't want the button's id skipping-on;
+        ## only the panel's
         evt.SetId(self.id)
         evt.Skip()
 
@@ -209,7 +214,8 @@ class DismissableHTMLPanel(DismissablePanel):
         pass
 
     def post_init_setup_replace_dict(self):
-        """Override and return a dict of keys to replace in the html."""
+        """Override and return a dict of keys to replace
+        {} in the html."""
         pass
 
 ## Ends basic classes
@@ -370,7 +376,8 @@ class HushPanel(DismissablePanel):
         ## Big header announcing Hushed/Not hushed
         ## Real tortured code to center the fuckin' label text. Jeezuz.
         ## Half the time the text was chopped-off on first draw. :(
-        hush_heading_panel = wx.Panel(self,size=(-1,150), style=wx.SUNKEN_BORDER)
+        hush_heading_panel = wx.Panel(self,size=(-1,150),
+                style=wx.SUNKEN_BORDER)
         
         f = wx.BoxSizer(wx.HORIZONTAL)
         bsp = wx.BoxSizer(wx.VERTICAL)
@@ -379,7 +386,8 @@ class HushPanel(DismissablePanel):
         f.Add(bsp, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 40)
         hush_heading_panel.SetSizer( f )
 
-        sizer.Add( hush_heading_panel, 0, wx.EXPAND | wx.BOTTOM, border = 5)
+        sizer.Add( hush_heading_panel, 0, wx.EXPAND |
+                wx.BOTTOM, border = 5)
 
         if not self.fontconfig_error:
             ## The label to the intro text
@@ -400,15 +408,18 @@ class HushPanel(DismissablePanel):
             h = wx.BoxSizer(wx.HORIZONTAL)
 
             ## label to the choice box
-            self.chosen_pog_label = fpwx.label( self, _("Current Hush Pog: ") )
+            self.chosen_pog_label = fpwx.label( self,
+                    _("Current Hush Pog: ") )
             h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
 
             ## The pog choice box
             self.pog_choice = wx.Choice(self, -1, choices = ["-"])
-            self.pog_choice.SetToolTip( wx.ToolTip( _("Choose your system Pog") ) )
+            self.pog_choice.SetToolTip( wx.ToolTip(
+                _("Choose your system Pog") ) )
             self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
             
-            h.Add( self.pog_choice, 0, wx.ALIGN_TOP | wx.TOP, border = 20)
+            h.Add( self.pog_choice, 0, wx.ALIGN_TOP |
+                    wx.TOP, border = 20)
 
             sizer.Add(h,0, wx.BOTTOM, border = 20)
         else:
@@ -441,12 +452,14 @@ class HushPanel(DismissablePanel):
 
         if not self.fontconfig_error:
             ## The hush/unhush button
-            self.hb = wx.Button( self, label = self._update_heading("b"),
-                    id = button_ids['id_hush_button'] )
+            self.hb = wx.Button( self,
+                    label = self._update_heading("b"),
+                       id = button_ids['id_hush_button'] )
             ## Make a button. Click also gets caught in MainFrame.
             self.Bind(wx.EVT_BUTTON, self._do_hushing,
                     id = button_ids['id_hush_button'])
-            sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
+            sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM |
+                    wx.EXPAND, border=10)
             self._update_pog_choice_control()
 
         return sizer
@@ -497,10 +510,11 @@ class HushPanel(DismissablePanel):
         self.pog_choice.Append(_(u"None chosen"))
         ## then the pogs:
         self.pog_choice.AppendItems( pl ) # stick it in the control
-        ## get the last used hush Pog name - make sure it's a byte, else..
+        ## get the last used hush Pog name - make sure it's a
+        ## byte, or else..
         s = fpsys.LSP.ensure_bytes( fpsys.config.hush_pog_name )
         if s not in pl: # ...we get complaints here.
-            # ok - that name was not in the control. Something changed.
+            # ok - that was not in the control. Something changed.
             n = 0 # this has the effect of selecting "None chosen" 
             # The choice was invalid, so empty the config too:
             fpsys.config.hush_pog_name = ""
@@ -588,23 +602,27 @@ class ChooseZipDirPanel(DismissablePanel):
         # function. See AutoWrapStaticText
         self.what_pogs_lbl = fpwx.label( self, u"..",
                 Layout_func = self.Layout )
-        sizer.Add( self.what_pogs_lbl, 0, wx.EXPAND | wx.TOP, border = 10)
+        sizer.Add( self.what_pogs_lbl, 0, wx.EXPAND |
+                wx.TOP, border = 10)
 
         # The tree to find a path
         self.treedir = ATree(self, os.getcwd())
         tree = self.treedir.GetTreeCtrl()
         #Clicks on the control will change the button's label
-        tree.Bind(wx.EVT_TREE_SEL_CHANGED, self._on_dir_control_click)
-        sizer.Add(self.treedir, 1, wx.EXPAND | wx.TOP, border = 10)
+        tree.Bind(wx.EVT_TREE_SEL_CHANGED,
+                self._on_dir_control_click)
+        sizer.Add(self.treedir, 1, wx.EXPAND |
+                wx.TOP, border = 10)
 
         # Label to show the directory chosen (or the default)
         # Tries to wrap. Paths without spaces don't wrap, so we use
-        # ellipses.
+        # ellipses. (Pass Layout_func bec. we use SetLabel)
         self.what_dir_lbl = fpwx.label( self, 
                 self._make_label(),
                 ellip = wx.ST_ELLIPSIZE_END,
-                Layout_func = self.Layout)  # Layout_func bec. we use SetLabel
-        sizer.Add( self.what_dir_lbl, 0, wx.EXPAND | wx.TOP, border=10)
+                Layout_func = self.Layout)  
+        sizer.Add( self.what_dir_lbl, 0, wx.EXPAND |
+                wx.TOP, border=10)
 
         # A printer that will show when it has to.
         self.printer = wx.TextCtrl(self,
@@ -614,13 +632,15 @@ class ChooseZipDirPanel(DismissablePanel):
                        font.GetStyle(),
                        font.GetWeight(), font.GetUnderlined())
         self.printer.SetFont(font)
-        sizer.Add (self.printer, 1, wx.EXPAND | wx.TOP, border=10 )
+        sizer.Add (self.printer, 1, wx.EXPAND |
+                wx.TOP, border=10 )
         self.printer.Hide()
 
         ## Make a button. Click also gets caught in MainFrame.
         btn = wx.Button(self, label = _("Create the zip file"),
-                                id=button_ids['id_do_the_actual_zip'])
-        self.Bind(wx.EVT_BUTTON, self._do_actual_zip, id=button_ids['id_do_the_actual_zip'])
+                        id = button_ids['id_do_the_actual_zip'])
+        self.Bind(wx.EVT_BUTTON, self._do_actual_zip,
+                        id = button_ids['id_do_the_actual_zip'])
         sizer.Add(btn, 0, wx.TOP | wx.BOTTOM | wx.EXPAND, border=10)
 
         return sizer
@@ -629,8 +649,10 @@ class ChooseZipDirPanel(DismissablePanel):
         """The entire panel hide/show"""
         if showing:
             # I am being shown
-            wpogs = u", ".join( self.parent.panelTargetPogChooser.list_of_target_pogs_selected )
-            self.what_pogs_lbl.SetLabel( u"Pog(s) to zip: {}".format(wpogs) )
+            wpogs = u", ".join(
+              self.parent.panelTargetPogChooser.list_of_target_pogs_selected)
+            self.what_pogs_lbl.SetLabel(
+                    u"Pog(s) to zip: {}".format(wpogs) )
             if self.printer.IsEmpty():
                 self.printer.Hide()
             else:
@@ -667,7 +689,8 @@ class ChooseZipDirPanel(DismissablePanel):
 
 
 ##Slider code - maybe for settings form
-#self.choiceSlider = wx.Slider(self, value=1, minValue=1, maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
+#self.choiceSlider = wx.Slider(self, value=1, minValue=1, 
+# maxValue=1, style=wx.SL_HORIZONTAL | wx.SL_LABELS)
 #self.choiceSlider.SetTickFreq(1,1)
 #self.choiceSlider.Bind(wx.EVT_SCROLL, self.OnSliderScroll)
 ## ... it sucked!
@@ -684,7 +707,8 @@ class SettingsPanel(DismissablePanel):
         ## loopy kind of way
         self.form = {}
         self._force_redraw = False
-        self.settings_sizer = wx.FlexGridSizer( cols = 2, hgap = 5, vgap = 20 )
+        self.settings_sizer = wx.FlexGridSizer( cols = 2,
+                hgap = 5, vgap = 20 )
         
         DismissablePanel.__init__(self, parent, flag_settings,
                 somelabel = _("Settings"),
@@ -694,8 +718,9 @@ class SettingsPanel(DismissablePanel):
 
     def __post_init__(self):
         """
-        Happens only once. Draws all the controls, with values *from* config.
-        After this, the panel only hides/shows. The controls all persist.
+        Happens only once. Draws all the controls, with values
+        *from* config. After this, the panel only hides/shows. 
+        The controls all persist.
         """
         ## Sample text 
         k="text"
@@ -715,7 +740,7 @@ class SettingsPanel(DismissablePanel):
                 tip=_("Beware large numbers!"))# It's your funeral!
         self.entry( k, _("Page length:"), c )
 
-        ## Sept 2009 - Checkbox to ignore/use the font top left adjustment code
+        ## Sept 2009 - Checkbox to ignore/use the font top left adjustment
         k = "ignore_adjustments"
         c = wx.CheckBox(self, -1, _("Tick to disable") )
         c.SetValue( self.gv(k) )
@@ -766,7 +791,7 @@ class SettingsPanel(DismissablePanel):
         ## Nov 2017 - Moving the recurse check box into settings
         k = "recurseFolders"
         c = wx.CheckBox(self, -1, _("Tick to include all\n" \
-                                    "sub-folders in\nthe source view.") )
+                        "sub-folders in\nthe source view.") )
         c.SetValue( self.gv(k) )
         self.entry( k,_("Include sub-folders."), c,
                 extra = _("Caution: This will crash Fonty if\n" \
@@ -776,11 +801,13 @@ class SettingsPanel(DismissablePanel):
 
         ## Make an "apply" button. Click also gets caught in MainFrame.
         btn = wx.Button(self, wx.ID_APPLY)
-        self.Bind(wx.EVT_BUTTON, self.apply_pressed, id=wx.ID_APPLY)
+        self.Bind(wx.EVT_BUTTON, self.apply_pressed,
+                id=wx.ID_APPLY)
         #btn.SetDefault() # no joy...
 
         self.settings_sizer.Add((1,1),0) #a blank cell
-        self.settings_sizer.Add(btn, 0, wx.ALL | wx.ALIGN_RIGHT, border=10)
+        self.settings_sizer.Add(btn, 0, wx.ALL |
+                wx.ALIGN_RIGHT, border=10)
 
         return self.settings_sizer
 
@@ -797,8 +824,8 @@ class SettingsPanel(DismissablePanel):
     def _show_or_hide(self, showing):#evt):
         """
         Fires when I hide or show.
-        NOTE: Since __post_init__ only happens once, I need a way
-        to alter the form as it comes and goes.
+        NOTE: Since __post_init__ only happens once, 
+        I need a way to alter the form as it comes and goes.
         """
         if showing:#self.IsShown():
             # Most of the controls will "remember" their last setting.
@@ -842,9 +869,11 @@ class SettingsPanel(DismissablePanel):
             sb.Add( lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
             e = fpwx.parar(self, extra, pointsize = "points_tiny" )
             sb.Add( e, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP )
-            self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
+            self.settings_sizer.Add( sb, 0, wx.ALIGN_RIGHT |
+                    wx.ALIGN_TOP)
         else:
-            self.settings_sizer.Add(lbl, 0, wx.ALIGN_RIGHT | wx.ALIGN_TOP)
+            self.settings_sizer.Add(lbl, 0, wx.ALIGN_RIGHT |
+                    wx.ALIGN_TOP)
         ## text controls need more width.
         if isinstance(ctrl, wx._controls.TextCtrl):
             self.settings_sizer.Add(ctrl, 1, wx.EXPAND )

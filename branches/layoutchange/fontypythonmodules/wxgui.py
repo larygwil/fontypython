@@ -59,9 +59,7 @@ ps = CPubsub()
 
 from gui_FontSources import *
 from gui_FontView import *
-#from gui_DirChooser import ATree
 from gui_PogTargets import *
-
 
 import fpwx
 
@@ -75,16 +73,15 @@ flag_settings = 8
 flag_choosedir = 16
 flag_hush_fonts = 32
 
-## ids
-## These are needed here, and to pass it into TargetPogChooser
+## button ids
 button_ids = {
-          'id_x_button' : wx.NewId(),
-    'id_zip_pog_button' : wx.NewId(),
- 'id_do_the_actual_zip' : wx.NewId(),
-       'id_hush_button' : wx.NewId()
+          'id_x_button' : wx.NewId(), # close a dism. panel (top right)
+    'id_zip_pog_button' : wx.NewId(), # the button is in TargetPogChooser
+ 'id_do_the_actual_zip' : wx.NewId(), # button is in the ChooseZipDirPanel
+       'id_hush_button' : wx.NewId(), # button is in the HushPanel
 }
 
-# got a flag? get an id.
+# Got a flag? get an id.
 id_from_flag = {
         flag_help       : wx.NewId(),
         flag_about      : wx.NewId(),
@@ -92,7 +89,7 @@ id_from_flag = {
         flag_choosedir  : button_ids['id_zip_pog_button'],
         flag_hush_fonts : wx.NewId()
         }
-# got an id? get a flag.
+# Got an id? get a flag.
 flag_from_id = {v:k for k,v in id_from_flag.iteritems()} #invert it!
 
 
@@ -313,7 +310,7 @@ class MainFrame(wx.Frame):
             
             ## I will use fontViewPanel as the standard to 
             ## measure widths in these DismissablePanels
-            wfunc = lambda: self.fontViewPanel.GetSize()
+            wfunc = self.fontViewPanel.GetSize
             
             ## The Settings
             self.settings_panel = SettingsPanel( self, wfunc )
