@@ -25,7 +25,10 @@
 ## out the door. Good luck Zimbabwe. I hope you kick out the Prick!
 ## Zuma next. Somehow. Without blood.
 
-
+"""
+This is the main gui. A good place to start. Look at the bottom of
+the file first.
+"""
 
 import locale
 import strings

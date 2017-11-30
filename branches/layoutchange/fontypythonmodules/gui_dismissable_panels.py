@@ -15,6 +15,16 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+These classes comprise the "dismissable" panels that appear in the 
+gui - over the top of the fontview (hide/show trickery) - to give 
+functionality to:
+    1. Help
+    2. About
+    3. Settings
+    4. Zip pogs
+    5. Hush fonts
+"""
 
 import locale, os
 import strings
@@ -27,9 +37,15 @@ import wx.html as html
 
 #I need the various flags and id's defined at top of wxgui:
 from wxgui import button_ids, id_from_flag, \
-    flag_help, flag_about, flag_settings, flag_choosedir, flag_hush_fonts
+    flag_help, \
+    flag_about, \
+    flag_settings, \
+    flag_choosedir, \
+    flag_hush_fonts
 
+# Tree for use in the zip panel
 from gui_DirChooser import ATree
+
 import fpwx
 
 ## ---
