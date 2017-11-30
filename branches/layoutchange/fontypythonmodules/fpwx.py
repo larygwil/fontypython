@@ -247,9 +247,9 @@ def parar( parent, ustr, size="points_normal" ):
             weight=wx.FONTWEIGHT_NORMAL,
             align=wx.ALIGN_RIGHT )
 
-def para( parent, ustr, align="wx.ALIGN_TOP", size="points_normal", wrap = False, layout_func = None ):
+def para( parent, ustr, align="wx.ALIGN_TOP", size="points_normal", **args):#wrap = False, layout_func = None ):
     return xlabel( parent, ustr, size,
-            weight=wx.FONTWEIGHT_NORMAL, wrap = wrap, layout_func=layout_func )
+            weight=wx.FONTWEIGHT_NORMAL, **args)#wrap = wrap, layout_func=layout_func )
 
 def label( parent, ustr, align = wx.ALIGN_LEFT, ellip = None, wrap = False ):
     return xlabel( parent, ustr, size="points_normal",
