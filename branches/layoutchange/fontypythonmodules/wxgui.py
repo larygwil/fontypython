@@ -120,7 +120,7 @@ class DismissablePanel(wx.Panel):
         #print "** in init of DismissablePanel parent.GetSize:", parent.GetSize()
         #self.SetMinSize( (400,600) ) # this was vital
 
-        ps.sub(wxgui_layout, self.Layout)
+        #ps.sub(wxgui_layout, self.Layout)
 
         self.parent = parent
         self.flag = flag
@@ -432,7 +432,7 @@ class HushPanel(DismissablePanel):
                                       "Look in /usr/share/fonts for ideas. " \
                                       "Please see help for details."),
                                       wrap = True,
-                                      pub_topic = wxgui_layout)
+                                      layout_func = self.parent.Layout)
                                       
             sizer.Add( p1, 0, wx.TOP, border = 5 )
 

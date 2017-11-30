@@ -87,13 +87,15 @@ class AutoWrapStaticText(wx.PyControl):
             point_size,
             style,
             weight,
-            pub_topic):
+            layout_func = None):
 
         pos = wx.DefaultPosition
         sz = wx.Size( parent.GetSize()[0],-1)
 
         self.p = parent
-        self._pub_topic = pub_topic
+        self._lf = parent.Layout
+        if layout_func:
+            self._lf = layout_func
 
         wx.PyControl.__init__(self, parent, -1,
                 wx.DefaultPosition,
@@ -160,7 +162,8 @@ class AutoWrapStaticText(wx.PyControl):
         self._Rewrap()
         #print self.GetParent()
         #self.GetParent().GetParent().Layout()
-        ps.pub(self._pub_topic)
+        #ps.pub(self._pub_topic)
+        self._lf()
 
     def GetLabel(self):
         return self._label
@@ -203,7 +206,7 @@ def xlabel(parent,
         align = wx.ALIGN_LEFT,
         ellip = None,
         wrap = False,
-        pub_topic=None):
+        layout_func=None):
 
     s = align
     if ellip: s |= ellip
@@ -216,7 +219,7 @@ def xlabel(parent,
                 size,
                 s,
                 weight,
-                pub_topic)
+                layout_func=layout_func)
     else:
         # This is a single-use static text
         lbl = wx.StaticText( parent, -1, ustr, style = s)
@@ -244,9 +247,9 @@ def parar( parent, ustr, size="points_normal" ):
             weight=wx.FONTWEIGHT_NORMAL,
             align=wx.ALIGN_RIGHT )
 
-def para( parent, ustr, align="wx.ALIGN_TOP", size="points_normal", wrap = False, pub_topic = None ):
+def para( parent, ustr, align="wx.ALIGN_TOP", size="points_normal", wrap = False, layout_func = None ):
     return xlabel( parent, ustr, size,
-            weight=wx.FONTWEIGHT_NORMAL, wrap = wrap, pub_topic=pub_topic )
+            weight=wx.FONTWEIGHT_NORMAL, wrap = wrap, layout_func=layout_func )
 
 def label( parent, ustr, align = wx.ALIGN_LEFT, ellip = None, wrap = False ):
     return xlabel( parent, ustr, size="points_normal",

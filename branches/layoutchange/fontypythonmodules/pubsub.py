@@ -93,6 +93,7 @@ class CPubsub:
         #m = CMessage(topic, messagelist)
         #print "pub called"
         ret = None
+        if topic not in self.__ears: print "{} not called.".format(topic)
         for key, top in self.__ears.iteritems():
 
             if top.topic == topic:
