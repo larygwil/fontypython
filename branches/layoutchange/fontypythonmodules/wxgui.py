@@ -286,114 +286,127 @@ class MainFrame(wx.Frame):
         ## THE MAIN GUI
         ## ------------------------------------------------------------------
 
-        ## A temporary switch to test out various ideas
-        self.whatgui = 1
-
         MINSCREENWIDTH = 800 #old skool
         minw = 360
         fvminw = MINSCREENWIDTH - minw
         ms = wx.Size(minw,1)
-        if self.whatgui == 1:
 
-            ## PRIMARY GUI
-            ## ===========
-            ## No splitters at all.
-            ## Box across: two
-            ## Left box: Box vertical: two (source/target)
-            ## Right box: Fontview
-            ## :- kind of shape.
+        ## PRIMARY GUI
+        ## ===========
+        ## No splitters at all.
+        ## Box across: two
+        ## Left box: Box vertical: two (source/target)
+        ## Right box: Fontview
+        ## :- kind of shape.
 
-            self.panelFontSources = FontSourcesPanel(self)
-            self.panelFontSources.SetMinSize(ms)
+        self.panelFontSources = FontSourcesPanel(self)
+        self.panelFontSources.SetMinSize(ms)
 
-            self.panelTargetPogChooser = TargetPogChooser(self, button_ids['id_zip_pog_button'])
-            self.panelTargetPogChooser.SetMinSize(ms)
+        self.panelTargetPogChooser = TargetPogChooser(self, button_ids['id_zip_pog_button'])
+        self.panelTargetPogChooser.SetMinSize(ms)
 
-            self.fontViewPanel = FontViewPanel(self)
-            self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
+        self.fontViewPanel = FontViewPanel(self)
+        self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
 
-            ## Oct/Nov 2017
-            ## Moved some dialogues into the app as panels:
+        ## Oct/Nov 2017
+        ## Moved some dialogues into the app as panels:
 
-            ## Help
-            self.help_panel = HelpPanel(self)
-            #self.help_panel.Hide()
+        ## Help
+        self.help_panel = HelpPanel(self)
+        #self.help_panel.Hide()
 
-            ## About
-            self.about_panel = AboutPanel(self)
-            #self.about_panel.Hide()
-            
-            ## I will use fontViewPanel as the standard to 
-            ## measure widths in these DismissablePanels
-            wfunc = self.fontViewPanel.GetSize
-            
-            ## The Settings
-            self.settings_panel = SettingsPanel( self, wfunc )
-            #self.settings_panel.Hide()
+        ## About
+        self.about_panel = AboutPanel(self)
+        #self.about_panel.Hide()
+        
+        ## I will use fontViewPanel as the standard to 
+        ## measure widths in these DismissablePanels
+        wfunc = self.fontViewPanel.GetSize
+        
+        ## The Settings
+        self.settings_panel = SettingsPanel( self, wfunc )
+        #self.settings_panel.Hide()
 
-            ## Zip Pog panel
-            self.choose_zipdir_panel = ChooseZipDirPanel( self, wfunc )
-            #self.choose_zipdir_panel.Hide()
+        ## Zip Pog panel
+        self.choose_zipdir_panel = ChooseZipDirPanel( self, wfunc )
+        #self.choose_zipdir_panel.Hide()
 
-            ## Hush panel
-            self.hush_panel = HushPanel( self, wfunc )
+        ## Hush panel
+        self.hush_panel = HushPanel( self, wfunc )
 
 
-            stsizer = wx.BoxSizer(wx.VERTICAL)
-            stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
-            stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
+        stsizer = wx.BoxSizer(wx.VERTICAL)
+        stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
+        stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
 
-            lrsizer = wx.BoxSizer(wx.HORIZONTAL)
-            lrsizer.Add( stsizer, 0, wx.EXPAND)
-            lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
-            lrsizer.Add( self.help_panel, 1, wx.EXPAND )
-            lrsizer.Add( self.about_panel, 1, wx.EXPAND )
-            lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
-            lrsizer.Add( self.choose_zipdir_panel, 1, wx.EXPAND )
-            lrsizer.Add( self.hush_panel, 1, wx.EXPAND )
-            #lrsizer.Add( self.unhush_panel, 1, wx.EXPAND )
+        lrsizer = wx.BoxSizer(wx.HORIZONTAL)
+        lrsizer.Add( stsizer, 0, wx.EXPAND)
+        lrsizer.Add( self.fontViewPanel, 1, wx.EXPAND|wx.ALL, border = 5 )
+        lrsizer.Add( self.help_panel, 1, wx.EXPAND )
+        lrsizer.Add( self.about_panel, 1, wx.EXPAND )
+        lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
+        lrsizer.Add( self.choose_zipdir_panel, 1, wx.EXPAND )
+        lrsizer.Add( self.hush_panel, 1, wx.EXPAND )
+        #lrsizer.Add( self.unhush_panel, 1, wx.EXPAND )
 
-            self.SetSizer(lrsizer)
+        self.SetSizer(lrsizer)
 
-            ## A system to control the hide/show of these panels.
-            self.panel_state = flag_normal
-            self.panel_dict={
-                    flag_normal  : self.fontViewPanel, 
-                    flag_help    : self.help_panel,
-                    flag_about   : self.about_panel,
-                   flag_settings : self.settings_panel,
-                  flag_choosedir : self.choose_zipdir_panel,
-                 flag_hush_fonts : self.hush_panel,
-            }
-        elif self.whatgui == 3:
-            #Very out of date. Left for future maybes.
-            #splitter window of 2 across
-            #left: a panel with sizer of two high of: source, then target guis
-            #right: fontview
-            ##This one freezes the app when you resize to the right... :(
-            ## Hard to reproduce. I used gdb and got it to crash, then
-            ## did a 'bt' and saw some complaints about get text extents
-            ## might be a bug in my font drawing code..?
-            ## self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-            ## This line seems less crashy, but not much less:
-            ## self.spw = wx.SplitterWindow(self)
-            fvminw = MINSCREENWIDTH
-            self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
-            self.spw.SetMinimumPaneSize(minw)
-            p1 = wx.Panel(self.spw)
-            self.panelFontSources = FontSourcesPanel(p1)
-            self.panelTargetPogChooser = TargetPogChooser(p1)
-            stsizer = wx.BoxSizer(wx.VERTICAL)
-            stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
-            stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
-            p1.SetSizer(stsizer)
-            self.fontViewPanel = FontViewPanel(self.spw)
-            self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
-            self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
-            # Thanks to the multiSplitterWindow code from the demo:
-            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
-            self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterPosChanged)
-
+        ## A system to control the hide/show of these panels.
+        self.panel_state = flag_normal
+        self.panel_dict={
+                flag_normal  : self.fontViewPanel, 
+                flag_help    : self.help_panel,
+                flag_about   : self.about_panel,
+               flag_settings : self.settings_panel,
+              flag_choosedir : self.choose_zipdir_panel,
+             flag_hush_fonts : self.hush_panel,
+        }
+        ##
+        ## Very out of date. Left for future maybes.
+        ##
+        ##splitter window of 2 across
+        ##left: a panel with sizer of two high of: source, then target guis
+        ##right: fontview
+        ##This one freezes the app when you resize to the right... :(
+        ## Hard to reproduce. I used gdb and got it to crash, then
+        ## did a 'bt' and saw some complaints about get text extents
+        ## might be a bug in my font drawing code..?
+        ## self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        ## This line seems less crashy, but not much less:
+        ## self.spw = wx.SplitterWindow(self)
+        #fvminw = MINSCREENWIDTH
+        #self.spw = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        #self.spw.SetMinimumPaneSize(minw)
+        #p1 = wx.Panel(self.spw)
+        #self.panelFontSources = FontSourcesPanel(p1)
+        #self.panelTargetPogChooser = TargetPogChooser(p1)
+        #stsizer = wx.BoxSizer(wx.VERTICAL)
+        #stsizer.Add( self.panelFontSources, 1, wx.EXPAND|wx.ALL,border = 5 )
+        #stsizer.Add( self.panelTargetPogChooser, 1, wx.EXPAND|wx.ALL,border = 5 )
+        #p1.SetSizer(stsizer)
+        #self.fontViewPanel = FontViewPanel(self.spw)
+        #self.fontViewPanel.SetMinSize(wx.Size(fvminw,1))
+        #self.spw.SplitVertically( p1, self.fontViewPanel)#, self.initpos)
+        ## Thanks to the multiSplitterWindow code from the demo:
+        #self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGING, self.onSplitterPosChanging)
+        #self.Bind(wx.EVT_SPLITTER_SASH_POS_CHANGED, self.onSplitterPosChanged)
+        ##Only used if whatgui != 1
+        #def onSplitterPosChanging(self,evt):
+        #    """
+        #    A Splitter is moving - PRESENT TENSE. Let's do the least work poss.
+        #    """
+        #    esp = evt.GetSashPosition()
+        #    print esp
+        #    if esp > 500:
+        #        evt.Veto()
+        #    return
+        ##Only used if whatgui != 1
+        #def onSplitterPosChanged( self, evt ):
+        #    """
+        #    A Splitter has been moved - PAST TENSE.
+        #    We only want to redraw the fonts when the splitter dragging is over.
+        #    """
+        #    ps.pub( update_font_view ) # starts a HUGE chain of calls.
 
         ## Frame resizing sanity code
         self.resized = False
@@ -491,24 +504,7 @@ class MainFrame(wx.Frame):
         evt.Skip()
 
 
-    ##Only used if whatgui != 1
-    def onSplitterPosChanging(self,evt):
-        """
-        A Splitter is moving - PRESENT TENSE. Let's do the least work poss.
-        """
-        esp = evt.GetSashPosition()
-        print esp
-        if esp > 500:
-            evt.Veto()
-        return
 
-    ##Only used if whatgui != 1
-    def onSplitterPosChanged( self, evt ):
-        """
-        A Splitter has been moved - PAST TENSE.
-        We only want to redraw the fonts when the splitter dragging is over.
-        """
-        ps.pub( update_font_view ) # starts a HUGE chain of calls.
 
 
     def onFrameSize(self,evt):

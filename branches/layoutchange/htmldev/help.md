@@ -195,17 +195,17 @@ Shortcut keys
 ====
 If shortcut keys don't work, click in the filter text box. This seems to kick them back to life. Don't ask me what's going on....
 
-* **Esc** key will close any panels that may be open, or close the whole app quickly.
+* **Esc** The Escape key will close any panels that may be open. Used again, it will close the app. 
+  Most of the time.
 * **Ctrl + LeftArrow/Ctrl + RightArrow** will step through fonts like the Next and Previous buttons do.
-* **Middle-click (the wheel-button)** in the font view (position 3 above) will open the Settings 
-   screen (like Ctrl+S does)
+* **Middle-click (the wheel-button) or Ctrl + S** in the font view will open the Settings screen.
 * **Ctrl + Scroll mouse wheel up/down** will increase/decrease the size of your font previews quickly.
 * **Ctrl + H** will open the hush panel.
 
 
 [Top](#top)
 
-<center></center>
+{SEP}
 
 <a name="tips"></a>
 Tips
