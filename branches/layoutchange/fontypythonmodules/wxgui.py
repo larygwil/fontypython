@@ -429,7 +429,7 @@ class HushPanel(DismissablePanel):
             p1 = fpwx.para( self, _(
                 u"Hushing installs a Pog that you must manage. " \
                  "Make sure it contains a few system fonts so that " \
-                 "your applications function properly! " \
+                 "your applications function properly!\n" \
                  "Look in /usr/share/fonts for ideas. " \
                  "Please see help for details."),
                  wrap = True)
@@ -454,7 +454,7 @@ class HushPanel(DismissablePanel):
             ## Some help re the error
             p1 = fpwx.para( self, _( 
                 u"Fontconfig is not properly installed; thus " \
-                 "Fonty cannot hush fonts. " \
+                 "Fonty cannot hush fonts.\n" \
                  "Consult your distribution's help, or " \
                  "open a ticket so we can try fix it. " \
                  "Please see help for details."),
@@ -621,7 +621,9 @@ class ChooseZipDirPanel(DismissablePanel):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         # A top, shows what pogs are going to be zipped
-        self.what_pogs_lbl = fpwx.label( self, u"..", ellip = wx.ST_ELLIPSIZE_END )
+        self.what_pogs_lbl = fpwx.label( self, u"..",
+                ellip = wx.ST_ELLIPSIZE_END,
+                Layout_func = self.Layout )
         sizer.Add( self.what_pogs_lbl, 0, wx.EXPAND | wx.TOP, border = 10)
 
         # The tree to find a path
@@ -636,7 +638,7 @@ class ChooseZipDirPanel(DismissablePanel):
         self.what_dir_lbl = fpwx.label( self, 
                 self._make_label(),
                 ellip = wx.ST_ELLIPSIZE_END,
-                SetLabel_func = self.Layout)  # SetLabel_func bec. we use SetLabel
+                Layout_func = self.Layout)  # Layout_func bec. we use SetLabel
         sizer.Add( self.what_dir_lbl, 0, wx.EXPAND | wx.TOP, border=10)
 
         # A printer that will show when it has to.

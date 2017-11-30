@@ -78,42 +78,40 @@ def setup_fonts_and_colours():
 
 class AutoWrapStaticText(wx.PyControl):
     """
-    By Robin Dunn
-    Under hackery. Not working right now.
-    :(
+    Mostly by Robin Dunn
 
-    wrapping *and* SetLabel
-    
-    wrap: Alone, does not need a SetLabel_func
-    SetLabel: Is the one that needs the SetLabel_func
-
-    SetLabel_func : Called when SetLabel happens.
-    Nominate some object in the parent
-    tree which can have .Layout() called on it such
-    that this control will be re-drawn. It's the only
-    way to get this StaticText to fit the space.
-    I can't predict which object will work, so it's
-    left to the caller.
+    Layout_func: 
+       Means we will set the text many times.
+       Is called when SetLabel() happens.
+       Nominate some object in the parent
+       tree which can have .Layout() called
+       on it such that this control will be 
+       re-drawn. It's the only way to get 
+       this StaticText to fit the space.
+       I can't predict which object will 
+       work, so it's left to the caller.
     """
     def __init__(self, parent,
             ustr,
             point_size,
             style,
             weight,
-            SetLabel_func = None):
+            Layout_func = None):
 
         pos = wx.DefaultPosition
 
         # Tip:
         # The parent *must* have a legitimate width
-        # To do that ensure the parent's constructor 
-        # had a size argument that makes sense.
-        # Without a width, none of this work.
-        sz = wx.Size( parent.GetSize()[0],-1) # must be a valid width.
+        # To do that: ensure the parent's constructor 
+        #  has a size argument that makes sense.
+        # Without a width, none of this works.
+        # The -1 on the height seems to be vital,
+        #  remove it and nothing works.
+        sz = wx.Size( parent.GetSize()[0], -1)
 
         self.p = parent
 
-        self._lf = SetLabel_func
+        self._lf = Layout_func
 
         wx.PyControl.__init__(self, parent, -1,
                 wx.DefaultPosition,
@@ -122,8 +120,8 @@ class AutoWrapStaticText(wx.PyControl):
                 wx.DefaultValidator)
 
         # Make our static text and give it
-        # default system properties
-        self.st = wx.StaticText(self, -1, ustr, style = style )
+        # default system properties.
+        self.st = wx.StaticText(self, -1, ustr, size=sz, style = style )
         
         f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         f.SetPointSize(SYSFONT[point_size])
@@ -132,27 +130,12 @@ class AutoWrapStaticText(wx.PyControl):
         self.st.SetFont( f )       
 
         self._label = ustr # save the unwrapped text
-        self._rows = 0
+        self._rows = 0 # Will be the number of rows after a wrap.
 
-        # Measure the string once, to get a line height.
-        #f = self.st.GetFont()
-        #dc = wx.ScreenDC()
-        #dc.SetFont(f)
-        #w,h,lh = dc.GetMultiLineTextExtent(ustr,f)
-        self._lineheight = f.GetPixelSize()[1] + 2
-
-
-        print "init of AutoWrapStaticText"
-        print ustr
-        print "1.",self.GetSize()
-        print "2.",self.GetVirtualSize()
-        print "3.",self.GetParent().GetSize()
-        print "4.",self.GetParent().GetVirtualSize()
-        print "5.",self.GetParent().GetParent().GetSize()
-        print "6.",self.GetParent().GetParent().GetVirtualSize()
+        # Found a func that gives me pixels!
+        self._lineheight = f.GetPixelSize()[1] + 2 # add some extra padding.
    
         self._Rewrap()
-        self._lf()
         self.Bind(wx.EVT_SIZE, self.OnSize)    
 
     def _lh(self):
@@ -170,53 +153,55 @@ class AutoWrapStaticText(wx.PyControl):
         return sz
 
     def SetLabel(self, label):
-        # This is the NB one. I need to set different
-        # strings - and they can be long or short.
-        # I.e. they can wrap or not.
-        # The space the string is in should resize,
-        # but I can't get it right.
-        print "SetLabel:",label
-        if not self._lf:
-            print "Empty layout func"
-            raise SystemExit
+        """
+        This is the NB one. I need to set different
+        strings - and they can be long or short.
+        I.e. they may need to wrap, or not.
+        """
+        # What's the new label?
         self._label = label
-        #self._anew()
+        # Go wrap it:
         self._Rewrap()
-        #print self.GetParent()
-        #self.GetParent().GetParent().Layout()
-        #ps.pub(self._pub_topic)
-        self._lf()
+        # If we have a Layout func, call it:
+        if self._lf: self._lf()
 
     def GetLabel(self):
         return self._label
 
-    def SetFont(self, font):
-        self.st.SetFont(font)
-        self._Rewrap()
-    def GetFont(self):
-        return self.st.GetFont()
+    #def SetFont(self, font):
+    #    self.st.SetFont(font)
+    #    self._Rewrap()
+    #def GetFont(self):
+    #    return self.st.GetFont()
 
     def OnSize(self, evt):
-        self.st.SetSize(self.GetSize())#GetSize())
+        # Make the StaticText be my width
+        self.st.SetSize( self.GetSize() )
+        # Go wrap it again:
         self._Rewrap()
-        #evt.Skip()
 
     def _Rewrap(self):
-        #self.st.Freeze()
-        print "_Rewrap on:", self._label
+        """
+        Change the StaticText's label to the
+        unwrapped version. 
+        Use my width and re-wrap.
+        (This alters the actual string by adding 
+        newlines. I've noticed it fails on 
+        strings that have no spaces ...)
+        """
+        self.st.Freeze()
         self.st.SetLabel(self._label)
         w=self.GetSize().width
-        #if w > 360:
-        #    print "wrap to w:",w
         self.st.Wrap(w)
-        # here I count the rows:
-        #self._rows = self.st.GetLabel().count("\n") + 1
-        #self.st.Thaw()
+        self.st.Thaw()
 
     def DoGetBestSize(self):
-        # Trying to use the lineheight etc.
+        """
+        Don't ask me. This is a total mystery.
+        I make it return something sensible.
+        """
         sz = self._lh()
-        #self.CacheBestSize(sz)
+        self.CacheBestSize(sz)
         return sz
 
 
@@ -227,43 +212,55 @@ def xlabel(parent,
            weight = None,
             align = wx.ALIGN_LEFT,
             ellip = None,
-    SetLabel_func = None,
+    Layout_func = None,
              wrap = False):
+    """
+    Generic label func.
+
+    Args:
+    wrap or Layout_func
+       They are exclusive: use either, not both.
+
+       Either flag means: use AutoWrapStaticText control.
+
+       AutoWrapStaticText is a live static text that wraps 
+       and can have its label set (it will resize properly by 
+       calling Layout_func() to force a proper redraw.
+
+       If there is no Layout_func it implies that SetLabel
+       will never be called.
+
+       wrap on its own means we can go without the 
+       Layout_func - i.e. it will not alter the label's
+       string. It will only wrap in the space it started
+       with. (e.g. the long paragraphs in the HushPanel.)
+
+    Neither:
+        Defaults to a StaticText which will not wrap.
+    """
 
     s = align
     if ellip: s |= ellip
     
-    if wrap or SetLabel_func:
-        # Either flags: we must use the AutoWrapStaticText control
-        # This is a live static text that wraps and can have its 
-        # label set (it will resize properly by calling 
-        # SetLabel_func() to force a proper redraw.
+    if wrap or Layout_func:
         lbl = AutoWrapStaticText( parent,
                 ustr,
                 pointsize,
                 s,
                 weight,
-                SetLabel_func = SetLabel_func)
+                Layout_func = Layout_func)
     else:
-        # This is a single-use static text
-        lbl = wx.StaticText( parent, -1, ustr, style = s)
-
+        # This is a single-use static text. No wrapping.
+        lbl = wx.StaticText( parent, -1, u"..", style = s)
+        # I can't feed these in via the contrsuctor, hence
+        # this second stage:
         f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         f.SetPointSize(SYSFONT[pointsize])
         f.SetWeight(weight)    
-        
-        # Wrap the text once, to get it to fit better
-        # Reach up two parents to the MainFrame. I think.
-        ppw = lbl.GetParent().GetParent().GetSize().width
-        # wrap to half that.
-        lbl.Wrap( ppw/2 )
-        # get a pixel height for this font
-        pxh = f.GetPixelSize()[1] + 2
-        rows = ustr.count("\n") + 1
-        h = pxh * rows
+        lbl.SetFont(f)
+        # This causes a resize on the label.
+        lbl.SetLabel(ustr) 
 
-        lbl.SetSize( ( -1, h) )
-        lbl.SetFont( f )
     return lbl
 
 def parar( parent, ustr, pointsize="points_normal" ):
