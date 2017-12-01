@@ -1,16 +1,15 @@
 <a name="top"></a>
-<table>
-<tr>
-<td><img src="fontypythonmodules/things/splash.png"></td>
-<td valign=top><font size=40 color="{logotype}"><i><b>Fonty Python</b></i></font><br>
+<table><tr>
+<td valign=top><img src="fontypythonmodules/things/splash.png"></td>
+<td valign=bottom><font size=40 color="{logotype}"><i><b>Fonty Python</b></i></font></td>
+</tr></table>
+
 {copyright}<br>
-{version}<br><br>
+{version}<br>
 Contact me: {contact}<br>
 Open a ticket: {ticket}<br><br>
 Written on Gnu\Linux using wxPython, Python and Gvim.
-</td>
-</tr>
-</table>
+
 {warranty}
 
 Thanks

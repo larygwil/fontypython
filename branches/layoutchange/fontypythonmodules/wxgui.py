@@ -37,6 +37,7 @@ import fpsys # Global objects
 import fpversion
 ## Now, bring in all those big modules
 import wx
+import wx.lib.agw.advancedsplash as AS
 import wx.html as html
 
 
@@ -820,7 +821,7 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
 
         return True
 
-class FontySplash(wx.SplashScreen):
+class FontySplash(AS.AdvancedSplash):
         """
         2016 July
         =========
@@ -829,12 +830,22 @@ class FontySplash(wx.SplashScreen):
             remains there while the frame loads behind it.
 
             Borrowing from the wxPython demo's code.
+        Dec 2017
+        ========
+            Shifted over to using the AdvancedSplash
+            so that a trnasparent PNG would work.
         """
         def __init__(self, parent=None):
-            splashStyle = wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT
-            splashDuration = 1000 # milliseconds
+            splashDuration = 2000 # milliseconds
+            # Have to do this tango:
+            img = wx.Image(fpsys.mythingsdir + 'splash.png')
+            img.ConvertAlphaToMask()
+            bmp = wx.BitmapFromImage(img)
+            # Now we have a transp. bmp
+            AS.AdvancedSplash.__init__(self, parent,
+                    bitmap = bmp,timeout  = splashDuration,
+                    agwStyle = AS.AS_TIMEOUT | AS.AS_CENTER_ON_SCREEN)
 
-            wx.SplashScreen.__init__(self, fpwx.wxbmp( "splash" ), splashStyle, splashDuration, parent)
             self.Bind(wx.EVT_CLOSE, self.OnExit)
 
             # Nice! Kick the show off in x millis.
@@ -862,7 +873,6 @@ class FontySplash(wx.SplashScreen):
 
             if self.fc.IsRunning():
                 self.Raise()
-
 
 #Start the app!
 app = App(0)
