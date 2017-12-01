@@ -109,13 +109,12 @@ class StatusBar(wx.StatusBar):
 
         ##Sept2017
         ## Test if there's a need to warn about missing .fonts dir.
-        try:
-            fpsys.iPC.probeNoFontsDirError()
-        except fontybugs.NoFontsDir as e:
+
+        no_fonts_dir = False
+        e = fpsys.iPC.get_error_or_none("NoFontsDir")
+        if e:
             no_fonts_dir = True
             shorterr = e.short_unicode_of_error()
-        else:
-            no_fonts_dir = False
 
         ## Field 1 is Welcome...
         ## Field 2 is normal conversation.
@@ -128,7 +127,7 @@ class StatusBar(wx.StatusBar):
         if no_fonts_dir:
             self.SetStatusText( shorterr, 2)
             print shorterr
-            self.SetStatusWidths([300,-2,-1,32])
+            self.SetStatusWidths([300,-2,-2,32])
             #self.SetStatusStyles([wx.SB_SUNKEN]*3) #SB_SUNKEN is not available to me. 
         else:
             self.SetStatusWidths([300,-2,32])
@@ -350,7 +349,6 @@ class MainFrame(wx.Frame):
         lrsizer.Add( self.settings_panel, 1, wx.EXPAND )
         lrsizer.Add( self.choose_zipdir_panel, 1, wx.EXPAND )
         lrsizer.Add( self.hush_panel, 1, wx.EXPAND )
-        #lrsizer.Add( self.unhush_panel, 1, wx.EXPAND )
 
         self.SetSizer(lrsizer)
 
@@ -506,22 +504,24 @@ class MainFrame(wx.Frame):
         ## NB: I have more bindings after this handler is done:
         evt.Skip()
 
-
-
-
-
     def onFrameSize(self,evt):
         self.resized = True
         evt.Skip()
 
     def onIdle(self, evt):
-        #print "Idle runs"
         if self.resized:
             ## If it's showing the normal (font) view, then:
             if self.is_state_flagged(flag_normal):
+                # I place this fact into fpsys.state so
+                # that I can read it again down in the
+                # fitmap assemble_bitmap code.
+                fpsys.state.main_frame_resized = True
+                # Go re-draw shit.
                 ps.pub( update_font_view )
-
+            # Flag it off
             self.resized = False
+            # Flag it off in fpsys.state too
+            fpsys.state.main_frame_resized = False
 
     def OnAccelKey(self,evt):
         ps.pub( left_or_right_key_pressed, evt ) #fwd this business on-to a func in gui_FontView.py

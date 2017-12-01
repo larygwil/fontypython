@@ -137,20 +137,30 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         for fi in fpsys.state.viewobject:
             fi.top_left_adjust_completed = False
 
-    def MinimalCreateFitmaps( self, viewobject):#, force = False ) :
+    def MinimalCreateFitmaps( self, viewobject):
+        """
+        Note: I am not rendering the fitmaps when the frame's size changed.
+              
+        """
         #print "-------------------------"
         #print "MinimalCreateFitmaps runs"
         self.Freeze()
-        
-        panelwidth = max(500,self.GetSize()[0]) #First run it's weird. After that it works.
-        
-        #print "panelwidth:" ,panelwidth
+        panelwidth = max(420,self.GetSize()[0]) #First run it's weird. After that it works.
+        #print self.GetSize()[0]
 
         if len(viewobject) == 0:
             self.fitmap_sizer.Clear(True) # Wipe-out the past
             empty_fitem = fontcontrol.InfoFontItem()
             fm = Fitmap( self, empty_fitem )
-            fm.assemble_bitmap( panelwidth )
+            # force the width down a little. I want
+            # wrapping to happen when window is too
+            # small.
+            #panelwidth = self.GetSize()[0]
+            #print panelwidth
+            #panelwidth = max(360,self.GetSize()[0]) #First run it's weird. After that it works.
+            #if panelwidth < 300
+            pw = panelwidth - 25#(panelwidth/4))
+            fm.assemble_bitmap( pw )
             self.fitmap_sizer.Add( fm )
         else:
             # Let's compare what we had before (the contents of the sizer!) with what
@@ -197,37 +207,41 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
 
             self.Scroll(0,0) # Immediately scroll to the top. This fixed a big bug.
             
-            ## Credit to Michael Moller for clueing me onto "standard deviation".
-            ## My soluition: Take the mean of the widths and add a bit "more".
-            lw = len(w) # cannot be 0. I feel confident!
-            sw = sum(w)
-            #print w
+            ## Let's bother with all the math if columns are even a thing:
+            if fpsys.config.max_num_columns > 1:
+                ## Credit to Michael Moller for clueing me onto "standard deviation".
+                ## My soluition: Take the mean of the widths and add a bit "more".
+                lw = len(w) # cannot be 0. I feel confident!
+                sw = sum(w)
+                #print w
 
-            ## 1. Standard Deviation
-            ##    Calc the variance by subtracting each width from the 
-            ##    average and then taking the square summing along. 
-            ##    Calc the std deviation by sqrting that variance.
-            a = sw / lw # the average
-            sd = ( sum( ( a - i ) **2 for i in w ) / lw ) ** 0.5
+                ## 1. Standard Deviation
+                ##    Calc the variance by subtracting each width from the 
+                ##    average and then taking the square summing along. 
+                ##    Calc the std deviation by sqrting that variance.
+                a = sw / lw # the average
+                sd = ( sum( ( a - i ) **2 for i in w ) / lw ) ** 0.5
 
-            ## 2. I also get av of that std deviation, just to 
-            ##    shorten it a little.
-            ## This is the bit "more".
-            asd = sd / lw
+                ## 2. I also get av of that std deviation, just to 
+                ##    shorten it a little bit "more".
+                asd = sd / lw
 
-            ## 3. My result is the sum of these two.
-            avw = a + asd
+                ## 3. My result is the sum of these two.
+                avw = a + asd
 
-            ## Can we afford some columns?
-            ##  ..Also prevent any poss div by 0
-            cols = max( 1, int(panelwidth / max(avw, 1) ) )
+                ## Can we afford some columns?
+                ##  ..Also prevent any poss div by 0
+                cols = max( 1, int(panelwidth / max(avw, 1) ) )
 
-            #Nov 2017: New option in settings to control columns"
-            cols = min( cols, fpsys.config.max_num_columns )
+                #Nov 2017: New option in settings to control columns"
+                cols = min( cols, fpsys.config.max_num_columns )
 
-            ## Get a better actual width for the columns!
-            ##  ..Also prevent any poss div by 0
-            colw = int(panelwidth / max(cols, 1))
+                ## Get a better actual width for the columns!
+                ##  ..Also prevent any poss div by 0
+                colw = int(panelwidth / max(cols, 1))
+            else:
+                cols = 1
+                colw = panelwidth
 
             #print "colw:",colw
             self.fitmap_sizer.SetCols(cols)

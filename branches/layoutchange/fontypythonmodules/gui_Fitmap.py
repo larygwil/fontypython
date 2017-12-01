@@ -115,7 +115,8 @@ class TextPencil(Pencil):
         ## if we are to split, the size will change:
         dcw,dch = memdc.GetSize()
         ## Well ...hell. wx has a wordwrapper!
-        txt = wordwrap(txt, dcw - self.x, memdc, breakLongWords = True )
+        #txt = wordwrap(txt, dcw - self.x, memdc, breakLongWords = True )
+        txt = wordwrap(txt, dcw - self.x, memdc, breakLongWords = False)
 
         memdc.SetTextForeground( self._fcol )
         memdc.SetFont( self.font )
@@ -318,6 +319,19 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         "A" is generate glyphs from scratch
         "B" is draw the bitmap again
         """
+        # Experimental:
+        # This forces a re-render when the main frame is resized.
+        # The nature of the true/false onIdle test thing prevents 
+        # the use of our has_changed trick. Do a direct test
+        # instead.
+        # This resize->redraw might suck too much juice and 
+        # slow the app.
+        # A | B
+        if fpsys.state.main_frame_resized:
+            self.state |= Fitmap.flagA | Fitmap.flagB
+
+        # The normal ones:
+
         # A | B
         if self.has_changed("pointschanged", fpsys.config.points):
             self.state |= Fitmap.flagA | Fitmap.flagB
@@ -513,7 +527,7 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
                     fx=tx
                     esc = True
                     break
-            if esc: break #uses fact that 0 is False
+            if esc: break
         # Scan DOWN the HEIGHT and repeatedly ACROSS.
         esc = False
         for ty in xrange(H):
@@ -577,13 +591,14 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         we don't need _gen_glyphs in this method.)
 
         As it happens, right now, there are only two states:
-        bits 0 "A" and/or 1 "B", i.e. 
-        "A" gen_glyphs 
-        "B" draw_bitmap+use_pencils;
+        "A" and/or "B", i.e. 
+        bit code  what
+         0  "A"   gen_glyphs 
+         1  "B"   draw_bitmap+use_pencils;
         """
         ## Go determine_draw_state my draw state. 
         self.determine_draw_state()
-        #print u"assemble_bitmap Draw state: {} for {}".format(self.state,self.name)
+        print u"assemble_bitmap Draw state: {} for {}".format(self.state,self.name)
 
         if self.is_block("B"):
             # Block B: Draw the entire fitmap

@@ -176,6 +176,7 @@ class AutoWrapStaticText(wx.PyControl):
         self.st.SetSize( self.GetSize() )
         # Go wrap it again:
         self._Rewrap()
+        #evt.Skip()
 
     def _Rewrap(self):
         """

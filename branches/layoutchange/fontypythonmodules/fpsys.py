@@ -56,7 +56,7 @@ except:
         home = os.environ["HOME"] # Is a byte string under Linux.
         try2 = os.path.join(home, ".local", "share")
         if os.path.exists(try2): XDG_DATA_HOME = try2
-        try2 = ps.path.join(home, ".config")
+        try2 = os.path.join(home, ".config")
         if os.path.exists(try2): XDG_CONFIG_HOME = try2
     except:
         pass
@@ -66,7 +66,7 @@ except:
 #raise SystemExit
 
 ## debug test
-##XDG_DATA_HOME = ""
+#XDG_DATA_HOME = ""
 
 ## See end of file
 
@@ -162,7 +162,8 @@ class PathControl:
                 x_fp_dir = os.path.join(XDG_DATA_HOME, "fontypython")
                 try:
                     self.__try_test_make_dir(x_fp_dir, "NoFontypythonDir")
-                    ##TESTER: self.__try_test_make_dir("/root/bar", "NoFontypythonDir")
+                    ##TEST: 
+                    #self.__try_test_make_dir("/root/bar", "NoFontypythonDir")
                 except:
                     return #Serious error
                 else:
@@ -170,7 +171,7 @@ class PathControl:
 
                 x_fonts_dir = os.path.join(XDG_DATA_HOME, "fonts")
                 try:
-                    ##TESTER: 
+                    ##TEST: 
                     #self.__try_test_make_dir("/root/foo", "NoFontsDir")
                     self.__try_test_make_dir(x_fonts_dir, "NoFontsDir")
                 except:
@@ -271,11 +272,11 @@ class PathControl:
                         shutil.move(oldpaf, newpaf)
                 except Exception as e:
                     self.__ERROR_STATE["UpgradeFail"] = fontybugs.UpgradeFail(
-                        _("Could not move \"{what}\" from \"{src}\" to \"{dest}\"\n" \
-                          "Please resolve the problem and start me again.").format(
-                              what=f,
-                              src=old_fp,
-                              dest=new_fp),
+                    _("Could not move \"{what}\" from \"{src}\" to \"{dest}\"\n" \
+                      "Please resolve the problem and start me again.").format(
+                          what=f,
+                          src=old_fp,
+                          dest=new_fp),
                         e)
                     raise
         except: # unknown sundry
@@ -289,11 +290,11 @@ class PathControl:
         except Exception as e:
             #Just could not kill the beast!
             self.__ERROR_STATE["UpgradeFail"] = \
-                    fontybugs.UpgradeFail(
-                        _("Could not remove the old \"{oldfontydir}\" directory.\n" \
-                          "Please remove it and start me again.").format(
-                              oldfontydir = old_fp),
-                        e)
+                fontybugs.UpgradeFail(
+                _("Could not remove the old \"{oldfontydir}\" directory.\n" \
+                  "Please remove it and start me again.").format(
+                      oldfontydir = old_fp),
+                e)
             raise
 
     def __upgrade_fonts_dir(self, old_fonts_dir, new_fonts_dir):
@@ -474,8 +475,9 @@ class Overlaperize(object):
 
 def getSegfontsList():
     """
-    On startup, open the 'segfonts' file and keep it handy in a global list.
-    This list is written to 'segfonts' file by the 'checkFonts' func in this module.
+    On startup, open the 'segfonts' file and keep it handy in
+    a global list. This list is written to 'segfonts' file by
+    the 'checkFonts' func in this module.
     """
     global segfonts
     try:
@@ -631,6 +633,8 @@ class FPState:
 
         ## On start, there's a test for fontconfig dir
         self.fontconfig_confd_exists = False
+
+        self.main_frame_resized = False
 
 ####
 ## Save and Load the conf file
