@@ -55,7 +55,7 @@ class situation(object):
 
 ## If non-ascii chars get entered on the cli, say a Japanese word for
 ## a pog's name, we may have a problem. 
-## So, I am going to (try to) decode those byte strings into Unicode first:	
+## So, I am going to (try to) decode those byte strings into Unicode first:
 tmp = []
 for a in sys.argv[1:]:
     ## It seems that a is always a BYTE STRING, but I'll just test anyway:

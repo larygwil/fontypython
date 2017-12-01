@@ -41,17 +41,14 @@ from gui_Fitmap import * #Also brings in 'ps' variable
 
 class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
     """
-    This is the main font control, the child of CLASS FontViewPanel (in gui_FontView.py)
-    Draw a list of fitmaps from a font list object (derived from BasicFontList)
-
-    July 2016
-    =========
-  Useful url: http://stackoverflow.com/questions/21431366/scrolledpanel-with-vertical-scrollbar-only-and-wrapsizer
-
+    This is the main font control, the child of CLASS FontViewPanel
+    (in gui_FontView.py). Draw a list of fitmaps from a font list 
+    object (derived from BasicFontList).
     """
     def __init__(self, parent):
         self.parent = parent
-        wx.lib.scrolledpanel.ScrolledPanel.__init__(self, parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
+        wx.lib.scrolledpanel.ScrolledPanel.__init__(self,
+                parent, -1, style=wx.VSCROLL|wx.SUNKEN_BORDER)
 
         ## Stops to use in fitmap drawing code.
         white_full = wx.Colour(255,255,255,255)

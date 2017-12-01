@@ -243,7 +243,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.toggle_dismissable_panel)
 
 
-        ## Bind the Left and Right key shortcuts.	
+        ## Bind the Left and Right key shortcuts.
         self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_FORWARD )
         self.Bind(wx.EVT_MENU, self.OnAccelKey, id=wx.ID_BACKWARD )
 
@@ -753,8 +753,8 @@ class MainFrame(wx.Frame):
         dlg = wx.MessageDialog(self,_("Do you want to purge %s?\n\nPurging means all the fonts in the pog\nthat are not pointing to actual files\nwill be removed from this pog.") % pogname, _("Purge font?"), wx.YES_NO | wx.ICON_INFORMATION )
         if dlg.ShowModal() == wx.ID_YES:
             ## pog.purge() Raises
-            ## 	  PogEmpty
-            ## 	  PogInstalled
+            ##   PogEmpty
+            ##   PogInstalled
             try:
                 fpsys.state.viewobject.purge()
             except(fontybugs.PogEmpty, fontybugs.PogInstalled),e:
@@ -853,7 +853,7 @@ class FontySplash(AS.AdvancedSplash):
 
         def OnExit(self, evt):
             # The program will freeze without this line.
-            evt.Skip()	# Make sure the default handler runs too...
+            evt.Skip() # Make sure the default handler runs too...
             self.Hide()
 
             # if the timer is still running, force the main frame to start

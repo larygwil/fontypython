@@ -326,13 +326,13 @@ class WebOpenFontFormatItem( FontItem ):
 
 ## Sept 2017: Not supported by PIL
 #class X11PCFItem( FontItem ):
-#	def __init__( self, glyphpaf ):
-#		FontItem.__init__( self, glyphpaf )
+#def __init__( self, glyphpaf ):
+#FontItem.__init__( self, glyphpaf )
 
 ## Sept 2017 - Also not working ...
 #class WindowsFNTItem( FontItem ):
-#	def __init__( self, glyphpaf ):
-#		FontItem.__init__( self, glyphpaf )
+#def __init__( self, glyphpaf ):
+#FontItem.__init__( self, glyphpaf )
 
 
 
@@ -798,21 +798,23 @@ class Pog(BasicFontList):
             PogSomeFontsDidNotInstall
             NoFontsDir
         """
-        # This raises NoFontsDir if it's missing	
+        # This raises NoFontsDir if it's missing
         fpsys.iPC.probeNoFontsDirError()
 
-        #if not os.path.exists(fpsys.iPC.userFontPath()):
-        #	raise fontybugs.NoFontsDir( fpsys.iPC.userFontPath() )
-
         def linkfont(fi, frompaf, topaf):
-            ## 15 Sept 2009 : Catch situations where the font is already installed.
+            ## 15 Sept 2009 : Catch situations where the font
+            ## is already installed.
             try:
                 os.symlink(frompaf, topaf)  #Should do the trick.
                 return True
             except OSError, detail:
-                if detail.errno != errno.EEXIST: raise # File exists -- this font is already installed, we can ignore EEXIST.
+                ## File exists -- this font is already installed, we 
+                ## can ignore EEXIST.
+                if detail.errno != errno.EEXIST: raise 
+
                 ## This font has been linked before.
-                fpsys.Overlap.inc(fi.name) # Use the class in fpsys to manage overlaps.
+                # Use the class in fpsys to manage overlaps.
+                fpsys.Overlap.inc(fi.name) 
 
                 return False
 
@@ -826,7 +828,7 @@ class Pog(BasicFontList):
         ## Now we make sure ...
         if len(self) == 0:
             self.__installed = "no"
-            raise fontybugs.PogEmpty(self.name) # RAISED :: PogEmpty
+            raise fontybugs.PogEmpty(self.name) # RAISED:: PogEmpty
 
         ## Now we go through the guts of the pog, font by font:
         bugs = 0
@@ -838,13 +840,16 @@ class Pog(BasicFontList):
 
             ## Link it if it ain't already there.
             if os.path.exists(fi.glyphpaf):
-                if linkfont(fi, fi.glyphpaf, linkDestination): #link the font and if True, it was not overlapped, so also do Type1 step 2
+                # link the font and if True, it was not overlapped, so also 
+                # do Type1 step 2
+                if linkfont(fi, fi.glyphpaf, linkDestination):
                     ## Now, the Type1 step 2, link the metric file.
                     if isinstance( fi, Type1Item ):
                         ## It's a Type 1, does it have a metricpaf?
                         if fi.metricpaf:
                             linkDestination = \
-                            os.path.join( fpsys.iPC.userFontPath(), os.path.basename( fi.metricpaf ) )
+                            os.path.join( fpsys.iPC.userFontPath(),
+                                    os.path.basename( fi.metricpaf ) )
                             linkfont( fi, fi.metricpaf, linkDestination )
             else:
                 bugs += 1
@@ -852,13 +857,15 @@ class Pog(BasicFontList):
             ## We flag ourselves as NOT INSTALLED
             self.__installed = "no"
             self.write()
-            raise fontybugs.PogAllFontsFailedToInstall(self.name) # RAISED :: PogAllFontsFailedToInstall
+            # RAISED :: PogAllFontsFailedToInstall
+            raise fontybugs.PogAllFontsFailedToInstall(self.name) 
         elif bugs > 0:
             ## Some fonts did get installed, but not all. so, we are INSTALLED
             self.write()
             #print "   semi [INSTALL COMPLETE]"
             #print self.__installed
-            raise fontybugs.PogSomeFontsDidNotInstall(self.name) # RAISED :: PogSomeFontsDidNotInstall
+            # RAISED :: PogSomeFontsDidNotInstall
+            raise fontybugs.PogSomeFontsDidNotInstall(self.name)
 
         self.write()
 
@@ -868,8 +875,8 @@ class Pog(BasicFontList):
         Uninstall the fonts.
         NOTE:
         If any font is NOT removed POG = INSTALLED
-        Any links that are not found = just ignore: They could have been removed by another pog, or this
-        could have been a bad pog anyway.
+        Any links that are not found = just ignore: They could have been
+        removed by another pog, or this could have been a bad pog anyway.
         NO BAD POG flag EVER.
 
         Raises:

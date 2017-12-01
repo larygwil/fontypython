@@ -1,19 +1,19 @@
-##	Fonty Python Copyright (C) 2017 Donn.C.Ingle
-##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+## Fonty Python Copyright (C) 2017 Donn.C.Ingle
+## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
-##	This file is part of Fonty Python.
-##	Fonty Python is free software: you can redistribute it and/or modify
-##	it under the terms of the GNU General Public License as published by
-##	the Free Software Foundation, either version 3 of the License, or
-##	(at your option) any later version.
+## This file is part of Fonty Python.
+## Fonty Python is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-##	Fonty Python is distributed in the hope that it will be useful,
-##	but WITHOUT ANY WARRANTY; without even the implied warranty of
-##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##	GNU General Public License for more details.
+## Fonty Python is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-##	You should have received a copy of the GNU General Public License
-##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License
+## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 import wx
 
@@ -143,7 +143,9 @@ class TargetPogChooser(wx.Panel):
             if dlg.ShowModal() == wx.ID_OK:
                 nam = dlg.GetValue()
                 if nam == "":
-                    ps.pub( show_message, _("A Pog with no name won't be created, however it was a good try!") )
+                    ps.pub( show_message, _(
+                        "A Pog with no name won't be created, "\
+                        "however it was a good try!") )
                 ## Is it unique?
                 elif fpsys.isPog(nam):
                     ## Nope, it's there already
@@ -181,7 +183,9 @@ class TargetPogChooser(wx.Panel):
                 ## Fixed Oct 2009
                 iPog = fontcontrol.Pog(p)
                 if iPog.isInstalled():
-                    ps.pub( show_error, _("One or more selected Pogs is installed, fix your selection and try again.") )
+                    ps.pub( show_error, _(
+                        "One or more selected Pogs is installed, " \
+                        "fix your selection and try again.") )
                     allok=False
                     break
                 iPogsToKill.append( iPog )
@@ -197,7 +201,7 @@ class TargetPogChooser(wx.Panel):
                     pogname=tokill[0]
 
                 dlg = wx.MessageDialog(self, _("Remove %s, are you sure?") % pogname,
-                    _("Are you sure?"), wx.YES_NO | wx.ICON_INFORMATION	)
+                    _("Are you sure?"), wx.YES_NO | wx.ICON_INFORMATION)
                 if dlg.ShowModal() == wx.ID_YES:
                     ## Let's do them in:
                     for victim in iPogsToKill: #tokill:
@@ -278,7 +282,10 @@ class TargetPogChooser(wx.Panel):
                         # We installed RHS, so need to set that in RHS
                         # which is a sep object.
                         fpsys.state.viewobject.setInstalledFlag(True)
-                    ps.pub( change_pog_icon ) #Causes TWO calls to update BOTH choosers.
+
+                    #Causes TWO calls to update BOTH choosers.
+                    ps.pub( change_pog_icon ) 
+
                     self.toggleButtons()
                     ps.pub( update_font_view )
 
@@ -297,7 +304,8 @@ class TargetPogChooser(wx.Panel):
                                 fontybugs.PogNotInstalled,
                                 fontybugs.PogLinksRemain
                     ), er:
-                    ## PogNotInstalled is prevented by buttons greying out in the gui.
+                    ## PogNotInstalled is prevented by buttons 
+                    ## greying-out in the gui.
                     ps.pub( show_error, unicode(er) )
                     ok=False
                 if ok:
@@ -311,7 +319,10 @@ class TargetPogChooser(wx.Panel):
                         # We uninstalled RHS, so need to set that in RHS
                         # which is a sep object.
                         fpsys.state.viewobject.setInstalledFlag(False)
-                    ps.pub( change_pog_icon ) #Causes TWO calls to update BOTH choosers.
+
+                    #Causes TWO calls to update BOTH choosers.
+                    ps.pub( change_pog_icon ) 
+
                     self.toggleButtons()
                     ps.pub( update_font_view )
 
@@ -323,7 +334,7 @@ class TargetPogChooser(wx.Panel):
             ## ==
             ## Moved the zip code into wxgui MainFrame
             ## it's in a DismissablePanel now.
-            self.list_of_target_pogs_selected = multipogs # I want the list of chosen pogs.
+            self.list_of_target_pogs_selected = multipogs 
             e.Skip() # fwd the event
         
 
@@ -333,7 +344,8 @@ class TargetPogChooser(wx.Panel):
         args[0] pogname
         args[1] is pognochange
         """
-        ## Made it so a second click on a target pog will unselect it.
+        ## Made it so a second click on a target pog 
+        ## will unselect it.
         if args[1]: #pognochange = True, so let's deselect this pog
             self.SelectNoTargetPog()
             ps.pub(update_font_view)
@@ -367,6 +379,6 @@ class TargetPogChooser(wx.Panel):
         self.pogTargetlist.SortOutTheDamnImages( pognochange = True )
         self.pogTargetlist.ClearSelection() #Select nothing.
 
-        fpsys.SetTargetPogToNone()  # Tell fpsys that we have no pog target selected	
-        self.toggleButtons() # Disable the buttons on the bottom right.		
+        fpsys.SetTargetPogToNone()  # Tell fpsys that we have no pog target selected
+        self.toggleButtons() # Disable the buttons on the bottom right. 
         wx.EndBusyCursor()

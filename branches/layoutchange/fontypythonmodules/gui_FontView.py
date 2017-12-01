@@ -42,44 +42,8 @@ import fpsys # Global objects
 import fontyfilter
 import fontybugs
 
-#from fpwx import label, icon, wxbmp
 import fpwx
 
-##The SearchAssistant idea was to have a panel that opens to give tips and interactive
-##help for searching. We were going to have field and PANOSE access via fontTools but
-##this dev. has paused -- until someone else with a clue can help....
-##So, this code will just remain as a remark:
-#class SearchAssistant(wx.CollapsiblePane):
-#	def __init__(self, parent):
-#		self.label1=_("Click for Search Assistant")
-#		self.label2=_("Close Search Assistant")
-#		wx.CollapsiblePane.__init__(self,parent, label=self.label1,style=wx.CP_DEFAULT_STYLE)#|wx.CP_NO_TLW_RESIZE)
-#		self.Bind(wx.EVT_COLLAPSIBLEPANE_CHANGED, self.OnPaneChanged)
-#		self.MakePaneContent(self.GetPane())
-#		
-#	def OnToggle(self, evt):
-#		self.Collapse(self.IsExpanded())
-#		self.OnPaneChanged()
-#		
-#	def OnPaneChanged(self, evt=None):
-#		#if evt:
-#		   # self.log.write('wx.EVT_COLLAPSIBLEPANE_CHANGED: %s' % evt.Collapsed)
-#
-#		# redo the layout
-#		self.GetParent().Layout()
-#
-#		# and also change the labels
-#		if self.IsExpanded():
-#			self.SetLabel(self.label2)
-#		else:
-#			self.SetLabel(self.label1)
-#		
-#
-#	def MakePaneContent(self, pane):
-#		nameLbl = wx.StaticText(pane, -1, _("Search Assistance.") )
-#		border = wx.BoxSizer()
-#		border.Add(nameLbl, 1, wx.EXPAND|wx.ALL, 5)
-#		pane.SetSizer(border)
 
 class SearchFilter(wx.SearchCtrl):
     """
@@ -479,15 +443,15 @@ class FontViewPanel(wx.Panel):
 
             ## Many thanks to Michael Hoeft for this fix! I suck at math :)
             # I miss the right words to explain this step, therefore an example:
-            # 	23 / 10 = 2
-            # 	23 % 10 = 3 > modulo > bool(3) = True = 1
-            # 	-----------------------------------------
-            # 	2 + 1 = 3 >  3 pages
+            #  23 / 10 = 2
+            #  23 % 10 = 3 > modulo > bool(3) = True = 1
+            #  -----------------------------------------
+            #  2 + 1 = 3 >  3 pages
             #
-            #	40 / 10 = 4
-            # 	40 % 10 = 0 > modulo > bool(0) = False = 0
-            #	------------------------------------------
-            # 	4 + 0 = 4 >	4 pages
+            #  40 / 10 = 4
+            #  40 % 10 = 0 > modulo > bool(0) = False = 0
+            # ------------------------------------------
+            #  4 + 0 = 4 > 4 pages
             self.total_number_of_pages = (total_num_fonts / num_in_one_page) \
                     + bool(total_num_fonts % num_in_one_page)
 
@@ -774,20 +738,19 @@ class FontViewPanel(wx.Panel):
         self.filterAndPageThenCallCreateFitmaps()
 
 
-
-
-
     def onMainClick(self, evt) :
         """
         Removes fonts, or Appends fonts. Depends on situation in fpsys.state
         """
-        xPos, yPos = self.scrolledFontView.GetViewStart() #Saved by Robin Dunn, once again ! ! !
+        #Saved by Robin Dunn, once again ! ! !
+        xPos, yPos = self.scrolledFontView.GetViewStart() 
         wx.BeginBusyCursor()
         doupdate = False
 
         ## Let's determine what kind of thing to do:
         if fpsys.state.action == "REMOVE":
-            ## We have a pog in viewobject and we must remove the selected fonts from it.
+            ## We have a pog in viewobject and we must remove the 
+            ## selected fonts from it.
             vo = fpsys.state.viewobject
             victims = []
             dowrite = False
@@ -811,9 +774,11 @@ class FontViewPanel(wx.Panel):
                 doupdate = True
 
                 if not bug:
-                    ps.pub(print_to_status_bar,_("Selected fonts have been removed."))
+                    ps.pub(print_to_status_bar,_(
+                        "Selected fonts have been removed."))
                 else:
-                    ps.pub(print_to_status_bar,_("There was an error writing the pog "\
+                    ps.pub(print_to_status_bar,_(
+                        "There was an error writing the pog "\
                         "to disk. Nothing has been done."))
 
         ## APPEND - Copy font to a pog.
@@ -829,7 +794,8 @@ class FontViewPanel(wx.Panel):
                     to.append(fi)
                     dowrite = True
             if dowrite:
-                fpsys.flushTicks() #Ensure we have no more ticks after a succ xfer.
+                #Ensure we have no more ticks after a succ. xfer.
+                fpsys.flushTicks() 
                 bug = False
                 try:
                     to.write()
@@ -844,12 +810,18 @@ class FontViewPanel(wx.Panel):
                         "Selected fonts are now in %s.") % to.label())
                 else:
                     ps.pub(print_to_status_bar,_(
-                        "There was an error writing the pog to disk. Nothing has been done"))
+                        "There was an error writing the pog to disk. " \
+                        "Nothing has been done"))
 
-        wx.EndBusyCursor()
         self.scrolledFontView.Scroll(xPos, yPos)
 
         if doupdate: self.MainFontViewUpdate()
+
+        # Dec 2017
+        # I *think* this SetFocus has fixed the "swallowed ESC" issue.
+        # It seems to work.
+        self.SetFocus()
+        wx.EndBusyCursor()
 
     def onPagechoiceClick(self,event) :
         ##cb = event.GetEventObject()
@@ -877,27 +849,6 @@ class FontViewPanel(wx.Panel):
             self.filterAndPageThenCallCreateFitmaps()
         wx.EndBusyCursor()
 
-    def xxonPagechoiceClick(self,event) :
-        wx.BeginBusyCursor()
-        if self.pageindex != int(event.GetString() ) : #Only redraw if actually onto another page.
-            self.pageindex =  int(event.GetString() )
-            self.filterAndPageThenCallCreateFitmaps()
-        wx.EndBusyCursor()
-
-    #def OnSliderScroll(self, event):
-    #	"""
-    #		July 2016: Tried a slider to move through pages. It sucked.
-    #		This code not in use.
-    #	"""
-    #	obj = event.GetEventObject()
-    #	val = obj.GetValue()
-    #	wx.BeginBusyCursor()
-    #	if self.pageindex != val: #Only redraw if actually onto another page.
-    #		self.pageindex = val
-    #		self.filterAndPageThenCallCreateFitmaps()
-    #	wx.EndBusyCursor()
-
-
     def navClick(self,event) :
         wx.BeginBusyCursor()
         if event.GetId()  == wx.ID_FORWARD:
@@ -918,8 +869,8 @@ class FontViewPanel(wx.Panel):
         evt=evt[0] # just get around pubsub tuple.
         id=evt.GetId()
         ## We can't just pass on to navClick yet because we don't know if
-        ## the button (left/right) is enabled or not. So determine that and then
-        ## pass on to the other handler.
+        ## the button (left/right) is enabled or not. So determine 
+        ## that and then pass on to the other handler.
         if id==wx.ID_FORWARD: #right arrow was pressed
             if self.next_button.IsEnabled():
                 self.navClick( evt )

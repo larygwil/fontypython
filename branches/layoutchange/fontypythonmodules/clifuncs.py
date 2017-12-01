@@ -145,8 +145,8 @@ def purgepog(pogtopurge):
             e.print_error_and_quit()
         try:
             ## pog.purge() Raises
-            ## 	  PogEmpty
-            ## 	  PogInstalled			
+            ##   PogEmpty
+            ##   PogInstalled
             pog.purge()
         except (fontybugs.PogEmpty, fontybugs.PogInstalled), e:
             e.print_error()
@@ -170,10 +170,10 @@ def installpogs( listofpogs ):
                 e.print_error_and_quit()
             try:
             ## pog.install() Raises:
-            ## 	  PogEmpty
-            ## 	  PogAllFontsFailedToInstall
-            ## 	  PogSomeFontsDidNotInstall			
-            ## 	  NoFontsDir
+            ##   PogEmpty
+            ##   PogAllFontsFailedToInstall
+            ##   PogSomeFontsDidNotInstall
+            ##   NoFontsDir
                 print _("Installing (%s)") % pogtoinstall
                 pog.install()
             except ( fontybugs.PogEmpty,
@@ -198,9 +198,9 @@ def uninstallpogs( listofpogs ):
                 e.print_error_and_quit()
             try:
             ## Raises:
-            ## 	  PogEmpty
-            ## 	  PogLinksRemain
-            ## 	  PogNotInstalled			
+            ##   PogEmpty
+            ##   PogLinksRemain
+            ##   PogNotInstalled
                 print _("Removing (%s)") % pogtouninstall
                 pog.uninstall()
             except (fontybugs.PogEmpty,

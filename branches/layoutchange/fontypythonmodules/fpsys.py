@@ -905,7 +905,7 @@ def markInactive():
         ## What's in TARGET must be inactive in VIEW
 
         ## pafBlist is a list of UNICODEs
-        ## glyphpaf_unicode is UNICODE, so I will use it instead		
+        ## glyphpaf_unicode is UNICODE, so I will use it instead
         ## because we compare it to pafBlist
         pafBlist = [i.glyphpaf_unicode for i in state.targetobject]
 
