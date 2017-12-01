@@ -391,7 +391,8 @@ class FontViewPanel(wx.Panel):
         ## First, return user to page 1:
         self.pageindex = 1
         self.filterAndPageThenCallCreateFitmaps()
-        self.button_main.SetFocus()  #a GTK bug demands this move. Restore the ESC key func.
+        # A GTK bug demands this move. Restore the ESC key func.
+        self.button_main.SetFocus()  
 
     def setOneBIR( self, idy, truth ):
         self.BIR[idy]['truth'] = truth
@@ -465,9 +466,11 @@ class FontViewPanel(wx.Panel):
             if self.filter != self.last_filter_string: filter_changed = True
             self.last_filter_string = self.filter
 
-            ## If the filter did change OR we have a blank filteredViewObject, then make a new one.
+            ## If the filter did change OR we have a blank 
+            ## filteredViewObject, then make a new one.
             if not fpsys.state.filteredViewObject or filter_changed:
-                fpsys.state.filteredViewObject = fontyfilter.doFilter( self.filter ) # Uses the external module to filter.
+                fpsys.state.filteredViewObject = fontyfilter.doFilter(
+                        self.filter ) # Uses the external module to filter.
 
             ## STEP 2 : Figure out how many pages we have to display
             current_page = self.pageindex - 1
@@ -485,11 +488,15 @@ class FontViewPanel(wx.Panel):
             # 	40 % 10 = 0 > modulo > bool(0) = False = 0
             #	------------------------------------------
             # 	4 + 0 = 4 >	4 pages
-            self.total_number_of_pages = (total_num_fonts / num_in_one_page) + bool(total_num_fonts % num_in_one_page)
+            self.total_number_of_pages = (total_num_fonts / num_in_one_page) \
+                    + bool(total_num_fonts % num_in_one_page)
 
-            start = current_page * num_in_one_page #leaf thru the pages to the one we are on now.
+            #leaf thru the pages to the one we are on now.
+            start = current_page * num_in_one_page 
             fin = start + num_in_one_page
-            if fin > len(fpsys.state.filteredViewObject): fin = len(fpsys.state.filteredViewObject) #Make sure we don't overshoot.
+            # Make sure we don't overshoot.
+            if fin > len(fpsys.state.filteredViewObject):
+                fin = len(fpsys.state.filteredViewObject)
 
             ## Extract a single page of fonts to display
             sublist = fpsys.state.filteredViewObject[start:fin]
@@ -507,13 +514,12 @@ class FontViewPanel(wx.Panel):
             sublist = []
 
         if self.total_number_of_pages == 1:
-            self.pager_combo.Enable(False) #I tried to hide/show the choice, but it would not redraw properly.
-            #self.choiceSlider.Enable(False)
+            self.pager_combo.Enable(False)
         else:
             self.pager_combo.Enable(True)
-            #self.choiceSlider.Enable(True)
 
-        self.scrolledFontView.MinimalCreateFitmaps( sublist ) # Tell my child to draw the fonts
+        # Tell my child to draw the fonts
+        self.scrolledFontView.MinimalCreateFitmaps( sublist )
 
         self.EnableDisablePrevNext()
 
@@ -903,8 +909,8 @@ class FontViewPanel(wx.Panel):
         if self.pageindex == 0:
             self.pageindex = 1
 
-        self.button_main.SetFocus()  #a GTK bug demands this move.
         self.filterAndPageThenCallCreateFitmaps()
+        self.button_main.SetFocus()
         wx.EndBusyCursor()
 
     def OnLeftOrRightKey(self, evt):

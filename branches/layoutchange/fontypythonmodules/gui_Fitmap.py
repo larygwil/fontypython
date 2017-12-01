@@ -598,7 +598,8 @@ class Fitmap(wx.lib.statbmp.GenStaticBitmap):
         """
         ## Go determine_draw_state my draw state. 
         self.determine_draw_state()
-        print u"assemble_bitmap Draw state: {} for {}".format(self.state,self.name)
+        
+        #print u"assemble_bitmap Draw state: {} for {}".format(self.state,self.name)
 
         if self.is_block("B"):
             # Block B: Draw the entire fitmap
