@@ -51,8 +51,6 @@ TODO
 
 * ESC being swallowed by something in the filter area....
 
-* Remove the whatgui switches
-
 * Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
 * Sliders for point size, num cols etc. in settings?
