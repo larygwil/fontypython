@@ -133,21 +133,10 @@ class AutoWrapStaticText(wx.PyControl):
 
         # Found a func that gives me pixels! I don't need
         # the whole dc measure thing.
-        self._lineheight = f.GetPixelSize()[1] + 2 # add some extra padding.
+        self._lineheight = f.GetPixelSize()[1] + 3 # add some extra padding.
    
         self._Rewrap()
         self.Bind(wx.EVT_SIZE, self.OnSize)    
-
-    def _lh(self):
-        """
-        return a tup of my width, text's height
-        lineheight * rows = +/- height
-        """
-        rows = self.st.GetLabel().count("\n") + 1
-        h = rows * self._lineheight
-        sw = self.GetSize().width
-        sz = wx.Size( sw, h )
-        return sz
 
     def SetLabel(self, label):
         """
@@ -164,12 +153,6 @@ class AutoWrapStaticText(wx.PyControl):
 
     def GetLabel(self):
         return self._label
-
-    #def SetFont(self, font):
-    #    self.st.SetFont(font)
-    #    self._Rewrap()
-    #def GetFont(self):
-    #    return self.st.GetFont()
 
     def OnSize(self, evt):
         # Make the StaticText be my width
@@ -196,9 +179,15 @@ class AutoWrapStaticText(wx.PyControl):
     def DoGetBestSize(self):
         """
         Don't ask me. This is a total mystery.
+
         I make it return something sensible.
+        A tup of my width, text's height
+        lineheight * rows => +/- the height
         """
-        sz = self._lh()
+        rows = self.st.GetLabel().count("\n") + 1
+        h = rows * self._lineheight
+        sw = self.GetSize().width
+        sz = wx.Size( sw, h )
         self.CacheBestSize(sz)
         return sz
 

@@ -439,6 +439,8 @@ class MainFrame(wx.Frame):
 
 
         self.SetMinSize(wx.Size(MINSCREENWIDTH,600)) #Old Skool: Assuming monitor size...
+
+        self.Fit()
         self.Layout()
 
         ## This is to draw the correct icons depending on cli params.
@@ -827,19 +829,20 @@ class FontySplash(wx.Frame):
     Borrowing from the wxPython-demo's code.
     
     (Code hacked from AdvancedSplash by
-    Andrea Gavana, @ 10 Oct 2005)
+    Andrea Gavana.)
     """
-    def __init__(self, parent=None):
+    def __init__( self ):
+        
         timeout = 2000
-        #pos=wx.DefaultPosition
-        #size=wx.DefaultSize
-        #style=wx.FRAME_NO_TASKBAR | wx.FRAME_SHAPED | wx.STAY_ON_TOP
+        # A smaller number then the first timeout
+        mainframetimeout = 500
 
         wx.Frame.__init__(self, None, -1, "",
                 wx.DefaultPosition,
                 wx.DefaultSize,
                 wx.FRAME_NO_TASKBAR | wx.FRAME_SHAPED | wx.STAY_ON_TOP)
 
+        # Load the FP logo
         img = wx.Image( os.path.join(fpsys.mythingsdir, 'splash.png') )
         img.ConvertAlphaToMask()
         self.bmp = wx.BitmapFromImage(img)
@@ -847,7 +850,7 @@ class FontySplash(wx.Frame):
         # Calculate the shape
         self.reg = wx.RegionFromBitmap(self.bmp)
 
-        # works on wx.Platform == "__WXGTK__"
+        # Works on wx.Platform == "__WXGTK__"
         self.Bind(wx.EVT_WINDOW_CREATE, self.SetSplashShape)
 
         w = self.bmp.GetWidth() + 1
@@ -865,8 +868,8 @@ class FontySplash(wx.Frame):
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
 
-        # Nice! Kick the show off in x millis.
-        self.fc = wx.FutureCall( 500, self.showMain )
+        # Nice! Kick the MainFrame off in x milliseconds
+        self.fc = wx.FutureCall( mainframetimeout, self.showMain )
         
         self.Show()
 

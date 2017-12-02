@@ -44,7 +44,7 @@ import fpwx
 
 class TargetPogChooser(wx.Panel):
     """
-    Far right-hand side control. Chooses target pogs. Houses control buttons.
+    Chooses target pogs. Houses control buttons.
     """
     def __init__(self, parent, id_zip_pog_button ):
         wx.Panel.__init__(self, parent, id = -1)
@@ -376,7 +376,8 @@ class TargetPogChooser(wx.Panel):
     def SelectNoTargetPog(self):
         wx.BeginBusyCursor()
         ## Go figure out what item gets what image
-        self.pogTargetlist.SortOutTheDamnImages( pognochange = True )
+        #self.pogTargetlist.SortOutTheDamnImages( pognochange = True )
+        self.pogTargetlist.SortOutTheDamnImages( True )
         self.pogTargetlist.ClearSelection() #Select nothing.
 
         fpsys.SetTargetPogToNone()  # Tell fpsys that we have no pog target selected

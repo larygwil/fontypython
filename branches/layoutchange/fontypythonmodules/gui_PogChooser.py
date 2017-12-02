@@ -55,7 +55,7 @@ class PogChooser(wx.ListCtrl) :
     __VIEW = None
 
     def __init__(self, parent, whoami, select = None) :
-        self.indexselected = 0
+        self.indexselected = -1#0
         self.lastindexselected = -1
         self.parent = parent
         self.whoami = whoami
@@ -95,11 +95,13 @@ class PogChooser(wx.ListCtrl) :
             ## == "FichteFoll" hit a bug here.
             ## When fp starts with zero pogs ... :O ...
             ## there's an index problem with self.Select
-            ## TBH, I can't remember why this else branch is here.
-            ## Rather than court the revenge of my bad memory,
-            ## I have stuck a count test on the Select:
-            if self.GetItemCount() > 0: self.Select(0, False)
-            self.indexselected = -1
+            ## * if there's at least one item,
+            ##   select the first one (item 0)
+            if self.GetItemCount() > 0:
+                self.Select(0, False)
+                self.indexselected = 0
+            else:
+                self.indexselected = -1
 
 
         self.ClearBackground()
@@ -162,12 +164,14 @@ class PogChooser(wx.ListCtrl) :
         Is called from TargetPogChooser as well 
         (when clear button is clicked)
         """
-        if pognochange is ():
-            pognochange = True
+        #if pognochange is ():
+        #if pognochange is None:
+        #    pognochange = True
 
         c = self.GetItemCount()
         # the actual selection index, does not go to -1
         sel = self.indexselected 
+        print sel
 
         ## Which kind of a McList am I?
         iAmTargetList = self.whoami=="TARGETPOG"
