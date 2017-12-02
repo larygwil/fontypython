@@ -37,7 +37,8 @@ import fpsys # Global objects
 import fpversion
 ## Now, bring in all those big modules
 import wx
-import wx.lib.agw.advancedsplash as AS
+#import wx.lib.agw.advancedsplash as AS
+import fpsplash
 import wx.html as html
 
 
@@ -821,7 +822,8 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
 
         return True
 
-class FontySplash(AS.AdvancedSplash):
+#class FontySplash(AS.AdvancedSplash):
+class FontySplash(fpsplash.FPS):
         """
         2016 July
         =========
@@ -829,27 +831,25 @@ class FontySplash(AS.AdvancedSplash):
             It's a little better. It shows fast and
             remains there while the frame loads behind it.
 
-            Borrowing from the wxPython demo's code.
+            Borrowing from the wxPython-demo's code.
+
         Dec 2017
         ========
             Shifted over to using the AdvancedSplash
             so that a trnasparent PNG would work.
+            It does a crude mask - so the edges are
+            very pixely.
+
+            Shifted to a cut-down class that I based-on
+            AdvancedSplash.
         """
         def __init__(self, parent=None):
-            splashDuration = 2000 # milliseconds
-            # Have to do this tango:
-            img = wx.Image(fpsys.mythingsdir + 'splash.png')
-            img.ConvertAlphaToMask()
-            bmp = wx.BitmapFromImage(img)
-            # Now we have a transp. bmp
-            AS.AdvancedSplash.__init__(self, parent,
-                    bitmap = bmp,timeout  = splashDuration,
-                    agwStyle = AS.AS_TIMEOUT | AS.AS_CENTER_ON_SCREEN)
+            fpsplash.FPS.__init__(self, 'splash', 2000)
 
             self.Bind(wx.EVT_CLOSE, self.OnExit)
 
             # Nice! Kick the show off in x millis.
-            self.fc = wx.FutureCall(500,self.showMain)
+            self.fc = wx.FutureCall( 500, self.showMain )
 
         def OnExit(self, evt):
             # The program will freeze without this line.
