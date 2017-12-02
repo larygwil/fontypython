@@ -37,8 +37,6 @@ import fpsys # Global objects
 import fpversion
 ## Now, bring in all those big modules
 import wx
-#import wx.lib.agw.advancedsplash as AS
-import fpsplash
 import wx.html as html
 
 
@@ -818,61 +816,91 @@ class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
 
         # Start a splash screen - which then starts the main frame
         MySplash = FontySplash()
-        MySplash.Show()
 
         return True
 
-#class FontySplash(AS.AdvancedSplash):
-class FontySplash(fpsplash.FPS):
-        """
-        2016 July
-        =========
-            Trying a diff way to show the splash screen.
-            It's a little better. It shows fast and
-            remains there while the frame loads behind it.
+class FontySplash(wx.Frame):
+    """
+    Show the splash screen; it's fast and
+    remains there while the frame loads behind it.
 
-            Borrowing from the wxPython-demo's code.
+    Borrowing from the wxPython-demo's code.
+    
+    (Code hacked from AdvancedSplash by
+    Andrea Gavana, @ 10 Oct 2005)
+    """
+    def __init__(self, parent=None):
+        timeout = 2000
+        #pos=wx.DefaultPosition
+        #size=wx.DefaultSize
+        #style=wx.FRAME_NO_TASKBAR | wx.FRAME_SHAPED | wx.STAY_ON_TOP
 
-        Dec 2017
-        ========
-            Shifted over to using the AdvancedSplash
-            so that a trnasparent PNG would work.
-            It does a crude mask - so the edges are
-            very pixely.
+        wx.Frame.__init__(self, None, -1, "",
+                wx.DefaultPosition,
+                wx.DefaultSize,
+                wx.FRAME_NO_TASKBAR | wx.FRAME_SHAPED | wx.STAY_ON_TOP)
 
-            Shifted to a cut-down class that I based-on
-            AdvancedSplash.
-        """
-        def __init__(self, parent=None):
-            fpsplash.FPS.__init__(self, 'splash', 2000)
+        img = wx.Image( os.path.join(fpsys.mythingsdir, 'splash.png') )
+        img.ConvertAlphaToMask()
+        self.bmp = wx.BitmapFromImage(img)
 
-            self.Bind(wx.EVT_CLOSE, self.OnExit)
+        # Calculate the shape
+        self.reg = wx.RegionFromBitmap(self.bmp)
 
-            # Nice! Kick the show off in x millis.
-            self.fc = wx.FutureCall( 500, self.showMain )
+        # works on wx.Platform == "__WXGTK__"
+        self.Bind(wx.EVT_WINDOW_CREATE, self.SetSplashShape)
 
-        def OnExit(self, evt):
-            # The program will freeze without this line.
-            evt.Skip() # Make sure the default handler runs too...
-            self.Hide()
+        w = self.bmp.GetWidth() + 1
+        h = self.bmp.GetHeight() + 1
 
-            # if the timer is still running, force the main frame to start
-            if self.fc.IsRunning():
-                self.fc.Stop()
-                self.showMain()
+        # Set frame to the bitmap size
+        self.SetClientSize((w, h))
 
-        def showMain(self):
-            ## Oct 2017
-            ## Setup my system fonts and colours
-            fpwx.setup_fonts_and_colours()
+        self.CenterOnScreen()
 
-            frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
-            app.SetTopWindow(frame)
+        # Starts timer
+        self._splashtimer = wx.PyTimer(self.OnNotify)
+        self._splashtimer.Start(timeout)
 
-            frame.Show(True)
+        self.Bind(wx.EVT_PAINT, self.OnPaint)
+        self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
 
-            if self.fc.IsRunning():
-                self.Raise()
+        # Nice! Kick the show off in x millis.
+        self.fc = wx.FutureCall( 500, self.showMain )
+        
+        self.Show()
+
+    def SetSplashShape(self, event=None):
+        self.SetShape(self.reg)
+        if event is not None:
+            event.Skip()
+
+    def OnPaint(self, event):
+        dc = wx.PaintDC(self)
+        # Draw over frame
+        dc.DrawBitmap(self.bmp, 0, 0, True)
+
+    def OnNotify(self):
+        self.Close()
+
+    def OnCloseWindow(self, event):
+        if hasattr(self, "_splashtimer"):
+            self._splashtimer.Stop()
+            del self._splashtimer
+            self.Destroy()
+        
+        event.Skip() # Make sure the default handler runs too...
+
+    def showMain(self):
+        ## Oct 2017
+        ## Setup my system fonts and colours
+        fpwx.setup_fonts_and_colours()
+
+        frame = MainFrame(None, _("Fonty Python: bring out your fonts!"))
+        app.SetTopWindow(frame)
+
+        frame.Show(True)
+
 
 #Start the app!
 app = App(0)
