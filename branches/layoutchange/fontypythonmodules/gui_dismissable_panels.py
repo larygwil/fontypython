@@ -665,6 +665,11 @@ class ChooseZipDirPanel(DismissablePanel):
         return _("The zip file(s) will be put into:\n{}").format(p)
 
     def _on_dir_control_click(self,e):
+        """
+        I don't Skip() the event, so it does not continue up
+        into the ATree class. Therefore the little eye icon
+        is not drawn on the selected tree item.
+        """
         cp = self.treedir.GetPath()
         self.what_dir_lbl.SetLabel(self._make_label(cp))
 

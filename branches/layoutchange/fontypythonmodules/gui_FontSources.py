@@ -197,30 +197,60 @@ class NoteBook(wx.Notebook):
 
         self.SetSelection(page)
 
-        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
+        # Dec 2017: Remarked this Bind. See notes in old handler
+        #self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
 
         ## If the app is started with a Folder as the Source, then
         ## check if we must recurse. If so, fake a click to kick that off.
         ## Sept 2017
         if fpsys.state.viewpattern  == "F":
-            self.__onDirCtrlClick(None) # Fake an event
+            self.__onDirCtrlClick() # Fake an event
 
 
     def onPageChanged(self, e):
+        """
+        The notebook page change handler.
+        Remarked the Bind Dec 2017.
+        
+        A click on the notebook tabs should not make assumptions
+        about what source to select.
+
+        By ignoring this, the new eye icon remains on the last 
+        selected directory.
+
+        It's not perfect, because coming back to the dir control
+        shows what was selected before, but you can't click on the
+        same selection and get a result. You must click-off and 
+        click-on to get the view to update.
+        
+        I moved the UnselectAll call into OnViewPogClick so that
+        when you click on an actual source Pog, the tree control
+        now moves out of play.
+
+        I leave this code for the future.
+        """
         self.ctrlPogSource.ClearLastIndex()
         if self.GetSelection() == 0: # The dircontrol
+            #pass
             ## I want to force the dir control to clear the selection.
-            ## Reason: When you return to this control (from Pog page), the selection
-            ## from last visit is still there. Clicking on it again does NOT UPDATE
-            ## the font view. This is wierd. So, clearing the selection makes this moot.
+            ## Reason: When you return to this control (from Pog page),
+            ## the selection from last visit is still there. 
+            ## Clicking on it again does NOT UPDATE the font view. 
+            ## This is wierd. So, clearing the selection makes it moot.
+
+            ## This actually works:
+            # wx.CallAfter( self.__onDirCtrlClick)
+            # However.. I think it's weird.
+            # When you click a tab in the notebook, it should
+            # not make assumptions about what you mean.
             self.tree.UnselectAll() # Found this method in the wxpython book.
 
 
-    def __onDirCtrlClick(self, evt):
-        print " __onDirCtrlClick happened."
+    def __onDirCtrlClick(self, evt = None):
         if evt:
-            # I want this event to get to the final handler
-            # in the Atree class too.
+            # I want this event to eventually arrive in
+            # the Atree class; thus Skip()
+            # (See gui_DirChooser.py)
             evt.Skip() # Happens when this handler finishes.
 
         wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
@@ -242,6 +272,11 @@ class NoteBook(wx.Notebook):
         """
         args[0] is pogname, args[1] is pognochange
         """
+        # Dec 2017: Force no-selection in dir control
+        # so the gui's visual "logic" makes sense: I.e we
+        # are now looking at a Pog, not a Folder any more.
+        self.tree.UnselectAll()
+
         ## Check pognochange, it means this is the same pog as last time.
         if args[1]: return
 
