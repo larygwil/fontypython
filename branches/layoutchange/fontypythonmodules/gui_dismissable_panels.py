@@ -349,9 +349,9 @@ class HushPanel(DismissablePanel):
     def __init__(self, parent, wfunc):
         #state dict
         self.sd = {
-                 "hush_on" :{"h":_("Hushing is on."  ), "b":_("Un-hush fonts")},
-                 "hush_off":{"h":_("Hushing is off."  ),"b":_("Hush fonts")},
-         "fontconfig_error":{"h": strings.cant_hush    ,"b":_("Cannot hush")}
+                 "hush_on" :{"h":_("Hushing is on."  ), "b":_("Un-hush my fonts")},
+                 "hush_off":{"h":_("Hushing is off."  ),"b":_("Hush my fonts")},
+         "fontconfig_error":{"h": strings.cant_hush    ,"b":_("Fonty cannot hush your fonts")}
                   }
 
 
@@ -442,7 +442,8 @@ class HushPanel(DismissablePanel):
                        font.GetStyle(),
                        font.GetWeight(), font.GetUnderlined())
         self.printer.SetFont(font)
-        sizer.Add (self.printer, 1, wx.EXPAND )
+        sizer.Add (self.printer, 1, wx.EXPAND | 
+                wx.BOTTOM, border = 10)
 
         if self.fontconfig_error:
             ## Dump the initial NoFontconfigDir error into the printer
@@ -456,8 +457,7 @@ class HushPanel(DismissablePanel):
             ## Make a button. Click also gets caught in MainFrame.
             self.Bind(wx.EVT_BUTTON, self._do_hushing,
                     id = button_ids['id_hush_button'])
-            sizer.Add(self.hb, 0, wx.TOP | wx.BOTTOM |
-                    wx.EXPAND, border=10)
+            sizer.Add(self.hb, 0, wx.EXPAND )
             self._update_pog_choice_control()
 
         return sizer

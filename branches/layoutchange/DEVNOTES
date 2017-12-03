@@ -36,9 +36,6 @@ KNOWN BUGS
 
 * HTML stuff returns to top on window resize. I think this is a wx bug/thing.
 
-* cli args - the argument is not being checked - can be missing and goes bad. e.g. --check= <--nothing= bad
-  (Noticed it does not happen all the time. hard to pin)==
-
 
 
 TESTS
@@ -53,14 +50,13 @@ SETUP TODO
 * Test with old config file
 * Write a script to do prep stuff:
   * include the makehtml - so it's always fresh
+* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
+  Somehow...?
 
 
 
 TODO
 ==
-
-* Test...
-
 * NB:
   I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
   I must try to use _ for private names. __ for the rare special private names.
@@ -72,10 +68,6 @@ TODO
 
 * Do my best to repair the i18n files - maybe I can copy-paste some of the translations to match all the 
   new strings I am using.
-
-* ESC being swallowed by something in the filter area....
-
-* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
 
 * Sliders for point size, num cols etc. in settings?
 
@@ -101,7 +93,7 @@ FUTURE TODOS
 * comments that are stale
 * copyright dates replace
 * pyc files in svn
-* PEP8 all up in da hizzle - well, the tabs to spaces part.
+* PEP8 all up in da hizzle - well, the tabs-to-spaces part. (Use tab2spaces script.)
 * it's, its ...
 
 * Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.

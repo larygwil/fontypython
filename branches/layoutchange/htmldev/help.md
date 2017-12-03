@@ -86,16 +86,16 @@ Fonts in your Source will be visible in the Font View. You can click on the font
 
 The Font View will also attempt to display in columns, so you can see many fonts at once. The columns vary by point size and the width of your window. You can control the number of columns in the Settings.
 
-###Fonts
-* **Point size:** Ctrl + scrolling the mouse wheel (up/down).
+###The Fonts themselves
+Each font appears with some appropriate information. Here are the basics:
+
+* Change the **Point size** by **Ctrl + scrolling** the mouse wheel up or down.
 
 * <img src="fontypythonmodules/things/button_charmap_over.png">&nbsp;**Character Map Button:** If you have a character viewing app installed, this button will open it. (You can choose which character map viewer to use in the Settings. The choices are gucharmap or kfontview &mdash; but you must install one first.)
 
-* **Selecting fonts:** Clicking anywhere on a font will select it.
-  * **A tick<img src="fontypythonmodules/things/tick.png" width=18 height=18> :** means the font can be placed into a Target Pog &mdash; i.e. the one chosen in the right-hand panel.
-  * **A cross <img src="fontypythonmodules/things/cross.png" width=18 height=18> :** means the font will be removed from the Source Pog (The one you are viewing at the moment)
-   &mdash; i.e. the Pog currently chosen on the left-panel.
-  * **Neither:** means you have only a Source selected and can only view the fonts.
+* **Selecting fonts:** Clicking anywhere on a font will select it; if it's sensible. For example, if you have only a Source selected, and no Target, then there's no point in selecting fonts.
+  * **A tick<img src="fontypythonmodules/things/tick.png" width=18 height=18> :** means the font can be placed into your chosen Target Pog.
+  * **A cross <img src="fontypythonmodules/things/cross.png" width=18 height=18> :** means the font will be removed from the Source Pog (The one you are viewing at the moment).
 
 * **Font Info:** Under each font you will find the family and style and filename. 
   When you use the filter to search, this is the text that is searched.
@@ -138,8 +138,7 @@ Fonty will ask for a Pog when you start a hush; select the one you prepared.
 
 It's not serious, but **you have been warned.**
 
-Details
---
+###Details
 This all requires a working fontconfig setup, which most modern Linux distros have. Fonty looks for the directory:
 
 	{HOME}/.config/fontconfig/conf.d
@@ -155,8 +154,7 @@ The effect is usually instantaneous, but you may need to restart certain apps fo
 
 
 
-Reversing a hush: the Un-hush
---
+###Reversing a hush: the Un-hush
 To switch all the system fonts on again, go into the hush screen where you can "Un-hush". 
 
 Your "Hush Pog" is not uninstalled; do this manually,
