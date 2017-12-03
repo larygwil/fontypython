@@ -62,9 +62,9 @@ class PogChooser(wx.ListCtrl) :
 
     def __init__(self, parent, whoami, select = None) :
         """
-        select is None or a Pog.
+        select is None or a Pog that will be selected in the control.
         """
-        self.indexselected = -1#0
+        self.indexselected = -1
         self.lastindexselected = -1
         self.parent = parent
         self.whoami = whoami
@@ -73,22 +73,23 @@ class PogChooser(wx.ListCtrl) :
         ## the instantiation of this class. These vars do not
         ## belong to the instances, but to this one class.
         ## We keep refs to the two parents of this class.
+        ## __VIEW and __TARGET are useful when I want to 
+        ## refer to the *other* one from <whatever I am>
         if whoami == "SOURCEPOG":
             PogChooser.__VIEW = self
             style = wx.LC_LIST | wx.LC_SORT_ASCENDING | wx.LC_SINGLE_SEL
         else:
-            PogChooser.__TARGET = self#.parent
+            PogChooser.__TARGET = self
             style = wx.LC_LIST | wx.LC_SORT_ASCENDING
 
         print PogChooser.__VIEW
         print PogChooser.__TARGET
 
-        il = wx.ImageList(16,16,True)
-        il.Add( wxbmp('pog16x16') )
-        il.Add( wxbmp('pog16x16.installed') )
-        ## Dec 2007 : target icon
-        il.Add( wxbmp( 'pog16x16.target') )
-        il.Add( wxbmp( 'view16x16') ) # idx 3
+        il = wx.ImageList( 16, 16, True )
+        il.Add( wxbmp( 'pog16x16') )
+        il.Add( wxbmp( 'pog16x16.installed') )
+        il.Add( wxbmp( 'pog16x16.target') ) # Dec 2007: triangle target
+        il.Add( wxbmp( 'view16x16') ) # Dec 2017: little eye
 
         wx.ListCtrl.__init__( self,parent,-1, style=style |
                 wx.SUNKEN_BORDER, name="pog_chooser" )
@@ -226,7 +227,10 @@ class PogChooser(wx.ListCtrl) :
                             n = self.icon_normal if pognochange \
                                     else self.icon_targetted
 
-                            self.SetItemImage( x, n )
+                            self.SetItemImage( x, n ) # This works.
+                            # li.SetImage( n ) # This does
+                            # not actually set the image.
+                            # I can't burn more time on it.
 
                         # We are on an UNselected item
                         else:
@@ -239,7 +243,7 @@ class PogChooser(wx.ListCtrl) :
                             n = self.icon_normal #0
                             self.SetItemImage( x, n )
 
-                        # Go adjust the VIEW now
+                        # Go adjust the VIEW as well.
                         # If it's not an 'eye' (3) make
                         # it the same as me:
                         #vi = self.__VIEW.GetItem( x, 0 )
@@ -284,8 +288,10 @@ class PogChooser(wx.ListCtrl) :
             ipog = fontcontrol.Pog(p)
             try: #catch pogs that are not properly formed
                 # isInstalled opens the pog file.
-                if ipog.isInstalled(): i = 1
-                else: i = 0
+                if ipog.isInstalled(): 
+                    i = self.icon_installed #1
+                else: 
+                    i = self.icon_normal #0
             except fontybugs.PogInvalid, eInst:
                 ## An "invalid" pog is one that does not have
                 ## installed/not installed on the first line.
@@ -323,8 +329,8 @@ class PogChooser(wx.ListCtrl) :
         Add a pogname to myself, then sort.
         """
         li = wx.ListItem()
-        li.SetImage(0)
-        li.SetText(pogname)
+        li.SetImage( self.icon_normal )#0)
+        li.SetText( pogname )
 
         #July 5th, 2016 - wxPython Id fix
         li.Id = 1
