@@ -38,7 +38,7 @@
      showborder="false"
      inkscape:showpageshadow="false"
      inkscape:snap-bbox="true"
-     showgrid="false"
+     showgrid="true"
      inkscape:guide-bbox="true"
      showguides="false"
      inkscape:window-y="24"
@@ -47,11 +47,11 @@
      inkscape:window-width="1920"
      height="16px"
      width="16px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer3"
      inkscape:document-units="px"
-     inkscape:cy="528.45783"
-     inkscape:cx="316.32972"
-     inkscape:zoom="1.4142136"
+     inkscape:cy="707.45893"
+     inkscape:cx="38.41318"
+     inkscape:zoom="16"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      objecttolerance="10000"
@@ -1285,7 +1285,7 @@
   </g>
   <g
      transform="translate(168,30.99999)"
-     style="display:inline"
+     style="display:none"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
@@ -5039,6 +5039,29 @@
            id="path2237" />
       </g>
     </g>
+    <g
+       id="g812"
+       transform="matrix(0.6296212,0,0,0.6296212,-92.945114,6.8290581)"
+       style="stroke-width:1.5882566">
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#483e37;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.1765132;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;paint-order:markers stroke fill;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:new"
+         d="m -92.601888,-11.717298 c 0,3.0876379 -2.933077,5.1606124 -6.020716,5.1606126 -3.087646,2.1e-6 -5.590666,-2.5030242 -5.590666,-5.5906646 0,-3.08764 2.50302,-5.590666 5.590666,-5.590664 3.087639,0 6.020716,2.933077 6.020716,6.020716 z"
+         id="path806"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="sssss" />
+      <path
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ff6600;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.29906833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+         d="m -112.85339,-10.60803 c 5.3592,10.03469085 19.212993,11.7621751 25.412117,0.03941 -7.845142,-11.881795 -19.267487,-9.890427 -25.412117,-0.03941 z m 22.362664,-0.01459 c -4.65973,7.1319849 -14.391704,6.3291559 -20.329684,0.054 6.40877,-9.700426 17.135021,-7.372633 20.329684,-0.054 z"
+         id="path808"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccccc" />
+      <path
+         sodipodi:nodetypes="sssss"
+         inkscape:connector-curvature="0"
+         id="path810"
+         d="m -99.013557,-14.063032 c 0,0.842083 -0.79993,1.40744 -1.642013,1.40744 -0.84209,1e-6 -1.52473,-0.682643 -1.52473,-1.524727 0,-0.842083 0.68264,-1.524727 1.52473,-1.524727 0.842083,0 1.642013,0.799931 1.642013,1.642014 z"
+         style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.1765132;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;paint-order:markers stroke fill;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:new" />
+    </g>
   </g>
   <g
      style="display:none"
@@ -5473,5 +5496,16 @@
        inkscape:export-filename="splash.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96" />
+    <rect
+       style="display:inline;overflow:visible;visibility:visible;opacity:1;fill:#fe9a24;fill-opacity:0.38723402;fill-rule:evenodd;stroke:none;stroke-width:3.2659862;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;enable-background:accumulate"
+       id="view16x16"
+       width="16"
+       height="16"
+       x="4"
+       y="24.092785"
+       inkscape:label="#rect3413"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="view16x16.png" />
   </g>
 </svg>

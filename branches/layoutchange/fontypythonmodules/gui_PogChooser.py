@@ -54,6 +54,12 @@ class PogChooser(wx.ListCtrl) :
     __TARGET = None
     __VIEW = None
 
+    ## turns-out, we can also fetch these via self.xxx
+    icon_normal    = 0 # empty P
+    icon_installed = 1 # filled-in P
+    icon_targetted = 2 # triangle
+    icon_viewing   = 3 # eye
+
     def __init__(self, parent, whoami, select = None) :
         """
         select is None or a Pog.
@@ -71,14 +77,18 @@ class PogChooser(wx.ListCtrl) :
             PogChooser.__VIEW = self
             style = wx.LC_LIST | wx.LC_SORT_ASCENDING | wx.LC_SINGLE_SEL
         else:
-            PogChooser.__TARGET = self.parent
+            PogChooser.__TARGET = self#.parent
             style = wx.LC_LIST | wx.LC_SORT_ASCENDING
+
+        print PogChooser.__VIEW
+        print PogChooser.__TARGET
 
         il = wx.ImageList(16,16,True)
         il.Add( wxbmp('pog16x16') )
         il.Add( wxbmp('pog16x16.installed') )
         ## Dec 2007 : target icon
         il.Add( wxbmp( 'pog16x16.target') )
+        il.Add( wxbmp( 'view16x16') ) # idx 3
 
         wx.ListCtrl.__init__( self,parent,-1, style=style |
                 wx.SUNKEN_BORDER, name="pog_chooser" )
@@ -89,23 +99,19 @@ class PogChooser(wx.ListCtrl) :
 
         ## Highlight the pog selected (the last one, or the
         ## cli chosen one)
+        ## Done manually because things are still in an __init__
+        ## state.
         if select:
-            i = self.FindItem(-1, select)
+            i = self.FindItem( -1, select )
             self.indexselected = i # Set to help initial icon settings
-            self.Select(i, True)
+            self.SetItemImage( i, self.icon_viewing )
+            self.Select( i, True )
         #else:
             ## Nov 2017
             ## == "FichteFoll" hit a bug here.
             ## When fp starts with zero pogs ... :O ...
             ## there's an index problem with self.Select
-            ## Fix: if there's at least one item,
-            ##      select the first one (item 0)
-            #if self.GetItemCount() > 0:
-            #    self.Select(0, False)
-            #    self.indexselected = 0
-            #else:
-            
-            #self.indexselected = -1
+            ## Fix: Just exlude this else branch.
 
 
         self.ClearBackground()
@@ -170,28 +176,20 @@ class PogChooser(wx.ListCtrl) :
                    Man...
 
         Dec 2017: Updated and added much remarking. Ten years
-        later. Damn!
+        later... Hello past-Donn; you wrote terrible comments.
 
         Determines the images of the list items from the pov
-        of the selected item:
-          1. Is the selection the active Target? 
-          2. Is it a toggle to unselected?
-          3. Unselected ones get cleared from any dirty old
-             state.
+        of whether we are VIEW or TARGET.
 
         The target control cal have multiple selections, this
         factors-in too.
 
-        Here we deal with only the last selected index, and
-        we make sure the icons reflect the logic of the user's
-        selections.
-
-        Is called from:
+        This is called from:
         1. wxgui: __init__
         2. gui_PogTargets: clear button event
         3. gui_PogChooser (myself): on select event
         """
-
+        #print "self.indexselected:", self.indexselected
         ## Is there is an active selection?
         if self.indexselected > -1:
             
@@ -202,117 +200,70 @@ class PogChooser(wx.ListCtrl) :
 
             for x in xrange(0, c):
                 li = self.GetItem(x, 0)
-                ## This is all about the target list: 
+                
+                # WE ARE THE TARGET
                 if iAmTargetList:
-                    ## Since installed pogs can't be targets:
-                    ## I must know if a pog is installed
-                    ## so that I can prevent the target
-                    ## icon from being drawn for it.
-                    
-                    ## Installed is image index 1
+                    ## Installed test is for image index 1
                     isInstalled = li.GetImage() == 1
 
-                    # Only if NOT installed do we even
-                    # try to draw the "triangle" target
-                    # icon:
+                    # Only if NOT installed do we even try to draw 
+                    # the "triangle" target icon:
                     if not isInstalled:
+                        # We are on the selected item.
                         if x == self.indexselected:
-                            # We are on the selected item.
 
-                            # A: pognochange True
+                            # A: pognochange == True
                             # i.e. The same pog is being
-                            # clicked again.
-                            # Indicates it *was* selected
-                            # and now it's been selected again;
-                            # thus it can't be the target anymore.
+                            # clicked again, thus it can't be 
+                            # the target anymore. (It's toggled off)
                             # Change the icon to normal (0)
 
-                            # B: pognochange False
+                            # B: pognochange == False
                             # i.e. A different pog has been
-                            # clicked.
-                            # It's a new valid selection, so make
-                            # it the target icon (2)
-                            n = 0 if pognochange else 2
+                            # clicked. It's a new valid selection, so
+                            # make it the target icon (2)
+                            #n = 0 if pognochange else 2
+                            n = self.icon_normal if pognochange \
+                                    else self.icon_targetted
 
-                            #if pognochange: n = 0
-                            #else: n = 2
-                            # new target icon
-                            self.SetItemImage(x, n )
+                            self.SetItemImage( x, n )
+
+                        # We are on an UNselected item
                         else:
-                            # We are on an UNselected item
-                            # (that is also NOT installed)
+                            # It is also NOT installed.
                             # Make it a normal icon (0)
                             # This is done because we can select
                             # multiple target pogs: we only 
                             # want ONE target icon so we must
                             # switch the others off.
-                            self.SetItemImage(x, 0)
+                            n = self.icon_normal #0
+                            self.SetItemImage( x, n )
 
-            ## Tell the VIEW to imitate this picture.
-            for x in xrange(0,c):
-                # the 0 is 'column'. Ignore. (2017: Wtf?)
-                ti = self.__TARGET.pogTargetlist.GetItem(x, 0)
-                # gets the image index, not an image bitmap.
-                CLONE = ti.GetImage()
-                self.__VIEW.SetItemImage(x, CLONE)
+                        # Go adjust the VIEW now
+                        # If it's not an 'eye' (3) make
+                        # it the same as me:
+                        #vi = self.__VIEW.GetItem( x, 0 )
+                        if self.__VIEW.GetItem( x, 0 ).GetImage() != \
+                                self.icon_viewing:
+                            self.__VIEW.SetItemImage( x, n )
 
+                # WE ARE THE VIEW            
+                else:
+                    # We are the selected item
+                    if x == self.indexselected:
+                        # Make it an eye
+                        self.SetItemImage( x, self.icon_viewing )
+                    # We are NOT the selected
+                    else:
+                        # Make me whatever the icon in TARGET is
+                        # It's my way to remember what I was. The 
+                        # target icons are a good reference because
+                        # they show:
+                        # 1. Installed/Not installed
+                        # 2. Targetted item
+                        n = self.__TARGET.GetItem( x, 0 ).GetImage()
+                        self.SetItemImage( x, n )
 
-    def xxxSortOutTheDamnImages( self, pognochange ):
-        """
-        Dec 2007 : This took me an entire day to figure out.
-                   Man...
-        Determines the images of the list items fromt the pov
-        of the selected item:
-          1. Is the selection the active Target? 
-          2. Is it a toggle to unselected?
-        Is called from TargetPogChooser as well 
-        (when clear button is clicked)
-        """
-        #if pognochange is ():
-        #if pognochange is None:
-        #    pognochange = True
-
-        c = self.GetItemCount()
-        # the actual selection index, does not go to -1
-        sel = self.indexselected 
-        #print sel
-
-        ## Which kind of a McList am I?
-        iAmTargetList = self.whoami=="TARGETPOG"
-        ## If there is an active selection?
-        if sel > -1:
-            for x in xrange(0, c):
-                li = self.GetItem(x, 0)
-                ## I must know if a pog is installed
-                ## so that I can prevent the target
-                ## icon from being drawn when it is
-                ## selected.
-
-                ## Must make a tmp Pog before I can test
-                ## installed status.
-                tmpPog = fontcontrol.Pog(li.GetText())
-                if not tmpPog.isInstalled():
-                    ## Handle the other icons (in the target
-                    ## list only)
-                    ## that are not installed.
-                    if iAmTargetList:
-                        if x == sel:
-                            ## No change means it *was* selected
-                            ## and now it's been selected again
-                            ## thus it can't be the target anymore.
-                            if pognochange: n = 0
-                            else: n = 2
-                            # new target icon
-                            self.SetItemImage(x, n )
-                        else:
-                            self.SetItemImage(x, 0)
-            ## Tell the VIEW to imitate this picture.
-            for x in xrange(0,c):
-                # the 0 is 'column'. Ignore.
-                ti = self.__TARGET.pogTargetlist.GetItem(x, 0)
-                # gets the image index, not an image bitmap.
-                CLONE = ti.GetImage()
-                self.__VIEW.SetItemImage(x, CLONE)
 
     def __del__(self) :
         del self.items
@@ -406,9 +357,9 @@ class PogChooser(wx.ListCtrl) :
         T = fpsys.state.targetobject
         pn = T.name
         index = self.FindItem(0, pn)
-        if T.isInstalled(): n = 1
-        else: n = 0
-        self.SetItemImage(index, n) ## Found in wxWidgets documentation!
+        if T.isInstalled(): n = self.icon_installed #1
+        else: n = self.icon_normal #0
+        self.SetItemImage( index, n ) ## Found in wxWidgets documentation!
 
     def ClearLastIndex(self):
         """
