@@ -167,11 +167,12 @@ class NoteBook(wx.Notebook):
         ## EVT_LIST_ITEM_SELECTED
         ## EVT_LEFT_UP
 
-        ## Bind to another event solve the problem of EVT_LEFT_UP firing when the little
-        ## open-branch/tree arrow was pressed.
-        ## 5.3.2009 Michael Hoeft
-        ## Nov 2017: Also publish this for use in wxgui - since I moved the
-        ## recurseFolders into there.
+        ## Bind to another event solve the problem of 
+        ##  EVT_LEFT_UP firing when the little
+        ##  open-branch/tree arrow was pressed.
+        ##  5.3.2009 Michael Hoeft
+        ## Nov 2017: Also subscribe this for use in wxgui - since 
+        ## I moved the recurseFolders into there.
         ps.sub( fake_click_the_source_dir_control, self.__onDirCtrlClick )
         self.tree.Bind(wx.EVT_TREE_SEL_CHANGED, self.__onDirCtrlClick)
 
@@ -215,14 +216,20 @@ class NoteBook(wx.Notebook):
             self.tree.UnselectAll() # Found this method in the wxpython book.
 
 
-    def __onDirCtrlClick(self, e):
+    def __onDirCtrlClick(self, evt):
+        print " __onDirCtrlClick happened."
+        if evt:
+            # I want this event to get to the final handler
+            # in the Atree class too.
+            evt.Skip() # Happens when this handler finishes.
+
         wx.BeginBusyCursor() #Thanks to Suzuki Alex on the wxpython list!
         p = self.dircontrol.GetPath()
 
         try:
             fpsys.instantiateViewFolder( p, fpsys.config.recurseFolders )
             fpsys.config.lastdir = p
-        except fontybugs.FolderHasNoFonts, e:
+        except fontybugs.FolderHasNoFonts, err:
             pass # update_font_view handles this with a std message.
 
         ps.pub(reset_to_page_one)# reset before updating!  

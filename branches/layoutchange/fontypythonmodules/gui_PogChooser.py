@@ -82,9 +82,6 @@ class PogChooser(wx.ListCtrl) :
             PogChooser.__TARGET = self
             style = wx.LC_LIST | wx.LC_SORT_ASCENDING
 
-        print PogChooser.__VIEW
-        print PogChooser.__TARGET
-
         il = wx.ImageList( 16, 16, True )
         il.Add( wxbmp( 'pog16x16') )
         il.Add( wxbmp( 'pog16x16.installed') )
