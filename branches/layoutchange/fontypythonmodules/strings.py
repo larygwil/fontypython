@@ -28,7 +28,7 @@ please_use_arg = _("Please use a number for argument %s")
 copyright = u"Fonty Python Copyright © 2017 Donn.C.Ingle"
 contact = "Email: donn.ingle@gmail.com"
 done = "Done."
-
+arguments_amuse = _("Your arguments amuse me :) Please see the help by using -h")
 ticket_url = "https://savannah.nongnu.org/bugs/?group=fontypython"
 
 version = _("Fonty Python version %s") % fpversion.version

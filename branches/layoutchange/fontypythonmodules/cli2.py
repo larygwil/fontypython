@@ -86,7 +86,7 @@ except getopt.GetoptError, err:
         print _("For more help use:  \"-h b\" for basic help, \"-h e\" for examples," \
                 "\nor \"-h hush\" for help with hushing fonts.")
         raise SystemExit
-    print _("Your arguments amuse me :) Please see the help by using -h")
+    print strings.arguments_amuse
 
     print str(err) # will print something like "option -foob not recognized"
     raise SystemExit
@@ -110,6 +110,11 @@ for option, argument in opts:
     ## Checkdir will break the loop, skipping other args. It's a big job.
     elif option in (u"-c", u"--check"):
         strictly_cli_context_only = True
+        # Turns-out that "check=" on it's own, sans an argument
+        # does not trigger the error test above. Here's a manual one:
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         situation.checkdir = os.path.abspath( argument )
         break
 
@@ -127,6 +132,9 @@ for option, argument in opts:
 
     elif option in ("-i","--install"):
         strictly_cli_context_only = True
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         situation.install = [argument]
         if remaining_cli_arguments:
             ## Any trailing 'words' are taken to be other pognames
@@ -136,6 +144,9 @@ for option, argument in opts:
 
     elif option in ("-u", "--uninstall"):
         strictly_cli_context_only = True
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         situation.uninstall = [argument]
         if remaining_cli_arguments:
             ## Same as install.
@@ -144,6 +155,9 @@ for option, argument in opts:
 
     elif option in ("-p", "--purge"):
         strictly_cli_context_only = True
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         situation.purge = argument
 
     ## This is for a gui context, hence no strictly_cli_context_only
@@ -165,6 +179,9 @@ for option, argument in opts:
         situation.numinpage = n
 
     elif option in ("-a", "--all", "-A","--all-recurse"):
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         strictly_cli_context_only = True
         situation.allfromfolder = argument
         isituation.allrecurse = option in ("-A","--all-recurse")
@@ -176,6 +193,9 @@ for option, argument in opts:
         del remaining_cli_arguments[:]
 
     elif option in ("-z","--zip"):
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         strictly_cli_context_only = True
         # argument is the Pog name we must zip.
         # This only does one pog, not several at once.
@@ -185,11 +205,17 @@ for option, argument in opts:
         situation.pog = argument
     
     elif option == "--cat":
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         strictly_cli_context_only = True
         situation.cat = True
         situation.pog = argument
 
     elif option == "--hush":
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         strictly_cli_context_only = True
         situation.hush = True
         situation.pog = argument

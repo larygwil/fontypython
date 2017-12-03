@@ -323,6 +323,9 @@ class FontViewPanel(wx.Panel):
 
         ## Do the voodoo thang
         self.SetSizer(main_view_sizer)
+
+        ## This Fit is NB. It sets the width
+        ## for all panels to come.
         self.Fit()
 
         ## Bind events
