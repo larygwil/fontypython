@@ -440,7 +440,10 @@ class MainFrame(wx.Frame):
 
         self.SetMinSize(wx.Size(MINSCREENWIDTH,600)) #Old Skool: Assuming monitor size...
 
-        self.Fit()
+        # Don't do Fit. 
+        # It makes the FRAME size DOWN to the minimum children's size!
+        ## self.Fit() 
+
         self.Layout()
 
         ## This is to draw the correct icons depending on cli params.

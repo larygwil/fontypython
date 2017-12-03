@@ -1,4 +1,4 @@
-## Fonty Python Copyright (C) 2006, 2007, 2008, 2009 Donn.C.Ingle
+## Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
 ## This file is part of Fonty Python.
@@ -33,13 +33,9 @@ import wx, os
 
 from pubsub import * #I want all the topics.
 
-#import fpsys # Global objects
 import fontybugs
 
-#try:
 import fpsys
-#except fontybugs.NoXDG_DATA_HOME, e:
-#print e.print_error_and_quit()
 
 from wxgui import ps
 from gui_PogChooser import *
@@ -62,8 +58,11 @@ class FontSourcesPanel(wx.Panel):
 
         ## A horiz sizer to hold the icon and text
         self.sizer_iconandtext = wx.BoxSizer(wx.HORIZONTAL)
-        self.sizer_iconandtext.Add( view_icon, 0, wx.TOP | wx.BOTTOM | wx.LEFT, border = 4 )
-        self.sizer_iconandtext.Add( view_label, 1, wx.LEFT | wx.BOTTOM | wx.ALIGN_BOTTOM, border = 6 )
+        self.sizer_iconandtext.Add( view_icon, 0, wx.TOP |
+                wx.BOTTOM | wx.LEFT, border = 4 )
+
+        self.sizer_iconandtext.Add( view_label, 1, wx.LEFT |
+                wx.BOTTOM | wx.ALIGN_BOTTOM, border = 6 )
 
         ## Now the actual notebook
         self.nb = NoteBook(self, name="notebook")
@@ -77,8 +76,6 @@ class FontSourcesPanel(wx.Panel):
 
         self.SetSizer(self.sizerNotebook)
         self.Layout()
-
-
 
 class DirControl(ATree):
     """
@@ -100,9 +97,8 @@ class DirControl(ATree):
 
 class NoteBook(wx.Notebook):
     """
-    Used in the left part of the splitter in mainframe.
-    Has two tabs - Folders and Pogs
     THIS IS THE VIEW or SOURCE of fonts.
+    Has two tabs - Folders and Pogs
     """
     def __init__(self, parent, name="notebook_not_named"):
         wx.Notebook.__init__(self, parent, style=wx.NB_TOP, name = name)
@@ -115,15 +111,6 @@ class NoteBook(wx.Notebook):
 
         # Get a ref to the dircontrol.
         self.tree = self.dircontrol.GetTreeCtrl()
-
-        ## Sept 2017
-        ## Trying to ensure the tree is scrolled to the start dir. No go so far.
-        #s = self.tree.GetSelection()
-        #print s
-        #print dir(s)
-        #import pdb; pdb.set_trace()
-        #self.tree.EnsureVisible(s)
-        #self.tree.ScrollTo(s)
 
         ## Add them to a sizer
         box = wx.BoxSizer(wx.VERTICAL)
@@ -143,19 +130,6 @@ class NoteBook(wx.Notebook):
             page = 1
         self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
 
-        ## Sept 2017
-        ## Started to make a purge button under the source pog thing, but
-        ## changed my mind. It's going to stay in the Tools menu.
-        #vbox = wx.BoxSizer(wx.VERTICAL)
-        #self.idpurge = wx.NewId()
-        ## Yeah baby, BUTT PURGE! :D
-        #self.buttPurge = wx.Button(pan2, label = _("Purge Pog"), id = self.idpurge )
-        #self.buttPurge.SetToolTipString(_("Cleans this Pog of fonts that are missing."))
-
-        #vbox.Add( self.ctrlPogSource, 1, wx.EXPAND )
-        #vbox.Add( self.buttPurge, 0, wx.EXPAND )
-        #pan2.SetSizer(vbox)
-        #vbox.Layout()
 
         ps.sub( source_pog_has_been_selected, self.OnViewPogClick) ##DND: class NoteBook
         ps.sub( select_no_view_pog, self.SelectNoView) ##DND: class NoteBook
@@ -187,9 +161,12 @@ class NoteBook(wx.Notebook):
         self.AddPage(pan1, _("Source Folders"))
         self.AddPage(pan2, _("Source Pogs"))
 
-        # sadly, the artprovider icons suck, and I can't get access to the "stock items" either. fuck it. 
-        source_folder_icon = self.imlist.Add( fpwx.wxbmp('icon_source_folder_16x16') )
-        source_pog_icon = self.imlist.Add( fpwx.wxbmp('icon_source_pog_16x16') )
+        # sadly, the artprovider icons suck, and I can't get access 
+        # to the "stock items" either. Fuck it. 
+        source_folder_icon = self.imlist.Add(
+                fpwx.wxbmp('icon_source_folder_16x16') )
+        source_pog_icon = self.imlist.Add(
+                fpwx.wxbmp('icon_source_pog_16x16') )
 
         self.AssignImageList(self.imlist)
         self.SetPageImage(0, source_folder_icon)
@@ -198,7 +175,8 @@ class NoteBook(wx.Notebook):
         self.SetSelection(page)
 
         # Dec 2017: Remarked this Bind. See notes in old handler
-        #self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.onPageChanged) # Bind page changed event
+        #self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, 
+        # self.onPageChanged) # Bind page changed event
 
         ## If the app is started with a Folder as the Source, then
         ## check if we must recurse. If so, fake a click to kick that off.

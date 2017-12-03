@@ -176,11 +176,11 @@ class PogChooser(wx.ListCtrl) :
         Dec 2017: Updated and added much remarking. Ten years
         later... Hello past-Donn; you wrote terrible comments.
 
-        Determines the images of the list items from the pov
+        Determines the images of both list items from the pov
         of whether we are VIEW or TARGET.
 
-        The target control cal have multiple selections, this
-        factors-in too.
+        (The target control can have multiple selections, this
+        factors-in too.)
 
         This is called from:
         1. wxgui: __init__
@@ -190,19 +190,20 @@ class PogChooser(wx.ListCtrl) :
         #print "self.indexselected:", self.indexselected
         ## Is there is an active selection?
         if self.indexselected > -1:
-            
             ## Yep - let's work:
             c = self.GetItemCount()
+
             ## A little test of which kind of a McList am I?
             iAmTargetList = self.whoami=="TARGETPOG"
 
             for x in xrange(0, c):
-                li = self.GetItem(x, 0)
+                #li = self.GetItem(x, 0) # Oddly useless.
                 
                 # WE ARE THE TARGET
                 if iAmTargetList:
                     ## Installed test is for image index 1
-                    isInstalled = li.GetImage() == 1
+                    #isInstalled = li.GetImage() == 1
+                    isInstalled = self.GetItem(x, 0).GetImage() == 1
 
                     # Only if NOT installed do we even try to draw 
                     # the "triangle" target icon:

@@ -17,8 +17,6 @@
 
 import wx
 import fpsys
-from pubsub import *
-from wxgui import ps
 
 ## Oct 2017 Default Font Family (System font)
 ## And colours from the user's gui settings:
@@ -58,12 +56,12 @@ def setup_fonts_and_colours():
     #HTMLCOLS.update({"fontyblue":u"#768b94"})
     
     wxfont = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
-    # Point sizes are integers.
-    ps = wxfont.GetPointSize()
     # I had this in SYSFONT:
     #"font"            : wxfont, 
-    # But it acts weirdly later on.
-    # Do not store refs to a font...
+    # But it acts weirdly later on. Don't store refs to a font.
+
+    # Point sizes are integers.
+    ps = wxfont.GetPointSize()
     SYSFONT.update(
        {
         "points_tiny"     : ps-2,
@@ -239,13 +237,14 @@ def xlabel(parent,
     else:
         # This is a single-use static text. No wrapping.
         lbl = wx.StaticText( parent, -1, u"..", style = s)
-        # I can't feed these in via the contrsuctor, hence
+        # I can't feed these in via the constructor, hence
         # this second stage:
         f = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         f.SetPointSize(SYSFONT[pointsize])
         f.SetWeight(weight)    
         lbl.SetFont(f)
-        # This causes a resize on the label.
+        # This causes a resize on the label. Weirdly, it still
+        # cuts off some text. I fuckin' give up.
         lbl.SetLabel(ustr) 
 
     return lbl
@@ -299,7 +298,7 @@ def h2( parent, ustr, **args ):
             weight=wx.FONTWEIGHT_NORMAL,
             **args)
 
-# A quick way to get a file form the things directory:
+# A quick way to get a file from the things directory:
 def wxbmp( filename ):
     return wx.Bitmap( fpsys.mythingsdir + filename+".png", 
             wx.BITMAP_TYPE_PNG )
