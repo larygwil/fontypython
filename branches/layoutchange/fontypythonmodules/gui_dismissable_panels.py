@@ -123,7 +123,7 @@ class DismissablePanel(wx.Panel):
                 border = 16 ) #Wanted more space above.
         self.vbox.Add( whatever_sizer, 1, wx.EXPAND)
         self.SetSizer( self.vbox )
-        self.Fit() 
+        #self.Fit() 
         self.Layout()
         self.SetFocus()
 

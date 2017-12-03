@@ -180,13 +180,13 @@ class FontViewPanel(wx.Panel):
         self.main_font_info_label = fpwx.h1(self, u"..",
                 ellip = wx.ST_ELLIPSIZE_END, Layout_func = self.Layout )
 
-        icon_and_text_sizer.Add(view_icon, 0,
-                wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
-                border = 8)
+        icon_and_text_sizer.Add(view_icon, 0, wx.EXPAND |
+                wx.ALIGN_CENTER_HORIZONTAL | wx.RIGHT,
+                border = 4)
 
         icon_and_text_sizer.Add(self.main_font_info_label, 1,
-           wx.LEFT | wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
-           border = 4)
+           wx.EXPAND | wx.TOP | wx.ALIGN_CENTER_HORIZONTAL,
+           border = 6)
 
         ## The status label
         self.status_text = fpwx.label(self, u"Subinfo",

@@ -82,6 +82,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         
         self.fitmap_sizer = wx.FlexGridSizer(cols = 1, vgap = 0, hgap = 0)
         self.SetSizer(self.fitmap_sizer)
+        self.Fit()
 
         self.SetupScrolling(rate_y = 5, scroll_x = False)
 

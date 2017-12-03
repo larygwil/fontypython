@@ -20,17 +20,29 @@ RSA
 2017
 
 
-
-
+HISTORY
+==
 Fonty started in ~ 2006 (In Hermanus, South Africa. On an early Ubuntu.)
-
 Work and notes in 2016/2017. Slow due to my ill health.
-====
 See also the older "ROADMAP" file.
 
 
-TEST
-===
+
+KNOWN BUGS
+==
+* The main frame keeps getting taller on every exit. Search the fuck outta me...
+
+* ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
+
+* HTML stuff returns to top on window resize. I think this is a wx bug/thing.
+
+* cli args - the argument is not being checked - can be missing and goes bad. e.g. --check= <--nothing= bad
+  (Noticed it does not happen all the time. hard to pin)==
+
+
+
+TESTS
+==
 I have a manual list in manual_tests that I try to stay on top of.
 
 
@@ -80,7 +92,7 @@ TODO
 
 
 FUTURE TODOS
-============
+==
 * Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
 
 * Fix % outside brackets _("") % out here, not inside.
@@ -109,7 +121,7 @@ FUTURE TODOS
 
 
 Oct 2017: A new Segfault!
-===
+==
 /home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
 MinimalCreateFitmaps runs
 OrderedDict([(<fontypythonmodules.fontcontrol.TruetypeItem object at 0x7f3d556e20d0>, <fontypythonmodules.gui_Fitmap.Fitmap; proxy of <Swig Object of type 'wxPyControl *' at 0x29384b0> >)])
@@ -125,10 +137,10 @@ Can't reproduce... :(
 
 
 GENERAL INFO
-============
+==
 
 FONTCONFIG and "~.fonts" deprecated
-===================================
+==
 Info is vague, but it looks like ~/.local/share/fonts is the new place
 
 https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
@@ -157,7 +169,7 @@ fc-list : file | grep donn
 
 
 XGD info
-===
+==
 There's a movement to standard desktop ideas. One of the is to use a standard config, data and cache directory system.
 Here's what I did in a python console:
 
@@ -193,17 +205,8 @@ I intend to get to the filter/pager stuff too, but will try to do that in its ow
 
 
 
-BUGS
-==
-*ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
-*HTML stuff returns to top on window resize. I think this is a wx bug/thing.
-* cli args - the argument is not being checked - can be missing and goes bad. e.g. --check= <--nothing= bad
-  (Noticed it does not happen all the time. hard to pin)
 
-* cli -- there's no thought to when a command stops the app. Do we allow many things to run in sequence, or stop each time?
-  i.e. can multiple command line options all happen, or will only the ones that match in the if situation.x tests 
-  happen? Is the order random or does it have meaning? etc.
-  NOV 19 2017: Made them all one-at-a-time. They all lead to an exit after a chain of elifs.
+
 
 
 
