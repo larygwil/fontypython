@@ -12,6 +12,9 @@ If I can, assuming the best, I will finish this new version soon and get it out.
 
 So, good luck. She runs. The transaltions are all broken (because I fucked with the strings so much) and I don't know if the setup procedure is working.
 
+
+Update, Dec 3, 2017. I've done a lot more stuff. Still not ready to release yet. I hope to before 2018.
+
 Donn Ingle
 RSA
 2017
@@ -25,12 +28,21 @@ Work and notes in 2016/2017. Slow due to my ill health.
 ====
 See also the older "ROADMAP" file.
 
+
+TEST
+===
+I have a manual list in manual_tests that I try to stay on top of.
+
+
+
 SETUP TODO
 ==
 * Test with empty fontypython dir
 * Test with old config file
 * Write a script to do prep stuff:
   * include the makehtml - so it's always fresh
+
+
 
 TODO
 ==
@@ -94,6 +106,8 @@ FUTURE TODOS
   This means all user's settings go poof. To fix this will take me a hell of a long time
   and I'd rather spend that time in other places. It's not that serious anyway. Fonty's not that complex.
 
+
+
 Oct 2017: A new Segfault!
 ===
 /home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
@@ -106,6 +120,10 @@ adding to sizer: ANUDI___.ttf (94, 1047)
 Floating point exception (core dumped)
 
 Can't reproduce... :(
+
+
+
+
 GENERAL INFO
 ============
 
@@ -173,6 +191,8 @@ Sept 2nd 2017
 I created the layoutchange branch. It's purpose is to mess with the wx layout of fonty.
 I intend to get to the filter/pager stuff too, but will try to do that in its own branch, after this one is reintegrated into trunk.
 
+
+
 BUGS
 ==
 *ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
@@ -184,13 +204,6 @@ BUGS
   i.e. can multiple command line options all happen, or will only the ones that match in the if situation.x tests 
   happen? Is the order random or does it have meaning? etc.
   NOV 19 2017: Made them all one-at-a-time. They all lead to an exit after a chain of elifs.
-
-
-
-
-
-
-
 
 
 

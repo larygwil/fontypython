@@ -55,6 +55,14 @@ class ATree(wx.GenericDirCtrl):
         self._set_icon(sid)
         
         # I can't get it to scroll to the selected dir 
+        ## Sept 2017
+        ## Trying to ensure the tree is scrolled to the start dir. No go so far.
+        #s = self.tree.GetSelection()
+        #print s
+        #print dir(s)
+        #import pdb; pdb.set_trace()
+        #self.tree.EnsureVisible(s)
+        #self.tree.ScrollTo(s)
         #self.treectrl.ScrollTo(sid), etc.
 
         self.treectrl.Bind(wx.EVT_TREE_SEL_CHANGED, self.__OnThing)
