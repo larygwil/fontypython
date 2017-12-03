@@ -104,6 +104,9 @@ for option, argument in opts:
     ## Nov 2017
     ## Help gets an argument.
     elif option in ("-h", "--help"):
+        if not argument:
+            print strings.arguments_amuse
+            raise SystemExit
         strictly_cli_context_only = True
         situation.help = argument
 
