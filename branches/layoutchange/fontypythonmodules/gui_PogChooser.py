@@ -55,6 +55,9 @@ class PogChooser(wx.ListCtrl) :
     __VIEW = None
 
     def __init__(self, parent, whoami, select = None) :
+        """
+        select is None or a Pog.
+        """
         self.indexselected = -1#0
         self.lastindexselected = -1
         self.parent = parent
@@ -90,18 +93,19 @@ class PogChooser(wx.ListCtrl) :
             i = self.FindItem(-1, select)
             self.indexselected = i # Set to help initial icon settings
             self.Select(i, True)
-        else:
+        #else:
             ## Nov 2017
             ## == "FichteFoll" hit a bug here.
             ## When fp starts with zero pogs ... :O ...
             ## there's an index problem with self.Select
-            ## * if there's at least one item,
-            ##   select the first one (item 0)
-            if self.GetItemCount() > 0:
-                self.Select(0, False)
-                self.indexselected = 0
-            else:
-                self.indexselected = -1
+            ## Fix: if there's at least one item,
+            ##      select the first one (item 0)
+            #if self.GetItemCount() > 0:
+            #    self.Select(0, False)
+            #    self.indexselected = 0
+            #else:
+            
+            #self.indexselected = -1
 
 
         self.ClearBackground()
@@ -116,8 +120,9 @@ class PogChooser(wx.ListCtrl) :
 
         ## This subscribe line here will register TWICE
         ##  with the global "ps" - since this PogChooser class 
-        ##  is instanced twice by the app...
-        ## Only the first occ. of the function is ever called.
+        ##  is instanced twice (view and target).
+        ## I.e. There will be two "self".ChangeIcon funcs 
+        ## fired on any one ps.pub(change_pog_icon) call.
         ps.sub(change_pog_icon, self.ChangeIcon) ##DND: class PogChooser
 
     def Sorter(self, key1, key2):
@@ -132,6 +137,9 @@ class PogChooser(wx.ListCtrl) :
         return locale.strcoll( s1, s2 )
 
     def onSelect(self, e):
+        """
+        pognochange: means No change to the selected Pog.
+        """
         wx.BeginBusyCursor()
         self.indexselected = e.m_itemIndex
         pognochange = False
@@ -152,15 +160,111 @@ class PogChooser(wx.ListCtrl) :
             ps.pub(target_pog_has_been_selected,
                     textpogname, pognochange)
 
-        self.SortOutTheDamnImages( pognochange )
+        self.toggle_list_icons_according_to_selection( pognochange )
 
         wx.EndBusyCursor()
 
-    def SortOutTheDamnImages( self, pognochange ):
+    def toggle_list_icons_according_to_selection( self, pognochange ):
         """
         Dec 2007 : This took me an entire day to figure out.
                    Man...
-        Determines the images of the list items.
+
+        Dec 2017: Updated and added much remarking. Ten years
+        later. Damn!
+
+        Determines the images of the list items from the pov
+        of the selected item:
+          1. Is the selection the active Target? 
+          2. Is it a toggle to unselected?
+          3. Unselected ones get cleared from any dirty old
+             state.
+
+        The target control cal have multiple selections, this
+        factors-in too.
+
+        Here we deal with only the last selected index, and
+        we make sure the icons reflect the logic of the user's
+        selections.
+
+        Is called from:
+        1. wxgui: __init__
+        2. gui_PogTargets: clear button event
+        3. gui_PogChooser (myself): on select event
+        """
+
+        ## Is there is an active selection?
+        if self.indexselected > -1:
+            
+            ## Yep - let's work:
+            c = self.GetItemCount()
+            ## A little test of which kind of a McList am I?
+            iAmTargetList = self.whoami=="TARGETPOG"
+
+            for x in xrange(0, c):
+                li = self.GetItem(x, 0)
+                ## This is all about the target list: 
+                if iAmTargetList:
+                    ## Since installed pogs can't be targets:
+                    ## I must know if a pog is installed
+                    ## so that I can prevent the target
+                    ## icon from being drawn for it.
+                    
+                    ## Installed is image index 1
+                    isInstalled = li.GetImage() == 1
+
+                    # Only if NOT installed do we even
+                    # try to draw the "triangle" target
+                    # icon:
+                    if not isInstalled:
+                        if x == self.indexselected:
+                            # We are on the selected item.
+
+                            # A: pognochange True
+                            # i.e. The same pog is being
+                            # clicked again.
+                            # Indicates it *was* selected
+                            # and now it's been selected again;
+                            # thus it can't be the target anymore.
+                            # Change the icon to normal (0)
+
+                            # B: pognochange False
+                            # i.e. A different pog has been
+                            # clicked.
+                            # It's a new valid selection, so make
+                            # it the target icon (2)
+                            n = 0 if pognochange else 2
+
+                            #if pognochange: n = 0
+                            #else: n = 2
+                            # new target icon
+                            self.SetItemImage(x, n )
+                        else:
+                            # We are on an UNselected item
+                            # (that is also NOT installed)
+                            # Make it a normal icon (0)
+                            # This is done because we can select
+                            # multiple target pogs: we only 
+                            # want ONE target icon so we must
+                            # switch the others off.
+                            self.SetItemImage(x, 0)
+
+            ## Tell the VIEW to imitate this picture.
+            for x in xrange(0,c):
+                # the 0 is 'column'. Ignore. (2017: Wtf?)
+                ti = self.__TARGET.pogTargetlist.GetItem(x, 0)
+                # gets the image index, not an image bitmap.
+                CLONE = ti.GetImage()
+                self.__VIEW.SetItemImage(x, CLONE)
+
+
+    def xxxSortOutTheDamnImages( self, pognochange ):
+        """
+        Dec 2007 : This took me an entire day to figure out.
+                   Man...
+        Determines the images of the list items fromt the pov
+        of the selected item:
+          1. Is the selection the active Target? 
+          2. Is it a toggle to unselected?
         Is called from TargetPogChooser as well 
         (when clear button is clicked)
         """
@@ -171,20 +275,23 @@ class PogChooser(wx.ListCtrl) :
         c = self.GetItemCount()
         # the actual selection index, does not go to -1
         sel = self.indexselected 
-        print sel
+        #print sel
 
         ## Which kind of a McList am I?
         iAmTargetList = self.whoami=="TARGETPOG"
         ## If there is an active selection?
         if sel > -1:
             for x in xrange(0, c):
-                i = self.GetItem(x, 0)
+                li = self.GetItem(x, 0)
+                ## I must know if a pog is installed
+                ## so that I can prevent the target
+                ## icon from being drawn when it is
+                ## selected.
+
                 ## Must make a tmp Pog before I can test
                 ## installed status.
-                tmpPog = fontcontrol.Pog(i.GetText())
-                if tmpPog.isInstalled():
-                    self.SetItemImage(x, 1)
-                else:
+                tmpPog = fontcontrol.Pog(li.GetText())
+                if not tmpPog.isInstalled():
                     ## Handle the other icons (in the target
                     ## list only)
                     ## that are not installed.
@@ -241,7 +348,7 @@ class PogChooser(wx.ListCtrl) :
             except UnicodeDecodeError:
                 ## We can't convert it under this locale
                 print _(u"(%s) skipped. I can't display this name "\
-                        "under your locale.") % [p]
+                        "under your locale.") % [p] # Irony in print!
                 continue
             ## Okay, we have a valid pog name to use:
             li = wx.ListItem()
@@ -249,7 +356,7 @@ class PogChooser(wx.ListCtrl) :
             li.SetText(p)
 
             ## June 25, 2016: Something in wxPython changed 
-            ## and li now needs an Id>0
+            ## and li now needs an Id>0 (Capital "I"d. Weird)
             li.Id = 1
 
             id = wx.NewId()

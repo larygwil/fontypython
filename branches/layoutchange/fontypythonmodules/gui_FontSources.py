@@ -143,7 +143,7 @@ class NoteBook(wx.Notebook):
             page = 1
         self.ctrlPogSource = PogChooser(pan2, whoami="SOURCEPOG", select = s)
 
-        ## Spet 2017
+        ## Sept 2017
         ## Started to make a purge button under the source pog thing, but
         ## changed my mind. It's going to stay in the Tools menu.
         #vbox = wx.BoxSizer(wx.VERTICAL)

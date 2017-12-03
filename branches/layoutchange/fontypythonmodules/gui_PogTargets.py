@@ -376,8 +376,8 @@ class TargetPogChooser(wx.Panel):
     def SelectNoTargetPog(self):
         wx.BeginBusyCursor()
         ## Go figure out what item gets what image
-        #self.pogTargetlist.SortOutTheDamnImages( pognochange = True )
-        self.pogTargetlist.SortOutTheDamnImages( True )
+        #self.pogTargetlist.toggle_list_icons_according_to_selection( pognochange = True )
+        self.pogTargetlist.toggle_list_icons_according_to_selection( True )
         self.pogTargetlist.ClearSelection() #Select nothing.
 
         fpsys.SetTargetPogToNone()  # Tell fpsys that we have no pog target selected

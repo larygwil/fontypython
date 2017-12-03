@@ -83,7 +83,7 @@ class CPubsub:
     ## NB: *All* the topics are matched. i.e. there's no early
     ## returning. This mechanism is relied on by 
     ## topic:change_pog_icon in the PogChooser 
-    ## (which subscribes TWICE as it is instanced twice in both
+    ## (which subscribes TWICE as it is instanced in BOTH
     ## source and target pog choosers. A single pub of that 
     ## topic will find two functions within the list and 
     ## so will run both.

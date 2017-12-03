@@ -444,7 +444,7 @@ class MainFrame(wx.Frame):
         self.Layout()
 
         ## This is to draw the correct icons depending on cli params.
-        self.panelTargetPogChooser.pogTargetlist.SortOutTheDamnImages(False)
+        self.panelTargetPogChooser.pogTargetlist.toggle_list_icons_according_to_selection(False)
 
     ## State stuff to manage the DismissablePanels
     def flag_state_on(self, flag):
