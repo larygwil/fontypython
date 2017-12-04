@@ -1,2 +1,0 @@
-cd htmldev
-./makehtml about.md && cp about.html ../fontypythonmodules/about
