@@ -105,6 +105,7 @@ FUTURE TODOS
 * I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
 
 * Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
+  pager control: << < 1 | 2 | 3 | 4 > >>
 
 * WONTFIXNOW: key value error in config: when i add new keys, it barfs and makes a new config file
   This means all user's settings go poof. To fix this will take me a hell of a long time
@@ -238,6 +239,34 @@ A set of buttons by first letter of all fitems: A B D P etc.
 >>> letters=set([i[0].upper() for i in L])
 
 Then use any with ^ "^B" in the filter string.
+
+
+
+Mad Ideas
+=========
+PANOSE WIZARD
+My understanding of Panose is very basic. I could not find proper info online. I read
+what I could. 
+
+Given that Panose is some kind of encoding of a Font's attributes and that
+some of those are its appearance -- it should be possible to construct a Panose number
+from a series of visuals. For example:
+(picture of a serif letter)[radio button]
+(picture of a sans letter)[radio button]
+Next>>
+(picture of a western letter)[radio button]
+(picture of a non-western letter)[radio button]
+Next>>
+{Latin fork in road}
+(picture of a curved serif)[radio button]
+(picture of a block serif)[radio button]
+Next>>
+And so on... until the entire set of Panose choices has been run and we can present
+a Panose number for them.
+
+Could this be done? If so, it should happen in the panel above the search bar.
+It should also have a history and a means to enter the wizard at arbitrary points of the 
+chain. It should be obvious, easy and quick.
 
 
 

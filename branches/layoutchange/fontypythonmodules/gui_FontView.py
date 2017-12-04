@@ -326,6 +326,8 @@ class FontViewPanel(wx.Panel):
 
         ## This Fit is NB. It sets the width
         ## for all panels to come.
+        ## Remove it and the various AutoWrapStaticText
+        ## objects fail hard.
         self.Fit()
 
         ## Bind events
