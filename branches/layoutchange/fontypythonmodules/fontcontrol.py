@@ -275,7 +275,7 @@ class FontItem( object ):
         return ( l1, l2 )
 
 
-## Create some subclasses to represent the fonts that we support:		
+## Create some subclasses to represent the fonts that we support:
 class InfoFontItem( FontItem ):
     """
     This class is only instantiated in wxgui.CreateFitmaps

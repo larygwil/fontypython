@@ -24,15 +24,15 @@ HISTORY
 ==
 Fonty started in ~ 2006 (In Hermanus, South Africa. On an early Ubuntu.)
 Work and notes in 2016/2017. Slow due to my ill health.
-See also the older "ROADMAP" file.
 
+I use Ubuntu, Terminal (gnome's), Gvim, Python, wxPython, bash (grep, sed, etc.), Gimp, Inkscape, ssh, svn, and probably a dozen other fantastic works of free software. Thank you all.
 
 
 KNOWN BUGS
 ==
 * The main frame keeps getting taller on every exit. Search the fuck outta me...
 
-* ESC key not bubbling up, still. Perhaps bind it from the fontview panel too? (might be fixed...)
+* ESC key not bubbling up; still..
 
 * HTML stuff returns to top on window resize. I think this is a wx bug/thing.
 
