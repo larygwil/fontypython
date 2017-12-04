@@ -62,8 +62,6 @@ TODO
   I must try to use _ for private names. __ for the rare special private names.
 
 * Don't forget to remove the wx debug stuff on the app object
-* UPDATE CHANGELOG
-* UPDATE README
 * THE FUCKING MAN PAGE :(
 
 * Do my best to repair the i18n files - maybe I can copy-paste some of the translations to match all the 

@@ -260,7 +260,28 @@ Had issues with new versions of wxPython and PIL. These reflected in various bug
 
 
 
+2017
+====
+Sept to Dec
+-----------
+1. Re-wrote large sections of Fonty. The gui is quite different and looks a lot better. 
+2. Added the "Hush" functionality after a long time of dreaming about it and then more time 
+   trying to hack fontconfig. I got some help on their mailing list and it quickly got done.
+3. I moved a lot of dialogues into in-app panels. I think it looks great.
+4. Converted all py files from tabs to four spaces.
+5. All new icons and logo. A general freshen.
+6. Fixes many bugs in the command-line usage. Added new ones like cat, lsfonts and hush.
+7. Move to the XDG standard paths: $HOME/.local/share and so forth. Fonty should upgrade the
+   older files into the new locations. 
+   All Pogs remain the same - they will simply be moved to the new fontypython directory.
+8. Made the font-view show fonts in columns to fit more on a screen. This was extremely hard
+   to do and there are still bugs. Over all, I think it looks good too.
 
+The future
+==========
+If wxPython does not release their Python 3 compatible library soon, then Fonty may hit a wall
+around 2020, when Python 2.x is dropped. I might not have the time or health to code anyway.
+We'll see.
 
 
 
