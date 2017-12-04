@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# convert arg1 into html via markdown
+# PS: sudo apt install markdown
+
+
+TOP=$(cat << ENDSTYLE
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"><html><body bgcolor="{bg}" LINK="{dark}" VLINK="{dark}" ALINK="{dark}">
+ENDSTYLE
+)
+
+BOT=$(cat << ENDHTML
+</body></html>
+ENDHTML
+)
+
+htmlout=$(basename "$1" .md).html
+
+MID=$(markdown "$1") # > tmphtml
+
+HTML="${TOP}${MID}${BOT}"
+echo $HTML > "$htmlout"
+
+## Stuff the shitty font tags into heading tags. 
+## wx.html is all about the 90's
+sed -i 's|<h\(.\)>|<h\1><font color="{heading\1}">|g;s|</h\(.\)>|</font></h\1>|g;' "$htmlout"

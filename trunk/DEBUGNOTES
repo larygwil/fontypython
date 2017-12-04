@@ -8,3 +8,18 @@ wxPython inspector. See wxgui.py in the App class definition:
 import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
 class App(wx.App , wx.lib.mixins.inspection.InspectionMixin) :
+
+
+
+Run python from gdb:
+https://wiki.python.org/moin/DebuggingWithGdb
+
+
+$ gdb python
+(gdb) run <programname>.py <arguments>
+
+To see stack trace after segfault:
+(gdb) bt
+
+Try to save the stack trace...
+(gdb) set logging file my_god_object.log

@@ -1,13 +1,17 @@
 PACKAGER README
 Hello there, here are things that may help you:
 
+THE FILE TO RUN
+fontypython
+
+That is the primary executable file. Please don't use 'start_fontypython'.
+
 DEBIAN STRINGS
 Line 1: (< 60 chars)
 Find, view and manage font files of all kinds.
 
 Para 2:
 You can quickly view and filter arbitrary TTF, TTC, OTF, OTC, WOFF or Type1 font files and then gather them together into 'Pogs' which can be installed or removed as needed. In this way you control which fonts are installed on a per-project basis.
-
 
 MAN FILE
 fontypython.1 is the man file. I leave it to you to place it onto target systems properly.

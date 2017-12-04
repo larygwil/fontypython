@@ -1,46 +1,234 @@
-Work and notes in 2016/2017. Slow due to my ill health.
-====
-See also the older "ROADMAP" file.
-
-NB::Don't forget to remove the wx debug stuff on the app object
-
-* Was working on showing multiple columns of fonts in the middle view. All okay but for the initial panel size being 0 when app runs. 
-* Another idea - to ask the user how many cols they want; get the width from that (panelwidth/numcolswanted) and then send that width into the code that draws the actual bitmaps. 
-* Possible: A fade-to-white on right edge of fitmaps so long text doesn't look so cut-off.
-* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. Still the old idea for an HTML style pager control.
-* I need to contrain the min size of the font target panel on the right. somehow. it can go right off the frame!
-* Was also messing in pubsub. Added a return factor to it - also added a new key = sash position ish  -- idea was to get the width of scroll panel in some cleaner way than exists. Then ripped it out: it causes recursion issues.
-* Maybe - the scroll panel can be measured during its init? store that for when it reports 0?
-* ESC key is being swallowed by some widgets. Find a way to forward it on to the main frame.
-* Detect when source directory is $HOME and recurse is on and ... ask if user is sure. Else crash-city.
-
-Layout idea
+NOTE TO THE FUTURE
 ==
-Perhaps a top/bottom split.
--------------------
-| FONTVIEWUPHERE  |
--------------------
-| SOURCE | TARGET |
--------------------
+It's 25 Nov 2017. I am not well. Today my PC did not want to boot. I have told it to ignore the problem (p/s over voltage, I think) but I do not know if it will continue to work. I have no second PC.
 
-FUTURE IDEAS
-============
-* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
-* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
-* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
-* DONE! A font inspector - open a dialogue showing all the glyphs at each character position. This has been asked for, but may not make it into Fonty soon.
+If Fonty dev just stops, that will be why.
 
-* Distinguish TTC somehow
-* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
+The active branch called "layoutchange" is the latest fonty. It's very close to working. Last I left it, I was experimenting with control layouts under the font view. This will change as I continue to hack. I probably won't be able to keep this file up to date.
 
-* BUSY: SIMPLIFY THE HELP. Make the .fonts thing PRIMARY
+I am stuck on Python 2.x because wxPython has not released their new version on Linux. It seems they are actually disinterested in Linux. I hope wxPython 4 comes to a distro near you soon. It's a bloody great framework.
 
-* A start-up initial directory for font source.
+If I can, assuming the best, I will finish this new version soon and get it out. I intend to try python-gobject gtk, what a nightmare, but I have zero confidence that I can move Fonty to Gtk. Whatever I do will take several years anyway. If I have several years.
 
+So, good luck. She runs. The transaltions are all broken (because I fucked with the strings so much) and I don't know if the setup procedure is working.
+
+
+Update, Dec 3, 2017. I've done a lot more stuff. Still not ready to release yet. I hope to before 2018.
+
+Donn Ingle
+RSA
+2017
+
+
+HISTORY
+==
+Fonty started in ~ 2006 (In Hermanus, South Africa. On an early Ubuntu.)
+Work and notes in 2016/2017. Slow due to my ill health.
+
+I use Ubuntu, Terminal (gnome's), Gvim, Python, wxPython, bash (grep, sed, etc.), Gimp, Inkscape, ssh, svn, and probably a dozen other fantastic works of free software. Thank you all.
+
+
+KNOWN BUGS
+==
+* The main frame keeps getting taller on every exit. Search the fuck outta me...
+
+* ESC key not bubbling up; still..
+
+* HTML stuff returns to top on window resize. I think this is a wx bug/thing.
+
+
+
+TESTS
+==
+I have a manual list in manual_tests that I try to stay on top of.
+
+
+
+SETUP TODO
+==
+* Test with empty fontypython dir
+* Test with old config file
+* Write a script to do prep stuff:
+  * include the makehtml - so it's always fresh
+* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
+  Somehow...?
 
 
 
 TODO
+==
+* NB:
+  I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
+  I must try to use _ for private names. __ for the rare special private names.
+
+Done * Don't forget to remove the wx debug stuff on the app object
+
+* Sliders for point size, num cols etc. in settings?
+
+* Distinguish TTC|OTC somehow
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
+
+* A button to toggle the lhs gui open/close
+
+* kill random prints
+
+* SetSearchBitmap on search filter. Maybe?
+
+
+i18N, POFILES, ETC.
+==
+I rely on the Makefile. Run make.
+Glad I wrote it, for I remember nothing at all. \('')/
+
+
+FUTURE TODOS
+==
+* Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
+
+* Fix % outside brackets _("") % out here, not inside.
+   _("text {}").format(stuff)
+
+* comments that are stale
+* copyright dates replace
+* pyc files in svn
+* PEP8 all up in da hizzle - well, the tabs-to-spaces part. (Use tab2spaces script.)
+* it's, its ...
+
+* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
+
+* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
+
+* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
+
+* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
+
+* Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
+  pager control: << < 1 | 2 | 3 | 4 > >>
+
+* WONTFIXNOW: key value error in config: when i add new keys, it barfs and makes a new config file
+  This means all user's settings go poof. To fix this will take me a hell of a long time
+  and I'd rather spend that time in other places. It's not that serious anyway. Fonty's not that complex.
+
+
+
+Oct 2017: A new Segfault!
+==
+/home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
+MinimalCreateFitmaps runs
+OrderedDict([(<fontypythonmodules.fontcontrol.TruetypeItem object at 0x7f3d556e20d0>, <fontypythonmodules.gui_Fitmap.Fitmap; proxy of <Swig Object of type 'wxPyControl *' at 0x29384b0> >)])
+refresh: ANUDI___.ttf
+self.fitem.name ticked: False
+   Set cols 0
+adding to sizer: ANUDI___.ttf (94, 1047)
+Floating point exception (core dumped)
+
+Can't reproduce... :(
+
+
+
+
+GENERAL INFO
+==
+
+FONTCONFIG and "~.fonts" deprecated
+==
+Info is vague, but it looks like ~/.local/share/fonts is the new place
+
+https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+$XDG_DATA_HOME defines the base directory relative to which user specific data files should be stored. If $XDG_DATA_HOME is either not set or empty, a default equal to $HOME/.local/share should be used.
+
+https://github.com/eosrei/emojione-color-font/issues/14
+
+Also look in ~/.config/fontconfig
+
+/etc/fonts/fonts.conf has:
+
+        <!-- the following element will be removed in the future -->
+        <dir>~/.fonts</dir>
+
+In mailinglist:
+https://lists.freedesktop.org/archives/fontconfig/2014-July/005270.html
+"Use $XDG_DATA_HOME/fonts instead where is ~/.local/share/fonts in most cases."
+
+Might be able to look for $XDG_DATA and deduce from that ...
+
+Interesting fc-list command. Shows all the filenames of known fonts and then I grep it to limit to my home dir:
+fc-list : file | grep donn
+
+(I wonder if this could be a way to limit font cruft in choosers?)
+
+
+
+XGD info
+==
+There's a movement to standard desktop ideas. One of the is to use a standard config, data and cache directory system.
+Here's what I did in a python console:
+
+python-gi
+-- Seems to be the deb/rpm name of package to install.
+
+python (2.7)
+>>>import glib ## This is out of date. I think.
+>>>glib.get_user_data_dir()
+'/home/donn/.local/share'
+So, that works. I am not sure where 'glib' comes from...
+Also:
+## It seems this is the latest way to  do it:
+>>>from gi.repository import GLib
+>>>GLib.get_user_data_dir()
+'/home/donn/.local/share'
+So, that works too. 
+
+.fontypython should go in there somewhere - poss into the config dir:
+>>> glib.get_user_config_dir()
+'/home/donn/.config'
+>>> GLib.get_user_config_dir()
+'/home/donn/.config'
+
+.fonts should go in DATA dir.
+
+
+BRANCHES:
+==
+Sept 2nd 2017
+I created the layoutchange branch. It's purpose is to mess with the wx layout of fonty.
+I intend to get to the filter/pager stuff too, but will try to do that in its own branch, after this one is reintegrated into trunk.
+
+
+
+
+
+
+
+
+
+
+FREETYPE SUPPORTED FONTS:
+==
+How many do I have to cover?
+
+    OK TrueType fonts (TTF) and TrueType collections (TTC)
+		OK OpenType collections (OTC) Is the same as TTC (seems to supercede TTF)
+    OK OpenType fonts (OTF)
+    OK Type 1 fonts (PFA and PFB)
+    ADDED SEPT 2017: OK WOFF fonts
+
+    NOT SUPP BY PIL X11 PCF fonts
+    NOT SUPP BY PIL Windows FNT fonts
+
+		NOT YET Opentype CFF variants and ..
+    NOT YET CFF fonts [same] Not at all sure that these are a file type.
+
+
+    NOT YET ?? CID-keyed Type 1 fonts
+    NOT YET ?? SFNT-based bitmap fonts, including color Emoji
+    NOT YET ?? BDF fonts (including anti-aliased ones)
+    NOT YET ?? PFR fonts
+    NOT YET ?? Type 42 fonts (limited support)
+
+
+
+FILTER TODO
 ==
 Filtering ideas. Pillow is supplying all kinds of info now:
 
@@ -49,6 +237,34 @@ A set of buttons by first letter of all fitems: A B D P etc.
 >>> letters=set([i[0].upper() for i in L])
 
 Then use any with ^ "^B" in the filter string.
+
+
+
+Mad Ideas
+=========
+PANOSE WIZARD
+My understanding of Panose is very basic. I could not find proper info online. I read
+what I could. 
+
+Given that Panose is some kind of encoding of a Font's attributes and that
+some of those are its appearance -- it should be possible to construct a Panose number
+from a series of visuals. For example:
+(picture of a serif letter)[radio button]
+(picture of a sans letter)[radio button]
+Next>>
+(picture of a western letter)[radio button]
+(picture of a non-western letter)[radio button]
+Next>>
+{Latin fork in road}
+(picture of a curved serif)[radio button]
+(picture of a block serif)[radio button]
+Next>>
+And so on... until the entire set of Panose choices has been run and we can present
+a Panose number for them.
+
+Could this be done? If so, it should happen in the panel above the search bar.
+It should also have a history and a means to enter the wizard at arbitrary points of the 
+chain. It should be obvious, easy and quick.
 
 
 
