@@ -1,0 +1,11 @@
+#!/bin/bash
+[[ -z "$1" ]] && echo "Need a new branch name." && exit
+B="$1"
+[[ -e "../branches/$B" ]] && echo "$B already exists." && exit
+
+P=svn+ssh://donningle@svn.savannah.nongnu.org/fontypython/
+
+svn copy $P/trunk $P/branches/$B -m "Creating a dev branch of trunk named $B"
+pushd ../branches/
+svn co $P/branches/$B
+popd
