@@ -61,11 +61,7 @@ TODO
   I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
   I must try to use _ for private names. __ for the rare special private names.
 
-* Don't forget to remove the wx debug stuff on the app object
-* THE FUCKING MAN PAGE :(
-
-* Do my best to repair the i18n files - maybe I can copy-paste some of the translations to match all the 
-  new strings I am using.
+Done * Don't forget to remove the wx debug stuff on the app object
 
 * Sliders for point size, num cols etc. in settings?
 
@@ -79,6 +75,10 @@ TODO
 * SetSearchBitmap on search filter. Maybe?
 
 
+i18N, POFILES, ETC.
+==
+I rely on the Makefile. Run make.
+Glad I wrote it, for I remember nothing at all. \('')/
 
 
 FUTURE TODOS

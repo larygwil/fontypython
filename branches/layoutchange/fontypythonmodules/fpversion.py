@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+
+# This Python file uses the following encoding: utf-8
 
 ## Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.

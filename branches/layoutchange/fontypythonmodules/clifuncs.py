@@ -127,7 +127,7 @@ def zip( pog ):
             print _("I could not create the zip at all.")
             print emsgs[0]
         else:
-            print _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (pog,os.getcwd())
+            print _("Zipped as \"{}.fonts.zip\" in the \"{}\" directory.").format( pog, os.getcwd())
             if bugs:
                 print _("Some bugs happened:")
                 for m in emsgs: print m

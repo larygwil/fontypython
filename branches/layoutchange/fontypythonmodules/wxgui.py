@@ -672,7 +672,7 @@ class MainFrame(wx.Frame):
                     printer( "" )
                 else:
                     printer( 
-                       _("Zipped as \"%s.fonts.zip\" in the \"%s\" directory.") % (p, todir) )
+                       _("Zipped as \"{}.fonts.zip\" in the \"{}\" directory.").format( p, todir) )
                     printer( "" )
                     if bugs:
                         printer( _("Some bugs happened:") )
@@ -776,14 +776,14 @@ class MainFrame(wx.Frame):
 # Code for debugging:
 ##http://wiki.wxpython.org/Widget%20Inspection%20Tool
 ## Use ctrl+alt+i to open it.
-import wx.lib.mixins.inspection
+#import wx.lib.mixins.inspection
 ## Start the main frame and then show it.
-class App(wx.App  , wx.lib.mixins.inspection.InspectionMixin) :
+class App( wx.App ):# , wx.lib.mixins.inspection.InspectionMixin) :
     """
     The main wxPython app starts here
     """
     def OnInit(self):
-        self.Init()  # initialize the inspection tool
+        #self.Init()  # initialize the inspection tool
 
         ## Initial dialogue to inform user about wx unicode version.
         if not "unicode" in wx.PlatformInfo:
