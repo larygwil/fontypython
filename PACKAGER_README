@@ -6,7 +6,7 @@ Line 1: (< 60 chars)
 Find, view and manage font files of all kinds.
 
 Para 2:
-You can quickly view and filter arbitrary TTF, TTC, OTF or Type1 font files and then gather them together into 'Pogs' which can be installed or removed as needed. In this way you control which fonts are installed on a per-project basis.
+You can quickly view and filter arbitrary TTF, TTC, OTF, OTC, WOFF or Type1 font files and then gather them together into 'Pogs' which can be installed or removed as needed. In this way you control which fonts are installed on a per-project basis.
 
 
 MAN FILE
