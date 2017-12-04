@@ -11,12 +11,11 @@ makehtml
 Does some replacing - to insert format {tags} into heading tags and stuff. 
 
 Later, python does more replacing to replace those tags with actual system colours and other strings. 
-(See the various html panels in wxgui.py)
+(See the various html panels in gui_dismissbale_panels.py)
 
 distrib script
 ==
-In the root, I have "make_html_and_distrib"
-This does both help and about and places the files.
+In the root, I have "make_html_and_distrib". This does both help and about and places the files.
 
 Images
 ==
