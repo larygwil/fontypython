@@ -1,0 +1,33 @@
+syntax on
+
+" Toolbars (remove) and scrollbars (try to remove)
+:set guioptions-=l
+:set guioptions-=L
+:set guioptions-=R
+:set guioptions-=T  "remove toolbar
+":set guioptions-=r  "remove right-hand scroll bar
+
+"Enable * register (select, middle paste)
+:set guioptions+=a
+:set clipboard=unnamed
+:set mouse=a
+
+"Attempt to restore window size on restart
+set ssop+=resize,winpos,winsize
+
+"Switch on line numbers
+:set nu!
+
+"highlight searches
+:set hlsearch
+
+" This multi-part command: detects the filetype, then
+" runs a plugin that shipped with vim
+" which does python PEP 8 stuff.
+" I can't stand the 4 space tabs, but there's fuckall
+" I can seem to do about it. :\
+filetype indent plugin on
+
+" Some colours I like
+colorscheme darkblue
+colo gruvbox " See inside .vim/colors

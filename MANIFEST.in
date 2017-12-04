@@ -2,3 +2,5 @@ include fontypython start_fontypython README COPYING CHANGELOG fontypython.png f
 recursive-include fontypythonmodules/things *
 recursive-include fontypythonmodules/locale *
 recursive-include fontypythonmodules/help *
+recursive-include fontypythonmodules/about *
+

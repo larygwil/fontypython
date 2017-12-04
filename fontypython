@@ -1,25 +1,25 @@
 #!/usr/bin/env python
-##	Fonty Python Copyright (C) 2006,2007,2008,2009 Donn.C.Ingle
-##	Contact: donn.ingle@gmail.com - I hope this email lasts.
+## Fonty Python Copyright (C) 2006-2017 Donn.C.Ingle
+## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
-##	This file is part of Fonty Python.
-##	Fonty Python is free software: you can redistribute it and/or modify
-##	it under the terms of the GNU General Public License as published by
-##	the Free Software Foundation, either version 3 of the License, or
-##	(at your option) any later version.
+## This file is part of Fonty Python.
+## Fonty Python is free software: you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
 ##
-##	Fonty Python is distributed in the hope that it will be useful,
-##	but WITHOUT ANY WARRANTY; without even the implied warranty of
-##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-##	GNU General Public License for more details.
+## Fonty Python is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
 ##
-##	You should have received a copy of the GNU General Public License
-##	along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+## You should have received a copy of the GNU General Public License
+## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Dec 2007
 This wraps start_fontypython and catches the segfaults that kill it.
-These segfaults happen in PIL when certain bad fonts just break stuff;
+These segfaults happen in PIL when certain bad fonts just break stuff.
 I can't catch them or stop them in any way - hence this wrapper.
 A window displays the situation and gives the user some hope.
 """
@@ -31,8 +31,8 @@ import subprocess, sys, os
 ## is actually being run.
 root = __file__
 if os.path.islink(root):
-	root = os.path.realpath(root)
-fontyroot = os.path.dirname(os.path.abspath(root)) 
+    root = os.path.realpath(root)
+fontyroot = os.path.dirname(os.path.abspath(root))
 
 import fontypythonmodules.i18n as i18n
 
@@ -60,50 +60,104 @@ c1 = [os.path.join(fontyroot,'start_fontypython') ]
 for arg in sys.argv[1:]: c1.append( arg )
 
 p1 = subprocess.call( c1 )
-if p1 == 0:
-	print
-	#print _("Thanks for trying Fonty Python!") ## retired 28 May 2009
-elif p1 == 1:
-	print #Skip this line else all cli errors also print this: _("Mysterious Bad Stuff happened. Fonty failed. Let us know.")
-else: # err code -11
-	#print "ERROR CODE:", p1
-	## This actually works!
-	import sys, os, locale
-	import fontypythonmodules.pathcontrol as PC
-	import wx, fontypythonmodules.dialogues as D
 
-	## July 2016 - Removed as causing a segfault in wxPython.
-	## Setup wxPython to access translations : enables the stock buttons.
-	## localedir = "fontypythonmodules/locales"
-	## langid = wx.LANGUAGE_DEFAULT
-	## mylocale = wx.Locale( langid )
+##TEST:
+#p1=-11 # to test
 
-	iPC = PC.PathControl()
+## Nov 2017: Simpler plan:
+if p1 >= 0:
+    raise SystemExit
 
-	def getSegfaulter():
-		"""
-		What was the last font to segfault PIL?
-		"""
-		paf = os.path.join( iPC.appPath(),"lastFontBeforeSegfault")
-		culprit = None
-		try:
-			f = open( paf, "r" )
-			culprit = f.readline()[:-1]
-			f.close()
-		except:
-			raise
-		return culprit
+## Gets here if p1 < 0:
+## err code -11
+## This actually works!
+import fontypythonmodules.fpsys as fpsys
+import wx
+import fontypythonmodules.fpwx as fpwx
+import fontypythonmodules.strings as strings
 
-	## Start the App and then show the Segfault dialog.
-	class App(wx.App) :
-		def OnInit(self) :
-			culprit = getSegfaulter()
-			#print culprit
-			dlg = D.SegfaultDialog(None, culprit)
-			val = dlg.ShowModal()
-			if val == wx.ID_OK:
-				print _("Please restart Fonty Python after you have moved:\"%s\" to some other place.") % culprit
-			dlg.Destroy()
-			return True
-	app = App(0)
-	app.MainLoop()
+class SegfaultDialog(wx.Dialog):
+    """
+    Dec 2007, Nov 2017: Moved into this file from dialogues.py
+    Runs from the wrapper script (which runs start_fontypython) so that we
+    can tell the user that there was a segfault and why.
+    """
+    def __init__(self, context, culprit):
+        wx.Dialog.__init__(self, None, -1, _("Oh boy..."), pos = wx.DefaultPosition )
+        
+        fs = wx.FlexGridSizer(cols = 1, vgap = 4)
+
+        labelHeading = fpwx.h1(self, _("Fonty Python, um ... crashed."))
+        fs.Add(labelHeading, 0, wx.BOTTOM, border = 8 )
+
+        if context == "SEGFAULT":
+            segdir = os.path.dirname(culprit)
+            sadStory = _("There's some problem with the font named below.\n" \
+                         "You can do one of two things:\n" \
+                         "1) Manually move this font somewhere else, or\n" \
+                         "2) Use Fonty's command-line (-c) to mark bad fonts.\n" \
+                         "   See below for help with this.\n" \
+                         "After you've done these, run me again.")
+            msg = _('The bad font might be:')
+            cmd = "fontypython -c \"{}\"".format(segdir)
+        elif context == "NO_LFBS_FILE":
+            sadStory = _("There's no lastFontBeforeSegfault file; I can't really help.\n" \
+                         "Look at the error (below) for clues." )
+            msg = _('The error was:')
+
+        sadStory = fpwx.para( self, sadStory )
+        fs.Add(sadStory,  0, wx.BOTTOM, border = 8 )
+
+        msg = fpwx.label( self, msg )
+        culprit = wx.TextCtrl(self, -1, culprit, size=(0,80),style = wx.TE_READONLY | wx.TE_MULTILINE )
+        fs.Add(msg, 0)
+        fs.Add(culprit, 1, wx.EXPAND  )
+
+        if context == "SEGFAULT":
+            msg1 = fpwx.label(self,_("The command line to seek and mark bad fonts is:"))
+            msgs = fpwx.small_label(self,_("(Copy the text; open a console; paste and press enter.)"))
+            msg2 = wx.TextCtrl(self,-1,cmd, size=(0,80), style = wx.TE_READONLY | wx.TE_MULTILINE )
+            fs.Add(msg1, 0, wx.TOP, border=8 )
+            fs.Add(msg2, 1, wx.EXPAND)
+            fs.Add(msgs, 0 )
+
+        tickettxt = fpwx.para(self, _("You can get help by opening a ticket on:"))
+        ticketurl = wx.TextCtrl(self, -1, strings.ticket_url, size=(0,40),style = wx.TE_READONLY)
+        fs.Add(tickettxt, 0, wx.TOP, border=8 )
+        fs.Add(ticketurl, 1, wx.EXPAND )
+        
+        btn = wx.Button(self, wx.ID_OK)
+        btn.SetDefault()
+        fs.Add(btn, 0, wx.ALIGN_CENTER_VERTICAL| wx.ALIGN_RIGHT | wx.TOP, border = 15 )
+
+        b = wx.BoxSizer( wx.HORIZONTAL )
+        b.Add( fs, 0, wx.ALL, border=10 )
+        self.SetSizer( b )
+        b.Fit(self) 
+
+
+## Start the App and then show the Segfault dialog.
+class App(wx.App):
+    def OnInit(self):
+        culprit = None
+        ## A wide net. Not gonna split hairs.
+        try:
+            paf = os.path.join( fpsys.iPC.appPath(),"lastFontBeforeSegfault")
+            f = open( paf, "r" )
+            culprit = f.readline()[:-1]
+            f.close()
+            if not culprit:# odball situation. file may have been empty:
+                raise IOError # force error into except
+            else:
+                context="SEGFAULT"
+        except Exception as e:
+            culprit = "{}".format(e)
+            context="NO_LFBS_FILE"
+
+        fpwx.setup_fonts_and_colours()
+        dlg = SegfaultDialog( context, culprit )
+        val = dlg.ShowModal()
+        dlg.Destroy()
+        return True
+app = App(0)
+app.MainLoop()

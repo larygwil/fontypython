@@ -7,22 +7,45 @@ see the COPYING file.  This is free software, and you are welcome
 to redistribute it under certain conditions; see the COPYING file 
 for details.
 
-UPDATED SEPT 2017
+TICKETS
+=======
+https://savannah.nongnu.org/bugs/?group=fontypython
 
-NB: Remove the old version BEFORE you install FP.
+Future maintainers
+==================
+Please read DEVNOTES.
+
+
+UPDATED DEC 2017
+
+A Note on Python 3
+==============
+I want to move to Python 3, but my toolkit (wxPython) has not released 
+their Python 3 compatible wxPython 4.x for Linux. This means I am stuck
+on Python 2.x for an unknown span.
+
+I hear that Python 2.x is being discontinued in 2020. I don't know what
+that means. If the distros drop Python 2.x at that point, then Fonty
+will die right there.
+
+Let's see.
+
+
+NB: Try to remove the old version BEFORE you install FP.
 ==============
 You can find the path by:
 locate fontypythonmodules
 
 If that does not work, then you must update your locate database:
 As root run: locate -u
-Go make coffee.Then run the locate command above again.
+Go make coffee. Then run the locate command above again.
 
 This will give you a directory something like:
 /usr/lib/python2.5/site-packages/fontypythonmodules
 
 Use your root account to remove that folder:
-sudo rm -fr /usr/lib/python2.5/site-packages/fontypythonmodules
+cd /usr/lib/python2.5/site-packages
+sudo rm -fr fontypythonmodules
 
 (Be *very* careful what you type!)
 You should be good to go now.
@@ -33,12 +56,12 @@ Please see the end of this file if your install fails, there are
 certain files that FP relies upon.
 
 I assume you have extracted the "tarball" already.
-Change to the directory it creates.
+Change to the directory it created.
 
 As the root user enter this command:
 python setup.py install
 
-If you are on Ubuntu/Kubuntu/Xubuntu/Debian etc:
+You might need to use sudo:
 sudo python setup.py install
 
 This will create a program called 'fontypython'
@@ -58,13 +81,14 @@ starting it again.
 
 Running the program
 ===================
-To get started:
+To get started on the console:
 fontypython -h
 
 For more info:
 fontypython -e
 
-Please read the help ( -h or Help menu in app ).
+For the gui, run fontypython
+(Hit F1 for in-app help)
 
 Troubleshooting the installation
 ================================
@@ -72,11 +96,12 @@ Fonty Python depends on several other libraries:
 ( These are minimum version numbers )
 1. python2.4 to python2.6 (Not python3)
 2. python-dev (odd one this. See notes below)
-*3. python-imaging *CHANGED
+3. python-imaging *CHANGED*
 3. python-pil (The "Pillow" module has replaced the old PIL one.)
 4. python-wxgtk2.6 or greater, but not wx 4.x, which is not even released yet.
 
 Items 1 and 3 are usually pre-installed on Gnu\Linux distros.
+
 Item 2 is a new twist. I am not sure why it's required for FP
 (yes - I don't know everything :)) but some users have had
 problems and installing python2.4-dev fixed them.
@@ -87,6 +112,10 @@ sudo apt-get install python2.4-dev
 If you cannot install item 2 - try the alternative 
 installation instructions above.
 
+Item 3 - python-imaging is known as the PILLOW library.
+It should be available in your repo. I used vers 3.1.2 to 
+develop. Make that the min.
+
 Item 4 may be installed, or it may be in your distro's
 main repository.To install item 4, try the following:
 On *buntu/Debian:
@@ -95,10 +124,7 @@ Find the latest version in the list, then:
 sudo apt-get install python-wxgtkX.Y
 (replacing X.Y with the results of your search)
 
-On distro X:
-*Please send me your experiences and I'll fill this in*
-
-After this has installed, try to run fontypython again.
+After this has all installed, try to run fontypython again.
 
 If you still do not come right, then I advise you
 to go to the following web sites for help directly
@@ -106,6 +132,8 @@ from the horse's mouth:
 http://wxpython.org
 https://python-pillow.org/
 
+Or open a ticket on our site: 
+https://savannah.nongnu.org/bugs/?group=fontypython
 
 LOCALIZATION TIPS
 =================

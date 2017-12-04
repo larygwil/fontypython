@@ -1,0 +1,2 @@
+cd htmldev
+./makehtml help.md && cp help.html ../fontypythonmodules/help/en/
