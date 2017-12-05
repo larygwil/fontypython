@@ -1,0 +1,6 @@
+These are little helper scripts for various tasks. Don't run them without looking at their code.
+
+g: is a nice grepper
+make_html_and_distrib: is a nice way to make both help and about from the .md files and move them into the right places.
+tab2spaces: is useful, although the path might be wrong now that it's in a sub-dir.
+mkbranch: is svn-related and probably not wise to run.
