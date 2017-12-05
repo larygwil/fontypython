@@ -18,7 +18,7 @@
 Dec 2017
 ===
 This is step 4 in the startup process. We got here from
-    ../start_fontypython
+    ../fp_step_3.py
 """
 
 ## test modules etc.

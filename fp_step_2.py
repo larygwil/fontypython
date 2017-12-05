@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ## Fonty Python Copyright (C) 2006-2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
@@ -22,12 +21,12 @@ Dec 2017
 This is step 2 in the startup process. We get here from:
     fontypython
 (Which does a Python 2 test.)
-Step 3: start_fontypython
+Next is step 3: fp_step_3.py
 
 Dec 2007
 ==
 This wraps 
-    start_fontypython
+    fp_step_3
 and catches any segfaults that kill it.
 
 These segfaults happen in PIL when certain bad fonts just 
@@ -67,7 +66,7 @@ import fontypythonmodules.i18n as i18n
 # on the current directory.
 # Thus:
 # Point to the absolute path of the 'start_fontypython' script.
-c1 = [ "python", os.path.join(fontyroot,'start_fontypython') ]
+c1 = [ "python", os.path.join(fontyroot,'fp_step_3.py')] #start_fontypython') ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
