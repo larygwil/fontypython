@@ -1087,3 +1087,7 @@ state = FPState() #The only instance of the state object -- app-wide
 ## Our config instance - it will have one instance across
 ## all the modules that use it.
 config = Configure()
+
+
+##TEST: 
+#print "If you can read this, fpsys just ran."

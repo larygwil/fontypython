@@ -25,7 +25,6 @@ import fontypythonmodules.i18n
 import fontypythonmodules.sanitycheck
 import fontypythonmodules.fpversion
 
-
 import os, sys, glob, fnmatch
 from distutils.core import setup, Extension
 import distutils.command.install_data
@@ -125,7 +124,7 @@ setup(name = "fontypython",
 
     #'fontypython' and 'start_fontypython' are in the root.
     scripts = ["fontypython", "start_fontypython"],
-long_description = fontypythonmodules.strings.long_description,
+    long_description = fontypythonmodules.strings.long_description,
     classifiers=[
       'Development Status :: 6 - Mature',
       'Environment :: X11 Applications',
@@ -135,7 +134,7 @@ long_description = fontypythonmodules.strings.long_description,
       'Programming Language :: Python',
       'Topic :: Desktop Environment',
       'Topic :: Text Processing :: Fonts',
-        'Topic :: Multimedia :: Graphics',
-        'Topic :: Utilities',
+      'Topic :: Multimedia :: Graphics',
+      'Topic :: Utilities',
       ]
 )
