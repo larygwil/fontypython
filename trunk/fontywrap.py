@@ -17,10 +17,23 @@
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 """
+Dec 2017
+==
+This is step 2 in the startup process. We get here from:
+    fontypython
+(Which does a Python 2 test.)
+Step 3: start_fontypython
+
 Dec 2007
-This wraps start_fontypython and catches the segfaults that kill it.
-These segfaults happen in PIL when certain bad fonts just break stuff.
-I can't catch them or stop them in any way - hence this wrapper.
+==
+This wraps 
+    start_fontypython
+and catches any segfaults that kill it.
+
+These segfaults happen in PIL when certain bad fonts just 
+break stuff. I can't catch them or stop them in any way - hence 
+this wrapper.
+
 A window displays the situation and gives the user some hope.
 """
 
@@ -54,7 +67,7 @@ import fontypythonmodules.i18n as i18n
 # on the current directory.
 # Thus:
 # Point to the absolute path of the 'start_fontypython' script.
-c1 = [os.path.join(fontyroot,'start_fontypython') ]
+c1 = [ "python", os.path.join(fontyroot,'start_fontypython') ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
