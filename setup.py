@@ -107,6 +107,9 @@ files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
 ## files.append( ('/usr/share/man/man1',['fontypython.1']) ) # leave this up to Kartik to handle.
 files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this puts COPYING into fontypythonmodules
+
+## I want these two in the 'root' but they are not 'scripts' - i.e. I don't want them
+## to have +x bit set:
 files.append( ('',['fp_step_2.py','fp_step_3.py']) )
 
 setup(name = "fontypython",
@@ -123,8 +126,8 @@ setup(name = "fontypython",
     ## Override some of the default distutils command classes with my own.
     cmdclass = { 'install_data': wx_smart_install_data },
 
-    #'fontypython', 'fp_step_2.py' and 'fp_step_3.py' are all in the root.
-    scripts = ["fontypython"],#, "fp_step_2.py", "fp_step_3.py"],
+    #'fontypython' is in the root and is the only executable:
+    scripts = ["fontypython"],
     long_description = fontypythonmodules.strings.long_description,
     classifiers=[
       'Development Status :: 6 - Mature',
