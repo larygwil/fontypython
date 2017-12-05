@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ## Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
@@ -19,8 +18,8 @@
 Dec 2017
 ==
 This is step 3 in the startup process. We got here from
-    fontywrap
-Step 4: fontypythonmodules/start.py
+    fp_step_2.py
+Step 4 is next: fontypythonmodules/fp_step_4.py
 
 This file serves to get us down into the fontypythonmodules
 directory where all the modules live.
@@ -32,4 +31,4 @@ import os
 ## Just clear up some sad facts:
 if os.name != "posix": sys.exit(_("Sorry, only Gnu/Linux is supported at the moment."))
 ## start the show!
-import fontypythonmodules.start
+import fontypythonmodules.fp_step_4#start
