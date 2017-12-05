@@ -1,2 +1,2 @@
-cd htmldev
-./makehtml help.md && cp help.html ../fontypythonmodules/help/en/
+cd ../htmldev
+./makehtml help.md && mv help.html ../fontypythonmodules/help/en/
