@@ -1,5 +1,10 @@
-echo "Looking for dist - if it's there kill it."
-[ -e dist ] && exit 1
+if [[ -e dist ]]; then
+	echo "'dist' already exists. Cleaning up..."
+	cd dist
+	rm fonty*.tar.gz
+	rm fonty*.sig
+	cd ..
+fi
 
 # remove the damn +x on sundry scripts
 ./scripts/ugominusx
@@ -8,9 +13,9 @@ echo "Looking for dist - if it's there kill it."
 ./scripts/make_html_and_distrib
 
 python setup.py sdist
+
 cd dist
 gpg -b --use-agent fontypython*
-
 chmod 644 fontypython*
 
 if [ -n "$1" ]; then

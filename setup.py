@@ -108,8 +108,7 @@ except:
 
 # Everything under fontypythonmodules:
 # Update: '*' casts a wider net. It now catches the README
-# ==      and COPYING files in the tree. It also catches 
-#         'pofiles', which may be .. bad? Dunno.
+# ======= and COPYING files in the tree. (See badnames too.)
 # I must keep the contents of this directory very clean!
 # files = find_data_files('fontypythonmodules/', '*.*')
 files = find_data_files('fontypythonmodules/', '*')
@@ -127,125 +126,34 @@ files.append( ('/usr/share/applications',['fontypython.desktop']) )
 files.append( ('',['README', 'CHANGELOG', 'COPYING']) )
 
 # I want these two in the 'root' but they are not 'scripts' 
-# - i.e. I don't want them to have +x bit set:
+#  I.e. I don't want them to have +x bit set:
 files.append( ('',['fp_step_2.py','fp_step_3.py']) )
 
 ##TEST:
-debug = True
+debug = False #True
 if debug:
     import pprint
     pprint.pprint (files)
     print
 
-    example_of_output="""
-[('fontypythonmodules/',
-  ['fontypythonmodules/fontybugs.py',
-   'fontypythonmodules/clifuncs.py',
-   'fontypythonmodules/gui_dismissable_panels.py',
-   'fontypythonmodules/gui_PogChooser.py',
-   'fontypythonmodules/fpsys.py',
-   'fontypythonmodules/strings.py',
-   'fontypythonmodules/charmaps.py',
-   'fontypythonmodules/gui_Fitmap.py',
-   'fontypythonmodules/wxgui.py',
-   'fontypythonmodules/fpwx.py',
-   'fontypythonmodules/cli2.py',
-   'fontypythonmodules/gui_FontView.py',
-   'fontypythonmodules/pubsub.py',
-   'fontypythonmodules/linux_safe_path_library.py',
-   'fontypythonmodules/fontyfilter.py',
-   'fontypythonmodules/sanitycheck.py',
-   'fontypythonmodules/i18n.py',
-   'fontypythonmodules/gui_DirChooser.py',
-   'fontypythonmodules/fp_step_4.py',
-   'fontypythonmodules/__init__.py',
-   'fontypythonmodules/fontcontrol.py',
-   'fontypythonmodules/gui_PogTargets.py',
-   'fontypythonmodules/COPYING',
-   'fontypythonmodules/gui_FontSources.py',
-   'fontypythonmodules/gui_ScrolledFontView.py',
-   'fontypythonmodules/fpversion.py']),
- ('fontypythonmodules/locale/it/LC_MESSAGES',
-  ['fontypythonmodules/locale/it/LC_MESSAGES/all.mo']),
- ('fontypythonmodules/locale/de/LC_MESSAGES',
-  ['fontypythonmodules/locale/de/LC_MESSAGES/all.mo']),
- ('fontypythonmodules/locale/fr/LC_MESSAGES',
-  ['fontypythonmodules/locale/fr/LC_MESSAGES/all.mo']),
- ('fontypythonmodules/things',
-  ['fontypythonmodules/things/tick.png',
-   'fontypythonmodules/things/view16x16.png',
-   'fontypythonmodules/things/icon_open_folder.png',
-   'fontypythonmodules/things/icon_next_page.png',
-   'fontypythonmodules/things/splash.png',
-   'fontypythonmodules/things/clear.png',
-   'fontypythonmodules/things/pog16x16.png',
-   'fontypythonmodules/things/button_charmap_over.png',
-   'fontypythonmodules/things/icon_hush.png',
-   'fontypythonmodules/things/icon_zip.png',
-   'fontypythonmodules/things/button_charmap.png',
-   'fontypythonmodules/things/icon_target.png',
-   'fontypythonmodules/things/icon_source_folder_16x16.png',
-   'fontypythonmodules/things/font_cannot_draw.png',
-   'fontypythonmodules/things/ticksmall.png',
-   'fontypythonmodules/things/icon_root.png',
-   'fontypythonmodules/things/pog16x16.installed.png',
-   'fontypythonmodules/things/font_not_found.png',
-   'fontypythonmodules/things/icon_viewing.png',
-   'fontypythonmodules/things/README',
-   'fontypythonmodules/things/icon_X.png',
-   'fontypythonmodules/things/fplogo.png',
-   'fontypythonmodules/things/icon_prev_page.png',
-   'fontypythonmodules/things/icon_ext_drive.png',
-   'fontypythonmodules/things/icon_source_pog_16x16.png',
-   'fontypythonmodules/things/icon_regular.png',
-   'fontypythonmodules/things/cross.png',
-   'fontypythonmodules/things/icon_italic.png',
-   'fontypythonmodules/things/font_segfault.png',
-   'fontypythonmodules/things/icon_settings.png',
-   'fontypythonmodules/things/icon_cdrom.png',
-   'fontypythonmodules/things/icon_closed_folder.png',
-   'fontypythonmodules/things/icon_source.png',
-   'fontypythonmodules/things/icon_bold.png',
-   'fontypythonmodules/things/font_info_item.png',
-   'fontypythonmodules/things/icon_drive.png',
-   'fontypythonmodules/things/pog16x16.target.png']),
- ('fontypythonmodules/pofiles',
-  ['fontypythonmodules/pofiles/fr_all.merged.po',
-   'fontypythonmodules/pofiles/README',
-   'fontypythonmodules/pofiles/de_all.merged.po',
-   'fontypythonmodules/pofiles/it_all.merged.po',
-   'fontypythonmodules/pofiles/who_did_what',
-   'fontypythonmodules/pofiles/fp_all.pot']),
- ('fontypythonmodules/help', ['fontypythonmodules/help/README']),
- ('fontypythonmodules/help/en',
-  ['fontypythonmodules/help/en/help.html',
-   'fontypythonmodules/help/en/README']),
- ('fontypythonmodules/about', ['fontypythonmodules/about/about.html']),
- ('/usr/share/pixmaps', ['fontypython.png']),
- ('/usr/share/applications', ['fontypython.desktop']),
- ('', ['README', 'CHANGELOG', 'COPYING']),
- ('', ['fp_step_2.py', 'fp_step_3.py'])]
+setup(       name = "fontypython",
+          version = fontypythonmodules.fpversion.version,
+      description = fontypythonmodules.strings.description,
+           author = "Donn.C.Ingle",
+     author_email = fontypythonmodules.strings.contact,
+          license = "GNU GPLv3",
+              url = "https://savannah.nongnu.org/projects/fontypython/",
+         packages = ['fontypythonmodules'],
+       data_files = files,
+         # Borrowed from wxPython too:
+         # Causes the data_files to be installed into the modules directory.
+         # Override some of the default distutils command classes with my own.
+         cmdclass = { 'install_data': wx_smart_install_data },
 
-    """
-
-setup(name = "fontypython",
-    version = fontypythonmodules.fpversion.version,
-    description = fontypythonmodules.strings.description,
-    author = "Donn.C.Ingle",
-    author_email = fontypythonmodules.strings.contact,
-    license = "GNU GPLv3",
-    url = "https://savannah.nongnu.org/projects/fontypython/",
-    packages = ['fontypythonmodules'],
-    data_files = files,
-    ## Borrowed from wxPython too:
-    ## Causes the data_files to be installed into the modules directory.
-    ## Override some of the default distutils command classes with my own.
-    cmdclass = { 'install_data': wx_smart_install_data },
-
-    #'fontypython' is in the root and is the only executable:
-    scripts = ["fontypython"],
-    long_description = fontypythonmodules.strings.long_description,
-    classifiers=[
+          # 'fontypython' is in the root and is the only executable:
+          scripts = ["fontypython"],
+ long_description = fontypythonmodules.strings.long_description,
+      classifiers = [
       'Development Status :: 6 - Mature',
       'Environment :: X11 Applications',
       'Intended Audience :: End Users/Desktop',
@@ -257,7 +165,7 @@ setup(name = "fontypython",
       'Topic :: Multimedia :: Graphics',
       'Topic :: Utilities',
       ],
-    ## Dec 2017: Seems my distutils is too old to know about it. 
-    ## I will leave it here for whatever.
-    python_requires='<3',
+  ## Dec 2017: Seems my distutils is too old to know about it. 
+  ## I will leave it here for whatever.
+  python_requires = '<3',
 )
