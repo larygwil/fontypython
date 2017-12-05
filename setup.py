@@ -110,7 +110,7 @@ files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this p
 
 ## I want these two in the 'root' but they are not 'scripts' - i.e. I don't want them
 ## to have +x bit set:
-files.append( ('',['fp_step_2.py','fp_step_3.py']) )
+#files.append( ('',['fp_step_2.py','fp_step_3.py']) )
 
 setup(name = "fontypython",
     version = fontypythonmodules.fpversion.version,
@@ -140,5 +140,6 @@ setup(name = "fontypython",
       'Topic :: Text Processing :: Fonts',
       'Topic :: Multimedia :: Graphics',
       'Topic :: Utilities',
-      ]
+      ],
+    python_requires='<3',
 )

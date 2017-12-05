@@ -199,7 +199,9 @@ class DismissableHTMLPanel(DismissablePanel):
         sd.update(**fpwx.HTMLCOLS)
 
         # IMG SRC
-        # Get a path so we can alter IMG SRC to be absolute
+        # Get a path so we can alter all IMG SRCes to be 
+        # absolute since the images were not working after
+        # a setup has been done.
         sd.update({"THINGS": fpsys.mythingsdir})
         
         ## Make sure the HTML is unicode
@@ -208,7 +210,6 @@ class DismissableHTMLPanel(DismissablePanel):
         ## Format the HTML
         h = h.format(**sd)
 
-        print h
         self.html.SetPage( h )        
         return self.html
 
