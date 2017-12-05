@@ -4,6 +4,9 @@ echo "Looking for dist - if it's there kill it."
 # remove the damn +x on sundry scripts
 ./scripts/ugominusx
 
+# Make sure we have the latest html files for help and about
+./scripts/make_html_and_distrib
+
 python setup.py sdist
 cd dist
 gpg -b --use-agent fontypython*
