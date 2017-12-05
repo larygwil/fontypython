@@ -35,6 +35,9 @@ this wrapper.
 
 A window displays the situation and gives the user some hope.
 """
+if __name__=="__main__":
+    print "Please run fontypython, not this file."
+    raise SystemExit
 
 import subprocess, sys, os
 
@@ -72,7 +75,11 @@ import fontypythonmodules.i18n as i18n
 # Added "python" so fp_step_3.py need not have chmod +x
 # which should illustrate that only 'fontypython' is the
 # correct file to run.
-c1 = [ "python", os.path.join(fontyroot,'fp_step_3.py') ]
+
+# Also: Pass a flag to the next step to allow it to run.
+# I am trying to dicourage running any other file than
+# the main one.
+c1 = [ "python", os.path.join(fontyroot,'fp_step_3.py'),'we_say_Ni' ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
