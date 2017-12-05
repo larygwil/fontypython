@@ -16,17 +16,20 @@
 ##  You should have received a copy of the GNU General Public License
 ##  along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
-## None of these imports touches fpsys in any way.
-## Thus, there is no iPC instanced. Thus there should
-## be no running of the code that upgrades old fonty
-## to new (and makes files/directories), which is good
-## because setup is run as root!
+"""
+None of these imports touches fpsys in any way.
+Thus, there is no iPC instanced. Thus there should
+be no running of the code that upgrades old fonty
+to new (and makes files/directories), which is good
+because setup is run as root!
+"""
+
 import fontypythonmodules.i18n
 import fontypythonmodules.sanitycheck
 import fontypythonmodules.fpversion
 
 import os, sys, glob, fnmatch
-from distutils.core import setup, Extension
+from distutils.core import setup#, Extension
 import distutils.command.install_data
 
 
@@ -51,7 +54,8 @@ def find_data_files(srcdir, *wildcards, **kw):
 
     ## A list of partials within a filename that would disqualify it
     ## from appearing in the tarball.
-    badnames=[".pyc","~","no_",".svn","CVS",".old", ".swp"]
+    badnames=[ ".pyc","~","no_",".svn","CVS",".old", ".swp",
+            "who_did_what" ] # exclude the who_did_what file as it contains email details.
 
     def walk_helper(arg, dirname, files):
         BL=[ bad for bad in badnames if bad in dirname ]
@@ -84,34 +88,145 @@ def find_data_files(srcdir, *wildcards, **kw):
                     [os.path.basename(f) for f in glob.glob(opj(srcdir, '*'))])
     return file_list
 
-## Remove the MANIFEST file, if there.
+## Remove tmp stuff
 try:
     os.remove("MANIFEST")
-    print "MANIFEST removed"
-except:
-    print "No MANIFEST to remove."
-try:
     os.remove("PKG-INFO")
 except:
     pass
 
-## This is a list of files to install, and where:
-## Make sure the MANIFEST.in file points to all the right 
-## directories too.
-files = find_data_files('fontypythonmodules/', '*.*')
+# Dec 2017
+# ==
+# I simplified the MANIFEST.in file to contain the minimum.
+# It's a pos anyway. It only cares about the 'setup.py sdist'
+# command and plays no role in a 'setup.py install'. Ffsks.
 
-## Jan 20 2008 - Add an icon and .desktop file
-## Unsure about the absolute path to /usr/share
-## but this works on my system.
+# This is a list of files to install, and where:
+# The MANIFEST only bothers with the man page and itself.
+# All other files must be explicitly included in this files
+# object.
+
+# Everything under fontypythonmodules:
+# Update: '*' casts a wider net. It now catches the README
+# ==      and COPYING files in the tree. It also catches 
+#         'pofiles', which may be .. bad? Dunno.
+# I must keep the contents of this directory very clean!
+# files = find_data_files('fontypythonmodules/', '*.*')
+files = find_data_files('fontypythonmodules/', '*')
+
+# Jan 20 2008 - Add an icon and .desktop file
+# Unsure about the absolute path to /usr/share
+# but this works on my system.
 files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
-## files.append( ('/usr/share/man/man1',['fontypython.1']) ) # leave this up to Kartik to handle.
-files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this puts COPYING into fontypythonmodules
 
-## I want these two in the 'root' but they are not 'scripts' - i.e. I don't want them
-## to have +x bit set:
-## Even though they are mentioned in MANIFEST.in, they must be here too. Go figure.
+# Leave the man page up to Kartik.
+# files.append( ('/usr/share/man/man1',['fontypython.1']) )
+
+# And the others in the root:
+files.append( ('',['README', 'CHANGELOG', 'COPYING']) )
+
+# I want these two in the 'root' but they are not 'scripts' 
+# - i.e. I don't want them to have +x bit set:
 files.append( ('',['fp_step_2.py','fp_step_3.py']) )
+
+##TEST:
+debug = True
+if debug:
+    import pprint
+    pprint.pprint (files)
+    print
+
+    example_of_output="""
+[('fontypythonmodules/',
+  ['fontypythonmodules/fontybugs.py',
+   'fontypythonmodules/clifuncs.py',
+   'fontypythonmodules/gui_dismissable_panels.py',
+   'fontypythonmodules/gui_PogChooser.py',
+   'fontypythonmodules/fpsys.py',
+   'fontypythonmodules/strings.py',
+   'fontypythonmodules/charmaps.py',
+   'fontypythonmodules/gui_Fitmap.py',
+   'fontypythonmodules/wxgui.py',
+   'fontypythonmodules/fpwx.py',
+   'fontypythonmodules/cli2.py',
+   'fontypythonmodules/gui_FontView.py',
+   'fontypythonmodules/pubsub.py',
+   'fontypythonmodules/linux_safe_path_library.py',
+   'fontypythonmodules/fontyfilter.py',
+   'fontypythonmodules/sanitycheck.py',
+   'fontypythonmodules/i18n.py',
+   'fontypythonmodules/gui_DirChooser.py',
+   'fontypythonmodules/fp_step_4.py',
+   'fontypythonmodules/__init__.py',
+   'fontypythonmodules/fontcontrol.py',
+   'fontypythonmodules/gui_PogTargets.py',
+   'fontypythonmodules/COPYING',
+   'fontypythonmodules/gui_FontSources.py',
+   'fontypythonmodules/gui_ScrolledFontView.py',
+   'fontypythonmodules/fpversion.py']),
+ ('fontypythonmodules/locale/it/LC_MESSAGES',
+  ['fontypythonmodules/locale/it/LC_MESSAGES/all.mo']),
+ ('fontypythonmodules/locale/de/LC_MESSAGES',
+  ['fontypythonmodules/locale/de/LC_MESSAGES/all.mo']),
+ ('fontypythonmodules/locale/fr/LC_MESSAGES',
+  ['fontypythonmodules/locale/fr/LC_MESSAGES/all.mo']),
+ ('fontypythonmodules/things',
+  ['fontypythonmodules/things/tick.png',
+   'fontypythonmodules/things/view16x16.png',
+   'fontypythonmodules/things/icon_open_folder.png',
+   'fontypythonmodules/things/icon_next_page.png',
+   'fontypythonmodules/things/splash.png',
+   'fontypythonmodules/things/clear.png',
+   'fontypythonmodules/things/pog16x16.png',
+   'fontypythonmodules/things/button_charmap_over.png',
+   'fontypythonmodules/things/icon_hush.png',
+   'fontypythonmodules/things/icon_zip.png',
+   'fontypythonmodules/things/button_charmap.png',
+   'fontypythonmodules/things/icon_target.png',
+   'fontypythonmodules/things/icon_source_folder_16x16.png',
+   'fontypythonmodules/things/font_cannot_draw.png',
+   'fontypythonmodules/things/ticksmall.png',
+   'fontypythonmodules/things/icon_root.png',
+   'fontypythonmodules/things/pog16x16.installed.png',
+   'fontypythonmodules/things/font_not_found.png',
+   'fontypythonmodules/things/icon_viewing.png',
+   'fontypythonmodules/things/README',
+   'fontypythonmodules/things/icon_X.png',
+   'fontypythonmodules/things/fplogo.png',
+   'fontypythonmodules/things/icon_prev_page.png',
+   'fontypythonmodules/things/icon_ext_drive.png',
+   'fontypythonmodules/things/icon_source_pog_16x16.png',
+   'fontypythonmodules/things/icon_regular.png',
+   'fontypythonmodules/things/cross.png',
+   'fontypythonmodules/things/icon_italic.png',
+   'fontypythonmodules/things/font_segfault.png',
+   'fontypythonmodules/things/icon_settings.png',
+   'fontypythonmodules/things/icon_cdrom.png',
+   'fontypythonmodules/things/icon_closed_folder.png',
+   'fontypythonmodules/things/icon_source.png',
+   'fontypythonmodules/things/icon_bold.png',
+   'fontypythonmodules/things/font_info_item.png',
+   'fontypythonmodules/things/icon_drive.png',
+   'fontypythonmodules/things/pog16x16.target.png']),
+ ('fontypythonmodules/pofiles',
+  ['fontypythonmodules/pofiles/fr_all.merged.po',
+   'fontypythonmodules/pofiles/README',
+   'fontypythonmodules/pofiles/de_all.merged.po',
+   'fontypythonmodules/pofiles/it_all.merged.po',
+   'fontypythonmodules/pofiles/who_did_what',
+   'fontypythonmodules/pofiles/fp_all.pot']),
+ ('fontypythonmodules/help', ['fontypythonmodules/help/README']),
+ ('fontypythonmodules/help/en',
+  ['fontypythonmodules/help/en/help.html',
+   'fontypythonmodules/help/en/README']),
+ ('fontypythonmodules/about', ['fontypythonmodules/about/about.html']),
+ ('/usr/share/pixmaps', ['fontypython.png']),
+ ('/usr/share/applications', ['fontypython.desktop']),
+ ('', ['README', 'CHANGELOG', 'COPYING']),
+ ('', ['fp_step_2.py', 'fp_step_3.py'])]
+
+    """
 
 setup(name = "fontypython",
     version = fontypythonmodules.fpversion.version,

@@ -1,12 +1,1 @@
-include fontypython fp_step_2.py fp_step_3.py 
-include README COPYING CHANGELOG 
-include fontypython.png fontypython.desktop 
 include fontypython.1 MANIFEST.in
-recursive-include fontypythonmodules/things *
-recursive-include fontypythonmodules/locale *
-recursive-include fontypythonmodules/help *
-recursive-include fontypythonmodules/about *
-prune *.swp
-prune *.pyc
-prune *.svn
-
