@@ -52,21 +52,21 @@ Layout
 =====
 On the left are the Source (top) and Target (bottom) controls. On the right is the Font View. 
 
-<img src="fontypythonmodules/things/icon_source.png">&nbsp; The Sources
+<img src="{THINGS}/icon_source.png">&nbsp; The Sources
 --
 Font *Sources* are directories or Pogs. There are tabs for you to choose. 
 
 (Beware the **include sub-folders** option in Settings. When checked, Fonty will look for fonts in **all** the sub-directories within your chosen Source directory. If there are lots of fonts in there, she might hang. Use this with caution.)
 
-<img src="fontypythonmodules/things/icon_target.png">&nbsp; The Targets
+<img src="{THINGS}/icon_target.png">&nbsp; The Targets
 --
 These Pogs are the *Targets*: you put fonts into them.
 
-* <img src="fontypythonmodules/things/pog16x16.png">&nbsp; Shows a Pog (which is not installed).
+* <img src="{THINGS}/pog16x16.png">&nbsp; Shows a Pog (which is not installed).
   Such Pogs can be Targets.
-* <img src="fontypythonmodules/things/pog16x16.installed.png">&nbsp; Shows an installed Pog.
+* <img src="{THINGS}/pog16x16.installed.png">&nbsp; Shows an installed Pog.
   You can't use these as targets. (Uninstall them first.)
-* <img src="fontypythonmodules/things/pog16x16.target.png">&nbsp; Shows current target Pog.
+* <img src="{THINGS}/pog16x16.target.png">&nbsp; Shows current target Pog.
 
 For Targets, you can select many Pogs at once by holding control (Ctrl) as you select them; this is for installing/uninstalling/etc. many Pogs at once.
 
@@ -80,7 +80,7 @@ The managements buttons all work with the selected **target** Pog(s). It's a lit
 * **Delete:** All selected Pogs will be deleted. It will ask you if you are sure.
 * **Zip:** All selected Pogs will have their fonts zipped into individual zip files in a directory you choose.
 
-<img src="fontypythonmodules/things/icon_viewing.png">&nbsp; The Font View
+<img src="{THINGS}/icon_viewing.png">&nbsp; The Font View
 --
 Fonts in your Source will be visible in the Font View. You can click on the fonts you want to select. At the bottom of the Font View are controls to filter, page and manage the fonts you are looking at.
 
@@ -91,18 +91,18 @@ Each font appears with some appropriate information. Here are the basics:
 
 * Change the **Point size** by **Ctrl + scrolling** the mouse wheel up or down.
 
-* <img src="fontypythonmodules/things/button_charmap_over.png">&nbsp;**Character Map Button:** If you have a character viewing app installed, this button will open it. (You can choose which character map viewer to use in the Settings. The choices are gucharmap or kfontview &mdash; but you must install one first.)
+* <img src="{THINGS}/button_charmap_over.png">&nbsp;**Character Map Button:** If you have a character viewing app installed, this button will open it. (You can choose which character map viewer to use in the Settings. The choices are gucharmap or kfontview &mdash; but you must install one first.)
 
 * **Selecting fonts:** Clicking anywhere on a font will select it; if it's sensible. For example, if you have only a Source selected, and no Target, then there's no point in selecting fonts.
-  * **A tick<img src="fontypythonmodules/things/tick.png" width=18 height=18> :** means the font can be placed into your chosen Target Pog.
-  * **A cross <img src="fontypythonmodules/things/cross.png" width=18 height=18> :** means the font will be removed from the Source Pog (The one you are viewing at the moment).
+  * **A tick<img src="{THINGS}/tick.png" width=18 height=18> :** means the font can be placed into your chosen Target Pog.
+  * **A cross <img src="{THINGS}/cross.png" width=18 height=18> :** means the font will be removed from the Source Pog (The one you are viewing at the moment).
 
 * **Font Info:** Under each font you will find the family and style and filename. 
   When you use the filter to search, this is the text that is searched.
 
 * **Greyed-out:** Fonts that are already in the Pog (i.e. selected as a target) are disabled.
 
-* <img src="fontypythonmodules/things/font_cannot_draw.png">&nbsp;**Bad fonts:** An error may appear instead of the expected font glyphs. Such fonts cannot be drawn.
+* <img src="{THINGS}/font_cannot_draw.png">&nbsp;**Bad fonts:** An error may appear instead of the expected font glyphs. Such fonts cannot be drawn.
   You can select, enpog, and install them. Most of the time, these fonts will still work in your 
   design apps, like Inkscape.
   (See [Bugs](#bugs) for more information about font errors.)
@@ -110,7 +110,7 @@ Each font appears with some appropriate information. Here are the basics:
 ###Font controls
 * **Filter:** 
   * **i,r,b** are Italic, Regular and Bold. 
-  * <img src="fontypythonmodules/things/clear.png">&nbsp; Clears any filter.
+  * <img src="{THINGS}/clear.png">&nbsp; Clears any filter.
   * The text box is for custom searching. Type something and hit enter. 
 * **Pager:** On the far right is the pager. Use it to step through the fonts as you like.
 * **Left/Right:** Arrow buttons for paging one forward or back. 
@@ -119,7 +119,7 @@ Each font appears with some appropriate information. Here are the basics:
 {SEP}
 
 <a name="hushing"></a>
-<img src="fontypythonmodules/things/icon_hush.png">&nbsp;Hushing Fonts
+<img src="{THINGS}/icon_hush.png">&nbsp;Hushing Fonts
 ===
 On Linux there are often too many fonts installed; it's hard to choose among them. To work with *only* the fonts that you install via Fonty, hit Ctrl+H to **hush**. Your apps will now list **only** your desired fonts. (Until you un-hush.)
 
@@ -171,13 +171,13 @@ If there's a problem, you can also manually delete the config file. Look for it 
 Menus
 ====
 * **Tools menu**
-  * <img src="fontypythonmodules/things/icon_settings.png">&nbsp;**Settings:** Access the settings for 
+  * <img src="{THINGS}/icon_settings.png">&nbsp;**Settings:** Access the settings for 
     the font view. Shortcuts: Ctrl+S or middle-click on the font view.
   * **Purge Pog:** The Pog you are currently viewing may contain fonts that are not there anymore.
     Use purge to remove them.<br>
      *Explanation*: A Pog contains a list of paths. If a font is somehow moved on your hard drive, 
      then the path in the Pog will be old. Purging will remove these ghost fonts.
-  * <img src="fontypythonmodules/things/icon_hush.png">&nbsp;**Hush fonts**: See the [section on hushing](#hushing). Shortcut: Ctrl+H
+  * <img src="{THINGS}/icon_hush.png">&nbsp;**Hush fonts**: See the [section on hushing](#hushing). Shortcut: Ctrl+H
   * **Exit:** Guess. :-)
 * **Selection menu**
   * **Select ALL the source fonts:** While only a few fonts are shown in a page at a time, there may 
@@ -265,7 +265,7 @@ If you want to help translate, please drop us a ticket on: {TICKET_URL}
 <a name="bugs"></a>
 Bugs
 ===
-<img src="fontypythonmodules/things/font_segfault.png">&nbsp;Fatal crashes and Dangerous Fonts.
+<img src="{THINGS}/font_segfault.png">&nbsp;Fatal crashes and Dangerous Fonts.
 --
 Some fonts stick in Fonty's throat and crash her. If you wait a moment, a window should appear and tell you which font is to blame. You should move that font entirely away from where it is. Start Fonty again to resume. 
 
