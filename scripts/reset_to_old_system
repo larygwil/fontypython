@@ -1,3 +1,6 @@
+echo "Dangerous script. It will now stop."
+exit
+
 ## A way to restore to old system so I can hack-test the pathcontrol code
 echo Cleaning XDG shit
 rm -fr ~/.local/share/fontypython
