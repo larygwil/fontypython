@@ -51,7 +51,7 @@ def find_data_files(srcdir, *wildcards, **kw):
 
     ## A list of partials within a filename that would disqualify it
     ## from appearing in the tarball.
-    badnames=[".pyc","~","no_",".svn","CVS",".old"]
+    badnames=[".pyc","~","no_",".svn","CVS",".old", ".swp"]
 
     def walk_helper(arg, dirname, files):
         BL=[ bad for bad in badnames if bad in dirname ]
@@ -110,7 +110,8 @@ files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this p
 
 ## I want these two in the 'root' but they are not 'scripts' - i.e. I don't want them
 ## to have +x bit set:
-#files.append( ('',['fp_step_2.py','fp_step_3.py']) )
+## Even though they are mentioned in MANIFEST.in, they must be here too. Go figure.
+files.append( ('',['fp_step_2.py','fp_step_3.py']) )
 
 setup(name = "fontypython",
     version = fontypythonmodules.fpversion.version,
@@ -141,5 +142,7 @@ setup(name = "fontypython",
       'Topic :: Multimedia :: Graphics',
       'Topic :: Utilities',
       ],
+    ## Dec 2017: Seems my distutils is too old to know about it. 
+    ## I will leave it here for whatever.
     python_requires='<3',
 )

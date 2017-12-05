@@ -6,4 +6,7 @@ recursive-include fontypythonmodules/things *
 recursive-include fontypythonmodules/locale *
 recursive-include fontypythonmodules/help *
 recursive-include fontypythonmodules/about *
+prune *.swp
+prune *.pyc
+prune *.svn
 
