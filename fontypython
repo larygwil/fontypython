@@ -20,7 +20,7 @@
 """
 This is step 1 in the startup process.
 
-Next is step 2: fp_step_2.py
+Next is step 2: fontypython_step_2.py
 
 This file exists to test that Python is version 2.
 
@@ -40,4 +40,4 @@ if sys.version_info >= (3, 0):
     sys.exit(1)
 
 if __name__ == "__main__":
-    import fp_step_2 
+    import fontypython_step_2
