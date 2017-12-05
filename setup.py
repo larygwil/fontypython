@@ -107,6 +107,7 @@ files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
 ## files.append( ('/usr/share/man/man1',['fontypython.1']) ) # leave this up to Kartik to handle.
 files.append( ('fontypythonmodules/',['COPYING']) ) # on setup.py install this puts COPYING into fontypythonmodules
+files.append( ('',['fp_step_2.py','fp_step_3.py']) )
 
 setup(name = "fontypython",
     version = fontypythonmodules.fpversion.version,
@@ -123,7 +124,7 @@ setup(name = "fontypython",
     cmdclass = { 'install_data': wx_smart_install_data },
 
     #'fontypython', 'fp_step_2.py' and 'fp_step_3.py' are all in the root.
-    scripts = ["fontypython", "fp_step_2.py", "fp_step_3.py"],
+    scripts = ["fontypython"],#, "fp_step_2.py", "fp_step_3.py"],
     long_description = fontypythonmodules.strings.long_description,
     classifiers=[
       'Development Status :: 6 - Mature',

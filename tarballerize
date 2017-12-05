@@ -1,6 +1,9 @@
 echo "Looking for dist - if it's there kill it."
 [ -e dist ] && exit 1
 
+# remove the damn +x on sundry scripts
+./scripts/ugominusx
+
 python setup.py sdist
 cd dist
 gpg -b --use-agent fontypython*
