@@ -24,6 +24,20 @@ Step 4 is next: fontypythonmodules/fp_step_4.py
 This file serves to get us down into the fontypythonmodules
 directory where all the modules live.
 """
+import sys
+argok = ""
+try:
+    argok = sys.argv[1]
+except:
+    argok = "fail"
+
+## If this special arg is NOT here, we can't continue
+if argok != "we_say_Ni":
+    print "Please run fontypython, not this file."
+    raise SystemExit
+
+## pop it off and continue
+sys.argv.pop(1)
 
 import fontypythonmodules.i18n
 
