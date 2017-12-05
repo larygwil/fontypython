@@ -21,12 +21,12 @@ Dec 2017
 This is step 2 in the startup process. We get here from:
     fontypython
 (Which does a Python 2 test.)
-Next is step 3: fp_step_3.py
+Next is step 3: fontypython_step_3.py
 
 Dec 2007
 ==
 This wraps 
-    fp_step_3.py
+    fontypython_step_3.py
 and catches any segfaults that kill it.
 
 These segfaults happen in PIL when certain bad fonts just 
@@ -79,7 +79,7 @@ import fontypythonmodules.i18n as i18n
 # Also: Pass a flag to the next step to allow it to run.
 # I am trying to dicourage running any other file than
 # the main one.
-c1 = [ "python", os.path.join(fontyroot,'fp_step_3.py'),'we_say_Ni' ]
+c1 = [ "python", os.path.join(fontyroot,'fontypython_step_3.py'),'we_say_Ni' ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )

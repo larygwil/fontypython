@@ -15,7 +15,7 @@ fi
 python setup.py sdist
 
 cd dist
-gpg -b --use-agent fontypython*
+gpg -b --use-agent fontypython*.tar.gz
 chmod 644 fontypython*
 
 if [ -n "$1" ]; then

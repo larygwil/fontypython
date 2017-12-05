@@ -17,19 +17,34 @@
 ##  along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-None of these imports touches fpsys in any way.
-Thus, there is no iPC instanced. Thus there should
-be no running of the code that upgrades old fonty
-to new (and makes files/directories), which is good
-because setup is run as root!
+This is the main setup files for fontypython.
+Required a Python less than version 3. Sorry.
+
+You should run:
+    python setup.py install
+..as root in order to use it.
+(perhaps: sudo python setup.py install)
+
+You can also simply run ./fontypython from this
+directory and it should work - provided you have
+all the dependencies installed.
+
+See the README file.
 """
 
+#NOTES
+#==
+#None of the imports touches fpsys in any way.
+#Thus, there is no iPC instanced. Thus there should
+#be no running of the code that upgrades old fonty
+#to new (and makes files/directories), which is good
+#because setup is run as root!
 import fontypythonmodules.i18n
 import fontypythonmodules.sanitycheck
 import fontypythonmodules.fpversion
 
 import os, sys, glob, fnmatch
-from distutils.core import setup#, Extension
+from distutils.core import setup, Command#, Extension
 import distutils.command.install_data
 
 
@@ -46,6 +61,21 @@ class wx_smart_install_data(distutils.command.install_data.install_data):
     def run(self):
         install_cmd = self.get_finalized_command('install')
         self.install_dir = getattr(install_cmd, 'install_lib')
+        print "install_dir:", self.install_dir
+        print "install_cmd:", install_cmd
+        # I ran this from within the dist/fontyxxxx directory as
+        # sudo python setup.py install
+        # I got:
+        # install_dir: /usr/local/lib/python2.7/dist-packages/
+        #   ^ This is where this is dumped:
+        # CHANGELOG  COPYING  fontypython-0.4.5.egg-info  fontypython-0.4.6.egg-info
+        # fontypython-0.5.egg-info  fontypythonmodules  fontypython_step_2.py  
+        # fontypython_step_3.py  fontypython-TRUNK.egg-info  README
+        # (Which fucking sucks.)
+        #
+
+        # install_cmd: <distutils.command.install.install instance at 0x7f3d07e1b3b0>
+        # 
         return distutils.command.install_data.install_data.run(self)
 
 def find_data_files(srcdir, *wildcards, **kw):
@@ -127,14 +157,35 @@ files.append( ('',['README', 'CHANGELOG', 'COPYING']) )
 
 # I want these two in the 'root' but they are not 'scripts' 
 #  I.e. I don't want them to have +x bit set:
-files.append( ('',['fp_step_2.py','fp_step_3.py']) )
+files.append( ('',['fontypython_step_2.py','fontypython_step_3.py']) )
 
 ##TEST:
-debug = False #True
+debug = True
 if debug:
     import pprint
     pprint.pprint (files)
     print
+    version = fontypythonmodules.fpversion.version,
+    print version
+    print
+
+
+class CleanCommand(distutils.core.Command):
+    """Custom clean command to tidy up the project root."""
+    user_options = []
+    def initialize_options(self):
+        self.cwd = None
+    def finalize_options(self):
+        self.cwd = os.getcwd()
+    def run(self):
+        print "foo"
+        print self.cwd 
+        #e.g. /home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk
+        # which was my cwd.
+
+        assert os.getcwd() == self.cwd, 'Must be in package root: %s' % self.cwd
+        #os.system ('rm -rf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info')
+
 
 setup(       name = "fontypython",
           version = fontypythonmodules.fpversion.version,
@@ -146,9 +197,13 @@ setup(       name = "fontypython",
          packages = ['fontypythonmodules'],
        data_files = files,
          # Borrowed from wxPython too:
-         # Causes the data_files to be installed into the modules directory.
-         # Override some of the default distutils command classes with my own.
-         cmdclass = { 'install_data': wx_smart_install_data },
+         # Causes the data_files to be installed into the modules 
+         # directory. Override some of the default distutils 
+         # command classes with my own.
+         cmdclass = { 
+      'install_data': wx_smart_install_data,
+             'clean': CleanCommand
+         },
 
           # 'fontypython' is in the root and is the only executable:
           scripts = ["fontypython"],
