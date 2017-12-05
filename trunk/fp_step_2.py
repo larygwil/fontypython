@@ -26,7 +26,7 @@ Next is step 3: fp_step_3.py
 Dec 2007
 ==
 This wraps 
-    fp_step_3
+    fp_step_3.py
 and catches any segfaults that kill it.
 
 These segfaults happen in PIL when certain bad fonts just 
@@ -86,8 +86,6 @@ p1 = subprocess.call( c1 )
 if p1 >= 0:
     raise SystemExit
 
-## Gets here if p1 < 0:
-## err code -11
 ## This actually works!
 import fontypythonmodules.fpsys as fpsys
 import wx
