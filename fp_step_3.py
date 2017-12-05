@@ -31,4 +31,4 @@ import os
 ## Just clear up some sad facts:
 if os.name != "posix": sys.exit(_("Sorry, only Gnu/Linux is supported at the moment."))
 ## start the show!
-import fontypythonmodules.fp_step_4#start
+import fontypythonmodules.fp_step_4
