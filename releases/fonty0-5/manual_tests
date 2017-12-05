@@ -1,0 +1,147 @@
+Test notes
+==
+1 Dec 2017
+--
+
+Clean slate:
+ rm -fr ~/.fonts; rm -fr ~/.fontypython; rm ~/.local/share/fonts; rm -fr ~/.local/share/fontypython
+
+Run her:
+ ./fontypython
+No config file found, creating it with defaults.
+
+(Good)
+App opens in a small window.
+Note: Info font message is not wrapping
+Note: Hush Pog para still clipping height. Last line missing.
+
+
+1. No .fonts or .fontypython in ~ (Good)
+2. There is fonts and fontypython in ~/.local/share (Good)
+3. fontypython contains: fp.conf and overlap_counts (Good)
+
+
+I made a Pog called 'zog'
+I browsed to a folder. Recursion was OFF by default. (Good)
+I put a font into it.
+Installed zog (checked ls ~/.local/share/fonts) it's there
+Uninstalled; it's gone.
+(Good)
+
+
+
+Old FP -> New FP upgrade process:
+-----
+I have a script that makes the old fonty paths and rms the new ones.
+(i.e. reset to old FP)
+
+donn@ddm:~/.../branches/layoutchange$ cat reset_to_old_system 
+## A way to restore to old system so I can hack-test the pathcontrol code
+echo Cleaning XDG shit
+rm -fr ~/.local/share/fontypython
+rm ~/.local/share/fonts/*.*
+
+echo Making dot fp
+rm -fr ~/.fontypython
+mkdir ~/.fontypython
+tar xzhf homedotfontypython_backup.tgz -C ~
+echo ".fontypython restored"
+
+echo Making dot fonts
+rm -fr ~/.fonts
+mkdir ~/.fonts
+tar xzhf homedotfonts_backup.tgz -C ~
+echo ".fonts restored"
+
+I ran it.
+
+Now to run fonty:
+./fontypython
+1. No output at all (Good?)
+2. No errors! (Good)
+
+1. ~/.fontypython <-- no such dir (Good)
+2. ~/.fonts is still there, but all links within are gone (Good)
+3. ~/.local/share/fonts exists - the links are all in there. (Good)
+4. ~/.local/share/fontypython exists - the pogs etc. are all there (Good)
+
+
+
+Testing how it handles path errors.
+----------------------------------
+This is harder to do. I must hack bad file/group permissions or something. at the moment
+I am doing this by altering variables in the code - to /root/blah - to force these kinds
+of errors.
+
+fpsys.py:
+--
+TIP: Search for ##TEST in gvim.
+
+** Test 1: Emulate not being able to find/create the DATA_HOME dir
+(~/.local/share)
+
+ XDG_DATA_HOME = ""
+ At the top, so it would override the proper value.
+
+Run:
+1. Reports no config file found. (Good)
+2. ~/.fontypython appears with defaults (Good)
+Verdict - It properly falls-back.
+
+
+** Test 2: Remark that test and run it again. It should detect the 
+old .fontypython and upgrade her:
+Run:
+1. ~/.fontypython is gone (Good)
+2. ~/.local/share/fontypython seems good to go (Good?)
+   (I did not think to delete it too, before test 2.)
+
+
+** Test 3: Repeat Test 1, then rm -fr ~/.local/share/fontypython, then 
+        repeat test 2:
+Test 1, same
+Test 2, ~/.local/share/fontypython was made. Default contents. (Good)
+
+
+** Test 4: fontconfig
+I will set a bad path just before the app looks for it:
+   fcp="/root/fontfoo"
+Run:
+* I get appropriate warnings in the hush screen. (Good)
+* Also get an error on the cli (Good)
+
+
+** Test 5: NoFontypythonDir test
+Set a var to force a fail when app seeks the ~/.local/share/fontypython dir.
+  self.__try_test_make_dir("/root/bar", "NoFontypythonDir")
+Run:
+* I get a msgbox with a fatal error and some advice. (Good)
+* cli: Also. (Good)
+
+
+** Test 6: NoFontsDir test
+Set a var to force fail on seek of ~/.local/share/fonts dir
+  self.__try_test_make_dir("/root/foo", "NoFontsDir")
+Run:
+* gui: No overt error. Status bar message.
+NOTE: It's crowded and cut-off. :(
+* cli: Error message, but non fatal (Good)
+
+
+** Test 7: Leaving test 6 active: try to install a Pog
+Run:
+* gui: It gives an error in a msgbox. (Good)
+* cli: The error is printed twice, but it "works". (Good)
+
+
+** Test 8: force segfault: 
+Found a bug. Bad import-loop via fpwx module. Think it's fixed
+* gui (Good)
+* cli: The crash is show via wx dialogue. Ha. Ah well. (Good enough)
+
+
+** Test 9: Run app with and without Pogs installed.
+* gui: Empty list controls. No errors. (Good)
+* cli: Complains properly. (Good)
+
+

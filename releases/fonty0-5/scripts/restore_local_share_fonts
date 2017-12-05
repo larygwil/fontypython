@@ -1,0 +1,1 @@
+tar xzhf fontsbackup.tgz -C ~/.local/share/

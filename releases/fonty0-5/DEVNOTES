@@ -1,0 +1,357 @@
+NOTE TO THE FUTURE
+==
+It's 25 Nov 2017. I am not well. Today my PC did not want to boot. I have told it to ignore the problem (p/s over voltage, I think) but I do not know if it will continue to work. I have no second PC.
+
+If Fonty dev just stops, that will be why.
+
+The active branch called "layoutchange" is the latest fonty. It's very close to working. Last I left it, I was experimenting with control layouts under the font view. This will change as I continue to hack. I probably won't be able to keep this file up to date.
+
+I am stuck on Python 2.x because wxPython has not released their new version on Linux. It seems they are actually disinterested in Linux. I hope wxPython 4 comes to a distro near you soon. It's a bloody great framework.
+
+If I can, assuming the best, I will finish this new version soon and get it out. I intend to try python-gobject gtk, what a nightmare, but I have zero confidence that I can move Fonty to Gtk. Whatever I do will take several years anyway. If I have several years.
+
+So, good luck. She runs. The transaltions are all broken (because I fucked with the strings so much) and I don't know if the setup procedure is working.
+
+
+Update, Dec 3, 2017. I've done a lot more stuff. Still not ready to release yet. I hope to before 2018.
+
+Donn Ingle
+RSA
+2017
+
+
+HISTORY
+==
+Fonty started in ~ 2006 (In Hermanus, South Africa. On an early Ubuntu.)
+Work and notes in 2016/2017. Slow due to my ill health.
+
+I use Ubuntu, Terminal (gnome's), Gvim, Python, wxPython, bash (grep, sed, etc.), Gimp, Inkscape, ssh, svn, and probably a dozen other fantastic works of free software. Thank you all.
+
+
+KNOWN BUGS
+==
+* The main frame keeps getting taller on every exit. Search the fuck outta me...
+
+* ESC key not bubbling up; still..
+
+* HTML stuff returns to top on window resize. I think this is a wx bug/thing.
+
+
+
+TESTS
+==
+I have a manual list in manual_tests that I try to stay on top of.
+
+
+
+SETUP TODO
+==
+* Test with empty fontypython dir
+* Test with old config file
+* Write a script to do prep stuff:
+  * include the makehtml - so it's always fresh
+* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
+  Somehow...?
+
+
+
+TODO
+==
+* NB:
+  I have sucked at Python's __ and _ bullshit. Each class is all over the map. Sorry.
+  I must try to use _ for private names. __ for the rare special private names.
+
+Done * Don't forget to remove the wx debug stuff on the app object
+
+* Sliders for point size, num cols etc. in settings?
+
+* Distinguish TTC|OTC somehow
+* Perhaps - a small icon to show font types - TTF vs Type1 vs TTC etc.
+
+* A button to toggle the lhs gui open/close
+
+* kill random prints
+
+* SetSearchBitmap on search filter. Maybe?
+
+
+i18N, POFILES, ETC.
+==
+I rely on the Makefile. Run make.
+Glad I wrote it, for I remember nothing at all. \('')/
+
+
+FUTURE TODOS
+==
+* Merge all the common routines into single defs. There's a lot of repeats between cli and the gui, for e.g.
+
+* Fix % outside brackets _("") % out here, not inside.
+   _("text {}").format(stuff)
+
+* comments that are stale
+* copyright dates replace
+* pyc files in svn
+* PEP8 all up in da hizzle - well, the tabs-to-spaces part. (Use tab2spaces script.)
+* it's, its ...
+
+* Turn the filter into a more google-like search bar. Have it search the fontInfo results: various fields, PANOSE numbers, Family, Style and Filename.
+
+* Have a PANOSE/VISUAL-FONT WIZARD near the search bar somewhere. Find fonts by style-cues like bold, fantasy, serif etc.
+
+* Have "font matching code" (Fontmatrix has it now!) for finding fonts close to a bitmap sample.
+
+* I placed a slider for paging. It sucks. Remove it. Go back to the drop-down control or something else. 
+
+* Still the old idea for an HTML style pager control. (page 1 | page 2 | page 3) kind of thing - in a horiz panel above the <- and -> stuff.
+  pager control: << < 1 | 2 | 3 | 4 > >>
+
+* WONTFIXNOW: key value error in config: when i add new keys, it barfs and makes a new config file
+  This means all user's settings go poof. To fix this will take me a hell of a long time
+  and I'd rather spend that time in other places. It's not that serious anyway. Fonty's not that complex.
+
+
+
+Oct 2017: A new Segfault!
+==
+/home/donn/06.FontStore/fontsquirrel.com/grunge/AnuDaw/ANUDI___.ttf
+MinimalCreateFitmaps runs
+OrderedDict([(<fontypythonmodules.fontcontrol.TruetypeItem object at 0x7f3d556e20d0>, <fontypythonmodules.gui_Fitmap.Fitmap; proxy of <Swig Object of type 'wxPyControl *' at 0x29384b0> >)])
+refresh: ANUDI___.ttf
+self.fitem.name ticked: False
+   Set cols 0
+adding to sizer: ANUDI___.ttf (94, 1047)
+Floating point exception (core dumped)
+
+Can't reproduce... :(
+
+
+
+
+GENERAL INFO
+==
+
+FONTCONFIG and "~.fonts" deprecated
+==
+Info is vague, but it looks like ~/.local/share/fonts is the new place
+
+https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+$XDG_DATA_HOME defines the base directory relative to which user specific data files should be stored. If $XDG_DATA_HOME is either not set or empty, a default equal to $HOME/.local/share should be used.
+
+https://github.com/eosrei/emojione-color-font/issues/14
+
+Also look in ~/.config/fontconfig
+
+/etc/fonts/fonts.conf has:
+
+        <!-- the following element will be removed in the future -->
+        <dir>~/.fonts</dir>
+
+In mailinglist:
+https://lists.freedesktop.org/archives/fontconfig/2014-July/005270.html
+"Use $XDG_DATA_HOME/fonts instead where is ~/.local/share/fonts in most cases."
+
+Might be able to look for $XDG_DATA and deduce from that ...
+
+Interesting fc-list command. Shows all the filenames of known fonts and then I grep it to limit to my home dir:
+fc-list : file | grep donn
+
+(I wonder if this could be a way to limit font cruft in choosers?)
+
+
+
+XGD info
+==
+There's a movement to standard desktop ideas. One of the is to use a standard config, data and cache directory system.
+Here's what I did in a python console:
+
+python-gi
+-- Seems to be the deb/rpm name of package to install.
+
+python (2.7)
+>>>import glib ## This is out of date. I think.
+>>>glib.get_user_data_dir()
+'/home/donn/.local/share'
+So, that works. I am not sure where 'glib' comes from...
+Also:
+## It seems this is the latest way to  do it:
+>>>from gi.repository import GLib
+>>>GLib.get_user_data_dir()
+'/home/donn/.local/share'
+So, that works too. 
+
+.fontypython should go in there somewhere - poss into the config dir:
+>>> glib.get_user_config_dir()
+'/home/donn/.config'
+>>> GLib.get_user_config_dir()
+'/home/donn/.config'
+
+.fonts should go in DATA dir.
+
+
+BRANCHES:
+==
+Sept 2nd 2017
+I created the layoutchange branch. It's purpose is to mess with the wx layout of fonty.
+I intend to get to the filter/pager stuff too, but will try to do that in its own branch, after this one is reintegrated into trunk.
+
+
+
+
+
+
+
+
+
+
+FREETYPE SUPPORTED FONTS:
+==
+How many do I have to cover?
+
+    OK TrueType fonts (TTF) and TrueType collections (TTC)
+		OK OpenType collections (OTC) Is the same as TTC (seems to supercede TTF)
+    OK OpenType fonts (OTF)
+    OK Type 1 fonts (PFA and PFB)
+    ADDED SEPT 2017: OK WOFF fonts
+
+    NOT SUPP BY PIL X11 PCF fonts
+    NOT SUPP BY PIL Windows FNT fonts
+
+		NOT YET Opentype CFF variants and ..
+    NOT YET CFF fonts [same] Not at all sure that these are a file type.
+
+
+    NOT YET ?? CID-keyed Type 1 fonts
+    NOT YET ?? SFNT-based bitmap fonts, including color Emoji
+    NOT YET ?? BDF fonts (including anti-aliased ones)
+    NOT YET ?? PFR fonts
+    NOT YET ?? Type 42 fonts (limited support)
+
+
+
+FILTER TODO
+==
+Filtering ideas. Pillow is supplying all kinds of info now:
+
+A set of buttons by first letter of all fitems: A B D P etc.
+>>> L=["Apple","Bug","Star","silly","Alt","Cow","Dark"]
+>>> letters=set([i[0].upper() for i in L])
+
+Then use any with ^ "^B" in the filter string.
+
+
+
+Mad Ideas
+=========
+PANOSE WIZARD
+My understanding of Panose is very basic. I could not find proper info online. I read
+what I could. 
+
+Given that Panose is some kind of encoding of a Font's attributes and that
+some of those are its appearance -- it should be possible to construct a Panose number
+from a series of visuals. For example:
+(picture of a serif letter)[radio button]
+(picture of a sans letter)[radio button]
+Next>>
+(picture of a western letter)[radio button]
+(picture of a non-western letter)[radio button]
+Next>>
+{Latin fork in road}
+(picture of a curved serif)[radio button]
+(picture of a block serif)[radio button]
+Next>>
+And so on... until the entire set of Panose choices has been run and we can present
+a Panose number for them.
+
+Could this be done? If so, it should happen in the panel above the search bar.
+It should also have a history and a means to enter the wizard at arbitrary points of the 
+chain. It should be obvious, easy and quick.
+
+
+
+Filter stuff
+=============
+fi.name, fi.family, fi.style:
+AlegreyaSans-Medium.otf [u'Alegreya Sans'] ['Medium']
+AlegreyaSans-Regular.otf [u'Alegreya Sans'] ['Regular']
+AlegreyaSansSC-BlackItalic.otf [u'Alegreya Sans SC'] ['Black Italic']
+AlegreyaSansSC-Black.otf [u'Alegreya Sans SC'] ['Black']
+AlegreyaSansSC-BoldItalic.otf [u'Alegreya Sans SC'] ['Bold Italic']
+AlegreyaSansSC-Bold.otf [u'Alegreya Sans SC'] ['Bold']
+AlegreyaSansSC-ExtraBoldItalic.otf [u'Alegreya Sans SC'] ['ExtraBold Italic']
+AlegreyaSansSC-ExtraBold.otf [u'Alegreya Sans SC'] ['ExtraBold']
+AlegreyaSansSC-Italic.otf [u'Alegreya Sans SC'] ['Italic']
+AlegreyaSansSC-LightItalic.otf [u'Alegreya Sans SC'] ['Light Italic']
+AlegreyaSansSC-Light.otf [u'Alegreya Sans SC'] ['Light']
+AlegreyaSansSC-MediumItalic.otf [u'Alegreya Sans SC'] ['Medium Italic']
+AlegreyaSansSC-Medium.otf [u'Alegreya Sans SC'] ['Medium']
+AlegreyaSansSC-Regular.otf [u'Alegreya Sans SC'] ['Regular']
+AlegreyaSansSC-ThinItalic.otf [u'Alegreya Sans SC'] ['Thin Italic']
+AlegreyaSansSC-Thin.otf [u'Alegreya Sans SC'] ['Thin']
+AlegreyaSans-ThinItalic.otf [u'Alegreya Sans'] ['Thin Italic']
+AlegreyaSans-Thin.otf [u'Alegreya Sans'] ['Thin']
+Exo2.0-BlackItalic.otf [u'Exo 2.0'] ['Black Italic']
+Exo2.0-Black.otf [u'Exo 2.0'] ['Black']
+Exo2.0-BoldItalic.otf [u'Exo 2.0'] ['Bold Italic']
+Exo2.0-Bold.otf [u'Exo 2.0'] ['Bold']
+Exo2.0-ExtraBoldItalic.otf [u'Exo 2.0'] ['Extra Bold Italic']
+Exo2.0-ExtraBold.otf [u'Exo 2.0'] ['Extra Bold']
+Exo2.0-ExtraLightItalic.otf [u'Exo 2.0'] ['Extra Light Italic']
+Exo2.0-ExtraLight.otf [u'Exo 2.0'] ['Extra Light']
+Exo2.0-Italic.otf [u'Exo 2.0'] ['Italic']
+Exo2.0-LightItalic.otf [u'Exo 2.0'] ['Light Italic']
+Exo2.0-Light.otf [u'Exo 2.0'] ['Light']
+Exo2.0-MediumItalic.otf [u'Exo 2.0'] ['Medium Italic']
+Exo2.0-Medium.otf [u'Exo 2.0'] ['Medium']
+Exo2.0-Regular.otf [u'Exo 2.0'] ['Regular']
+Exo2.0-SemiBoldItalic.otf [u'Exo 2.0'] ['Semi Bold Italic']
+Exo2.0-SemiBold.otf [u'Exo 2.0'] ['Semi Bold']
+Exo2.0-ThinItalic.otf [u'Exo 2.0'] ['Thin Italic']
+Exo2.0-Thin.otf [u'Exo 2.0'] ['Thin']
+
+
+
+
+(Pdb) so=fpsys.state.viewobject
+
+(Pdb) L=[i.style[0].split(u" ") for i in so]
+(Pdb) L
+[[u'Normal'], [u'Normal'], [u'Normal'], [u'Normal'], [u'Normal'], [u'Normal'], [u'Regular'], [u'Regular'], [u'Regular'], [u'outline'], [u'shadow'], [u'sketches'], [u'solid'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Black'], [u'Bold'], [u'Medium'], [u'Condensed', u'Light'], [u'Medium'], [u'Medium'], [u'Regular'], [u'Regular'], [u'Italic'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Italic'], [u'Regular'], [u'Regular'], [u'Plain'], [u'Regular'], [u'\x7f'], [u'Bold'], [u'Normal'], [u'Bold'], [u'Regular'], [u'Medium'], [u'B', u'Regular'], [u'\x7f'], [u'Regular'], [u'Bold'], [u'Regular'], [u'Normal'], [u'Regular'], [u'Bulky'], [u'Bulky', u'Slant'], [u'Skinny'], [u'Skinny', u'Slant'], [u'Amadeus', u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Normal'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'\x7f'], [u'Bold'], [u'Italic'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Bold', u'Italic'], [u'Bold'], [u'Italic'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Regular'], [u'Bold'], [u'Light'], [u'Normal'], [u'Italic'], [u'Regular'], [u'Bold', u'Italic'], [u'Bold'], [u'Italic'], [u'Regular'], [u'Black', u'Italic'], [u'Black'], [u'Bold', u'Italic'], [u'Bold'], [u'ExtraBold', u'Italic'], [u'ExtraBold'], [u'Italic'], [u'Light', u'Italic'], [u'Light'], [u'Medium', u'Italic'], [u'Medium'], [u'Regular'], [u'Black', u'Italic'], [u'Black'], [u'Bold', u'Italic'], [u'Bold'], [u'ExtraBold', u'Italic'], [u'ExtraBold'], [u'Italic'], [u'Light', u'Italic'], [u'Light'], [u'Medium', u'Italic'], [u'Medium'], [u'Regular'], [u'Thin', u'Italic'], [u'Thin'], [u'Thin', u'Italic'], [u'Thin'], [u'Black', u'Italic'], [u'Black'], [u'Bold', u'Italic'], [u'Bold'], [u'Extra', u'Bold', u'Italic'], [u'Extra', u'Bold'], [u'Extra', u'Light', u'Italic'], [u'Extra', u'Light'], [u'Italic'], [u'Light', u'Italic'], [u'Light'], [u'Medium', u'Italic'], [u'Medium'], [u'Regular'], [u'Semi', u'Bold', u'Italic'], [u'Semi', u'Bold'], [u'Thin', u'Italic'], [u'Thin']]
+
+
+
+(Pdb) [y for x in L for y in x] #flattens L
+[u'Normal', u'Normal', u'Normal', u'Normal', u'Normal', u'Normal', u'Regular', u'Regular', u'Regular', u'outline', u'shadow', u'sketches', u'solid', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Black', u'Bold', u'Medium', u'Condensed', u'Light', u'Medium', u'Medium', u'Regular', u'Regular', u'Italic', u'Regular', u'Regular', u'Regular', u'Italic', u'Regular', u'Regular', u'Plain', u'Regular', u'\x7f', u'Bold', u'Normal', u'Bold', u'Regular', u'Medium', u'B', u'Regular', u'\x7f', u'Regular', u'Bold', u'Regular', u'Normal', u'Regular', u'Bulky', u'Bulky', u'Slant', u'Skinny', u'Skinny', u'Slant', u'Amadeus', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Normal', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'\x7f', u'Bold', u'Italic', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Bold', u'Italic', u'Bold', u'Italic', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Bold', u'Light', u'Normal', u'Italic', u'Regular', u'Bold', u'Italic', u'Bold', u'Italic', u'Regular', u'Black', u'Italic', u'Black', u'Bold', u'Italic', u'Bold', u'ExtraBold', u'Italic', u'ExtraBold', u'Italic', u'Light', u'Italic', u'Light', u'Medium', u'Italic', u'Medium', u'Regular', u'Black', u'Italic', u'Black', u'Bold', u'Italic', u'Bold', u'ExtraBold', u'Italic', u'ExtraBold', u'Italic', u'Light', u'Italic', u'Light', u'Medium', u'Italic', u'Medium', u'Regular', u'Thin', u'Italic', u'Thin', u'Thin', u'Italic', u'Thin', u'Black', u'Italic', u'Black', u'Bold', u'Italic', u'Bold', u'Extra', u'Bold', u'Italic', u'Extra', u'Bold', u'Extra', u'Light', u'Italic', u'Extra', u'Light', u'Italic', u'Light', u'Italic', u'Light', u'Medium', u'Italic', u'Medium', u'Regular', u'Semi', u'Bold', u'Italic', u'Semi', u'Bold', u'Thin', u'Italic', u'Thin']
+
+(Pdb) set([y for x in L for y in x])
+set([u'sketches', u'ExtraBold', u'Black', u'Italic', u'Skinny', u'Condensed', u'Medium', u'Bold', u'Normal', u'Slant', u'Regular', u'Amadeus', u'Plain', u'B', u'Semi', u'Light', u'Thin', u'shadow', u'Bulky', u'outline', u'Extra', u'solid', u'\x7f'])
+
+
+u'\x7f' is Python Escape ?! Anyway, remove it.
+
+#Another way to flatten - fastest way:
+(Pdb) import itertools
+(Pdb) fl = list(itertools.chain(*L))
+(Pdb) fl
+[u'Normal', u'Normal', u'Normal', u'Normal', u'Normal', u'Normal', u'Regular', u'Regular', u'Regular', u'outline', u'shadow', u'sketches', u'solid', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Black', u'Bold', u'Medium', u'Condensed', u'Light', u'Medium', u'Medium', u'Regular', u'Regular', u'Italic', u'Regular', u'Regular', u'Regular', u'Italic', u'Regular', u'Regular', u'Plain', u'Regular', u'\x7f', u'Bold', u'Normal', u'Bold', u'Regular', u'Medium', u'B', u'Regular', u'\x7f', u'Regular', u'Bold', u'Regular', u'Normal', u'Regular', u'Bulky', u'Bulky', u'Slant', u'Skinny', u'Skinny', u'Slant', u'Amadeus', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Normal', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'\x7f', u'Bold', u'Italic', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Bold', u'Italic', u'Bold', u'Italic', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Regular', u'Bold', u'Light', u'Normal', u'Italic', u'Regular', u'Bold', u'Italic', u'Bold', u'Italic', u'Regular', u'Black', u'Italic', u'Black', u'Bold', u'Italic', u'Bold', u'ExtraBold', u'Italic', u'ExtraBold', u'Italic', u'Light', u'Italic', u'Light', u'Medium', u'Italic', u'Medium', u'Regular', u'Black', u'Italic', u'Black', u'Bold', u'Italic', u'Bold', u'ExtraBold', u'Italic', u'ExtraBold', u'Italic', u'Light', u'Italic', u'Light', u'Medium', u'Italic', u'Medium', u'Regular', u'Thin', u'Italic', u'Thin', u'Thin', u'Italic', u'Thin', u'Black', u'Italic', u'Black', u'Bold', u'Italic', u'Bold', u'Extra', u'Bold', u'Italic', u'Extra', u'Bold', u'Extra', u'Light', u'Italic', u'Extra', u'Light', u'Italic', u'Light', u'Italic', u'Light', u'Medium', u'Italic', u'Medium', u'Regular', u'Semi', u'Bold', u'Italic', u'Semi', u'Bold', u'Thin', u'Italic', u'Thin']
+(Pdb) 
+
+
+
+(Pdb) F=[i.family[0] for i in so]
+(Pdb) F
+[u'EmbossedBlack', u'EmbossedBlackWide', u'IncisedBlack', u'IncisedBlackWide', u'PlainBlack', u'PlainBlackWide', u'Rapscallion', u'Chantelli Antiqua', u'Roman SD', u'Folk', u'Folk', u'Folk', u'Folk', u'Furore', u'Giant Head OT', u'Giant Head Two OT', u'GrutchShaded', u'HVD Comic Serif Pro', u'JuneBug', u'JungleFever', u'Leander', u'Matiz', u'Ostrich Sans', u'Ostrich Sans', u'Ostrich Sans Dashed', u'Ostrich Sans', u'Ostrich Sans', u'Ostrich Sans Rounded', u'PixieFont', u'Pusab', u'UglyQua', u'UglyQua', u'Vanilla', u'Alpha Echo', u'AnuDaw', u'AnuDaw', u'Boycott', u'Brushstroke Plain', u'Chinese Rocks', '', u'Copystruct', u'Copystruct', u'FFF Tusj', u'Heavyweight', u'HVD Bodedo', u'Octin Vintage', '', u'WC ROUGHTRAD Bta', u'Amatic', u'Amatic SC', u'DJ Gross', u'Jenna Sue', u'Mathlete', u'Mathlete', u'Mathlete', u'Mathlete', u'Amadeus Regular', u'Bubblegum Sans', u'Devroye', u'Devroye Extra', u'Devroye', u'Devroye', u'FancyPants', u'Flavors', u'Hominis', u'Kingthings Wrote', u'QuigleyWiggly', u'Sail', u'Snippet', u'SouciSans', u'2Dumb', u'3Dumb', u'Fertigo Pro', '', u'Fontin', u'Fontin', u'Fontin', u'Fontin SmallCaps', u'Molot', u'Aguafina Script', u'Alex Brush', u'Aquiline', u'AquilineTwo', u'Arizonia', u'England Hand DB', u'Freebooter Script', u'Freebooter Script - Alts', u'Great Vibes', u'HenryMorganHand', u'Lovers Quarrel', u'Bergamo Std', u'Bergamo Std', u'Bergamo Std', u'Bergamo Std', u'ChanticleerRoman', u'Immortal', u'Immortal - Alternates', u'Medio', u'Quattrocento Roman', u'ShangriLaNFSmallCaps', u'ShangriLaNF', u'Sling', u'Sling', u'Sling', u'Sorts Mill Goudy', u'Sorts Mill Goudy', u'Vollkorn', u'Vollkorn', u'Vollkorn', u'Vollkorn', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans SC', u'Alegreya Sans', u'Alegreya Sans', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0', u'Exo 2.0']
+(Pdb) set(F)
+set(['', u'Flavors', u'Leander', u'Great Vibes', u'Alex Brush', u'UglyQua', u'Fontin SmallCaps', u'Octin Vintage', u'Bergamo Std', u'FancyPants', u'Chantelli Antiqua', u'Exo 2.0', u'PlainBlack', u'ShangriLaNF', u'JungleFever', u'Boycott', u'Heavyweight', u'Sorts Mill Goudy', u'Aguafina Script', u'Giant Head Two OT', u'Arizonia', u'Fontin', u'Matiz', u'Aquiline', u'Chinese Rocks', u'Sling', u'AnuDaw', u'Devroye', u'Vollkorn', u'Devroye Extra', u'Amatic', u'HenryMorganHand', u'Bubblegum Sans', u'WC ROUGHTRAD Bta', u'Ostrich Sans', u'Molot', u'Immortal', u'Alpha Echo', u'Roman SD', u'HVD Bodedo', u'Folk', u'ChanticleerRoman', u'Sail', u'Mathlete', u'DJ Gross', u'Amatic SC', u'England Hand DB', u'Copystruct', u'Immortal - Alternates', u'EmbossedBlack', u'Furore', u'PixieFont', u'Ostrich Sans Rounded', u'2Dumb', u'3Dumb', u'Giant Head OT', u'Vanilla', u'Freebooter Script - Alts', u'Jenna Sue', u'Brushstroke Plain', u'Pusab', u'Alegreya Sans', u'EmbossedBlackWide', u'Kingthings Wrote', u'Hominis', u'PlainBlackWide', u'Freebooter Script', u'Alegreya Sans SC', u'Medio', u'SouciSans', u'Snippet', u'Quattrocento Roman', u'IncisedBlack', u'Lovers Quarrel', u'GrutchShaded', u'JuneBug', u'AquilineTwo', u'Amadeus Regular', u'QuigleyWiggly', u'HVD Comic Serif Pro', u'IncisedBlackWide', u'Ostrich Sans Dashed', u'ShangriLaNFSmallCaps', u'Rapscallion', u'FFF Tusj', u'Fertigo Pro'])
+(Pdb) 
+
+More:
+=====
+
+(Pdb) [f.style for f in so if u"EmbossedBlack" in f.family]
+[['Normal']]
+
+(Pdb) [f.style for f in so if "Exo 2.0" in f.family]
+[['Black Italic'], ['Black'], ['Bold Italic'], ['Bold'], ['Extra Bold Italic'], ['Extra Bold'], ['Extra Light Italic'], ['Extra Light'], ['Italic'], ['Light Italic'], ['Light'], ['Medium Italic'], ['Medium'], ['Regular'], ['Semi Bold Italic'], ['Semi Bold'], ['Thin Italic'], ['Thin']]
+(Pdb) 
+
+
