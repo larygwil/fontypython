@@ -65,8 +65,14 @@ import fontypythonmodules.i18n as i18n
 # not work properly. User should be able to open a view
 # on the current directory.
 # Thus:
-# Point to the absolute path of the 'start_fontypython' script.
-c1 = [ "python", os.path.join(fontyroot,'fp_step_3.py')] #start_fontypython') ]
+# Point to the absolute path of the 'fp_step_3.py' script.
+#
+# Dec 2017
+# ==
+# Added "python" so fp_step_3.py need not have chmod +x
+# which should illustrate that only 'fontypython' is the
+# correct file to run.
+c1 = [ "python", os.path.join(fontyroot,'fp_step_3.py') ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
