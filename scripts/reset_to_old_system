@@ -1,0 +1,16 @@
+## A way to restore to old system so I can hack-test the pathcontrol code
+echo Cleaning XDG shit
+rm -fr ~/.local/share/fontypython
+rm ~/.local/share/fonts/*.*
+
+echo Making dot fp
+rm -fr ~/.fontypython
+mkdir ~/.fontypython
+tar xzhf homedotfontypython_backup.tgz -C ~
+echo ".fontypython restored"
+
+echo Making dot fonts
+rm -fr ~/.fonts
+mkdir ~/.fonts
+tar xzhf homedotfonts_backup.tgz -C ~
+echo ".fonts restored"

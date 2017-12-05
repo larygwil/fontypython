@@ -15,6 +15,17 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+"""
+Dec 2017
+==
+This is step 3 in the startup process. We got here from
+    fontywrap
+Step 4: fontypythonmodules/start.py
+
+This file serves to get us down into the fontypythonmodules
+directory where all the modules live.
+"""
+
 import fontypythonmodules.i18n
 
 import os

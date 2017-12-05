@@ -14,6 +14,10 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+"""
+This is step 5 of the startup process. We got here from
+    start.py
+"""
 
 import sys
 import strings

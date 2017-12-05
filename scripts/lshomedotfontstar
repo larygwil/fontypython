@@ -1,0 +1,3 @@
+ls -lh ~/.fontypython
+echo
+ls -lh ~/.fonts
