@@ -122,8 +122,8 @@ setup(name = "fontypython",
     ## Override some of the default distutils command classes with my own.
     cmdclass = { 'install_data': wx_smart_install_data },
 
-    #'fontypython' and 'start_fontypython' are in the root.
-    scripts = ["fontypython", "start_fontypython"],
+    #'fontypython', 'fp_step_2.py' and 'fp_step_3.py' are all in the root.
+    scripts = ["fontypython", "fp_step_2.py", "fp_step_3.py"],
     long_description = fontypythonmodules.strings.long_description,
     classifiers=[
       'Development Status :: 6 - Mature',
