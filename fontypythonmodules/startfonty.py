@@ -17,8 +17,6 @@
 """
 Dec 2017
 ===
-This is step 4 in the startup process. We got here from
-    ../fp_step_3.py
 """
 import fontypythonmodules.i18n
 
