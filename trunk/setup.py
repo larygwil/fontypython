@@ -60,11 +60,11 @@ def opj(*args):
 # and dirs to remove during an install.
 old_files_to_remove={
   'fontypythonmodules': [
-                        'cli.py_c',
-                        'dialogues.py_c',
-                        'gui_Left.py_c',
-                        'gui_Middle.py_c',
-                        'gui_Right.py_c'],
+                        'cli.py',
+                        'dialogues.py',
+                        'gui_Left.py',
+                        'gui_Middle.py',
+                        'gui_Right.py'],
   'fontypythonmodules/help/common': [
                         'break.png',
                         'fp1.png.cr.png',
@@ -83,9 +83,9 @@ old_files_to_remove={
                         'README',
                         ],
                     '': [
-                        'start_fontypython_c']
+                        'start_fontypython']
 }
-
+# And any dirs to remove, once they are empty.
 dirs_to_remove=['fontypythonmodules/help/common']
 
 
@@ -97,39 +97,45 @@ class wx_smart_install_data(distutils.command.install_data.install_data):
         self.install_dir = getattr(install_cmd, 'install_lib')
 
         # Dec 2017
-        # Added this to try delete olf files from previous versions
+        # Added this to try delete old files from previous versions
         self.rm_old_files()
+
+        # Now it goes and does all the copying into /usr/yadda-yadda
         return distutils.command.install_data.install_data.run(self)
 
     def rm_old_files(self):# install_dir, filename ):
         """
-        Uses the dict above to explicitly seek out old files
+        Uses the vars above to explicitly seek out old files
+        
+        Also wipes all pyc files.
+
         to remove from the installation directory.
         I make (I hope) no assumptions and always test with 
         exists before deleting anything.
         """
+        # First the damn pyc files...
+        fpr = opj(self.install_dir, 'fontypythonmodules')
+        if os.path.exists(fpr):
+            print "Cleaning pyc files."
+            pycs = opj(fpr, '*.pyc')
+            for pyc in glob.glob( pycs ):
+                if os.path.exists(pyc):
+                    try:
+                        os.unlink( pyc )
+                    except:
+                        print "Failed."
+
         #import pdb; pdb.set_trace()
         for adir, filez in old_files_to_remove.iteritems():
             path = opj(self.install_dir, adir)
-            for f in filez:
-                kill_list=[] # to cater for .py and .pyc files
-                # _c means make two files to kill:
-                if f.endswith("_c"):
-                    py = f.rstrip("_c")
-                    pyc= py + "c"
-                    kill_list.append( py )
-                    kill_list.append( pyc )
-                else:
-                    kill_list.append( f )
-                # now kill the files
-                for kf in kill_list:
-                    kpaf = opj(path, kf)
-                    if os.path.exists(kpaf):
-                        print "Cleaning old file: {}".format( kpaf )
-                        try:
-                            os.unlink( kpaf )
-                        except:
-                            print "Failed."
+            for kf in filez:
+                kpaf = opj(path, kf)
+                if os.path.exists(kpaf):
+                    print "Cleaning old file: {}".format( kpaf )
+                    try:
+                        os.unlink( kpaf )
+                    except:
+                        print "Failed."
 
         # Now the dirs_to_remove
         for p in dirs_to_remove:
@@ -141,11 +147,6 @@ class wx_smart_install_data(distutils.command.install_data.install_data):
                 except:
                     print "Failed."
         
-        return
-        #try:
-        #    os.unlink(self.paf)
-        #except:    
-        #    pass
 
 def find_data_files(srcdir, *wildcards, **kw):
     # get a list of all files under the srcdir matching wildcards,
