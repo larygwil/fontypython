@@ -1,6 +1,6 @@
 <a name="top"></a>
 <table><tr>
-<td valign=top><img src="fontypythonmodules/things/splash.png"></td>
+<td valign=top><img src="{THINGS}/splash.png"></td>
 <td valign=bottom><font size=40 color="{logotype}"><i><b>Fonty Python</b></i></font></td>
 </tr></table>
 

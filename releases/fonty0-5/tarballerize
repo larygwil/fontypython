@@ -1,14 +1,22 @@
-echo "Looking for dist - if it's there kill it."
-[ -e dist ] && exit 1
+if [[ -e dist ]]; then
+	echo "'dist' already exists. Cleaning up..."
+	cd dist
+	rm fonty*.tar.gz
+	rm fonty*.sig
+	cd ..
+fi
 
 # remove the damn +x on sundry scripts
 ./scripts/ugominusx
 
-python setup.py sdist
-cd dist
-gpg -b --use-agent fontypython*
+# Make sure we have the latest html files for help and about
+./scripts/make_html_and_distrib
 
-chmod 644 fontypython*
+python setup.py sdist
+
+gpg -b --use-agent dist/fontypython*.tar.gz
+chmod 644 dist/fontypython*
+
 
 if [ -n "$1" ]; then
         #There was an argument - this signals an upload to savanah

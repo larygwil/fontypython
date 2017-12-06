@@ -95,144 +95,150 @@ except getopt.GetoptError, err:
 ## command line output, and which is going to be the wxgui.
 strictly_cli_context_only = False
 
+class noarg(Exception):
+    pass
+
+def requires_arg(argument):
+    """
+    The long options like --check come in two shapes:
+    1. --check blah
+    2. --check=blah
+    In the 2nd option if you drop the argument, so:
+    --check=
+    .. it is not caught as a missing argument. :|
+    Hence this extra cruft to catch that case.
+    """
+    if not argument:
+        raise noarg()
+
 for option, argument in opts:
 
-    if option in ("-v", "--version"):
-        strictly_cli_context_only = True
-        situation.version = True
+    try:
+        if option in ("-v", "--version"):
+            strictly_cli_context_only = True
+            situation.version = True
 
-    ## Nov 2017
-    ## Help gets an argument.
-    elif option in ("-h", "--help"):
-        if not argument:
-            print strings.arguments_amuse
+        ## Nov 2017
+        ## Help gets an argument.
+        elif option in ("-h", "--help"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.help = argument
+
+        ## Checkdir will break the loop, skipping other args. It's a big job.
+        elif option in (u"-c", u"--check"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            # Turns-out that "check=" on it's own, sans an argument
+            # does not trigger the error test above. Here's a manual one:
+            situation.checkdir = os.path.abspath( argument )
+            break
+
+        elif option in ("-l", "--list"):
+            strictly_cli_context_only = True
+            situation.ls = True
+
+        elif option in ("-f", "--lsfonts"):
+            strictly_cli_context_only = True
+            situation.lsfonts = True
+
+        elif option in ("-d", "--dir"):
+            strictly_cli_context_only = True
+            situation.showdir = True
+
+        elif option in ("-i","--install"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.install = [argument]
+            if remaining_cli_arguments:
+                ## Any trailing 'words' are taken to be other pognames
+                ## and added to the list. Valid or not.
+                situation.install += remaining_cli_arguments
+            del remaining_cli_arguments[:] #erase contents, now that they're used.
+
+        elif option in ("-u", "--uninstall"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.uninstall = [argument]
+            if remaining_cli_arguments:
+                ## Same as install.
+                situation.uninstall += remaining_cli_arguments
+            del remaining_cli_arguments[:]
+
+        elif option in ("-p", "--purge"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.purge = argument
+
+        ## This is for a gui context, hence no strictly_cli_context_only
+        elif option in ("-s", "--size"):
+            try:
+                n = int(argument)
+            except:
+                print strings.please_use_arg % option
+                raise SystemExit
+            situation.points = n
+
+        ## Also a gui context
+        elif option in ("-n", "--number"):
+            try:
+                n = int(argument)
+            except:
+                print strings.please_use_arg % option
+                raise SystemExit
+            situation.numinpage = n
+
+        elif option in ("-a", "--all", "-A","--all-recurse"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.allfromfolder = argument
+            situation.allrecurse = option in ("-A","--all-recurse")
+            if len(remaining_cli_arguments) != 1:
+                print _("%s takes two arguments: SOURCE(folder) " \
+                        "TARGET(pog)") % option
+                print _("NB: If you have spaces in the Pog or " \
+                        "Folder names, put \"quotes around the " \
+                        "names.\"")
+                raise SystemExit
+            situation.alltargetpog = remaining_cli_arguments[0]
+            del remaining_cli_arguments[:]
+
+        elif option in ("-z","--zip"):
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            # argument is the Pog name we must zip.
+            # This only does one pog, not several at once.
+            # (due to the limits of gnu_getopt)
+            # TODO Unsure why, exactly. Must recheck..
+            situation.zip = True
+            situation.pog = argument
+        
+        elif option == "--cat":
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.cat = True
+            situation.pog = argument
+
+        elif option == "--hush":
+            requires_arg(argument)
+            strictly_cli_context_only = True
+            situation.hush = True
+            situation.pog = argument
+
+        elif option == "--unhush":
+            strictly_cli_context_only = True
+            situation.unhush = True
+
+        else:
+            ## We should not reach here at all.
+            print _("Weirdo error. Keep calm and panic.")
             raise SystemExit
-        strictly_cli_context_only = True
-        situation.help = argument
 
-    ## Checkdir will break the loop, skipping other args. It's a big job.
-    elif option in (u"-c", u"--check"):
-        strictly_cli_context_only = True
-        # Turns-out that "check=" on it's own, sans an argument
-        # does not trigger the error test above. Here's a manual one:
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        situation.checkdir = os.path.abspath( argument )
-        break
-
-    elif option in ("-l", "--list"):
-        strictly_cli_context_only = True
-        situation.ls = True
-
-    elif option in ("-f", "--lsfonts"):
-        strictly_cli_context_only = True
-        situation.lsfonts = True
-
-    elif option in ("-d", "--dir"):
-        strictly_cli_context_only = True
-        situation.showdir = True
-
-    elif option in ("-i","--install"):
-        strictly_cli_context_only = True
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        situation.install = [argument]
-        if remaining_cli_arguments:
-            ## Any trailing 'words' are taken to be other pognames
-            ## and added to the list. Valid or not.
-            situation.install += remaining_cli_arguments
-        del remaining_cli_arguments[:] #erase contents, now that they're used.
-
-    elif option in ("-u", "--uninstall"):
-        strictly_cli_context_only = True
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        situation.uninstall = [argument]
-        if remaining_cli_arguments:
-            ## Same as install.
-            situation.uninstall += remaining_cli_arguments
-        del remaining_cli_arguments[:]
-
-    elif option in ("-p", "--purge"):
-        strictly_cli_context_only = True
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        situation.purge = argument
-
-    ## This is for a gui context, hence no strictly_cli_context_only
-    elif option in ("-s", "--size"):
-        try:
-            n = int(argument)
-        except:
-            print strings.please_use_arg % option
-            raise SystemExit
-        situation.points = n
-
-    ## Also a gui context
-    elif option in ("-n", "--number"):
-        try:
-            n = int(argument)
-        except:
-            print strings.please_use_arg % option
-            raise SystemExit
-        situation.numinpage = n
-
-    elif option in ("-a", "--all", "-A","--all-recurse"):
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        strictly_cli_context_only = True
-        situation.allfromfolder = argument
-        isituation.allrecurse = option in ("-A","--all-recurse")
-        if len(remaining_cli_arguments) != 1:
-            print _("%s takes two arguments: SOURCE(folder) TARGET(pog)") % option
-            print _("NB: If you have spaces in the Pog or Folder names, put \"quotes around the names.\"")
-            raise SystemExit
-        situation.alltargetpog = remaining_cli_arguments[0]
-        del remaining_cli_arguments[:]
-
-    elif option in ("-z","--zip"):
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        strictly_cli_context_only = True
-        # argument is the Pog name we must zip.
-        # This only does one pog, not several at once.
-        # (due to the limits of gnu_getopt)
-        # TODO Unsure why, exactly. Must recheck..
-        situation.zip = True
-        situation.pog = argument
-    
-    elif option == "--cat":
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        strictly_cli_context_only = True
-        situation.cat = True
-        situation.pog = argument
-
-    elif option == "--hush":
-        if not argument:
-            print strings.arguments_amuse
-            raise SystemExit
-        strictly_cli_context_only = True
-        situation.hush = True
-        situation.pog = argument
-
-    elif option == "--unhush":
-        strictly_cli_context_only = True
-        situation.unhush = True
-
-    else:
-        ## We should not reach here at all.
-        print _("Weirdo error. Keep calm and panic.")
+    # Catch any noargs that were raised.
+    except noarg, e:
+        print strings.arguments_amuse
         raise SystemExit
-    
-    #print [(k,s) for k,s in situation.__dict__.iteritems()]
+
 
 ##Switch on the cli context
 if strictly_cli_context_only:

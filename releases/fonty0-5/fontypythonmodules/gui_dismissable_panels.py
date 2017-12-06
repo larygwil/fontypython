@@ -174,6 +174,7 @@ class DismissableHTMLPanel(DismissablePanel):
         ## call one: get the HTML paf
         self.paf = self.post_init_set_paf()
         
+
         self.html = DismissableHTMLPanel.AnHtmlWindow(self)
         try:
             f = open( self.paf, "r" )
@@ -196,6 +197,12 @@ class DismissableHTMLPanel(DismissablePanel):
         # merge all the dicts. Missing keys will raise.
         sd.update(**d)
         sd.update(**fpwx.HTMLCOLS)
+
+        # IMG SRC
+        # Get a path so we can alter all IMG SRCes to be 
+        # absolute since the images were not working after
+        # a setup has been done.
+        sd.update({"THINGS": fpsys.mythingsdir})
         
         ## Make sure the HTML is unicode
         h = fpsys.LSP.to_unicode(h)

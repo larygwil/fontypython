@@ -65,23 +65,25 @@ NB: Try not to use spaces in Pog names. If you must, then "quote the name"."""
 
 basic_idea = _("""Manage your fonts on GNU/Linux
 ==============================
-Many designers have collections of font files in big directories. Fonty Python
-will help you gather these fonts and structure them into collections we'll call
-"Pogs" -- a place to keep tyPOGraphy. Well, why not?
+Many designers have collections of font files on their drives. 
+Fonty Python will help you gather and structure them into collections 
+called "Pogs" -- a place to keep tyPOGraphy. Well, why not?
 
-Fonty lets you you select fonts visually and put them into Pogs which you can
-install or remove as you require.
+Fonty lets you you select fonts visually and place them into Pogs which you 
+can then install or remove as you require. (Your font files never move 
+from where they are. Only links are used.)
 
-(Your font files never move from where they are. No copies of your fonts
-are made; only links.)
+Example: You create a "logos" Pog where you place logotype fonts.
+When you want to use them, simply install the "logos" Pog and start your 
+design app! When you're done, uninstall the "logos" Pog; the fonts will 
+go away.
 
-For example, you might have a Pog called 'logos' into which you place fonts of
-company logos. When you want to use those logos, simply install the 'logos' Pog 
-and start your design app!
+Fonty can also "hush" unwanted fonts. This hides system fonts, leaving
+only those Pogs you want in your apps. The Inkscape font chooser, for 
+example, is more usable after a hush.
+(This is temporary;  an "unhush" will switch the system fonts on again.)
 
-When you're done, remove the 'logos' Pog, and the fonts will go away.
-
-Fonty is also great for just looking at fonts, wherever they are, without having 
+Fonty is great for just looking at fonts, wherever they are, without having 
 to install them.""")
 
 
@@ -101,23 +103,23 @@ options=_("""Options:
                 "e" to show some %$@#$ examples!
                 "hush" is for more detail on hushing fonts.
   -d, --dir     Show the "fontypython" path. Add this to your backup process!
-  -i Pog, --install=Pog
+  -i Pog, --install Pog
                 Install the fonts in this Pog.
-  -u Pog, --uninstall=Pog
+  -u Pog, --uninstall Pog
                 Uninstall the fonts in this Pog.
   -l, --list
                 List the names of all your Pogs.
   -f, --lsfonts
                 Lists the contents of your user fonts directory. Here, you'll
                 find the links that Fonty is managing for you.
-  -s num, --size=num
+  -s num, --size num
                 Set a new default point size (you'll see it in the gui).
-  -n num, --number=num
+  -n num, --number num
                 Set a new default for how many fonts to view at one go in the gui.
                 (Don't overdo this.)
-  -p Pog, --purge=Pog
+  -p Pog, --purge Pog
                 Clean the Pog of fonts that are missing.
-  -c folder, --check=folder
+  -c folder, --check folder
                 Check for bad fonts that crash Fonty. After using this tool you 
                 should be able to use Fonty again.
                 * NOTE: The fonts that crash Fonty are probably still perfectly
@@ -126,13 +128,13 @@ options=_("""Options:
                 Puts all fonts in Folder into Pog.
   -A Folder Pog, --all-recurse Folder Pog
                 Puts all fonts in Folder and *all* sub-folders into Pog.
-  -z Pog, --zip=Pog
+  -z Pog, --zip Pog
                 All the fonts inside Pog will be zipped and the zipfile will be 
                 named after the Pog. The file will be placed in the current
                 directory.
-  --cat=Pog
-                Cat the pog. This will list all the fonts within.
-  --hush=HushPog
+  --cat Pog
+                Cat the Pog. This will list all the fonts within.
+  --hush HushPog
                 Hush *all* the fonts except the Pogs you install.
 
                 Uses "HushPog", which you create that must contain a few system 
@@ -202,7 +204,7 @@ Examples: All using short options, see -h
 
 %(c)s --hush mysysfonts
   Will hush (silence) all the fonts in your system except the ones in 
-  "mysysfonts" and any other pogs you have installed. Other apps will 
+  "mysysfonts" and any other Pogs you have installed. Other apps will 
   now have fewer fonts to choose from, making life much easier for you.
   (Use --unhush later to restore all of them.)
 
@@ -212,11 +214,11 @@ fontyfolder = _("""Your fontypython folder is:
 {}""")
 
 ## These two are used in setup.py
-description = _("Fonty Python - view and manage all kinds of fonts on Gnu/Linux")
+description = _("Fonty Python - view and manage fonts on Gnu/Linux")
 long_description = "%(basic_idea)s\n\n%(fonts_supported)s\n\n%(copy)s\n\n%(contact)s" % {"copy":copyright, "contact":contact, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 
-wxvers="2.8"
+wxvers="3.0"
 wxVersionError = _("""I cannot find "python-wxversion"
 Please install this package - NB: ensure that
 you use only the "Unicode build".
@@ -252,6 +254,8 @@ I then install it like this:
 sudo aptitude install python-wxgtk%(wxv)s
 
 Make sure it's at least version %(wxv)s
+**NB** It should not be any version greater
+than 3.0
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
@@ -358,7 +362,7 @@ To hush from the gui, ...
 
 Unhushing
 =========
-To release the hush, use --unhush from the command line, or ... in the gui.
+To release the hush, use --unhush from the command line or the gui.
 
 The Pog(s) you installed when you hushed will be left installed. Remove
 it/them if you must.""").format(fp="fontypython", ticket_url=ticket_url)
