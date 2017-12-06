@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 ##  Fonty Python Copyright (C) 2006,2007,2008,2009,2017 Donn.C.Ingle
 ##  Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
@@ -17,19 +18,25 @@
 ##  along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-This is the main setup files for fontypython.
-Required a Python less than version 3. Sorry.
+This is the main setup file for fontypython.
+
+Requires a Python less than version 3. Sorry.
 
 You should run:
-    python setup.py install
+    python setup.py install --force
 ..as root in order to use it.
-(perhaps: sudo python setup.py install)
+Perhaps: sudo python setup.py install --force
 
 You can also simply run ./fontypython from this
 directory and it should work - provided you have
 all the dependencies installed.
 
 See the README file.
+
+Much code borrowed from wxPython's setup and 
+config files. Thanks to Robin Dunn for the 
+suggestions.
+
 """
 
 #NOTES
@@ -44,28 +51,33 @@ import fontypythonmodules.sanitycheck
 import fontypythonmodules.fpversion
 
 import os, shutil, sys, glob, fnmatch
-from distutils.core import setup, Command#, Extension
+from distutils.core import setup#, Command#, Extension
 import distutils.command.install_data
 import distutils.command.install_lib
 
 
-## Code borrowed from wxPython's setup and config files
-## Thanks to Robin Dunn for the suggestion.
-## I am not 100% sure what's going on, but it works!
 def opj(*args):
     path = os.path.join(*args)
     return os.path.normpath(path)
 
-
 # Specializations of some distutils command classes
+class wx_smart_install_data(distutils.command.install_data.install_data):
+    """
+    By Robin Dunn.
+    Need to change self.install_dir to the actual library dir.
+    """
+    def run(self):
+        install_cmd = self.get_finalized_command('install')
+        self.install_dir = getattr(install_cmd, 'install_lib')
+        return distutils.command.install_data.install_data.run(self)
 
 class fp_smart_install_lib(distutils.command.install_lib.install_lib):
+    """
+    Happens before the files are copied into dist-packages
+    I hook in here and rm -fr the entire old fontypythonmodules
+    directory. Gulp.
+    """
     def run(self):
-        """
-        Happens before the files are copied into dist-packages
-        I hook in here and rm -fr the entire old fontypythonmodules
-        directory. Gulp..
-        """
         install_cmd = self.get_finalized_command('install')
         self.install_dir = getattr(install_cmd, 'install_lib')
         
@@ -78,7 +90,7 @@ class fp_smart_install_lib(distutils.command.install_lib.install_lib):
             except:
                 print "Could not remove old fontypythonmodules."
 
-        # Also kick out the old crap that might remain in install_dir
+        # Also kick out the old script that might remain in install_dir
         start_fp = opj(self.install_dir, 'start_fontypython')
         if os.path.exists(start_fp):
             try:
@@ -86,28 +98,19 @@ class fp_smart_install_lib(distutils.command.install_lib.install_lib):
             except:
                 print "Failed to remove old start_fontypython script."
 
-        return distutils.command.install_lib.install_lib.run(self)
+        return distutils.command.install_lib.install_lib.run(self)       
 
-
-class wx_smart_install_data(distutils.command.install_data.install_data):
-    """need to change self.install_dir to the actual library dir"""
-    def run(self):
-        install_cmd = self.get_finalized_command('install')
-        self.install_dir = getattr(install_cmd, 'install_lib')
-
-        # Now it goes and does all the copying into /usr/yadda-yadda
-        return distutils.command.install_data.install_data.run(self)
-
-        
 
 def find_data_files(srcdir, *wildcards, **kw):
-    # get a list of all files under the srcdir matching wildcards,
-    # returned in a format to be used for install_data
+    """
+    Get a list of all files under the srcdir matching wildcards,
+    returned in a format to be used for install_data
+    """
 
     ## A list of partials within a filename that would disqualify it
     ## from appearing in the tarball.
-    badnames=[ ".pyc","~","no_",".svn","CVS",".old", ".swp",
-            "who_did_what" ] # exclude the who_did_what file as it contains email details.
+    badnames=[ ".pyc", "~", "no_", ".svn", "CVS", ".old", ".swp",
+            "who_did_what" ] #has email @ddys in it.
 
     def walk_helper(arg, dirname, files):
         BL=[ bad for bad in badnames if bad in dirname ]
@@ -153,9 +156,8 @@ except:
 # It's a pos anyway. It only cares about the 'setup.py sdist'
 # command and plays no role in a 'setup.py install'. Ffsks.
 
-# This is a list of files to install, and where:
 # The MANIFEST only bothers with the man page and itself.
-# All other files must be explicitly included in this files
+# All other files must be explicitly included in the 'files'
 # object.
 
 # Everything under fontypythonmodules:
@@ -174,7 +176,7 @@ files.append( ('/usr/share/applications',['fontypython.desktop']) )
 # Leave the man page up to Kartik.
 # files.append( ('/usr/share/man/man1',['fontypython.1']) )
 
-# 
+# Just put these into the modules dir too.
 files.append( ('fontypythonmodules',['README', 'CHANGELOG']) )
 
 
@@ -184,28 +186,9 @@ if debug:
     import pprint
     pprint.pprint (files)
     print
-    version = fontypythonmodules.fpversion.version,
-    print version
-    print
 
 
-class CleanCommand(distutils.core.Command):
-    """Custom clean command to tidy up the project root."""
-    user_options = []
-    def initialize_options(self):
-        self.cwd = None
-    def finalize_options(self):
-        self.cwd = os.getcwd()
-    def run(self):
-        print "foo"
-        print self.cwd 
-        #e.g. /home/donn/Projects/pythoning/fontyPython/dev.svn/fontypython/trunk
-        # which was my cwd.
-
-        assert os.getcwd() == self.cwd, 'Must be in package root: %s' % self.cwd
-        #os.system ('rm -rf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info')
-
-
+## Off we go!
 setup(       name = "fontypython",
           version = fontypythonmodules.fpversion.version,
       description = fontypythonmodules.strings.description,
@@ -219,10 +202,11 @@ setup(       name = "fontypython",
          # Causes the data_files to be installed into the modules 
          # directory. Override some of the default distutils 
          # command classes with my own.
+         # Also hooking the install_lib phase to clean old files
+         #  before the install_data happens.
          cmdclass = { 
        'install_lib': fp_smart_install_lib,
       'install_data': wx_smart_install_data,
-             'clean': CleanCommand
          },
 
           # 'fontypython' is in the root and is the only executable:

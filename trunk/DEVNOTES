@@ -43,6 +43,12 @@ TESTS
 I have a manual list in manual_tests that I try to stay on top of.
 
 
+SETUP NOTES
+==
+I hacked setup.py to rm the old fontypythonmodules directory before it install the new one.
+I think this is working....
+
+
 
 SETUP TODO
 ==
@@ -50,8 +56,6 @@ SETUP TODO
 * Test with old config file
 * Write a script to do prep stuff:
   * include the makehtml - so it's always fresh
-* Check that setup.py deletes old files. I have so much churn that's it's best to rm * in the modules dir, at least.
-  Somehow...?
 
 
 
@@ -73,6 +77,8 @@ Done * Don't forget to remove the wx debug stuff on the app object
 * kill random prints
 
 * SetSearchBitmap on search filter. Maybe?
+
+* File -> Exit does not immediately exit!
 
 
 i18N, POFILES, ETC.
