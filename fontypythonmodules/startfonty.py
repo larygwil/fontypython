@@ -14,10 +14,7 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
-"""
-Dec 2017
-===
-"""
+
 import fontypythonmodules.i18n
 
 ## test modules etc.

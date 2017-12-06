@@ -18,23 +18,18 @@
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-This is step 1 in the startup process.
-
-Next is step 2: fontypython_step_2.py
-
-This file exists to test that Python is version 2.
+This is the main and only executable file for fontypython.
 
 This file is kept simple so that it parses as either
-version of Python. For that reason there are no imports
+version 2 or 3 of Python. For that reason there are no imports
 to fetch i18n etc.
 """
 import sys, os
 
 if sys.version_info >= (3, 0):
-    #sys.stdout.write(
     sys.exit(
             "Sorry, fontypython requires Python 2.x, " \
-            "you are using Python 3.x\n" \
+            "you are using Python 3.x.\n" \
             "From the command line, try:\n" \
             "python2 fontypython" )
               
