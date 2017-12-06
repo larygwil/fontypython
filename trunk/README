@@ -59,10 +59,13 @@ I assume you have extracted the "tarball" already.
 Change to the directory it created.
 
 As the root user enter this command:
-python setup.py install
+python setup.py install --force
 
 You might need to use sudo:
-sudo python setup.py install
+sudo python setup.py install --force
+
+* Please do use the --force flag, or there may be old
+files from the last version of Fonty that can cause bugs.
 
 This will create a program called 'fontypython'
 

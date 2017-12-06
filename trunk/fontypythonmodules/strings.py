@@ -218,7 +218,7 @@ description = _("Fonty Python - view and manage fonts on Gnu/Linux")
 long_description = "%(basic_idea)s\n\n%(fonts_supported)s\n\n%(copy)s\n\n%(contact)s" % {"copy":copyright, "contact":contact, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 
-wxvers="2.8"
+wxvers="3.0"
 wxVersionError = _("""I cannot find "python-wxversion"
 Please install this package - NB: ensure that
 you use only the "Unicode build".
@@ -254,6 +254,8 @@ I then install it like this:
 sudo aptitude install python-wxgtk%(wxv)s
 
 Make sure it's at least version %(wxv)s
+**NB** It should not be any version greater
+than 3.0
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
