@@ -103,23 +103,23 @@ options=_("""Options:
                 "e" to show some %$@#$ examples!
                 "hush" is for more detail on hushing fonts.
   -d, --dir     Show the "fontypython" path. Add this to your backup process!
-  -i Pog, --install=Pog
+  -i Pog, --install Pog
                 Install the fonts in this Pog.
-  -u Pog, --uninstall=Pog
+  -u Pog, --uninstall Pog
                 Uninstall the fonts in this Pog.
   -l, --list
                 List the names of all your Pogs.
   -f, --lsfonts
                 Lists the contents of your user fonts directory. Here, you'll
                 find the links that Fonty is managing for you.
-  -s num, --size=num
+  -s num, --size num
                 Set a new default point size (you'll see it in the gui).
-  -n num, --number=num
+  -n num, --number num
                 Set a new default for how many fonts to view at one go in the gui.
                 (Don't overdo this.)
-  -p Pog, --purge=Pog
+  -p Pog, --purge Pog
                 Clean the Pog of fonts that are missing.
-  -c folder, --check=folder
+  -c folder, --check folder
                 Check for bad fonts that crash Fonty. After using this tool you 
                 should be able to use Fonty again.
                 * NOTE: The fonts that crash Fonty are probably still perfectly
@@ -128,13 +128,13 @@ options=_("""Options:
                 Puts all fonts in Folder into Pog.
   -A Folder Pog, --all-recurse Folder Pog
                 Puts all fonts in Folder and *all* sub-folders into Pog.
-  -z Pog, --zip=Pog
+  -z Pog, --zip Pog
                 All the fonts inside Pog will be zipped and the zipfile will be 
                 named after the Pog. The file will be placed in the current
                 directory.
-  --cat=Pog
-                Cat the pog. This will list all the fonts within.
-  --hush=HushPog
+  --cat Pog
+                Cat the Pog. This will list all the fonts within.
+  --hush HushPog
                 Hush *all* the fonts except the Pogs you install.
 
                 Uses "HushPog", which you create that must contain a few system 
@@ -204,7 +204,7 @@ Examples: All using short options, see -h
 
 %(c)s --hush mysysfonts
   Will hush (silence) all the fonts in your system except the ones in 
-  "mysysfonts" and any other pogs you have installed. Other apps will 
+  "mysysfonts" and any other Pogs you have installed. Other apps will 
   now have fewer fonts to choose from, making life much easier for you.
   (Use --unhush later to restore all of them.)
 
@@ -362,7 +362,7 @@ To hush from the gui, ...
 
 Unhushing
 =========
-To release the hush, use --unhush from the command line, or ... in the gui.
+To release the hush, use --unhush from the command line or the gui.
 
 The Pog(s) you installed when you hushed will be left installed. Remove
 it/them if you must.""").format(fp="fontypython", ticket_url=ticket_url)
