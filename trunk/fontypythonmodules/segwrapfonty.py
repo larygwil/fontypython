@@ -88,7 +88,7 @@ for arg in sys.argv[1:]: c1.append( arg )
 p1 = subprocess.call( c1 )
 
 ##TEST:
-#p1=-11 # to test
+p1=-11 # to test
 
 ## Nov 2017: Simpler plan:
 if p1 >= 0:

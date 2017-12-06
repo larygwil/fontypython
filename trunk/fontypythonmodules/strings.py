@@ -65,23 +65,25 @@ NB: Try not to use spaces in Pog names. If you must, then "quote the name"."""
 
 basic_idea = _("""Manage your fonts on GNU/Linux
 ==============================
-Many designers have collections of font files in big directories. Fonty Python
-will help you gather these fonts and structure them into collections we'll call
-"Pogs" -- a place to keep tyPOGraphy. Well, why not?
+Many designers have collections of font files on their drives. 
+Fonty Python will help you gather and structure them into collections 
+called "Pogs" -- a place to keep tyPOGraphy. Well, why not?
 
-Fonty lets you you select fonts visually and put them into Pogs which you can
-install or remove as you require.
+Fonty lets you you select fonts visually and place them into Pogs which you 
+can then install or remove as you require. (Your font files never move 
+from where they are. Only links are used.)
 
-(Your font files never move from where they are. No copies of your fonts
-are made; only links.)
+Example: You create a "logos" Pog where you place logotype fonts.
+When you want to use them, simply install the "logos" Pog and start your 
+design app! When you're done, uninstall the "logos" Pog; the fonts will 
+go away.
 
-For example, you might have a Pog called 'logos' into which you place fonts of
-company logos. When you want to use those logos, simply install the 'logos' Pog 
-and start your design app!
+Fonty can also "hush" unwanted fonts. This hides system fonts, leaving
+only those Pogs you want in your apps. The Inkscape font chooser, for 
+example, is more usable after a hush.
+(This is temporary;  an "unhush" will switch the system fonts on again.)
 
-When you're done, remove the 'logos' Pog, and the fonts will go away.
-
-Fonty is also great for just looking at fonts, wherever they are, without having 
+Fonty is great for just looking at fonts, wherever they are, without having 
 to install them.""")
 
 
@@ -212,7 +214,7 @@ fontyfolder = _("""Your fontypython folder is:
 {}""")
 
 ## These two are used in setup.py
-description = _("Fonty Python - view and manage all kinds of fonts on Gnu/Linux")
+description = _("Fonty Python - view and manage fonts on Gnu/Linux")
 long_description = "%(basic_idea)s\n\n%(fonts_supported)s\n\n%(copy)s\n\n%(contact)s" % {"copy":copyright, "contact":contact, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
 
 
