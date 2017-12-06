@@ -200,8 +200,7 @@ setup(       name = "fontypython",
        data_files = files,
          # Borrowed from wxPython too:
          # Causes the data_files to be installed into the modules 
-         # directory. Override some of the default distutils 
-         # command classes with my own.
+         # directory. 
          # Also hooking the install_lib phase to clean old files
          #  before the install_data happens.
          cmdclass = { 
@@ -223,8 +222,5 @@ setup(       name = "fontypython",
       'Topic :: Text Processing :: Fonts',
       'Topic :: Multimedia :: Graphics',
       'Topic :: Utilities',
-      ],
-  ## Dec 2017: Seems my distutils is too old to know about it. 
-  ## I will leave it here for whatever.
-  python_requires = '<3',
+      ]
 )
