@@ -152,15 +152,15 @@ files.append( ('/usr/share/applications',['fontypython.desktop']) )
 # Leave the man page up to Kartik.
 # files.append( ('/usr/share/man/man1',['fontypython.1']) )
 
-# And the others in the root:
-files.append( ('',['README', 'CHANGELOG', 'COPYING']) )
+# 
+files.append( ('fontypythonmodules',['README', 'CHANGELOG']) )
 
 # I want these two in the 'root' but they are not 'scripts' 
 #  I.e. I don't want them to have +x bit set:
-files.append( ('',['fontypython_step_2.py','fontypython_step_3.py']) )
+#files.append( ('',['fontypython_step_2.py','fontypython_step_3.py']) )
 
 ##TEST:
-debug = True
+debug = False
 if debug:
     import pprint
     pprint.pprint (files)
