@@ -6,7 +6,7 @@ prep : fp_all.pot
 	echo Done
 	
 fp_all.pot:
-	xgettext -o fp_all.pot -L Python start_fontypython -L Python fontypython fontypythonmodules/*.py
+	xgettext -o fp_all.pot -L Python fontypython fontypythonmodules/*.py
 	mv fp_all.pot ${POFILES}
 
 	# Take the PO files that are there and merge them (afresh) with the new fp_all POT file

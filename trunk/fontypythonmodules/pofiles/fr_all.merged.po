@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fontypython 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-04 13:47+0200\n"
+"POT-Creation-Date: 2017-12-06 20:46+0200\n"
 "PO-Revision-Date: 2008-01-22 19:46+0200\n"
 "Last-Translator: Donn Ingle <donn.ingle@gmail.com>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -18,54 +18,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
-#: start_fontypython:22
-msgid "Sorry, only Gnu/Linux is supported at the moment."
-msgstr ""
-
-#: fontypython:86
-msgid "Oh boy..."
-msgstr ""
-
-#: fontypython:90
-msgid "Fonty Python, um ... crashed."
-msgstr ""
-
-#: fontypython:95
-msgid ""
-"There's some problem with the font named below.\n"
-"You can do one of two things:\n"
-"1) Manually move this font somewhere else, or\n"
-"2) Use Fonty's command-line (-c) to mark bad fonts.\n"
-"   See below for help with this.\n"
-"After you've done these, run me again."
-msgstr ""
-
-#: fontypython:101
-msgid "The bad font might be:"
-msgstr ""
-
-#: fontypython:104
-msgid ""
-"There's no lastFontBeforeSegfault file; I can't really help.\n"
-"Look at the error (below) for clues."
-msgstr ""
-
-#: fontypython:106
-msgid "The error was:"
-msgstr ""
-
-#: fontypython:117
-msgid "The command line to seek and mark bad fonts is:"
-msgstr ""
-
-#: fontypython:118
-msgid "(Copy the text; open a console; paste and press enter.)"
-msgstr ""
-
-#: fontypython:124
-msgid "You can get help by opening a ticket on:"
-msgstr ""
 
 #: fontypythonmodules/cli2.py:70
 msgid ""
@@ -79,26 +31,26 @@ msgid ""
 "or \"-h hush\" for help with hushing fonts."
 msgstr ""
 
-#: fontypythonmodules/cli2.py:192
+#: fontypythonmodules/cli2.py:197
 #, python-format
 msgid "%s takes two arguments: SOURCE(folder) TARGET(pog)"
 msgstr ""
 
-#: fontypythonmodules/cli2.py:193
+#: fontypythonmodules/cli2.py:199
 msgid ""
 "NB: If you have spaces in the Pog or Folder names, put \"quotes around the "
 "names.\""
 msgstr ""
 
-#: fontypythonmodules/cli2.py:232
+#: fontypythonmodules/cli2.py:234
 msgid "Weirdo error. Keep calm and panic."
 msgstr ""
 
-#: fontypythonmodules/cli2.py:290
+#: fontypythonmodules/cli2.py:296
 msgid "unknown, try: {}"
 msgstr ""
 
-#: fontypythonmodules/cli2.py:366
+#: fontypythonmodules/cli2.py:372
 #, fuzzy
 msgid ""
 "Please check your arguments, there seem to be too many.\n"
@@ -113,17 +65,17 @@ msgstr ""
 "NB : Si vous souhaitez utiliser des espaces dans le nom d'un\n"
 "pog ou d'un fichier, alors veuillez les entourer de guillemets."
 
-#: fontypythonmodules/cli2.py:399
+#: fontypythonmodules/cli2.py:405
 #, python-format
 msgid "Sorry, (%s) does not exist. Try --list"
 msgstr "(%s) ne peut être trouvé. essayez -l pour voir les noms disponibles."
 
-#: fontypythonmodules/cli2.py:404
+#: fontypythonmodules/cli2.py:410
 msgid "You cannot use a folder as the target argument. Try --help"
 msgstr ""
 "Vous ne pouvez pas utiliser un dossier comme un pog cible. Essayez --help"
 
-#: fontypythonmodules/cli2.py:456 fontypythonmodules/cli2.py:477
+#: fontypythonmodules/cli2.py:462 fontypythonmodules/cli2.py:483
 #, python-format
 msgid ""
 "The target pog (%s) is currently installed, you can't use it as a target."
@@ -131,11 +83,11 @@ msgstr ""
 "Le pog (%s) est actuellement installé, vous ne pouvez pas l'utiliser comme "
 "une cible."
 
-#: fontypythonmodules/cli2.py:462
+#: fontypythonmodules/cli2.py:468
 msgid "Your pogs are the same! Try -e"
 msgstr "Vos pogs sont les mêmes ! Essayez -e"
 
-#: fontypythonmodules/cli2.py:469
+#: fontypythonmodules/cli2.py:475
 msgid "This pog is empty"
 msgstr "Le pog est vide."
 
@@ -178,11 +130,11 @@ msgstr ""
 msgid "I could not create the zip at all."
 msgstr ""
 
-#: fontypythonmodules/clifuncs.py:130 fontypythonmodules/wxgui.py:675
+#: fontypythonmodules/clifuncs.py:130 fontypythonmodules/wxgui.py:679
 msgid "Zipped as \"{}.fonts.zip\" in the \"{}\" directory."
 msgstr ""
 
-#: fontypythonmodules/clifuncs.py:132 fontypythonmodules/wxgui.py:678
+#: fontypythonmodules/clifuncs.py:132 fontypythonmodules/wxgui.py:682
 msgid "Some bugs happened:"
 msgstr ""
 
@@ -211,17 +163,17 @@ msgstr "Visualisation de (%s)"
 msgid "Sorry, can't find (%s). Try -l to see the names."
 msgstr "(%s) ne peut être trouvé. essayez -l pour voir les noms disponibles."
 
-#: fontypythonmodules/clifuncs.py:231
+#: fontypythonmodules/clifuncs.py:234
 #, fuzzy, python-format
 msgid "Creating a new pog: %s"
 msgstr "Erreur lors de la création d'une image Wx de %s"
 
-#: fontypythonmodules/clifuncs.py:254
+#: fontypythonmodules/clifuncs.py:257
 #, fuzzy, python-format
 msgid "I have placed %(count)s fonts from %(folder)s into %(pog)s."
 msgstr "Les polices sélectionnées sont maintenant dans %s."
 
-#: fontypythonmodules/clifuncs.py:256
+#: fontypythonmodules/clifuncs.py:259
 #, python-format
 msgid "The fonts from %(folder)s are *already* in %(pog)s."
 msgstr ""
@@ -383,7 +335,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: fontypythonmodules/fontybugs.py:171
+#: fontypythonmodules/fontybugs.py:173
 #, python-brace-format
 msgid ""
 "WARNING:\n"
@@ -397,22 +349,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: fontypythonmodules/fontybugs.py:181
+#: fontypythonmodules/fontybugs.py:183
 msgid "Missing fonts directory. See Help."
 msgstr ""
 
-#: fontypythonmodules/fontybugs.py:189
+#: fontypythonmodules/fontybugs.py:191
 #, python-brace-format
 msgid ""
 "WARNING:\n"
 "The fontconfig \"{path}\" directory cannot be created or found.\n"
 msgstr ""
 
-#: fontypythonmodules/fontybugs.py:194
+#: fontypythonmodules/fontybugs.py:196
 msgid "Missing fontconfig \"{}\" directory. See Help."
 msgstr ""
 
-#: fontypythonmodules/fontybugs.py:209
+#: fontypythonmodules/fontybugs.py:211
 #, python-brace-format
 msgid ""
 "Failure during upgrade:\n"
@@ -782,180 +734,224 @@ msgstr "Êtes-vous certain ?"
 msgid "Dismiss. ESC key does the same."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:228
+#: fontypythonmodules/gui_dismissable_panels.py:235
 msgid "Help! Help! I'm being repressed!"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:269
+#: fontypythonmodules/gui_dismissable_panels.py:276
 msgid "User Fonts"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:278
+#: fontypythonmodules/gui_dismissable_panels.py:285
 msgid "Fontconfig"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:279
+#: fontypythonmodules/gui_dismissable_panels.py:286
 msgid "No path: Fontconfig is not functioning."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:304
+#: fontypythonmodules/gui_dismissable_panels.py:311
 #, fuzzy
 msgid "About Fonty"
 msgstr "À Propos de Fonty Python"
 
-#: fontypythonmodules/gui_dismissable_panels.py:352
+#: fontypythonmodules/gui_dismissable_panels.py:359
 msgid "Hushing is on."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:352
+#: fontypythonmodules/gui_dismissable_panels.py:359
 msgid "Un-hush my fonts"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:353
+#: fontypythonmodules/gui_dismissable_panels.py:360
 msgid "Hushing is off."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:353
+#: fontypythonmodules/gui_dismissable_panels.py:360
 msgid "Hush my fonts"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:354
+#: fontypythonmodules/gui_dismissable_panels.py:361
 #, fuzzy
 msgid "Fonty cannot hush your fonts"
 msgstr "Fonty Python : redécouvrez vos polices de caractères !"
 
-#: fontypythonmodules/gui_dismissable_panels.py:359
+#: fontypythonmodules/gui_dismissable_panels.py:366
 msgid "Hush Fonts"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:392
+#: fontypythonmodules/gui_dismissable_panels.py:399
 msgid "The Hush Pog:"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:397
+#: fontypythonmodules/gui_dismissable_panels.py:404
 msgid ""
 "Hushing installs a Pog that you must manage. Make sure it contains a few "
 "system fonts so that your applications function properly!\n"
 "Look in /usr/share/fonts for ideas. Please see help for details."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:410
+#: fontypythonmodules/gui_dismissable_panels.py:417
 msgid "Current Hush Pog: "
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:416
+#: fontypythonmodules/gui_dismissable_panels.py:423
 msgid "Choose your system Pog"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:426
+#: fontypythonmodules/gui_dismissable_panels.py:433
 msgid ""
 "Fontconfig is not properly installed; thus Fonty cannot hush fonts.\n"
 "Consult your distribution's help, or open a ticket so we can try fix it. "
 "Please see help for details."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:436
+#: fontypythonmodules/gui_dismissable_panels.py:443
 msgid "Progress report:"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:508
+#: fontypythonmodules/gui_dismissable_panels.py:515
 msgid "None chosen"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:590
+#: fontypythonmodules/gui_dismissable_panels.py:597
 msgid "Locate a directory for the zip file(s)"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:638
+#: fontypythonmodules/gui_dismissable_panels.py:645
 msgid "Create the zip file"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:665
+#: fontypythonmodules/gui_dismissable_panels.py:672
 msgid ""
 "The zip file(s) will be put into:\n"
 "{}"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:717
+#: fontypythonmodules/gui_dismissable_panels.py:724
 msgid "Settings"
 msgstr "Options"
 
-#: fontypythonmodules/gui_dismissable_panels.py:731
+#: fontypythonmodules/gui_dismissable_panels.py:738
 msgid "Sample text:"
 msgstr "Texte affiché:"
 
-#: fontypythonmodules/gui_dismissable_panels.py:738
+#: fontypythonmodules/gui_dismissable_panels.py:745
 msgid "Point size:"
 msgstr "Longueur de la page:"
 
-#: fontypythonmodules/gui_dismissable_panels.py:743
+#: fontypythonmodules/gui_dismissable_panels.py:750
 msgid "Beware large numbers!"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:744
+#: fontypythonmodules/gui_dismissable_panels.py:751
 msgid "Page length:"
 msgstr "Longueur de la page:"
 
-#: fontypythonmodules/gui_dismissable_panels.py:748
+#: fontypythonmodules/gui_dismissable_panels.py:755
 msgid "Tick to disable"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:750
+#: fontypythonmodules/gui_dismissable_panels.py:757
 msgid "Disable top-left correction:"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:751
+#: fontypythonmodules/gui_dismissable_panels.py:758
 msgid ""
 "Disabling this speeds-up\n"
 "font drawing but can\n"
 "cause bad positioning."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:762
+#: fontypythonmodules/gui_dismissable_panels.py:769
 msgid "Available"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:769
+#: fontypythonmodules/gui_dismissable_panels.py:776
 msgid "Choose which app to use as a character map viewer."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:776
+#: fontypythonmodules/gui_dismissable_panels.py:783
 msgid ""
 "None found.\n"
 "You could install: {}"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:779
+#: fontypythonmodules/gui_dismissable_panels.py:786
 msgid "Character map viewer:"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:789
+#: fontypythonmodules/gui_dismissable_panels.py:796
 msgid "Max number of columns:"
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:790
+#: fontypythonmodules/gui_dismissable_panels.py:797
 msgid ""
 "The font viewing area\n"
 "will divide into columns\n"
 "which you can control here."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:796
+#: fontypythonmodules/gui_dismissable_panels.py:803
 msgid ""
 "Tick to include all\n"
 "sub-folders in\n"
 "the source view."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:799
+#: fontypythonmodules/gui_dismissable_panels.py:806
 msgid "Include sub-folders."
 msgstr ""
 
-#: fontypythonmodules/gui_dismissable_panels.py:800
+#: fontypythonmodules/gui_dismissable_panels.py:807
 msgid ""
 "Caution: This will crash Fonty if\n"
 "your Source folder (directory)\n"
 "is deep."
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:87
+msgid "Oh boy..."
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:91
+msgid "Fonty Python, um ... crashed."
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:96
+msgid ""
+"There's some problem with the font named below.\n"
+"You can do one of two things:\n"
+"1) Manually move this font somewhere else, or\n"
+"2) Use Fonty's command-line (-c) to mark bad fonts.\n"
+"   See below for help with this.\n"
+"After you've done these, run me again."
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:102
+msgid "The bad font might be:"
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:105
+msgid ""
+"There's no lastFontBeforeSegfault file; I can't really help.\n"
+"Look at the error (below) for clues."
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:107
+msgid "The error was:"
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:118
+msgid "The command line to seek and mark bad fonts is:"
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:119
+msgid "(Copy the text; open a console; paste and press enter.)"
+msgstr ""
+
+#: fontypythonmodules/segwrapfonty.py:125
+msgid "You can get help by opening a ticket on:"
 msgstr ""
 
 #: fontypythonmodules/strings.py:25
@@ -1008,28 +1004,26 @@ msgstr ""
 msgid ""
 "Manage your fonts on GNU/Linux\n"
 "==============================\n"
-"Many designers have collections of font files in big directories. Fonty "
-"Python\n"
-"will help you gather these fonts and structure them into collections we'll "
-"call\n"
-"\"Pogs\" -- a place to keep tyPOGraphy. Well, why not?\n"
+"Many designers have collections of font files on their drives. \n"
+"Fonty Python will help you gather and structure them into collections \n"
+"called \"Pogs\" -- a place to keep tyPOGraphy. Well, why not?\n"
 "\n"
-"Fonty lets you you select fonts visually and put them into Pogs which you "
-"can\n"
-"install or remove as you require.\n"
+"Fonty lets you you select fonts visually and place them into Pogs which "
+"you \n"
+"can then install or remove as you require. (Your font files never move \n"
+"from where they are. Only links are used.)\n"
 "\n"
-"(Your font files never move from where they are. No copies of your fonts\n"
-"are made; only links.)\n"
+"Example: You create a \"logos\" Pog where you place logotype fonts.\n"
+"When you want to use them, simply install the \"logos\" Pog and start your \n"
+"design app! When you're done, uninstall the \"logos\" Pog; the fonts will \n"
+"go away.\n"
 "\n"
-"For example, you might have a Pog called 'logos' into which you place fonts "
-"of\n"
-"company logos. When you want to use those logos, simply install the 'logos' "
-"Pog \n"
-"and start your design app!\n"
+"Fonty can also \"hush\" unwanted fonts. This hides system fonts, leaving\n"
+"only those Pogs you want in your apps. The Inkscape font chooser, for \n"
+"example, is more usable after a hush.\n"
+"(This is temporary;  an \"unhush\" will switch the system fonts on again.)\n"
 "\n"
-"When you're done, remove the 'logos' Pog, and the fonts will go away.\n"
-"\n"
-"Fonty is also great for just looking at fonts, wherever they are, without "
+"Fonty is great for just looking at fonts, wherever they are, without "
 "having \n"
 "to install them."
 msgstr ""
@@ -1072,7 +1066,7 @@ msgstr ""
 "%(warranty)s\n"
 "%(contact)s\n"
 
-#: fontypythonmodules/strings.py:88
+#: fontypythonmodules/strings.py:90
 #, python-format
 msgid ""
 "%(yadda)s\n"
@@ -1083,7 +1077,7 @@ msgid ""
 "%(basic_idea)s"
 msgstr ""
 
-#: fontypythonmodules/strings.py:95
+#: fontypythonmodules/strings.py:97
 msgid ""
 "Options:\n"
 "\n"
@@ -1095,9 +1089,9 @@ msgid ""
 "                \"hush\" is for more detail on hushing fonts.\n"
 "  -d, --dir     Show the \"fontypython\" path. Add this to your backup "
 "process!\n"
-"  -i Pog, --install=Pog\n"
+"  -i Pog, --install Pog\n"
 "                Install the fonts in this Pog.\n"
-"  -u Pog, --uninstall=Pog\n"
+"  -u Pog, --uninstall Pog\n"
 "                Uninstall the fonts in this Pog.\n"
 "  -l, --list\n"
 "                List the names of all your Pogs.\n"
@@ -1105,15 +1099,15 @@ msgid ""
 "                Lists the contents of your user fonts directory. Here, "
 "you'll\n"
 "                find the links that Fonty is managing for you.\n"
-"  -s num, --size=num\n"
+"  -s num, --size num\n"
 "                Set a new default point size (you'll see it in the gui).\n"
-"  -n num, --number=num\n"
+"  -n num, --number num\n"
 "                Set a new default for how many fonts to view at one go in "
 "the gui.\n"
 "                (Don't overdo this.)\n"
-"  -p Pog, --purge=Pog\n"
+"  -p Pog, --purge Pog\n"
 "                Clean the Pog of fonts that are missing.\n"
-"  -c folder, --check=folder\n"
+"  -c folder, --check folder\n"
 "                Check for bad fonts that crash Fonty. After using this tool "
 "you \n"
 "                should be able to use Fonty again.\n"
@@ -1124,14 +1118,14 @@ msgid ""
 "                Puts all fonts in Folder into Pog.\n"
 "  -A Folder Pog, --all-recurse Folder Pog\n"
 "                Puts all fonts in Folder and *all* sub-folders into Pog.\n"
-"  -z Pog, --zip=Pog\n"
+"  -z Pog, --zip Pog\n"
 "                All the fonts inside Pog will be zipped and the zipfile will "
 "be \n"
 "                named after the Pog. The file will be placed in the current\n"
 "                directory.\n"
-"  --cat=Pog\n"
-"                Cat the pog. This will list all the fonts within.\n"
-"  --hush=HushPog\n"
+"  --cat Pog\n"
+"                Cat the Pog. This will list all the fonts within.\n"
+"  --hush HushPog\n"
 "                Hush *all* the fonts except the Pogs you install.\n"
 "\n"
 "                Uses \"HushPog\", which you create that must contain a few "
@@ -1147,7 +1141,7 @@ msgid ""
 "                "
 msgstr ""
 
-#: fontypythonmodules/strings.py:150
+#: fontypythonmodules/strings.py:152
 #, fuzzy, python-format
 msgid ""
 "%(yadda)s\n"
@@ -1216,7 +1210,7 @@ msgid ""
 "\n"
 "%(c)s --hush mysysfonts\n"
 "  Will hush (silence) all the fonts in your system except the ones in \n"
-"  \"mysysfonts\" and any other pogs you have installed. Other apps will \n"
+"  \"mysysfonts\" and any other Pogs you have installed. Other apps will \n"
 "  now have fewer fonts to choose from, making life much easier for you.\n"
 "  (Use --unhush later to restore all of them.)\n"
 "\n"
@@ -1294,18 +1288,18 @@ msgstr ""
 "%(contact)s\n"
 "%(copy)s"
 
-#: fontypythonmodules/strings.py:211
+#: fontypythonmodules/strings.py:213
 msgid ""
 "Your fontypython folder is:\n"
 "{}"
 msgstr ""
 
-#: fontypythonmodules/strings.py:215
-msgid "Fonty Python - view and manage all kinds of fonts on Gnu/Linux"
+#: fontypythonmodules/strings.py:217
+msgid "Fonty Python - view and manage fonts on Gnu/Linux"
 msgstr ""
 
 # a comment
-#: fontypythonmodules/strings.py:220
+#: fontypythonmodules/strings.py:222
 #, fuzzy, python-format
 msgid ""
 "I cannot find \"python-wxversion\"\n"
@@ -1340,7 +1334,7 @@ msgstr ""
 "\"besoin d'installer python-wxgtk2.6 ou supérieur.\n"
 "Voyez sur http://wxpython.org/download.php\n"
 
-#: fontypythonmodules/strings.py:241
+#: fontypythonmodules/strings.py:243
 #, fuzzy, python-format
 msgid ""
 "I cannot find \"python-wxgtkX.Y\"\n"
@@ -1357,6 +1351,8 @@ msgid ""
 "sudo aptitude install python-wxgtk%(wxv)s\n"
 "\n"
 "Make sure it's at least version %(wxv)s\n"
+"**NB** It should not be any version greater\n"
+"than 3.0\n"
 "\n"
 "You can also get the latest version from here:\n"
 "http://wxpython.org/download.php\n"
@@ -1369,7 +1365,7 @@ msgstr ""
 "\n"
 "Voyez sur http://wxpython.org/download.php\n"
 
-#: fontypythonmodules/strings.py:261
+#: fontypythonmodules/strings.py:265
 #, fuzzy
 msgid ""
 "I cannot find \"python-pil\"\n"
@@ -1401,7 +1397,7 @@ msgstr ""
 "de votre distribution.\n"
 "Voyez sur http://www.pythonware.com/products/pil/index.htm\n"
 
-#: fontypythonmodules/strings.py:286
+#: fontypythonmodules/strings.py:290
 msgid ""
 "I cannot find \"Python-gi\"\n"
 "This package is not required; although if you\n"
@@ -1413,24 +1409,24 @@ msgid ""
 "Look for \"python-gi\" in your package manager.\n"
 msgstr ""
 
-#: fontypythonmodules/strings.py:314
+#: fontypythonmodules/strings.py:318
 msgid ""
 "Hold SHIFT or CTRL as you select Pogs, if you wish to select many at once."
 msgstr ""
 
-#: fontypythonmodules/strings.py:318
+#: fontypythonmodules/strings.py:322
 msgid "Can't hush because:"
 msgstr ""
 
-#: fontypythonmodules/strings.py:319
+#: fontypythonmodules/strings.py:323
 msgid "Can't unhush because:"
 msgstr ""
 
-#: fontypythonmodules/strings.py:320
+#: fontypythonmodules/strings.py:324
 msgid "See --help hush"
 msgstr ""
 
-#: fontypythonmodules/strings.py:321
+#: fontypythonmodules/strings.py:325
 #, python-brace-format
 msgid ""
 "\n"
@@ -1479,7 +1475,7 @@ msgid ""
 "\n"
 "Unhushing\n"
 "=========\n"
-"To release the hush, use --unhush from the command line, or ... in the gui.\n"
+"To release the hush, use --unhush from the command line or the gui.\n"
 "\n"
 "The Pog(s) you installed when you hushed will be left installed. Remove\n"
 "it/them if you must."
@@ -1561,42 +1557,42 @@ msgstr "À &Propos"
 msgid "&Help"
 msgstr "&Aide"
 
-#: fontypythonmodules/wxgui.py:542
+#: fontypythonmodules/wxgui.py:546
 msgid "Warning"
 msgstr "Attention"
 
-#: fontypythonmodules/wxgui.py:547
+#: fontypythonmodules/wxgui.py:551
 msgid "Error"
 msgstr "Erreur"
 
-#: fontypythonmodules/wxgui.py:670
+#: fontypythonmodules/wxgui.py:674
 msgid "I could not create the zip for {}"
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:684
+#: fontypythonmodules/wxgui.py:688
 msgid "Some fonts were skipped, try purging the Pog(s) involved."
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:685
+#: fontypythonmodules/wxgui.py:689
 msgid "Something went wrong."
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:687 fontypythonmodules/wxgui.py:688
+#: fontypythonmodules/wxgui.py:691 fontypythonmodules/wxgui.py:692
 #, fuzzy
 msgid "Zip file(s) have been created."
 msgstr "Les polices sélectionnées ont été supprimées."
 
-#: fontypythonmodules/wxgui.py:748
+#: fontypythonmodules/wxgui.py:752
 #, python-format
 msgid "&Purge \"%s\"\tCtrl+P"
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:750
+#: fontypythonmodules/wxgui.py:754
 #, fuzzy
 msgid "&Purge Pog\tCtrl+P"
 msgstr "Nettoyer le Pog"
 
-#: fontypythonmodules/wxgui.py:757
+#: fontypythonmodules/wxgui.py:761
 #, python-format
 msgid ""
 "Do you want to purge %s?\n"
@@ -1611,21 +1607,21 @@ msgstr ""
 "ne pointent pas vers des fichiers existants en\n"
 "seront supprimées."
 
-#: fontypythonmodules/wxgui.py:757
+#: fontypythonmodules/wxgui.py:761
 msgid "Purge font?"
 msgstr "Supprimer la police ?"
 
-#: fontypythonmodules/wxgui.py:766
+#: fontypythonmodules/wxgui.py:770
 #, python-format
 msgid "%s has not been purged."
 msgstr "%s n'a pas été nettoyé."
 
-#: fontypythonmodules/wxgui.py:770
+#: fontypythonmodules/wxgui.py:774
 #, python-format
 msgid "%s has been purged."
 msgstr "%s n'a pas été nettoyé."
 
-#: fontypythonmodules/wxgui.py:790
+#: fontypythonmodules/wxgui.py:794
 msgid ""
 "I am sorry, but Unicode is not supported by this installation of wxPython. "
 "Fonty Python relies on Unicode and will simply not work without it.\n"
@@ -1633,15 +1629,15 @@ msgid ""
 "Please fetch and install the Unicode version of python-wxgtk."
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:794
+#: fontypythonmodules/wxgui.py:798
 msgid "SORRY: UNICODE MUST BE SUPPORTED"
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:807
+#: fontypythonmodules/wxgui.py:811
 msgid "FATAL ERROR"
 msgstr ""
 
-#: fontypythonmodules/wxgui.py:905
+#: fontypythonmodules/wxgui.py:909
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python : redécouvrez vos polices de caractères !"
 
