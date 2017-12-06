@@ -28,16 +28,19 @@ This file is kept simple so that it parses as either
 version of Python. For that reason there are no imports
 to fetch i18n etc.
 """
-import sys
+import sys, os
 
 if sys.version_info >= (3, 0):
-    sys.stdout.write(
+    #sys.stdout.write(
+    sys.exit(
             "Sorry, fontypython requires Python 2.x, " \
             "you are using Python 3.x\n" \
             "From the command line, try:\n" \
-            "python2 fontypython\n" )
+            "python2 fontypython" )
               
-    sys.exit(1)
+if os.name != "posix": 
+	sys.exit(
+	   "Sorry, only Gnu/Linux is supported." )
 
 if __name__ == "__main__":
-    import fontypython_step_2
+    import fontypythonmodules.segwrapfonty
