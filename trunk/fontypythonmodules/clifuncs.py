@@ -220,9 +220,12 @@ def installall( FOLDERNAME, POGNAME, recurseflag ):
     count = 0
     existingPog = False
     try:
-        folder = fontcontrol.Folder(FOLDERNAME, recurse=allrecurse)
+        folder = fontcontrol.Folder(FOLDERNAME, recurse=recurseflag)
     except fontybugs.FolderHasNoFonts, e:
         e.print_error_and_quit()
+    except Exception, e:
+        print e
+        raise SystemExit
 
     ipog = fontcontrol.Pog( POGNAME ) # whether it exists or not.
 

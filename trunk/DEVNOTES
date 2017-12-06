@@ -78,7 +78,6 @@ Done * Don't forget to remove the wx debug stuff on the app object
 
 * SetSearchBitmap on search filter. Maybe?
 
-* File -> Exit does not immediately exit!
 
 
 i18N, POFILES, ETC.

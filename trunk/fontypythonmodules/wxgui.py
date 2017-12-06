@@ -227,9 +227,9 @@ class MainFrame(wx.Frame):
         self.SetMenuBar(self.menuBar)
 
         ## Setup the ESC key and the LEFT / RIGHT keys
-        escape_key_id = wx.NewId()
+        escape_key_id = wx.NewId() # Get a unique id for the ESC key
         accel = wx.AcceleratorTable([
-            (wx.ACCEL_NORMAL, wx.WXK_ESCAPE, escape_key_id), #self.exit.GetId()),
+            (wx.ACCEL_NORMAL, wx.WXK_ESCAPE, escape_key_id), # use ESC id here
             (wx.ACCEL_CTRL, wx.WXK_RIGHT, wx.ID_FORWARD),
             (wx.ACCEL_CTRL, wx.WXK_LEFT, wx.ID_BACKWARD)
             ])
@@ -250,9 +250,11 @@ class MainFrame(wx.Frame):
         ## The frame's close window button.
         self.Bind( wx.EVT_CLOSE, self.endApp )
 
-        ## Bind events for the menu items
+        ## Bind events for the exit menu
         self.Bind(wx.EVT_MENU, self.endApp, self.exit)
-        self.Bind(wx.EVT_MENU, self.onHandleESC, id = escape_key_id)# self.exit)
+
+        ## Bind the ESCAPE key
+        self.Bind(wx.EVT_MENU, self.onHandleESC, id = escape_key_id)# And ESC id here!
         
         #NOV 2017: Retiring this menu
         #I think PILLOW is more stable and I don't want to support the
