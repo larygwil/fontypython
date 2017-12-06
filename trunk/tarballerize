@@ -17,6 +17,7 @@ python setup.py sdist
 gpg -b --use-agent dist/fontypython*.tar.gz
 chmod 644 dist/fontypython*
 
+
 if [ -n "$1" ]; then
         #There was an argument - this signals an upload to savanah
         scp fontypython* donningle@dl.sv.nongnu.org:/releases/fontypython/
