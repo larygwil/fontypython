@@ -20,13 +20,11 @@ Dec 2017
 ==
 This is step 2 in the startup process. We get here from:
     fontypython
-(Which does a Python 2 test.)
-Next is step 3: fontypython_step_3.py
 
 Dec 2007
 ==
 This wraps 
-    fontypython_step_3.py
+    startfonty.py
 and catches any segfaults that kill it.
 
 These segfaults happen in PIL when certain bad fonts just 
@@ -35,7 +33,8 @@ this wrapper.
 
 A window displays the situation and gives the user some hope.
 """
-if __name__=="__main__":
+
+if __name__ == "__main__":
     print "Please run fontypython, not this file."
     raise SystemExit
 
@@ -51,36 +50,14 @@ fontyroot = os.path.dirname(os.path.abspath(root))
 
 import fontypythonmodules.i18n as i18n
 
-## Get the dir to run this from:
-#root = os.path.dirname(sys.argv[0]) # note:
-# this returns /usr/bin when we run from an installed 
-# version of fonty. 
-# Since I am testing from my dev directory, and sometimes
-# make a link in /usr/bin to fake things:
-# (sudo ln -s `pwd`/fontypython /usr/bin/fontypython)
-# I want the actual site-root where fontypythonmodules/ is
-# so I will use fontyroot from above
 
-##os.chdir( fontyroot ) # note:
-# Not changing dir anymore because this makes relative
-# directory stuff like:
-# fontypython .
-# not work properly. User should be able to open a view
-# on the current directory.
-# Thus:
-# Point to the absolute path of the 'fp_step_3.py' script.
-#
 # Dec 2017
 # ==
-# Added "python" so fp_step_3.py need not have chmod +x
+# Added "python" so startfonty.py need not have chmod +x
 # which should illustrate that only 'fontypython' is the
 # correct file to run.
-
-# Also: Pass a flag to the next step to allow it to run.
-# I am trying to dicourage running any other file than
-# the main one.
-#c1 = [ "python", os.path.join(fontyroot,'fontypython_step_3.py'),'we_say_Ni' ]
-c1 = [ "python", os.path.join(fontyroot,'startfonty.py') ]#,'we_say_Ni' ]
+# Point to the absolute path of the 'startfonty.py' script.
+c1 = [ "python", os.path.join(fontyroot,'startfonty.py') ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )
@@ -88,7 +65,7 @@ for arg in sys.argv[1:]: c1.append( arg )
 p1 = subprocess.call( c1 )
 
 ##TEST:
-p1=-11 # to test
+#p1=-11 # to test
 
 ## Nov 2017: Simpler plan:
 if p1 >= 0:
