@@ -16,33 +16,26 @@
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
 """
 Dec 2017
-==
-This is step 3 in the startup process. We got here from
-    fp_step_2.py
-Step 4 is next: fontypythonmodules/fp_step_4.py
-
-This file serves to get us down into the fontypythonmodules
-directory where all the modules live.
+===
+This is step 4 in the startup process. We got here from
+    ../fp_step_3.py
 """
-import sys
-argok = ""
-try:
-    argok = sys.argv[1]
-except:
-    argok = "fail"
-
-## If this special arg is NOT here, we can't continue
-if argok != "we_say_Ni":
-    print "Please run fontypython, not this file."
-    raise SystemExit
-
-## pop it off and continue
-sys.argv.pop(1)
-
 import fontypythonmodules.i18n
 
-import os
-## Just clear up some sad facts:
-if os.name != "posix": sys.exit(_("Sorry, only Gnu/Linux is supported at the moment."))
-## start the show!
-import fontypythonmodules.fp_step_4
+## test modules etc.
+import sanitycheck
+
+import fpsys # The first import means the code in there gets RUN.
+## That's where we create iPC (the single instance of PathControl).
+
+## Process the command line stuff...
+import cli2
+
+## What keeps the cli and the gui apart is any 
+## "raise SystemExit" inside cli
+## between here and ..
+## The GUI
+import wxgui
+
+## End, clean up
+fpsys.config.Save()
