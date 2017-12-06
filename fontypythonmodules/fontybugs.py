@@ -163,6 +163,8 @@ class NoFontypythonDir(Errors):
                         subpath = os.path.dirname(self.path),
                         assocerr = self.associated_err)
 
+
+
 class NoFontsDir(Errors):
     def __init__(self,path, associated_err):
         self.path = path
