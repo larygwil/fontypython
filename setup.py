@@ -55,28 +55,97 @@ def opj(*args):
     path = os.path.join(*args)
     return os.path.normpath(path)
 
+
+# Two special strucs to explicity list old files
+# and dirs to remove during an install.
+old_files_to_remove={
+  'fontypythonmodules': [
+                        'cli.py_c',
+                        'dialogues.py_c',
+                        'gui_Left.py_c',
+                        'gui_Middle.py_c',
+                        'gui_Right.py_c'],
+  'fontypythonmodules/help/common': [
+                        'break.png',
+                        'fp1.png.cr.png',
+                        'fp2.png.cr.png',
+                        'fp3.png.cr.png',
+                        'fp4.png.cr.png',
+                        'fp5.png.cr.png',
+                        'fp6.png.cr.png',
+                        'fp7.png.cr.png',
+                        'fp8.png.cr.png',
+                        'fp_already_in_x.png',
+                        'fphelplogo.png',
+                        'fp_normal_item.png',
+                        'fp_removing_a_font.png',
+                        'fp_ticking.png',
+                        'README',
+                        ],
+                    '': [
+                        'start_fontypython_c']
+}
+
+dirs_to_remove=['fontypythonmodules/help/common']
+
+
 # Specializations of some distutils command classes
 class wx_smart_install_data(distutils.command.install_data.install_data):
     """need to change self.install_dir to the actual library dir"""
     def run(self):
         install_cmd = self.get_finalized_command('install')
         self.install_dir = getattr(install_cmd, 'install_lib')
-        print "install_dir:", self.install_dir
-        print "install_cmd:", install_cmd
-        # I ran this from within the dist/fontyxxxx directory as
-        # sudo python setup.py install
-        # I got:
-        # install_dir: /usr/local/lib/python2.7/dist-packages/
-        #   ^ This is where this is dumped:
-        # CHANGELOG  COPYING  fontypython-0.4.5.egg-info  fontypython-0.4.6.egg-info
-        # fontypython-0.5.egg-info  fontypythonmodules  fontypython_step_2.py  
-        # fontypython_step_3.py  fontypython-TRUNK.egg-info  README
-        # (Which fucking sucks.)
-        #
 
-        # install_cmd: <distutils.command.install.install instance at 0x7f3d07e1b3b0>
-        # 
+        # Dec 2017
+        # Added this to try delete olf files from previous versions
+        self.rm_old_files()
         return distutils.command.install_data.install_data.run(self)
+
+    def rm_old_files(self):# install_dir, filename ):
+        """
+        Uses the dict above to explicitly seek out old files
+        to remove from the installation directory.
+        I make (I hope) no assumptions and always test with 
+        exists before deleting anything.
+        """
+        #import pdb; pdb.set_trace()
+        for adir, filez in old_files_to_remove.iteritems():
+            path = opj(self.install_dir, adir)
+            for f in filez:
+                kill_list=[] # to cater for .py and .pyc files
+                # _c means make two files to kill:
+                if f.endswith("_c"):
+                    py = f.rstrip("_c")
+                    pyc= py + "c"
+                    kill_list.append( py )
+                    kill_list.append( pyc )
+                else:
+                    kill_list.append( f )
+                # now kill the files
+                for kf in kill_list:
+                    kpaf = opj(path, kf)
+                    if os.path.exists(kpaf):
+                        print "Cleaning old file: {}".format( kpaf )
+                        try:
+                            os.unlink( kpaf )
+                        except:
+                            print "Failed."
+
+        # Now the dirs_to_remove
+        for p in dirs_to_remove:
+            kpaf = opj(self.install_dir, p)
+            if os.path.exists( kpaf ):
+                print "Cleaning old DIRECTORY: {}".format( kpaf )
+                try:
+                    os.rmdir( kpaf )
+                except:
+                    print "Failed."
+        
+        return
+        #try:
+        #    os.unlink(self.paf)
+        #except:    
+        #    pass
 
 def find_data_files(srcdir, *wildcards, **kw):
     # get a list of all files under the srcdir matching wildcards,
