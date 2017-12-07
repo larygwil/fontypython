@@ -120,7 +120,7 @@ class PathControl:
             ##
             fcp = os.path.join(XDG_CONFIG_HOME, "fontconfig","conf.d")
             ##TEST: 
-            ##fcp="/root/fontfoo"
+            #fcp="/root/fontfoo"
             if os.path.exists( fcp ):
                 PathControl.__fontconfig_confd = fcp
             else:
