@@ -171,6 +171,7 @@ files = find_data_files('fontypythonmodules/', '*')
 # Unsure about the absolute path to /usr/share
 # but this works on my system.
 files.append( ('/usr/share/pixmaps',['fontypython.png']) )
+files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
 
 # Leave the man page up to Kartik.
