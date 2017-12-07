@@ -59,6 +59,27 @@ SETUP TODO
 
 
 
+ICON STUFF
+==
+run fonty, then in another terminal do:
+$ xprop WM_CLASS
+Then click fonty:
+WM_CLASS(STRING) = "startfonty.py", "Startfonty.py"
+
+I could not get hackery via WM_CLASS to work.
+
+Here's what did work on Unity (Dec 2017):
+1. .desktop file just says Icon=fontypython
+2. renamed the file that is wrapped by segwrapfonty.py to 'fontypython' (Don't know if this helps)
+3. Did a system-wide install with sudo.
+4. Refresh the icon cache:
+   $ sudo update-icon-caches /usr/share/icons/*
+Bingo!
+
+
+
+
+donn@ddm:.../icons/hicolor$ sudo update-icon-caches /usr/share/icons/*
 TODO
 ==
 * NB:
