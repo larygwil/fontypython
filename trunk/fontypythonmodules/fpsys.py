@@ -308,6 +308,16 @@ class PathControl:
         I can't make Pog objects yet.)
 
         The ~/.fonts directory will not be removed.
+
+        Dec 7 2017
+        ==
+        I have found while testing sudo setup and running fonty, that
+        links dangling around can cause weirdnes.
+        I wonder if a better solution would not be to just delete the
+        links?
+        I will leave this for now - mainly becuase the state of what 
+        individual Pogs may report is a problem. I would have to loop
+        them and set them to uninstalled. Etc.
         """
         def movelink(src, dst):
             try:
