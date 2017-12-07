@@ -1,6 +1,5 @@
 To make a source tarball: 
-rm MANIFEST
-python setup.py sdist
+./tarballerize
 
 The tarball will be in the dist/ directory.
 
@@ -8,9 +7,10 @@ To test the tarball:
 cd dist
 tar xf fonty...
 cd fonty...
-sudo python setup.py install
+sudo python setup.py install --force
 fontypython
 (Look for command-line errors as well as wxPython error dialogs.)
+
 
 
 
