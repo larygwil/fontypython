@@ -144,13 +144,14 @@ class MainFrame(wx.Frame):
     """
     The main frame for the app. Start at the bottom of this file.
     """
-    def __init__(self,parent,title) :
+    def __init__(self, parent, title) :
         ## Draw the frame
         title = u"{} - {}".format( title, locale.getpreferredencoding() )
         wx.Frame.__init__( self, parent, -1,
                 title,
                 fpsys.config.pos,
-                fpsys.config.size )
+                fpsys.config.size,
+                name = "fontypython")
 
         #print "Main frame:", self.GetSizeTuple()[0]
 
