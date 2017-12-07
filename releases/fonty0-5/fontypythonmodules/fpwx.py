@@ -169,9 +169,9 @@ class AutoWrapStaticText(wx.PyControl):
         strings that have no spaces ...)
         """
         self.st.Freeze()
-        self.st.SetLabel(self._label)
-        w=self.GetSize().width
-        self.st.Wrap(w)
+        self.st.SetLabel( self._label )
+        w = self.GetSize().width
+        self.st.Wrap( w )
         self.st.Thaw()
 
     def DoGetBestSize(self):
