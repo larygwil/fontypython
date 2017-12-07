@@ -82,6 +82,12 @@ Now you should be good to go.
 If it does not work, try closing your console and
 starting it again.
 
+Refreshing the icon cache
+=========================
+I found that Fonty's icons don't appear at first.
+To refresh the cache (on Ubuntu, at least) try:
+sudo update-icon-caches /usr/share/icons/*
+
 Running the program
 ===================
 To get started on the console:

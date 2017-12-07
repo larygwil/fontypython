@@ -81,22 +81,32 @@ class fp_smart_install_lib(distutils.command.install_lib.install_lib):
         install_cmd = self.get_finalized_command('install')
         self.install_dir = getattr(install_cmd, 'install_lib')
         
+        print " > Starting cleanup of old files."
         last_fpm = opj(self.install_dir, 'fontypythonmodules')
         # Only do this thing if the file is there:
         if os.path.exists( last_fpm ):
             try:
-                print "Going to remove tree: {}".format( last_fpm )
+                print " > Old fontypythonmodules: {}".format( last_fpm )
                 shutil.rmtree( last_fpm )
             except:
-                print "Could not remove old fontypythonmodules."
+                print " > Failed."
 
         # Also kick out the old script that might remain in install_dir
         start_fp = opj(self.install_dir, 'start_fontypython')
         if os.path.exists(start_fp):
+            print " > Old start_fontypython script."
             try:
                 os.unlink(start_fp)
             except:
-                print "Failed to remove old start_fontypython script."
+                print " > Failed."
+
+        old_logo = '/usr/share/pixmaps/fontypython.png'
+        if os.path.exists(old_logo):
+            print " > Old logo."
+            try:
+                os.unlink(old_logo)
+            except:
+                print " > Failed."
 
         return distutils.command.install_lib.install_lib.run(self)       
 
@@ -168,11 +178,22 @@ except:
 files = find_data_files('fontypythonmodules/', '*')
 
 # Jan 20 2008 - Add an icon and .desktop file
-# Unsure about the absolute path to /usr/share
-# but this works on my system.
-files.append( ('/usr/share/pixmaps',['fontypython.png']) )
-files.append( ('/usr/share/pixmaps',['fontypython.png']) )
+# Got this info from: 
+# https://specifications.freedesktop.org/icon-theme-spec \
+#   /icon-theme-spec-latest.html
+# The standard paths are:
+#  /usr/share/icons/hicolor/....
+targetpaf ='/usr/share/icons/hicolor/{}/apps/'
+localpaf  =           'icons/hicolor/{}/apps/'
+icons = ['32x32', '48x48', '64x64', 'scalable']
+for i in icons:
+    _to   = targetpaf.format(i)
+    _from = localpaf.format(i)
+    _icon = opj(_from,'fontypython.{}')
+    _icon = _icon.format( 'svg' if i == 'scalable' else 'png' )
+    files.append( (_to, [_icon]) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
+#files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 
 # Leave the man page up to Kartik.
 # files.append( ('/usr/share/man/man1',['fontypython.1']) )
@@ -187,7 +208,7 @@ if debug:
     import pprint
     pprint.pprint (files)
     print
-
+    raise SystemExit
 
 ## Off we go!
 setup(       name = "fontypython",

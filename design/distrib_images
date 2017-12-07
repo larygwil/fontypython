@@ -1,6 +1,5 @@
 ## The icons need to eventually go into
 ## /usr/share/icons/hicolor/XXXXX/apps
-cd design
 
 # Make a copy of the 32x32 one for use in the app
 cp fontypython32.png ../fontypythonmodules/things/fplogo.png
