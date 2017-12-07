@@ -6,8 +6,7 @@ if [[ -e dist ]]; then
 	cd ..
 fi
 
-# remove the damn +x on sundry scripts
-./scripts/ugominusx
+echo "** Don't forget to run make for i18n stuff..."
 
 # Make sure we have the latest html files for help and about
 ./scripts/make_html_and_distrib
@@ -25,7 +24,7 @@ gpg -b --use-agent dist/fontypython*.tar.gz
 chmod 644 dist/fontypython*.gz
 
 
-if [ -n "$1" ]; then
+if [[ -n "$1" ]]; then
 	cd dist
         #There was an argument - this signals an upload to savanah
         scp fontypython*.tar.gz fontypython*.tar.gz.sig donningle@dl.sv.nongnu.org:/releases/fontypython/
