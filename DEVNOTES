@@ -62,7 +62,9 @@ I could not get hackery via WM_CLASS to work.
 
 Here's what did work on Unity (Dec 2017):
 1. .desktop file just says Icon=fontypython
-2. renamed the file that is wrapped by segwrapfonty.py to 'fontypython' (Don't know if this helps)
+2. Renamed the file that is wrapped by segwrapfonty.py to 'fontypython' (Don't know if this helps)
+   It was reporting as "startfonty.py" in xprop, so I figured to keep it the same as the original
+   script that is run (i.e. fontypython) would make sense.
 3. Did a system-wide install with sudo.
 4. Refresh the icon cache:
    $ sudo update-icon-caches /usr/share/icons/*

@@ -3,6 +3,17 @@
 
 *Fonty is a font viewer and manager for Gnu/Linux. Use it to view, gather and manage fonts. You can install and uninstall fonts to your user fonts folder for temporary use in other apps.*
 
+Upgrade Notice
+==
+Due to upgrade issues, if you find odd problems with your fonts, try this:
+
+1. Uninstall all your Pogs.
+2. Go into your fonts directory {UF_DIR} and remove all remaining font files.
+3. Using Fonty, install one Pog
+4. Go back into your fonts directory and look for the links which should be there now.
+5. If that all went well, the upgrade worked and Fonty should be fine.
+
+
 [The Idea](#idea) | [User Font Paths](#info) | [The Layout](#layout) | [Menus](#menus) | [Hushing](#hushing) | [Shortcuts](#shortcuts) | [Tips](#tips) | [Localization](#l10n) | [Bugs](#bugs) | [Licence](#lic)
 
 <a name="idea"></a>
