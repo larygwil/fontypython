@@ -88,13 +88,15 @@ I found that Fonty's icons don't appear at first.
 To refresh the cache (on Ubuntu, at least) try:
 sudo update-icon-caches /usr/share/icons/*
 
+(There's also: gtk-update-icon-cache)
+
 Running the program
 ===================
 To get started on the console:
 fontypython -h
 
-For more info:
-fontypython -e
+For exmaples ('e'):
+fontypython -h e
 
 For the gui, run fontypython
 (Hit F1 for in-app help)
@@ -103,11 +105,10 @@ Troubleshooting the installation
 ================================
 Fonty Python depends on several other libraries:
 ( These are minimum version numbers )
-1. python2.4 to python2.6 (Not python3)
+1. python2.4 to python2.7 (Not python3)
 2. python-dev (odd one this. See notes below)
-3. python-imaging *CHANGED*
 3. python-pil (The "Pillow" module has replaced the old PIL one.)
-4. python-wxgtk2.6 or greater, but not wx 4.x, which is not even released yet.
+4. python-wxgtk3.0 (Not 4.x, which is unreleased.)
 
 Items 1 and 3 are usually pre-installed on Gnu\Linux distros.
 
