@@ -24,7 +24,7 @@ This is step 2 in the startup process. We get here from:
 Dec 2007
 ==
 This wraps 
-    startfonty.py
+    fontypython.py
 and catches any segfaults that kill it.
 
 These segfaults happen in PIL when certain bad fonts just 
@@ -53,11 +53,16 @@ import fontypythonmodules.i18n as i18n
 
 # Dec 2017
 # ==
-# Added "python" so startfonty.py need not have chmod +x
+# Added "python" so "fontypythonmodules.fontypython" need not have chmod +x
 # which should illustrate that only 'fontypython' is the
 # correct file to run.
-# Point to the absolute path of the 'startfonty.py' script.
-c1 = [ "python", os.path.join(fontyroot,'startfonty.py') ]
+# NOTE:
+# =====
+# I named this file 'fontypython' too - it's in the modules dir.
+# I want the window manager to think of it as 'fontypython' 
+# This seems to work.
+# Try: xprop 
+c1 = [ "python", os.path.join(fontyroot,'fontypython') ]
 
 ## Append any args
 for arg in sys.argv[1:]: c1.append( arg )

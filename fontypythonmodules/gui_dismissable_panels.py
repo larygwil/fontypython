@@ -423,7 +423,7 @@ class HushPanel(DismissablePanel):
                 _("Choose your system Pog") ) )
             self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
             
-            h.Add( self.pog_choice, 0, wx.ALIGN_TOP ) #|                    wx.TOP, border = 5)
+            h.Add( self.pog_choice, 0, wx.ALIGN_TOP )
 
             sizer.Add(h,0, wx.BOTTOM, border = 5)
         else:
