@@ -182,7 +182,7 @@ files = find_data_files('fontypythonmodules/', '*')
 # https://specifications.freedesktop.org/icon-theme-spec \
 #   /icon-theme-spec-latest.html
 # The standard paths are:
-#  /usr/share/icons/hicolor/....
+#  /usr/share/icons/hicolor/..../apps/
 targetpaf ='/usr/share/icons/hicolor/{}/apps/'
 localpaf  =           'icons/hicolor/{}/apps/'
 icons = ['32x32', '48x48', '64x64', 'scalable']
