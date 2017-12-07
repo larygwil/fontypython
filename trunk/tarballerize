@@ -28,5 +28,5 @@ chmod 644 dist/fontypython*.gz
 if [ -n "$1" ]; then
 	cd dist
         #There was an argument - this signals an upload to savanah
-        scp fontypython*.gz donningle@dl.sv.nongnu.org:/releases/fontypython/
+        scp fontypython*.tar.gz fontypython*.tar.gz.sig donningle@dl.sv.nongnu.org:/releases/fontypython/
 fi
