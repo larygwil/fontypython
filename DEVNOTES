@@ -50,14 +50,6 @@ I think this is working....
 
 
 
-SETUP TODO
-==
-* Test with empty fontypython dir
-* Test with old config file
-* Write a script to do prep stuff:
-  * include the makehtml - so it's always fresh
-
-
 
 ICON STUFF
 ==
@@ -78,8 +70,6 @@ Bingo!
 
 
 
-
-donn@ddm:.../icons/hicolor$ sudo update-icon-caches /usr/share/icons/*
 TODO
 ==
 * NB:
