@@ -1,0 +1,7 @@
+SVG
+===
+The fontypython.dev.svg is where to work on the logo. 
+Then clean the document, prune any cruft and save it out 
+as a plain svg to 'fontypython.svg'
+
+The rest of the icons are in icons_main_gui.svg
