@@ -403,19 +403,19 @@ class HushPanel(DismissablePanel):
             p1 = fpwx.para( self, _(
                 u"Hushing installs a Pog that you must manage. " \
                  "Make sure it contains a few system fonts so that " \
-                 "your applications function properly!\n" \
+                 "your applications function properly! " \
                  "Look in /usr/share/fonts for ideas. " \
-                 "Please see help for details."),
+                 "See help for details."),
                  wrap = True)
                                       
-            sizer.Add( p1, 0, wx.TOP, border = 5 )
+            sizer.Add( p1, 1, wx.EXPAND | wx.BOTTOM, border = 8 )
 
             h = wx.BoxSizer(wx.HORIZONTAL)
 
             ## label to the choice box
             self.chosen_pog_label = fpwx.label( self,
                     _("Current Hush Pog: ") )
-            h.Add( self.chosen_pog_label, 0, wx.TOP, border = 30)
+            h.Add( self.chosen_pog_label, 0, wx.ALIGN_CENTER_VERTICAL )
 
             ## The pog choice box
             self.pog_choice = wx.Choice(self, -1, choices = ["-"])
@@ -423,25 +423,24 @@ class HushPanel(DismissablePanel):
                 _("Choose your system Pog") ) )
             self.pog_choice.Bind(wx.EVT_CHOICE, self._pog_chosen )
             
-            h.Add( self.pog_choice, 0, wx.ALIGN_TOP |
-                    wx.TOP, border = 20)
+            h.Add( self.pog_choice, 0, wx.ALIGN_TOP ) #|                    wx.TOP, border = 5)
 
-            sizer.Add(h,0, wx.BOTTOM, border = 20)
+            sizer.Add(h,0, wx.BOTTOM, border = 5)
         else:
             ## Some help re the error - also wrappable!
             p1 = fpwx.para( self, _( 
                 u"Fontconfig is not properly installed; thus " \
-                 "Fonty cannot hush fonts.\n" \
-                 "Consult your distribution's help, or " \
+                 "Fonty cannot hush fonts. " \
+                 "Consult your distribution, or " \
                  "open a ticket so we can try fix it. " \
-                 "Please see help for details."),
+                 "See help for details."),
                  wrap = True)
 
-            sizer.Add( p1, 0, wx.TOP, border = 5 )
+            sizer.Add( p1, 1, wx.EXPAND | wx.BOTTOM, border = 8 )
 
         ## Area to print into
         pl = fpwx.label( self, _("Progress report:") )
-        sizer.Add( pl, 0, wx.BOTTOM, border = 10)
+        sizer.Add( pl, 0, wx.BOTTOM, border = 5)
         self.printer = wx.TextCtrl(self,
             -1, "", style = wx.TE_READONLY | wx.TE_MULTILINE)
         font = self.printer.GetFont()
@@ -449,8 +448,9 @@ class HushPanel(DismissablePanel):
                        font.GetStyle(),
                        font.GetWeight(), font.GetUnderlined())
         self.printer.SetFont(font)
-        sizer.Add (self.printer, 1, wx.EXPAND | 
-                wx.BOTTOM, border = 10)
+
+        sizer.Add (self.printer, 3, wx.EXPAND | 
+                wx.BOTTOM, border = 5)
 
         if self.fontconfig_error:
             ## Dump the initial NoFontconfigDir error into the printer
