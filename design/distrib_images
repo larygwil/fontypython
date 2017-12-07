@@ -1,0 +1,16 @@
+## The icons need to eventually go into
+## /usr/share/icons/hicolor/XXXXX/apps
+cd design
+
+# Make a copy of the 32x32 one for use in the app
+cp fontypython32.png ../fontypythonmodules/things/fplogo.png
+
+# Move the others up into prep directories
+mv fontypython32.png ../icons/hicolor/32x32/apps/fontypython.png
+mv fontypython48.png ../icons/hicolor/48x48/apps/fontypython.png
+mv fontypython64.png ../icons/hicolor/64x64/apps/fontypython.png
+
+cp fontypython.svg ../icons/hicolor/scalable/apps/
+
+# After this, all pngs lying around here go into things
+mv *.png ../fontypythonmodules/things
