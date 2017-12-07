@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="282pt"
+   height="282pt"
+   viewBox="0 0 282 282"
+   version="1.1"
+   id="svg1972"
+   sodipodi:docname="fontypython.svg"
+   inkscape:version="0.92.2 (unknown)">
+  <title
+     id="title916">fontypython svg logo</title>
+  <metadata
+     id="metadata1976">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>fontypython svg logo</dc:title>
+        <cc:license
+           rdf:resource="GPLv3" />
+        <dc:date>Dec 2017</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Donn C. Ingle</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>GPLv3</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>Donn C. Ingle</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:language>English</dc:language>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1056"
+     id="namedview1974"
+     showgrid="true"
+     inkscape:zoom="0.5"
+     inkscape:cx="-209.56954"
+     inkscape:cy="119.67477"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1972"
+     inkscape:snap-global="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid914" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1879">
+    <clipPath
+       id="clip1">
+      <path
+         d="M 0.707031 0.570312 L 281.578125 0.570312 L 281.578125 281.445312 L 0.707031 281.445312 Z M 0.707031 0.570312 "
+         id="path1876" />
+    </clipPath>
+    <filter
+       inkscape:label="Chalk and Sponge"
+       inkscape:menu="Distort"
+       inkscape:menu-tooltip="Low turbulence gives sponge look and high turbulence chalk"
+       width="1.6"
+       height="2"
+       y="-0.5"
+       x="-0.30000001"
+       style="color-interpolation-filters:sRGB"
+       id="filter1682">
+      <feTurbulence
+         baseFrequency="0.027000000000000003"
+         type="fractalNoise"
+         seed="183"
+         numOctaves="2"
+         result="result1"
+         id="feTurbulence1678" />
+      <feDisplacementMap
+         xChannelSelector="R"
+         yChannelSelector="G"
+         scale="30"
+         in="SourceGraphic"
+         in2="result1"
+         id="feDisplacementMap1680" />
+    </filter>
+    <filter
+       inkscape:label="Chalk and Sponge"
+       inkscape:menu="Distort"
+       inkscape:menu-tooltip="Low turbulence gives sponge look and high turbulence chalk"
+       width="1.6"
+       height="2"
+       y="-0.5"
+       x="-0.30000001"
+       style="color-interpolation-filters:sRGB"
+       id="filter2013">
+      <feTurbulence
+         baseFrequency="0.027000000000000003"
+         type="fractalNoise"
+         seed="183"
+         numOctaves="2"
+         result="result1"
+         id="feTurbulence2009" />
+      <feDisplacementMap
+         xChannelSelector="R"
+         yChannelSelector="G"
+         scale="30"
+         in="SourceGraphic"
+         in2="result1"
+         id="feDisplacementMap2011" />
+    </filter>
+  </defs>
+  <g
+     id="g52">
+    <path
+       inkscape:connector-curvature="0"
+       id="path768-3"
+       d="m 150.93307,19.499999 c -27.868,2.25e-4 -53.003923,6.520776 -73.682976,20.179922 C 56.508656,53.380306 42.302295,73.789506 36.992014,97.781433 L 0.75000014,255.75 H 109.79282 l 8.21248,-35.90501 50.27869,0.092 h 0.03 c 12.12452,0.002 32.36384,-0.6297 52.6913,-9.09865 20.32745,-8.46894 41.00553,-27.19264 46.81339,-56.98661 l 12.1554,-55.309338 c 0.0832,-0.375792 0.15472,-0.754099 0.21428,-1.134292 3.99429,-25.722501 -3.61513,-47.355969 -17.22912,-60.151976 -13.61402,-12.795993 -30.40637,-16.956516 -44.21077,-17.727117 -0.34896,-0.01985 -0.69835,-0.02912 -1.04788,-0.02912 z m 25.28558,91.859111 -3.87472,16.92244 -34.88221,0.01 3.52379,-16.58798 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:39.99996948px;line-height:125%;font-family:'Frozen Dog Treats';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;opacity:1;fill:#483e37;fill-opacity:1;stroke:none;stroke-width:6;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+    <path
+       sodipodi:nodetypes="cccccccsccccccccccccc"
+       inkscape:connector-curvature="0"
+       id="path768"
+       d="M 150.94336,29.116699 C 124.57031,29.11688 101.52857,35.208953 82.65381,47.676269 63.750898,60.162326 51.31414,78.048952 46.492676,99.845213 35.332161,148.633 24.17299,197.42562 13.013672,246.21533 h 89.002438 l 8.24414,-36.00293 c 19.35743,0.037 38.71486,0.0745 58.07229,0.11133 11.62108,0.002 30.66798,-0.74472 48.91407,-8.34668 18.24609,-7.60195 35.83332,-23.23279 41.04052,-49.94532 3.96524,-18.69923 8.80501,-39.50822 12.30912,-56.084463 3.64359,-23.465729 -2.9994,-41.082131 -14.31891,-51.720705 -11.31948,-10.638573 -25.94972,-14.41896 -38.06396,-15.095214 -22.42234,-0.03013 -44.84691,-0.01465 -67.27002,-0.01465 z m 37.47803,72.508301 -6.89356,30.09814 c -0.93831,3.16523 -1.66418,6.01238 -5.17237,6.16992 l -50.84911,0.0132 5.7041,-26.85937 0.009,-0.0337 c 0.94596,-4.87527 3.13849,-8.99423 7.53142,-8.99689 z"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:39.99996948px;line-height:125%;font-family:'Frozen Dog Treats';font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:18;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+    <path
+       id="path1729"
+       d="M 150.93586,38.123056 C 125.93193,38.123228 104.82391,43.814099 87.619594,55.17809 70.415024,66.542313 59.62879,82.089319 55.270401,101.81563 L 24.303266,237.2186 h 70.533469 l 8.257885,-36.02798 h 30.87009 l 11.69132,-54.27473 h -31.264 l 9.57548,-45.10026 c 1.41903,-8.416293 8.66155,-8.410038 14.51324,-8.708924 h 19.0324 l 11.83466,-54.98365 z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:36.68085098px;line-height:125%;font-family:'Frozen Dog Treats';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#483e37;fill-opacity:1;stroke:none;stroke-width:1.03163099px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccc" />
+    <path
+       id="path1767"
+       d="m 181.47889,38.122983 -11.84002,54.725573 30.1033,-0.328934 -10.96316,47.880738 c -1.05117,4.26853 -4.84444,6.51712 -7.67793,6.49809 l -23.25401,0.0165 -11.7739,54.39644 22.26576,0.003 c 22.32252,0.007 71.83246,-3.40499 81.11181,-51.0073 L 261.69818,94.567084 C 268.32337,51.902223 238.84153,39.300327 217.71056,38.120783 Z"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:39.99996948px;line-height:125%;font-family:'Frozen Dog Treats';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ff6600;fill-opacity:1;stroke:none;stroke-width:1.03163099px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccscccc" />
+  </g>
+</svg>
