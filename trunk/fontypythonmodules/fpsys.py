@@ -443,8 +443,9 @@ class Overlaperize(object):
         # It gets here if the font is totally unknown to the OVERLAP_COUNT_DICT
         return False #It therefore does NOT overlap.
 
-    def report(self,key):
-            print "%s has overlap count of %d" % (key, self.OVERLAP_COUNT_DICT[key])
+    # Dec 2017: I don't think this method is ever used.
+    # def xxreport(self,key):
+    #        print "%s has overlap count of %d" % (key, self.OVERLAP_COUNT_DICT[key])
 
     def sleep(self):
         '''Save the OVERLAP_COUNT_DICT to a file (if it has content). Called when app closes.'''
@@ -526,7 +527,7 @@ def checkFonts( dirtocheck, printer ):
     code = """
 from PIL import ImageFont
 try:
-    font=ImageFont.truetype("%s", 24, 0)
+    font=ImageFont.truetype("{}", 24, 0)
     dud=font.getname()
 except:
     pass
@@ -539,19 +540,20 @@ except:
         ## and leave all other flavours of font-related errors to
         ## the fontcontrol module -- where fonts are still useable
         ## if not visible.
-        retval = subprocess.call( ["python",  '-c', code %  pafbytestring] )
+        #retval = subprocess.call( ["python",  '-c', code %  pafbytestring] )
+        retval = subprocess.call( ["python",  '-c', code.format(pafbytestring) ] )
         if retval != 0:
             segfault_I_hope = True
         return segfault_I_hope
     printer ( _("Checking fonts, this could take some time.") )
-    printer ( _("Starting in %s:") % dirtocheck )
+    printer ( _("Starting in \"{}\":").format( dirtocheck ) )
     printer ()
     ## dirtocheck comes-in as unicode - let's stick to byte strings:
     dirtocheck = LSP.to_bytes( dirtocheck )
     seglist = [] # our local list of newly found bad fonts
     gotsome = False
     for cwd, dirs, files in os.walk( dirtocheck ):
-        printer(_("Looking in %s...") % os.path.basename(cwd) )
+        printer(_("Looking in \"{}\"...").format( os.path.basename(cwd) ))
         ## We only want certain font files:
         fontfiles = [f for f in files if f.upper().endswith( tuple( fontcontrol.font_file_extensions_list )) ]
         #if len(fontfiles) < 1:
@@ -921,7 +923,7 @@ def markInactive():
 
         for iA in state.viewobject:
             if iA.glyphpaf_unicode in pafBlist:
-                iA.activeInactiveMsg = _("This font is in %s") % state.targetobject.name
+                iA.activeInactiveMsg = _("This font is in \"{}\"").format(state.targetobject.name)
                 iA.inactive = True
         del pafBlist
 
@@ -982,7 +984,7 @@ def hush_with_pog( pog, printer ):
     if isPog( pog ):
         hushpog = fontcontrol.Pog( pog )
         ## gen and install it!
-        printer( _(u"Installing (%s)") % pog, key="installing")
+        printer( _("Installing \"{}\".").format(pog), key="installing")
         try:
             hushpog.genList()
             ## Aside: it is not an error to 
@@ -1007,7 +1009,9 @@ def hush_with_pog( pog, printer ):
             ## Just because I'm nervous: Is my path actually in "fontconfig"?
             ## This should never happen...
             if not os.path.dirname(iPC.user_fontconfig_confd()).endswith("fontconfig"):
-                raise fontybugs.NoFontconfigDir(path="**HUSH_PAF WEIRDO ERROR. Please open a ticket on our bug tracker**")
+                raise fontybugs.NoFontconfigDir(
+                        path="**HUSH_PAF WEIRDO ERROR. " \
+                             "Please open a ticket on our bug tracker**")
             ## Write the XML fontconfig .conf file.
             ## don't care if it's already there. Just overwrite.
             f = open( HUSH_PAF, "w" )

@@ -53,7 +53,7 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
         ## Stops to use in fitmap drawing code.
         white_full = wx.Colour(255,255,255,255)
         white_zero = wx.Colour(255,255,255,0)
-        black_zero = wx.Colour(0,0,0,0)
+        #black_zero = wx.Colour(0,0,0,0)
         c=255
         ucl = wx.Colour(c,c,c,255)
         ucd = wx.Colour(c-38,c-40,c-41,255)
@@ -112,14 +112,12 @@ class ScrolledFontView(wx.lib.scrolledpanel.ScrolledPanel):
             fpsys.config.points = int(self.wheelValue)
 
             ## Tried to restore the scrollbar, but it crashes the app
-            ##xPos, yPos = self.GetViewStart()
-            self.ResetTopLeftAdjustFlag() ## Sept 2009 : size change means we need new values for fitmaps
+            ## xPos, yPos = self.GetViewStart()
 
-            ##fpsys.state.point_size_changed_flag = True
-            #TODO Kill: fpsys.state.reflow_only = False 
+            ## Sept 2009 : size change means we need new values for fitmaps
+            self.ResetTopLeftAdjustFlag()
+
             ps.pub( update_font_view ) # starts a chain of calls.
-            ##fpsys.state.point_size_changed_flag = False
-            ##fpsys.state.reflow_only = True
 
             return
         ## Keep the wheel event going
