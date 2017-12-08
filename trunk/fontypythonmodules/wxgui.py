@@ -121,7 +121,7 @@ class StatusBar(wx.StatusBar):
         ## Last field "gripper" (32px)
         self.SetFieldsCount( 4 if no_fonts_dir else 3 )
 
-        self.SetStatusText( _("Welcome to Fonty Python, vers %s") % fpversion.version, 0)
+        self.SetStatusText( _("Welcome to Fonty Python, vers {}").format(fpversion.version), 0)
 
         if no_fonts_dir:
             self.SetStatusText( shorterr, 2)
@@ -750,7 +750,7 @@ class MainFrame(wx.Frame):
         ## Make the label of the menu reflect the view Pog's name
         ## so it's clear which selection counts for purging.
         if vis:
-            self.MENUPURGE.SetLabel(self.id_purge, _("&Purge \"%s\"\tCtrl+P" % fpsys.state.viewobject.name ) )
+            self.MENUPURGE.SetLabel(self.id_purge, _("&Purge \"{}\"\tCtrl+P").format(fpsys.state.viewobject.name) )
         else:
             self.MENUPURGE.SetLabel(self.id_purge, _("&Purge Pog\tCtrl+P")) #Reflect original string, as it's got translations already.
 
@@ -759,7 +759,11 @@ class MainFrame(wx.Frame):
         ##The menu item only becomes active for Pogs that are not installed,
         ##so we can purge without further tests:
         pogname = fpsys.state.viewobject.name
-        dlg = wx.MessageDialog(self,_("Do you want to purge %s?\n\nPurging means all the fonts in the pog\nthat are not pointing to actual files\nwill be removed from this pog.") % pogname, _("Purge font?"), wx.YES_NO | wx.ICON_INFORMATION )
+        dlg = wx.MessageDialog(self,_("Do you want to purge \"{}\"?\n\n" \
+                "Purging means any fonts in the Pog that are not\n" \
+                "pointing to actual files will be removed.").format(pogname),
+                _("Purge font?"),
+                wx.YES_NO | wx.ICON_INFORMATION )
         if dlg.ShowModal() == wx.ID_YES:
             ## pog.purge() Raises
             ##   PogEmpty
@@ -768,11 +772,11 @@ class MainFrame(wx.Frame):
                 fpsys.state.viewobject.purge()
             except(fontybugs.PogEmpty, fontybugs.PogInstalled),e:
                 ps.pub(show_error, unicode( e ))
-                ps.pub(print_to_status_bar, _("%s has not been purged.") % pogname)
+                ps.pub(print_to_status_bar, _("\"{}\" has not been purged.").format(pogname))
                 return
 
             ## Update GUI
-            ps.pub(print_to_status_bar, _("%s has been purged.") % pogname)
+            ps.pub(print_to_status_bar, _("\"{}\" has been purged.").format(pogname))
             ps.pub(update_font_view)
 
 
