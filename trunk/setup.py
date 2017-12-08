@@ -184,14 +184,14 @@ files = find_data_files('fontypythonmodules/', '*')
 # The standard paths are:
 #  /usr/share/icons/hicolor/..../apps/
 targetpaf ='/usr/share/icons/hicolor/{}/apps/'
-localpaf  =           'icons/hicolor/{}/apps/'
+frompaf   =           'icons/hicolor/{}/apps/'
 icons = ['32x32', '48x48', '64x64', 'scalable']
 for i in icons:
-    _to   = targetpaf.format(i)
-    _from = localpaf.format(i)
-    _icon = opj(_from,'fontypython.{}')
-    _icon = _icon.format( 'svg' if i == 'scalable' else 'png' )
-    files.append( (_to, [_icon]) )
+    _to      = targetpaf.format(i)
+    _from    = frompaf.format(i)
+    _iconpaf = opj(_from,'fontypython.{}')
+    _iconpaf = _icon.format( 'svg' if i == 'scalable' else 'png' )
+    files.append( ( _to, [_iconpaf] ) )
 files.append( ('/usr/share/applications',['fontypython.desktop']) )
 #files.append( ('/usr/share/pixmaps',['fontypython.png']) )
 

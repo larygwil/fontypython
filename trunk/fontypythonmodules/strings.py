@@ -22,7 +22,7 @@ import fpversion
 import os
 
 ## Some repeated strings
-please_use_arg = _("Please use a number for argument %s")
+please_use_arg = _("Please use a number for argument {}")
 
 ##copyright = "Fonty Python Copyright (C) 2006, 2007, 2008, 2009, 2016, 2017 Donn.C.Ingle"
 copyright = u"Fonty Python Copyright © 2017 Donn.C.Ingle"
@@ -31,7 +31,7 @@ done = "Done."
 arguments_amuse = _("Your arguments amuse me :) Please see the help by using -h")
 ticket_url = "https://savannah.nongnu.org/bugs/?group=fontypython"
 
-version = _("Fonty Python version %s") % fpversion.version
+version = _("Fonty Python version {}").format(fpversion.version)
 
 warranty = "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;\n" \
            "without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n" \

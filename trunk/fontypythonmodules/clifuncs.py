@@ -24,7 +24,7 @@ import fontcontrol
 def checkfonts( dirtocheck ):
     # Check fonts
     if not os.path.exists( dirtocheck ):
-        print _("I can't find %s") % dirtocheck
+        print _("I can't find \"{}\".").format(dirtocheck)
         return
 
     def printer( pstr = "" ):
@@ -43,10 +43,10 @@ def listpogs():
 
     poglist.sort( cmp=locale.strcoll, key=lambda obj:obj) #28 May 2009. Hope this works for other locales...
     if len(poglist) == 0:
-        print _("There are no pogs available.")
+        print _("There are no Pogs available.")
         return
-    print _("Listing %d pog(s)") % len(poglist)
-    print _(" * indicates installed pogs")
+    print _("Listing {} Pog(s)").format(len(poglist))
+    print _(" * indicates installed Pogs")
     for pog in poglist:
         paf = fpsys.iPC.appPath() + pog + ".pog"
         try:
@@ -54,11 +54,11 @@ def listpogs():
             installed = f.readline()[:-1] #Strips the \n off the end
             f.close()
         except:
-            print _("Could not open (%s).") % paf
+            print _("Could not open \"{}\".").format(paf)
         s = " "
         if installed.upper() == "INSTALLED":
             s = "*"
-        print "%s %s" % (s,pog)
+        print "{} {}".format(s,pog)
 
 
 ## Sept 2017: Added this because I was doing ls in testing so much.
@@ -81,7 +81,7 @@ def cat( pog ):
         p = os.path.join(fpsys.iPC.appPath(), "{}.pog".format(pog))
         cat_res = subprocess.check_output(['cat', p])
     except:
-        print _("Could not cat that pog.")
+        print _("Could not cat that Pog.")
         return
     print cat_res
 
@@ -132,7 +132,7 @@ def zip( pog ):
                 print _("Some bugs happened:")
                 for m in emsgs: print m
     else:
-        print _("I can't find a pog named %s") % pog
+        print _("I can't find a Pog named \"{}\".").format(pog)
 
 def purgepog(pogtopurge):
     ##Handle purge
@@ -151,7 +151,7 @@ def purgepog(pogtopurge):
         except (fontybugs.PogEmpty, fontybugs.PogInstalled), e:
             e.print_error()
     else:
-        print _("(%s) cannot be found. Try -l to see the names.") % pogtopurge
+        print _("\"{}\" cannot be found. Try -l to see the names.").format(pogtopurge)
         return
     fpsys.config.Save()
     print strings.done
@@ -174,7 +174,7 @@ def installpogs( listofpogs ):
             ##   PogAllFontsFailedToInstall
             ##   PogSomeFontsDidNotInstall
             ##   NoFontsDir
-                print _("Installing (%s)") % pogtoinstall
+                print _("Installing \"{}\".").format(pogtoinstall)
                 pog.install()
             except ( fontybugs.PogEmpty,
                     fontybugs.PogAllFontsFailedToInstall,
@@ -182,7 +182,8 @@ def installpogs( listofpogs ):
                     fontybugs.NoFontsDir ), e:
                 e.print_error()
         else: # not a pogname
-            print _("(%s) cannot be found. Try -l to see the names.") % pogtoinstall
+            print _("\"{}\" cannot be found. Try -l to see the names."
+                    ).format(pogtoinstall)
             return
     fpsys.config.Save()
     print strings.done
@@ -201,14 +202,14 @@ def uninstallpogs( listofpogs ):
             ##   PogEmpty
             ##   PogLinksRemain
             ##   PogNotInstalled
-                print _("Removing (%s)") % pogtouninstall
+                print _("Removing \"{}\".").format(pogtouninstall)
                 pog.uninstall()
             except (fontybugs.PogEmpty,
                 fontybugs.PogNotInstalled,
                 fontybugs.PogLinksRemain), e:
                 e.print_error()
         else:
-            print _("Sorry, can't find (%s). Try -l to see the names.") % pogtouninstall
+            print _("Sorry, can't find \"{}\". Try -l to see the names.").format(pogtouninstall)
             return
     fpsys.config.Save()
     print strings.done
@@ -231,7 +232,7 @@ def installall( FOLDERNAME, POGNAME, recurseflag ):
 
     ## If it's an unknown POGNAME, make it and write it:
     if not fpsys.isPog(POGNAME):
-        print _("Creating a new pog: %s") % POGNAME
+        print _("Creating a new Pog named \"{}\".").format(POGNAME)
         try:
             ipog.write()
         except fontybugs.PogWriteError, e:
@@ -254,7 +255,11 @@ def installall( FOLDERNAME, POGNAME, recurseflag ):
     del ipog, folder
 
     if count:
-        print _("I have placed %(count)s fonts from %(folder)s into %(pog)s.") % {"count":str(count), "folder":FOLDERNAME, "pog":POGNAME }
+        print _("I have placed {count} font(s) from \"{folder}\" " \
+                "into \"{pog}\".").format(
+                count=count, folder=FOLDERNAME, pog=POGNAME)
     else:
-        print _("The fonts from %(folder)s are *already* in %(pog)s.") % {"folder": FOLDERNAME, "pog":POGNAME  }
+        print _("The font(s) from \"{folder}\" are *already* " \
+                "in \"{pog}\".").format(
+                        folder=FOLDERNAME, pog=POGNAME)
 

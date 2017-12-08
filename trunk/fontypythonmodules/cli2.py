@@ -175,7 +175,7 @@ for option, argument in opts:
             try:
                 n = int(argument)
             except:
-                print strings.please_use_arg % option
+                print strings.please_use_arg.format(option)
                 raise SystemExit
             situation.points = n
 
@@ -184,7 +184,7 @@ for option, argument in opts:
             try:
                 n = int(argument)
             except:
-                print strings.please_use_arg % option
+                print strings.please_use_arg.format(option)
                 raise SystemExit
             situation.numinpage = n
 
@@ -194,9 +194,9 @@ for option, argument in opts:
             situation.allfromfolder = argument
             situation.allrecurse = option in ("-A","--all-recurse")
             if len(remaining_cli_arguments) != 1:
-                print _("%s takes two arguments: SOURCE(folder) " \
-                        "TARGET(pog)") % option
-                print _("NB: If you have spaces in the Pog or " \
+                print _("{} takes two arguments: SOURCE(folder) " \
+                        "TARGET(pog)").format(option)
+                print _("NB: If you have spaces in your Pog or " \
                         "Folder names, put \"quotes around the " \
                         "names.\"")
                 raise SystemExit
@@ -402,7 +402,7 @@ else:
 if not fpsys.isFolder(A):
     # If it's not a pog and it's not "EMPTY",then it's a weirdo.
     if not fpsys.isPog(A) and A != "EMPTY":
-        print _("Sorry, (%s) does not exist. Try --list") % A
+        print _("Sorry, \"{}\" does not exist. Try --list").format(A)
         raise SystemExit
 
 ## Disallow Folder in arg B
@@ -447,41 +447,35 @@ if A and not B:
 
 ## Two remaining_cli_arguments:
 if A and B:
+    ## "FP"
     if fpsys.isFolder(A)and fpsys.isPog(B):
-        ## "FP"
         try:
             fpsys.instantiateViewFolder(A)
         except fontybugs.FolderHasNoFonts, e:
             ## Let it continue
             fpsys.config.lastdir = os.path.abspath(A)
-        try:
-            installed = fpsys.instantiateTargetPog(B)
-        except fontybugs.PogInvalid, e:
-            e.print_error_and_quit()
-        if installed:
-            print _("The target pog (%s) is currently installed, you can't use it as a target.") % B
-            raise SystemExit
 
-    if fpsys.isPog(A)and fpsys.isPog(B):
-        ## "PP"
+    ## "PP"
+    elif fpsys.isPog(A)and fpsys.isPog(B):
         if A == B:
-            print _("Your pogs are the same! Try -e")
+            print _("Your Pogs are the same! Try -e")
             raise SystemExit
         try:
             empty = fpsys.instantiateViewPog(A)
         except fontybugs.PogInvalid, e:
             e.print_error_and_quit()
         if empty:
-            print _("This pog is empty")
+            print _("The source Pog \"{}\" is empty").format(A)
             raise SystemExit
 
-        try:
-            installed = fpsys.instantiateTargetPog(B)
-        except fontybugs.PogInvalid, e:
-            e.print_error_and_quit()
-        if installed:
-            print _("The target pog (%s) is currently installed, you can't use it as a target.") % B
-            raise SystemExit
+    try:
+        installed = fpsys.instantiateTargetPog(B)
+    except fontybugs.PogInvalid, e:
+        e.print_error_and_quit()
+
+    if installed:
+        print _("The target Pog \"{}\" is currently installed, you can't use it as a target.").format(B)
+        raise SystemExit
 
 ## As we're going to run the wxgui, I will do the pathcontrol 
 ## error probes there, and open msgboxes or something to print the errors.

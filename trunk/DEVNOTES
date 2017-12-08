@@ -91,12 +91,16 @@ Done * Don't forget to remove the wx debug stuff on the app object
 
 * SetSearchBitmap on search filter. Maybe?
 
+* Change all the strings to use {} and params
+
 
 
 i18N, POFILES, ETC.
 ==
 I rely on the Makefile. Run make.
 Glad I wrote it, for I remember nothing at all. \('')/
+
+
 
 
 FUTURE TODOS
