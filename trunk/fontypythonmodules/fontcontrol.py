@@ -143,13 +143,16 @@ class FontItem( object ):
                 fileDoesExist = os.path.exists( self.glyphpaf )
                 if not fileDoesExist:
                     self.badfont = True
-                    self.badfontmsg = _("Font cannot be found. Purge lost fonts from this Pog.\n(See the Tools menu.)")
+                    self.badfontmsg = _("Font cannot be found. " \
+                            "Purge lost fonts from this Pog.\n" \
+                            "(See the Tools menu.)")
                     self.badstyle = "FILE_NOT_FOUND"
                     ## If the multi face font is damaged after the
                     ## first face, then this won't catch it...
                     break # it's at the end of the sub-faces 
             except:
-                print _("Unhandled error:\nPlease remove (%s) away from here and report this to us.") % self.glyphpaf
+                print _("Unhandled error:\nPlease remove \"{}\" " \
+                        "away from here and report this to us.").format(self.glyphpaf)
                 raise
             try:
                 font = ImageFont.truetype(self.glyphpaf, 16, index=i, encoding="unicode" )
@@ -713,7 +716,6 @@ class Pog(BasicFontList):
         No error detection ... yet
         """
         newpaf =  self.paf[:-4] + ".badpog" #kick out the .pog and append .badpog
-        #print "Invalid Pog : \"%s\"\nRenaming it to \"%s\"" % (self.paf, newpaf)
         os.rename(self.paf, newpaf) #just going to hope this works...
         self.paf = newpaf
 
@@ -822,7 +824,7 @@ class Pog(BasicFontList):
 
         ## If this is flagged as installed, then just get out.
         if self.__installed == "yes":
-            print _("%s is already installed." % self.name)
+            print _("\"{}\" is already installed.").format(self.name)
             return
 
         ## We start thinking all is rosey:
@@ -894,7 +896,6 @@ class Pog(BasicFontList):
         bugs = 0
         if self.__installed == "yes":
             for fi in self:
-                #print "*Uninstalling candidate %s" % fi.name
                 if fpsys.Overlap.dec(fi.name):
                     #print " Going to leave this one here"
                     continue # If it overlaps then we skip removing it by going to next fi in loop.
