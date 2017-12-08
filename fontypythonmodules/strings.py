@@ -42,11 +42,10 @@ copy_warranty_contact = u"{}\n\n{}\n\n{}".format(copyright, warranty, contact)
 fonts_supported = _("""Fonts supported: TTF, OTF, TTC, WOFF, Type1 (PFB, PFA).""")
 
 yaddayadda = _("""The basic format is:
-%(c)s [OPTIONS] || [VIEW] [TARGET]
+{} [OPTIONS] || [VIEW] [TARGET]
 
-OPTIONS: Various flags for use on the command-line. See "-h b" or "--help b"
-for more details. (Long options can use an "=" sign or a space: --cat=foo 
-or --cat foo)
+OPTIONS: Various flags for use on the command-line. 
+See "-h b" or "--help b" for more details. 
 
 Or:
 
@@ -58,7 +57,7 @@ Neither argument is required. When there's only one it's assumed to be a VIEW.
 When there are two, it's VIEW then TARGET.
 
 NB: Try not to use spaces in Pog names. If you must, then "quote the name"."""
-) % { "c":"fontypython" }
+).format( "fontypython" )
 
 
 
@@ -87,12 +86,18 @@ Fonty is great for just looking at fonts, wherever they are, without having
 to install them.""")
 
 
-use = _("""%(yadda)s
+## printed mostly in cli2.py
+use = _("""{yadda}
 Please use -e to see more info.
 
-%(fonts_supported)s
+{fonts_supported}
 
-%(basic_idea)s""" ) % { "yadda":yaddayadda, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
+{basic_idea}""" ).format(
+        **{      "yadda" : yaddayadda,
+            "basic_idea" : basic_idea,
+       "fonts_supported" : fonts_supported })
+
+
 
 options=_("""Options:
 
@@ -149,73 +154,84 @@ options=_("""Options:
 
 
 
-examples = _("""%(yadda)s
+examples = _("""{yadda}
 
 Examples: All using short options, see -h
 =========
-%(c)s /path/to/fonts/ttfs/a
+{c} /path/to/fonts/ttfs/a
   This will start off showing the fonts in that path.
 
-%(c)s /path/to/fonts/ttfs/b Trouser
+{c} /path/to/fonts/ttfs/b Trouser
   This will let you view and choose fonts from the path and it will store them 
   in a Pog named Trouser. The Pog will be created if it's not already there.
 
-%(c)s Lumberjack
+{c} Lumberjack
   This will let you see the fonts in the Pog named Lumberjack. You can also 
   uninstall individual fonts by selecting them. A cross will appear indicating 
   the fonts that will be uninstalled.
 
-%(c)s Camelot Spamalot
+{c} Camelot Spamalot
   This will let you see and choose fonts in Camelot and it will store them 
   in "Spamalot". It lets you copy fonts between Pogs.
 
-%(c)s -i Cheese
+{c} -i Cheese
   Will install the fonts in Cheese so you can use them in other apps.
 
-%(c)s -u Trouser
+{c} -u Trouser
   Will uninstall the fonts listed in Trouser.
 
-%(c)s -s 128
+{c} -s 128
   Will set the point size in the gui to 128 - Crazy man!
 
-%(c)s -n 25
+{c} -n 25
   Will show 25 fonts at a time, in the gui. Beware large numbers!
 
-%(c)s -s 64 -v 10 Pimple
+{c} -s 64 -v 10 Pimple
   Will set the point size to 64, paging to 10,open the gui and display the fonts
   in Pimple.
 
-%(c)s -p Glutton
+{c} -p Glutton
   Purging a font. If there are any fonts in Glutton that are not really on your 
   drive/media anymore (perhaps you deleted them or the cat did) this will go 
   through the Pog and cull them.
 
-%(c)s -c /some/path/to/fonts
+{c} -c /some/path/to/fonts
   If Fonty keeps crashing on /some/path/to/fonts then you should run a check on
   that folder. This will mark the dangerous fonts and let you view that folder 
   in the future.
 
-%(c)s -a /some/path HolyHandGrenade
+{c} -a /some/path HolyHandGrenade
   This will put all the fonts in that path into the Pog called HolyHandGrenade.
 
-%(c)s -A /some/path Tutto
+{c} -A /some/path Tutto
   This will do the same as -a: starting in some path, but it will then walk 
   down through *all* sub-folders too. The fonts will be placed in Tutto.
 
-%(c)s --hush mysysfonts
+{c} --hush mysysfonts
   Will hush (silence) all the fonts in your system except the ones in 
   "mysysfonts" and any other Pogs you have installed. Other apps will 
   now have fewer fonts to choose from, making life much easier for you.
   (Use --unhush later to restore all of them.)
 
-""") % { "yadda":yaddayadda, "c":"fontypython" }
+""").format(**{ "yadda":yaddayadda, "c":"fontypython" } )
 
 fontyfolder = _("""Your fontypython folder is:
 {}""")
 
 ## These two are used in setup.py
-description = _("Fonty Python - view and manage fonts on Gnu/Linux")
-long_description = "%(basic_idea)s\n\n%(fonts_supported)s\n\n%(copy)s\n\n%(contact)s" % {"copy":copyright, "contact":contact, "basic_idea":basic_idea, "fonts_supported":fonts_supported }
+description = _("Fonty Python - view and manage fonts on Gnu/Linux.")
+long_description = _(\
+"""{basic_idea}
+
+{fonts_supported}
+
+{copy}
+
+{contact}""").format(
+        **{    "copy" : copyright,
+            "contact" : contact,
+         "basic_idea" : basic_idea,
+    "fonts_supported" : fonts_supported })
 
 
 wxvers="3.0"
@@ -234,11 +250,12 @@ sudo aptitude install python-wxversion
 
 If you get long error messages, you will need to
 install python-wxgtk*, where the star means the
-version number and it should be at least %(wxv)s
+version number and it should be at least {wxvers}
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
-""") % {"wxv":wxvers}
+""").format(wxvers = wxvers)
+
 
 wxError =_("""I cannot find "python-wxgtkX.Y"
 Please install this package - NB: ensure that
@@ -249,17 +266,17 @@ TIP
 On my distro I can search for it like this:
 aptitude search python-wx
 This returns many results, one of which is:
-python-wxgtk%(wxv)s
+python-wxgtk{wxvers}
 I then install it like this:
-sudo aptitude install python-wxgtk%(wxv)s
+sudo aptitude install python-wxgtk{wxvers}
 
-Make sure it's at least version %(wxv)s
+Make sure it's at least version {wxvers}
 **NB** It should not be any version greater
 than 3.0
 
 You can also get the latest version from here:
 http://wxpython.org/download.php
-""") % {"wxv":wxvers}
+""").format(wxvers = wxvers)
 
 
 PILError = _("""I cannot find "python-pil"
