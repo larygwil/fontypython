@@ -6,3 +6,4 @@
 *.patch
 *.session
 *.svg
+*.vim

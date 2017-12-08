@@ -293,7 +293,7 @@ class PogChooser(wx.ListCtrl) :
             except fontybugs.PogInvalid, eInst:
                 ## An "invalid" pog is one that does not have
                 ## installed/not installed on the first line.
-                print _(u"(%s) skipped. It's an invalid pog.") % [p]
+                print _("\"{}\" skipped. It's an invalid Pog.").format([p])
                 continue
 
             ## Let's try to make a unicode of p so li.SetText(p)
@@ -302,8 +302,9 @@ class PogChooser(wx.ListCtrl) :
                 p = fpsys.LSP.to_unicode( p )
             except UnicodeDecodeError:
                 ## We can't convert it under this locale
-                print _(u"(%s) skipped. I can't display this name "\
-                        "under your locale.") % [p] # Irony in print!
+                ## This print hurts my brain. :( 
+                print _("\"{}\" skipped. I can't display this name "\
+                        "under your locale.").format([p]) # Irony in print!
                 continue
             ## Okay, we have a valid pog name to use:
             li = wx.ListItem()
