@@ -389,8 +389,8 @@ class FontViewPanel(wx.Panel):
         else:
             self.setOneBIR( self.idRegular, False )
             for idy, dic in self.BIR.iteritems():
-                # Builds AND regex (space is and)
-                if dic['truth']: ss += "%s%s" % (dic['style']," ")
+                # Builds an AND regex (a space is "AND")
+                if dic['truth']: ss += "{}{}".format(dic['style']," ")
             ss = ss[:-1]
         # Go alter the search text box
         self.search_filter.set_BIR(ss)
@@ -791,8 +791,9 @@ class FontViewPanel(wx.Panel):
             ## We must append the fonts to the Pog
             vo = fpsys.state.viewobject
             to = fpsys.state.targetobject
-            print _("Copying fonts from %(source)s to %(target)s") % {
-                    "source":vo.label(), "target":to.label()}
+            # pointless print:
+            #print _("Copying fonts from {source} to {target}").format(**{
+            #        "source":vo.label(), "target":to.label()})
             dowrite = False
             for fi in vo:
                 if fi.ticked:
@@ -812,7 +813,8 @@ class FontViewPanel(wx.Panel):
 
                 if not bug:
                     ps.pub(print_to_status_bar,_(
-                        "Selected fonts are now in %s.") % to.label())
+                        "Selected fonts are now in \"{}\".").format(
+                            to.label()))
                 else:
                     ps.pub(print_to_status_bar,_(
                         "There was an error writing the pog to disk. " \
