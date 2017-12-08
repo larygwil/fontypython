@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 ## Fonty Python Copyright (C) 2017 Donn.C.Ingle
 ## Contact: donn.ingle@gmail.com - I hope this email lasts.
 ##
@@ -14,45 +16,54 @@
 ##
 ## You should have received a copy of the GNU General Public License
 ## along with Fonty Python.  If not, see <http://www.gnu.org/licenses/>.
+
+##TEST: unremark and run this file to test errors.
+import i18n
+
 import locale
 import os
 import strings
 import linux_safe_path_library
 LSP = linux_safe_path_library.linuxSafePath()
 
-"""
-testing i18n with fontybugs
-try:
-    raise fontybugs.BadVoodoo("bad voodoo")
-except fontybugs.BadVoodoo, e:
-    print "error:", unicode(e)
-try:
-    raise fontybugs.PogWriteError("/some/path/po.pog")
-except fontybugs.PogWriteError, e:
-        print unicode(e)
-"""
 
-## The %s must be OUTSIDE the _() construct.
 class Errors ( Exception ):
-    checkperms = _("\n(Also check your file permissions.)")
+    checkperms =  _("(Check your file permissions)")
     messages = {
-    001 : _("Bad voodoo error. I give up."),
-    100 : _("There is no such item."),
-    200 : _("Pog is empty."),
-    300 : _("Pog is already installed."),
-    500 : _("Pog cannot be written to.\nCheck your filesystem.%s") % checkperms,
-    600 : _("Pog is invalid, please hand-edit it."),
-    700 : _("Some fonts did not install.\nPerhaps the original fonts folder has moved or been renamed.\nYou should purge or hand-edit."),
-    800 : _("Pog is not installed."),
-    900 : _("Some fonts could not be uninstalled.\nPlease check your home .fonts (with a dot in front) folder for broken links.%s") % checkperms,
-    1000 : _("Cannot delete the Pog.%s") % checkperms,
-    1010 : _("Not a single font in this pog could be installed.\nThe original font folder has probably moved or been renamed."),
-    1020 : _("Not a single font in this pog could be uninstalled.\nNone of the fonts were in your fonts folder, please check your home .fonts (with a dot in front) folder for broken links.\nThe pog has been marked as \"not installed\"."),
+
+    200 : _("Pog {item} is empty."),
+
+    300 : _("Pog {item} is already installed."),
+
+    500 : _("Pog {item} cannot be written-to. {checkperms}"),
+
+    600 : _("Pog {item} is invalid, please hand-edit it."),
+
+    700 : _("Some fonts in {item} did not install. You should purge or hand-edit it."),
+
+    800 : _("Pog {item} is not installed."),
+
+    900 : _("Some fonts in {item} could not be uninstalled. Please check your user fonts " \
+            "folder for broken links. {checkperms}"),
+
+    1000 : _("Cannot delete {item}. {checkperms}"),
+
+    1010 : _("Not a single font in {item} could be installed. The font sources " \
+             "have been moved or renamed."),
+
+    1020 : _("Not a single font in {item} could be uninstalled. None of the fonts " \
+             "were in your fonts folder. The pog has been marked as \"not installed\"."),
+
     1030 : _("This folder has no fonts in it."),
     }
 
     def __unicode__( self ):
-        return u"%s : %s" % ( self.__class__.messages[self._id], self._item )
+        s = self.__class__.messages[self._id]
+        i = u'"{}"'.format(self._item) # put quotes around it
+        try: # to avoid key errors on format matches of checkperms
+            s = s.format(item = i, checkperms = Errors.checkperms)
+        except: pass
+        return s
 
     def _format_error(self):
         ## As of Python 2.6 e.message has been deprecated.
@@ -76,15 +87,7 @@ class Errors ( Exception ):
         return self._format_error()
 
 
-class BadVoodoo ( Errors ):
-    def __init__ ( self, item = None):
-        self._item = item
-        self._id = 001
-
-class ErrNoSuchItem ( Errors ):
-    def __init__ ( self, item = None):
-        self._item = item
-        self._id = 100
+## Now the classes that use Error:
 
 class PogEmpty ( Errors ):
     def __init__ ( self, item = None):
@@ -154,14 +157,16 @@ class NoFontypythonDir(Errors):
     def __unicode__(self):
 
         #import pdb; pdb.set_trace()
-        return _(u"The \"{path}\" directory cannot be created or found.\n" \
-                "Fonty cannot run until it exists. " \
-                "Please create it, and start me again." \
-                "\nExample:\n\tcd {subpath}\n\tmkdir fontypython" \
-                "\nThe python error was: {assocerr}\n\n").format(
-                        path = self.path,
-                        subpath = os.path.dirname(self.path),
-                        assocerr = self.associated_err)
+        return _(
+        u"The \"{path}\" directory cannot be created or found.\n" \
+        "Fonty cannot run until it exists. " \
+        "Please create it, and start me again." \
+        "\nExample:\n\tcd {subpath}\n\tmkdir fontypython" \
+        "\nThe python error was: {assocerr}\n\n"
+        ).format(
+                path = self.path,
+                subpath = os.path.dirname(self.path),
+                assocerr = self.associated_err)
 
 
 
@@ -170,14 +175,16 @@ class NoFontsDir(Errors):
         self.path = path
         self.associated_err = associated_err
     def __unicode__(self):
-        return _(u"WARNING:\nThe \"{path}\" directory cannot be created or found.\n" \
-                "Fonts cannot be installed until it exists. " \
-                "Please create it, and start me again." \
-                "\nExample:\n\tcd {subpath}\n\tmkdir fonts" \
-                "\nThe python error was: {assocerr}\n\n").format(
-                        path = self.path,
-                        subpath = os.path.dirname(self.path),
-                        assocerr = self.associated_err)
+        return _(
+        u"WARNING:\nThe \"{path}\" directory cannot be created or found.\n" \
+        "Fonts cannot be installed until it exists. " \
+        "Please create it, and start me again." \
+        "\nExample:\n\tcd {subpath}\n\tmkdir fonts" \
+        "\nThe python error was: {assocerr}\n\n"
+        ).format(
+                path = self.path,
+                subpath = os.path.dirname(self.path),
+                assocerr = self.associated_err)
     def short_unicode_of_error(self):
         """Used in gui; see the statusbar code."""
         return _(u"Missing fonts directory. See Help.")
@@ -209,6 +216,22 @@ class UpgradeFail(Errors):
         self.associated_err = associated_err
     def __unicode__(self):
         return _(u"Failure during upgrade:\n{msg}\n\n" \
-                  "The python error was: {assocerr}\n\n").format(
+                  "The python error was: {assocerr}\n\n"
+                  ).format(
                           msg = self.msg,
                           assocerr = self.associated_err)
+
+
+if __name__ == "__main__":
+
+    # DEC 2017
+    # Testing zone
+    # I will loop-test them!
+    ers = [PogEmpty, PogInstalled, PogWriteError, PogInvalid, PogSomeFontsDidNotInstall, PogNotInstalled, PogLinksRemain,
+            PogCannotDelete, PogAllFontsFailedToInstall, PogAllFontsFailedToUninstall, FolderHasNoFonts]
+    for e in ers:
+        try:
+            raise e(u"Fooは最!")
+        except Exception, ex:
+            print unicode(ex)
+    

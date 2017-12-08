@@ -655,6 +655,8 @@ class Pog(BasicFontList):
 
             ## I am going to open it as an ASCII file:
             f = open( self.paf, 'r' ) # ASCII byte string file only.
+        except IOError:
+            raise fontybugs.PogInvalid(self.paf)
         except:
             print "CORNER CASE in __openfile on paf:", [self.paf]
             print sys.exc_info()
