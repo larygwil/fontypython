@@ -61,7 +61,8 @@ class Gucharmap( CharMapApp ):
         fam=args[2]
         sz=args[3]
 
-        cmd = [ self.appname, u'--font=%s, %s' % (fam, sz)]
+        #cmd = [ self.appname, u'--font=%s, %s' % (fam, sz)]
+        cmd = [ self.appname, u'--font={}, {}'.format(fam, sz) ]
         
         ## gucharmap requires the font to be installed already, so fake it:
         self.already_installed = False
@@ -92,7 +93,8 @@ class Kfontview( CharMapApp ):
     def OpenApp( self, *args ):
         url=args[0]
 
-        cmd = [ self.appname, u'%s' % url]
+        #cmd = [ self.appname, u'%s' % url]
+        cmd = [ self.appname, u'{}'.format(url) ]
         self.Run( cmd )
 
 
