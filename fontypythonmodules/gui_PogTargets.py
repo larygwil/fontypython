@@ -149,7 +149,7 @@ class TargetPogChooser(wx.Panel):
                 ## Is it unique?
                 elif fpsys.isPog(nam):
                     ## Nope, it's there already
-                    ps.pub(show_message, _("%s already exists.") % nam)
+                    ps.pub(show_message, _("\"{}\" already exists.").format(nam) )
                 else:
                     ## We have a winner.
                     ## Make a pog object and then write it,
@@ -195,21 +195,21 @@ class TargetPogChooser(wx.Panel):
                 if len(tokill) > 1:
                     pogname=""
                     for f in tokill[:-1]:
-                        pogname += u"%s," % f
-                    pogname += tokill[-1] #We want "remove blah,bloop,zoom, are you sure?"
+                        pogname += u'"{}", '.format(f)
+                    #We want "remove "blah", "bloop". Are you sure?"
+                    pogname = u'{} "{}"'.format(pogname,tokill[-1])
                 else:
-                    pogname=tokill[0]
+                    pogname = u'"{}"'.format(tokill[0])
 
-                dlg = wx.MessageDialog(self, _("Remove %s, are you sure?") % pogname,
+                dlg = wx.MessageDialog(self, _(
+                    "Remove {}. Are you sure?").format(pogname),
                     _("Are you sure?"), wx.YES_NO | wx.ICON_INFORMATION)
                 if dlg.ShowModal() == wx.ID_YES:
                     ## Let's do them in:
                     for victim in iPogsToKill: #tokill:
-                        #fpsys.instantiateTargetPog(victim) #Makes the fpsys.state.targetobject
                         ## Now kill the file on disk:
                         try:
                             victim.delete()
-                            #fpsys.state.targetobject.delete()
                         except fontybugs.PogCannotDelete, e:
                             ps.pub(show_error, unicode( e ))
                             return
