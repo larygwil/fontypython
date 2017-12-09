@@ -1,12 +1,11 @@
 # Fonty Python.
-# Copyright (C) 2006,2007,2008 Donn.C.Ingle
+# Copyright (C) 2006,2007,2008,2017 Donn.C.Ingle
 # This file is distributed under the same license as the Fonty Python package.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Fontypython 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-08 14:14+0200\n"
+"POT-Creation-Date: 2017-12-09 15:08+0200\n"
 "PO-Revision-Date: 2009-07-07 12:35+0100\n"
 "Last-Translator: Pietro Battiston <toobaz@email.it>\n"
 "Language-Team: Italian Translation Project <tp@lists.linux.it>\n"
@@ -159,7 +158,7 @@ msgstr "Impossibile trovare %s"
 msgid "\"{}\" cannot be found. Try -l to see the names."
 msgstr "Impossibile trovare (%s). Prova -l per vedere i nomi."
 
-#: fontypythonmodules/clifuncs.py:177
+#: fontypythonmodules/clifuncs.py:177 fontypythonmodules/fpsys.py:987
 #, fuzzy
 msgid "Installing \"{}\"."
 msgstr "Installo (%s)"
@@ -196,36 +195,36 @@ msgid ""
 "(See the Tools menu.)"
 msgstr "Impossibile trovare il font, dovresti ripulire questo pog."
 
-#: fontypythonmodules/fontcontrol.py:152
-#, fuzzy, python-format
+#: fontypythonmodules/fontcontrol.py:154
+#, fuzzy
 msgid ""
 "Unhandled error:\n"
-"Please remove (%s) away from here and report this to us."
+"Please remove \"{}\" away from here and report this to us."
 msgstr ""
 "Errore non gestito:\n"
 "Per favore sposta (%s) da questa posizione e riporta l'errore ai "
 "programmatori."
 
-#: fontypythonmodules/fontcontrol.py:164
+#: fontypythonmodules/fontcontrol.py:167
 msgid "Font may be bad and it cannot be drawn."
 msgstr "Il font potrebbe essere corrotto, non è possibile raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:179
+#: fontypythonmodules/fontcontrol.py:182
 msgid "Unicode problem. Font may be bad and it cannot be drawn."
 msgstr ""
 "Problema unicode. Il font potrebbe essere corrotto, non è possibile "
 "raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:250
+#: fontypythonmodules/fontcontrol.py:253
 #, fuzzy
 msgid "Font causes a segfault. It cannot be drawn."
 msgstr "Il font potrebbe essere corrotto, non è possibile raffigurarlo."
 
-#: fontypythonmodules/fontcontrol.py:295
+#: fontypythonmodules/fontcontrol.py:298
 msgid "There are no fonts to see here, move along."
 msgstr "Qui non c'è nessun font da vedere."
 
-#: fontypythonmodules/fontcontrol.py:296
+#: fontypythonmodules/fontcontrol.py:299
 msgid ""
 "Stuff to check:\n"
 "\t1) The filters.\n"
@@ -234,20 +233,20 @@ msgid ""
 "\t3) The Help file."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:825
-#, fuzzy, python-format
-msgid "%s is already installed."
+#: fontypythonmodules/fontcontrol.py:827
+#, fuzzy
+msgid "\"{}\" is already installed."
 msgstr "Pog già installato."
 
-#: fontypythonmodules/fontcontrol.py:979 fontypythonmodules/fontcontrol.py:1000
+#: fontypythonmodules/fontcontrol.py:980 fontypythonmodules/fontcontrol.py:1001
 msgid "I can't write to this directory: {}"
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:1017
+#: fontypythonmodules/fontcontrol.py:1018
 msgid "Correcting timestamp on {}."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:1028
+#: fontypythonmodules/fontcontrol.py:1029
 msgid "Zip on {} failed because: {}"
 msgstr ""
 
@@ -398,46 +397,46 @@ msgid ""
 "Please remove it and start me again."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:546
+#: fontypythonmodules/fpsys.py:548
 msgid "Checking fonts, this could take some time."
 msgstr "Sto controllando i font: potrebbe prendere un po' di tempo."
 
-#: fontypythonmodules/fpsys.py:547
-#, python-format
-msgid "Starting in %s:"
+#: fontypythonmodules/fpsys.py:549
+#, fuzzy
+msgid "Starting in \"{}\":"
 msgstr "Parto in %s:"
 
-#: fontypythonmodules/fpsys.py:554
-#, python-format
-msgid "Looking in %s..."
+#: fontypythonmodules/fpsys.py:556
+#, fuzzy
+msgid "Looking in \"{}\"..."
 msgstr "Controllo in %s..."
 
-#: fontypythonmodules/fpsys.py:567
+#: fontypythonmodules/fpsys.py:569
 msgid " Bad font: {}"
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:591
+#: fontypythonmodules/fpsys.py:593
 msgid ""
 "Bad fonts were found. They have been noted. I will ignore them in future."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:593
+#: fontypythonmodules/fpsys.py:595
 msgid "I could not find any bad fonts."
 msgstr "Non ho trovato alcun font dannoso."
 
-#: fontypythonmodules/fpsys.py:595
+#: fontypythonmodules/fpsys.py:597
 msgid "The process is complete."
 msgstr "Il processo è completo."
 
-#: fontypythonmodules/fpsys.py:656
+#: fontypythonmodules/fpsys.py:658
 msgid "Jump the lazy dog fox"
 msgstr "Ma la volpe col suo balzo ha raggiunto il quieto fido"
 
-#: fontypythonmodules/fpsys.py:705
+#: fontypythonmodules/fpsys.py:707
 msgid "No config file found, creating it with defaults."
 msgstr "Non ho trovato il file di configurazione, ne ricreo uno standard."
 
-#: fontypythonmodules/fpsys.py:737
+#: fontypythonmodules/fpsys.py:739
 msgid ""
 "The fontypython config file is damaged.\n"
 "Please remove it and start again"
@@ -445,41 +444,36 @@ msgstr ""
 "Il file di configurazione fontypython è danneggiato.\n"
 "Per favore rimuovilo e riprova."
 
-#: fontypythonmodules/fpsys.py:779
+#: fontypythonmodules/fpsys.py:781
 msgid "Could not write to the config file."
 msgstr "Impossibile modificare il file di configurazione."
 
-#: fontypythonmodules/fpsys.py:924
-#, python-format
-msgid "This font is in %s"
+#: fontypythonmodules/fpsys.py:926
+#, fuzzy
+msgid "This font is in \"{}\""
 msgstr "Questo font è in %s"
 
-#: fontypythonmodules/fpsys.py:981
+#: fontypythonmodules/fpsys.py:983
 msgid "Trying to hush..."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:985
-#, python-format
-msgid "Installing (%s)"
-msgstr "Installo (%s)"
-
-#: fontypythonmodules/fpsys.py:1002
+#: fontypythonmodules/fpsys.py:1004
 msgid "The Pog \"{}\", cannot be found."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1022
+#: fontypythonmodules/fpsys.py:1026
 msgid "Done. A hush settles over your fonts. Go: work in silence."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1034
+#: fontypythonmodules/fpsys.py:1038
 msgid "The hush isn't there. Nothing to do."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1038
+#: fontypythonmodules/fpsys.py:1042
 msgid "Trying to unhush..."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1044
+#: fontypythonmodules/fpsys.py:1048
 msgid "The noise has returned; the hush is gone."
 msgstr ""
 
@@ -636,13 +630,13 @@ msgstr ""
 "C'è stato un errore nella memorizzazione del file. Non è stato fatto nulla."
 
 #: fontypythonmodules/gui_PogChooser.py:296
-#, python-format
-msgid "(%s) skipped. It's an invalid pog."
+#, fuzzy
+msgid "\"{}\" skipped. It's an invalid Pog."
 msgstr "(%s) saltato. È un pog non valido."
 
-#: fontypythonmodules/gui_PogChooser.py:305
-#, python-format
-msgid "(%s) skipped. I can't display this name under your locale."
+#: fontypythonmodules/gui_PogChooser.py:306
+#, fuzzy
+msgid "\"{}\" skipped. I can't display this name under your locale."
 msgstr "(%s) skipped. Non riesco a mostrarne il nome con la locale attuale."
 
 #: fontypythonmodules/gui_PogTargets.py:53
@@ -723,8 +717,8 @@ msgid "A Pog with no name won't be created, however it was a good try!"
 msgstr "Buon tentativo... ma non creerò un pog senza nome!"
 
 #: fontypythonmodules/gui_PogTargets.py:152
-#, python-format
-msgid "%s already exists."
+#, fuzzy
+msgid "\"{}\" already exists."
 msgstr "%s esiste già."
 
 #: fontypythonmodules/gui_PogTargets.py:187
@@ -735,12 +729,12 @@ msgstr ""
 "Uno o più dei font selezionati sono installati: modificare la selezione e "
 "riprovare."
 
-#: fontypythonmodules/gui_PogTargets.py:203
-#, python-format
-msgid "Remove %s, are you sure?"
+#: fontypythonmodules/gui_PogTargets.py:205
+#, fuzzy
+msgid "Remove {}. Are you sure?"
 msgstr "Sei sicuro di voler cancellare %s?"
 
-#: fontypythonmodules/gui_PogTargets.py:204
+#: fontypythonmodules/gui_PogTargets.py:206
 msgid "Are you sure?"
 msgstr "Sei sicuro?"
 
@@ -1704,6 +1698,9 @@ msgstr ""
 #: fontypythonmodules/wxgui.py:914
 msgid "Fonty Python: bring out your fonts!"
 msgstr "Fonty Python: porta i tuoi font allo scoperto!"
+
+#~ msgid "Installing (%s)"
+#~ msgstr "Installo (%s)"
 
 #~ msgid "Bad voodoo error. I give up."
 #~ msgstr "Errore voodoo maligno. Mi arrendo."
