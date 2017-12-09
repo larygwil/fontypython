@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-08 14:14+0200\n"
+"POT-Creation-Date: 2017-12-09 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,7 +130,7 @@ msgstr ""
 msgid "\"{}\" cannot be found. Try -l to see the names."
 msgstr ""
 
-#: fontypythonmodules/clifuncs.py:177
+#: fontypythonmodules/clifuncs.py:177 fontypythonmodules/fpsys.py:987
 msgid "Installing \"{}\"."
 msgstr ""
 
@@ -162,30 +162,29 @@ msgid ""
 "(See the Tools menu.)"
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:152
-#, python-format
+#: fontypythonmodules/fontcontrol.py:154
 msgid ""
 "Unhandled error:\n"
-"Please remove (%s) away from here and report this to us."
+"Please remove \"{}\" away from here and report this to us."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:164
+#: fontypythonmodules/fontcontrol.py:167
 msgid "Font may be bad and it cannot be drawn."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:179
+#: fontypythonmodules/fontcontrol.py:182
 msgid "Unicode problem. Font may be bad and it cannot be drawn."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:250
+#: fontypythonmodules/fontcontrol.py:253
 msgid "Font causes a segfault. It cannot be drawn."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:295
+#: fontypythonmodules/fontcontrol.py:298
 msgid "There are no fonts to see here, move along."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:296
+#: fontypythonmodules/fontcontrol.py:299
 msgid ""
 "Stuff to check:\n"
 "\t1) The filters.\n"
@@ -194,20 +193,19 @@ msgid ""
 "\t3) The Help file."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:825
-#, python-format
-msgid "%s is already installed."
+#: fontypythonmodules/fontcontrol.py:827
+msgid "\"{}\" is already installed."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:979 fontypythonmodules/fontcontrol.py:1000
+#: fontypythonmodules/fontcontrol.py:980 fontypythonmodules/fontcontrol.py:1001
 msgid "I can't write to this directory: {}"
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:1017
+#: fontypythonmodules/fontcontrol.py:1018
 msgid "Correcting timestamp on {}."
 msgstr ""
 
-#: fontypythonmodules/fontcontrol.py:1028
+#: fontypythonmodules/fontcontrol.py:1029
 msgid "Zip on {} failed because: {}"
 msgstr ""
 
@@ -340,86 +338,78 @@ msgid ""
 "Please remove it and start me again."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:546
+#: fontypythonmodules/fpsys.py:548
 msgid "Checking fonts, this could take some time."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:547
-#, python-format
-msgid "Starting in %s:"
+#: fontypythonmodules/fpsys.py:549
+msgid "Starting in \"{}\":"
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:554
-#, python-format
-msgid "Looking in %s..."
+#: fontypythonmodules/fpsys.py:556
+msgid "Looking in \"{}\"..."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:567
+#: fontypythonmodules/fpsys.py:569
 msgid " Bad font: {}"
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:591
+#: fontypythonmodules/fpsys.py:593
 msgid ""
 "Bad fonts were found. They have been noted. I will ignore them in future."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:593
+#: fontypythonmodules/fpsys.py:595
 msgid "I could not find any bad fonts."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:595
+#: fontypythonmodules/fpsys.py:597
 msgid "The process is complete."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:656
+#: fontypythonmodules/fpsys.py:658
 msgid "Jump the lazy dog fox"
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:705
+#: fontypythonmodules/fpsys.py:707
 msgid "No config file found, creating it with defaults."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:737
+#: fontypythonmodules/fpsys.py:739
 msgid ""
 "The fontypython config file is damaged.\n"
 "Please remove it and start again"
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:779
+#: fontypythonmodules/fpsys.py:781
 msgid "Could not write to the config file."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:924
-#, python-format
-msgid "This font is in %s"
+#: fontypythonmodules/fpsys.py:926
+msgid "This font is in \"{}\""
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:981
+#: fontypythonmodules/fpsys.py:983
 msgid "Trying to hush..."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:985
-#, python-format
-msgid "Installing (%s)"
-msgstr ""
-
-#: fontypythonmodules/fpsys.py:1002
+#: fontypythonmodules/fpsys.py:1004
 msgid "The Pog \"{}\", cannot be found."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1022
+#: fontypythonmodules/fpsys.py:1026
 msgid "Done. A hush settles over your fonts. Go: work in silence."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1034
+#: fontypythonmodules/fpsys.py:1038
 msgid "The hush isn't there. Nothing to do."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1038
+#: fontypythonmodules/fpsys.py:1042
 msgid "Trying to unhush..."
 msgstr ""
 
-#: fontypythonmodules/fpsys.py:1044
+#: fontypythonmodules/fpsys.py:1048
 msgid "The noise has returned; the hush is gone."
 msgstr ""
 
@@ -561,13 +551,11 @@ msgid "There was an error writing the pog to disk. Nothing has been done"
 msgstr ""
 
 #: fontypythonmodules/gui_PogChooser.py:296
-#, python-format
-msgid "(%s) skipped. It's an invalid pog."
+msgid "\"{}\" skipped. It's an invalid Pog."
 msgstr ""
 
-#: fontypythonmodules/gui_PogChooser.py:305
-#, python-format
-msgid "(%s) skipped. I can't display this name under your locale."
+#: fontypythonmodules/gui_PogChooser.py:306
+msgid "\"{}\" skipped. I can't display this name under your locale."
 msgstr ""
 
 #: fontypythonmodules/gui_PogTargets.py:53
@@ -640,8 +628,7 @@ msgid "A Pog with no name won't be created, however it was a good try!"
 msgstr ""
 
 #: fontypythonmodules/gui_PogTargets.py:152
-#, python-format
-msgid "%s already exists."
+msgid "\"{}\" already exists."
 msgstr ""
 
 #: fontypythonmodules/gui_PogTargets.py:187
@@ -649,12 +636,11 @@ msgid ""
 "One or more selected Pogs is installed, fix your selection and try again."
 msgstr ""
 
-#: fontypythonmodules/gui_PogTargets.py:203
-#, python-format
-msgid "Remove %s, are you sure?"
+#: fontypythonmodules/gui_PogTargets.py:205
+msgid "Remove {}. Are you sure?"
 msgstr ""
 
-#: fontypythonmodules/gui_PogTargets.py:204
+#: fontypythonmodules/gui_PogTargets.py:206
 msgid "Are you sure?"
 msgstr ""
 
