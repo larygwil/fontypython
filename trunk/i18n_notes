@@ -12,6 +12,12 @@ I use fp_orig_ref to merge that header in.)
 
 Don't damage or lose this file. (Well, I can always make a new one.)
 
+UPDATE
+======
+Scratch that. I can't get the headers to survive properly. Fuck it.
+I write a date and the version in the Makefile, but the comments at
+the top are just gonna be default crap. Forever.
+
 See the Makefile for the actual steps.
 
 When there are code changes: make a new pot file.

@@ -10,14 +10,22 @@ it_IT=it_IT.UTF-8.po
 
 refpot :
 	# Making the ref.pot file. Fresh from the source.
-	xgettext --package-name="fontypython" --package-version="${VERS}" --copyright-holder=${CH} --msgid-bugs-address="donn.ingle@gmail.com" -p ${POFILES} -o fp_ref.pot -L Python fontypython fontypythonmodules/*.py
+	# NOTE: The package-name and version do not make it to the final .po files
+	# Search me.
+	# I include this here because it took forever to work it out. 
+	xgettext --package-name="fontypython" \
+		--package-version="${VERS}" \
+		--copyright-holder=${CH} \
+		--msgid-bugs-address="donn.ingle@gmail.com" \
+		-p ${POFILES} -o fp_ref.pot -L Python fontypython fontypythonmodules/*.py
+	# Now run make update
 
+notused :
+	# This was fail. I tried to get the header info to be sensible. Can't be done.
 	# Merging the original template with this new export. fp_ref.pot will then be
 	# the latest fresh template for merging with the previous translation po files.
 	# (fp_orig_ref.pot must remain unchanged.)
 	msgmerge ${POFILES}/fp_orig_ref.pot ${fpref} -o ${fpref}
-
-	# Now run make update
 
 update :
 	# Merge the translation files (.po) with the latest .pot made from the source code.
@@ -31,9 +39,9 @@ update :
 
 	# Merging the current translation files that exist ("def.po", per the gnu manual)
 	# with the fp_ref.pot file. Output OVER the same def.po files.
-	msgmerge ${fpref} ${POFILES}/${fr_FR} -o ${POFILES}/${fr_FR}
-	msgmerge ${fpref} ${POFILES}/${it_IT} -o ${POFILES}/${it_IT}
-	msgmerge ${fpref} ${POFILES}/${de_DE} -o ${POFILES}/${de_DE}
+	msgmerge ${POFILES}/${fr_FR} ${fpref} -o ${POFILES}/${fr_FR}
+	msgmerge ${POFILES}/${it_IT} ${fpref} -o ${POFILES}/${it_IT}
+	msgmerge ${POFILES}/${de_DE} ${fpref} -o ${POFILES}/${de_DE}
 	
 	# Now translate/edit the PO files. When ready, run make mos
 	
