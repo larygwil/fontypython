@@ -39,9 +39,9 @@ update :
 	
 mos :
 	# Converting the PO files to MO files.
-	msgfmt ${POFILES}${fr_FR} -o ${LOCALE}fr/LC_MESSAGES/all.mo
-	msgfmt ${POFILES}${it_IT} -o ${LOCALE}it/LC_MESSAGES/all.mo
-	msgfmt ${POFILES}${de_DE} -o ${LOCALE}de/LC_MESSAGES/all.mo
+	msgfmt ${POFILES}/${fr_FR} -o ${LOCALE}/fr/LC_MESSAGES/all.mo
+	msgfmt ${POFILES}/${it_IT} -o ${LOCALE}/it/LC_MESSAGES/all.mo
+	msgfmt ${POFILES}/${de_DE} -o ${LOCALE}/de/LC_MESSAGES/all.mo
 	
 	# mo files have been moved.
 	
