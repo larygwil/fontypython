@@ -31,9 +31,9 @@ update :
 
 	# Merging the current translation files that exist ("def.po", per the gnu manual)
 	# with the fp_ref.pot file. Output OVER the same def.po files.
-	msgmerge ${POFILES}/${fr_FR} ${fpref} -o ${POFILES}/${fr_FR}
-	msgmerge ${POFILES}/${it_IT} ${fpref} -o ${POFILES}/${it_IT}
-	msgmerge ${POFILES}/${de_DE} ${fpref} -o ${POFILES}/${de_DE}
+	msgmerge ${fpref} ${POFILES}/${fr_FR} -o ${POFILES}/${fr_FR}
+	msgmerge ${fpref} ${POFILES}/${it_IT} -o ${POFILES}/${it_IT}
+	msgmerge ${fpref} ${POFILES}/${de_DE} -o ${POFILES}/${de_DE}
 	
 	# Now translate/edit the PO files. When ready, run make mos
 	
