@@ -1,11 +1,22 @@
 Fonty Python
-Copyright (C) 2006, 2007, 2008 Donn.C.Ingle
+Copyright (C) 2006, 2007, 2008, 2017 Donn.C.Ingle
 donn.ingle@gmail.com
 
 Fonty Python comes with ABSOLUTELY NO WARRANTY; for details
 see the COPYING file.  This is free software, and you are welcome
 to redistribute it under certain conditions; see the COPYING file 
 for details.
+
+
+2017
+====
+See the i18n_notes file in the root.
+I will leave this file here just in case, but the new stuff is in ../../i18n_notes
+
+
+
+
+
 
 TRANSLATION README
 ==================
