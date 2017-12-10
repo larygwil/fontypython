@@ -1,14 +1,14 @@
-# SOME DESCRIPTIVE TITLE.
+# This is the original ref.pot file for fontypython. Please don't damage it.
 # Copyright (C) YEAR Copyright (C) 2006,2007,2008,2017 Donn.C.Ingle
 # This file is distributed under the same license as the fontypython package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Donn Ingle <donn.ingle@gmail.com>, 2017.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: fontypython TRUNK\n"
+"Project-Id-Version: fontypython\n"
 "Report-Msgid-Bugs-To: donn.ingle@gmail.com\n"
-"POT-Creation-Date: 2017-12-10 14:35+0200\n"
+"POT-Creation-Date: 2017-12-10 14:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
