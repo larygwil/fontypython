@@ -1,0 +1,68 @@
+i18N
+====
+
+FORMULA
+=======
+I have an "original" pot file in pofiles/fp_orig_ref.pot
+This file has the header filled-in. Kind of. It stands as the
+"memory" of the process. When I do a new xgettext the output
+has default header info, so I use fp_orig_ref to merge that header
+stuff back in again.
+
+Don't damage or lose this file. (Well, I can always make a new one.)
+
+See the Makefile for the actual steps.
+
+When there are code changes: make a new pot file.
+1. make
+2. make update
+3. loop to dev
+
+When there is new translation work:
+1. make
+2. get the new stuff into the correct .po file in pofiles
+   It may require a msgmerge off to the side.
+3. make update
+
+When you are ready for a release:
+1. make
+2. make update
+3. make mos
+
+
+
+DEMO
+==
+
+in testpo:
+I made a short A.pot. Header only. Nothing past the initial:
+# I changed this
+# Copyright (C) 2017
+# This file is distributed under the same license as the fptest package.
+# Donn yadda
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: A 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-10 10:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+Then I made B.pot from the source:
+xgettext -o B.pot -L Python ../fontypythonmodules/strings.py
+
+Then I merged A and B!
+msgmerge A.pot B.pot -o B.pot
+(The order is NB)
+
+Now I have B.pot that carries the headers etc. Phew.
+
+Now I can go merge the fr_FR.UTF-8.po file with B.pot
+
