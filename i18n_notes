@@ -1,13 +1,14 @@
 i18N
 ====
+https://www.gnu.org/software/gettext/manual/gettext.html
 
 FORMULA
 =======
 I have an "original" pot file in pofiles/fp_orig_ref.pot
 This file has the header filled-in. Kind of. It stands as the
-"memory" of the process. When I do a new xgettext the output
-has default header info, so I use fp_orig_ref to merge that header
-stuff back in again.
+"memory" of the process.
+(When one does a new xgettext, the output gets default header info; thus
+I use fp_orig_ref to merge that header in.)
 
 Don't damage or lose this file. (Well, I can always make a new one.)
 
@@ -16,7 +17,7 @@ See the Makefile for the actual steps.
 When there are code changes: make a new pot file.
 1. make
 2. make update
-3. loop to dev
+3. loop while dev
 
 When there is new translation work:
 1. make

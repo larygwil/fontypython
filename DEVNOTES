@@ -98,9 +98,7 @@ Done * Don't forget to remove the wx debug stuff on the app object
 
 i18N, POFILES, ETC.
 ==
-I rely on the Makefile. Run make.
-Glad I wrote it, for I remember nothing at all. \('')/
-
+See the i18n_notes file.
 
 
 

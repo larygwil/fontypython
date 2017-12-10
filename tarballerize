@@ -6,13 +6,19 @@ if [[ -e dist ]]; then
 	cd ..
 fi
 
-echo "** Don't forget to run make for i18n stuff..."
 
 # Make sure we have the latest html files for help and about
 ./scripts/make_html_and_distrib
 
 # Make sure we have all the logos and various icons
 ./scripts/distrib_all_images
+
+# Get a fresh set of po files etc.
+make
+make update
+make mos
+
+echo "Do an svn commit soon, as the po files have changed."
 
 # Now make the source distrib
 python setup.py sdist
